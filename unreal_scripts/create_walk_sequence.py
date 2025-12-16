@@ -150,7 +150,7 @@ def create_walking_sequence():
     
     # Set the walking animation
     # Find the walking animation asset
-    walk_anim_path = '/Game/Characters/Mannequins/Animations/Manny/MM_Walk_Fwd.MM_Walk_Fwd'
+    walk_anim_path = '/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd.MF_Unarmed_Walk_Fwd'
     log_message(f"Loading walking animation from: {walk_anim_path}")
     walk_anim = unreal.load_object(None, walk_anim_path)
     
