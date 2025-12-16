@@ -82,6 +82,22 @@ def create_walking_sequence():
     binding = sequence.add_possessable(character)
     unreal.log(f"Added character binding: {binding.get_display_name()}")
     
+    # Add animation track for walking animation
+    anim_track = binding.add_track(unreal.MovieSceneSkeletalAnimationTrack)
+    anim_section = anim_track.add_section()
+    anim_section.set_range(start_frame, end_frame)
+    
+    # Set the walking animation
+    # Find the walking animation asset
+    walk_anim_path = '/Game/Characters/Mannequins/Animations/Manny/MM_Walk_Fwd.MM_Walk_Fwd'
+    walk_anim = unreal.load_object(None, walk_anim_path)
+    
+    if walk_anim:
+        anim_section.params.animation = walk_anim
+        unreal.log(f"Added walking animation: {walk_anim.get_name()}")
+    else:
+        unreal.log_warning(f"Could not find walking animation at {walk_anim_path}")
+    
     # Add a Transform track to animate position
     transform_track = binding.add_track(unreal.MovieScene3DTransformTrack)
     transform_section = transform_track.add_section()
@@ -92,20 +108,22 @@ def create_walking_sequence():
     # Get the transform channels
     channels = transform_section.get_all_channels()
     location_channels = channels[0:3]  # X, Y, Z
+    rotation_channels = channels[3:6]  # Roll, Pitch, Yaw
     
-    # Define waypoints (with timestamps in seconds)
+    # Define waypoints (with timestamps in seconds and rotation yaw)
+    # Rotation: 0=East, 90=North, 180=West, 270=South
     waypoints = [
-        (0.0, 0, 0, 100),       # Time 0s: start position
-        (2.5, 300, 0, 100),     # Time 2.5s
-        (5.0, 300, 300, 100),   # Time 5s
-        (7.5, 0, 300, 100),     # Time 7.5s
-        (10.0, 0, 0, 100)       # Time 10s: back to start
+        (0.0, 0, 0, 100, 0),         # Time 0s: start position, facing East
+        (2.5, 300, 0, 100, 90),      # Time 2.5s: facing North
+        (5.0, 300, 300, 100, 180),   # Time 5s: facing West
+        (7.5, 0, 300, 100, 270),     # Time 7.5s: facing South
+        (10.0, 0, 0, 100, 0)         # Time 10s: back to start, facing East
     ]
     
     # Add keyframes for each waypoint (24fps frame rate)
     fps = 24
     
-    for time_sec, x, y, z in waypoints:
+    for time_sec, x, y, z, yaw in waypoints:
         frame_number = int(time_sec * fps)
         
         # Set location keyframes
@@ -113,7 +131,10 @@ def create_walking_sequence():
         location_channels[1].add_key(unreal.FrameNumber(frame_number), y)  # Y
         location_channels[2].add_key(unreal.FrameNumber(frame_number), z)  # Z
         
-        unreal.log(f"Added keyframe at frame {frame_number} ({time_sec}s): ({x}, {y}, {z})")
+        # Set rotation keyframe (Yaw only, to face direction of movement)
+        rotation_channels[2].add_key(unreal.FrameNumber(frame_number), yaw)  # Yaw
+        
+        unreal.log(f"Added keyframe at frame {frame_number} ({time_sec}s): pos({x}, {y}, {z}) rot({yaw}°)")
     
     # Save the sequence
     unreal.EditorAssetLibrary.save_asset(sequence.get_path_name())
