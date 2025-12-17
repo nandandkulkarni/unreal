@@ -89,30 +89,60 @@ class UnrealRemoteController:
         return False
     
     def play_sequence(self, sequence_path):
-        """Play a Level Sequence"""
+        """Play a Level Sequence with proper viewport lock"""
         print(f"Playing sequence: {sequence_path}")
         
-        # Use LevelSequenceEditorBlueprintLibrary to open/play sequence
+        # First, open the sequence
         success, result = self.call_function(
             '/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary',
             'OpenLevelSequence',
             {'LevelSequence': sequence_path}
         )
         
-        if success:
-            print("✓ Sequence opened")
-            
-            # Play it
-            success2, result2 = self.call_function(
-                '/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary',
-                'Play'
-            )
-            
-            if success2:
-                print("✓ Sequence playing!")
-                return True
+        if not success:
+            print(f"✗ Failed to open sequence: {result}")
+            return False
         
-        print(f"✗ Failed: {result}")
+        print("✓ Sequence opened")
+        time.sleep(0.5)  # Give it time to open
+        
+        # IMPORTANT: Lock camera cut to viewport so animations are visible
+        success_lock, result_lock = self.call_function(
+            '/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary',
+            'SetLockCameraCutToViewport',
+            {'bLock': True}
+        )
+        
+        if success_lock:
+            print("✓ Camera cut locked to viewport")
+        else:
+            print(f"⚠ Warning: Could not lock camera to viewport: {result_lock}")
+        
+        time.sleep(0.3)
+        
+        # Force UI and evaluation update
+        success_update, result_update = self.call_function(
+            '/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary',
+            'ForceUpdate'
+        )
+        
+        if success_update:
+            print("✓ Forced sequencer update")
+        
+        time.sleep(0.3)
+        
+        # Play the sequence
+        success_play, result_play = self.call_function(
+            '/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary',
+            'Play'
+        )
+        
+        if success_play:
+            print("✓ Sequence playing!")
+            return True
+        else:
+            print(f"✗ Play failed: {result_play}")
+        
         return False
     
     def demonstrate_character_animation(self, character_path):

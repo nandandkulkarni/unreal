@@ -1,0 +1,33 @@
+QUICK FIX FOR "No Object Binding specified" CAMERA ERROR
+=============================================================
+
+OPTION 1: Fix via Unreal Python Console (FASTEST)
+--------------------------------------------------
+1. In Unreal Editor, go to: Tools → Execute Python Script
+2. Click "..." and select: C:\U\CinematicPipeline_Scripts\fix_camera_binding.py
+3. Click "Execute"
+4. Check Output Log - should see "SUCCESS: Camera binding fixed!"
+
+
+OPTION 2: Recreate Sequence with Proper Binding
+------------------------------------------------
+1. In Unreal Editor, go to: Tools → Execute Python Script
+2. Click "..." and select: C:\U\CinematicPipeline_Scripts\create_complete_cinematic.py
+3. Click "Execute"
+4. This will recreate the entire sequence with correct camera binding
+
+
+WHAT CAUSES THIS ERROR?
+-----------------------
+The Camera Cut track needs a valid object binding to know which camera to use.
+The binding must be properly assigned using:
+    camera_binding_id.guid = camera_binding.get_id()
+
+This is a common issue in Unreal Engine 5.7 and must be fixed from within
+Unreal's Python environment (cannot be fixed via Remote Control API).
+
+
+AFTER FIXING:
+-------------
+The remote playback script will work perfectly:
+    python C:\U\CinematicPipeline_Scripts\external_control\test_sequence_playback.py
