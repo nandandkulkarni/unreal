@@ -81,6 +81,25 @@ bEnableRemotePythonExecution=True
 
 ---
 
+### 4. Video Rendering
+**Script:** `render_sequence_to_video.py`  
+**Status:** ✓ Working
+
+**How to render:**
+- Run inside Unreal: Tools → Execute Python Script → `render_sequence_to_video.py`
+- Opens render preview window
+- Renders to: `C:\U\CinematicPipeline\Saved\VideoCaptures`
+- Output format: Apple ProRes .mov (1920x1080 @ 30fps)
+- File size: ~305MB for 10-second sequence
+
+**Technical details:**
+- Uses Movie Pipeline Queue API (modern UE5 method)
+- Renders with cinematic quality settings
+- Creates job in Movie Render Queue
+- Executes via PIE (Play In Editor) executor
+
+---
+
 ## 🔧 HOW WE MADE IT WORK
 
 ### Challenge 1: Camera Cut Track "No Object Binding specified"
@@ -180,6 +199,7 @@ call_function(EDITOR_LIBRARY, 'Play')
 ```
 CinematicPipeline_Scripts/
 ├── create_complete_cinematic.py      # Main sequence creator (run in Unreal)
+├── render_sequence_to_video.py       # ✓ Video renderer (run in Unreal) - WORKING!
 ├── fix_camera_binding.py             # Fix camera binding warning (run in Unreal)
 ├── view_logs.py                      # View fix logs
 ├── setup_remote_control.py           # Auto-configure Remote Control
@@ -191,8 +211,12 @@ CinematicPipeline_Scripts/
     ├── remote_camera_fix_and_test.py # Automated fix + test (run from PowerShell)
     ├── test_sequence_playback.py     # Simple playback test
     ├── remote_cinematic_control.py   # Full demo script
+    ├── remote_render_sequence.py     # Attempt remote rendering (partial)
     ├── enumerate_sequence_functions.py # Function discovery tool
     └── available_sequence_functions.md # Function reference
+
+CinematicPipeline/Saved/VideoCaptures/
+└── .mov                              # ✓ 305MB rendered video (Apple ProRes)
 ```
 
 ---
@@ -227,7 +251,19 @@ python remote_camera_fix_and_test.py
 
 # Or run simple playback test
 python test_sequence_playback.py
+Render to Video
 
+**In Unreal Editor:**
+1. Tools → Execute Python Script
+2. Select: `C:\U\CinematicPipeline_Scripts\render_sequence_to_video.py`
+3. Click Execute
+4. Wait for render preview window to complete
+5. Video saved to: `C:\U\CinematicPipeline\Saved\VideoCaptures\.mov`
+6. File size: ~305MB (Apple ProRes, 1920x1080, 30fps)
+
+**Note:** Remote rendering trigger (via `remote_render_sequence.py`) can start playback but not actual file rendering. Use the Unreal script for video output.
+
+---
 # Or run full demo with character movement
 python remote_cinematic_control.py
 ```
@@ -326,16 +362,16 @@ response = requests.put(url, json=payload)
 ## 🚧 WHAT'S PENDING
 
 ### High Priority
-1. **Remove camera binding warning** - Fix GUID assignment properly
-2. **Add lighting setup** - For YouTube video quality
-3. **Add post-processing** - Color grading, bloom, etc.
-4. **Render to video file** - Export as MP4/MOV
+1. ~~**Remove camera binding warning**~~ - Working despite warning (cosmetic only)
+2. ~~**Render to video file**~~ - ✓ DONE - 305MB .mov file working
+3. **Add lighting setup** - For better YouTube video quality
+4. **Add post-processing** - Color grading, bloom, etc.
 
 ### Medium Priority
 1. **Multiple camera angles** - Switch between cameras
 2. **Audio integration** - Background music, sound effects
 3. **Title cards / text overlays** - Opening/closing credits
-4. **Automated rendering** - Script full video export
+4. **Automated rendering via Remote Control** - Trigger render remotely
 
 ### Low Priority / Future
 1. **Blueprint integration** - Control from Blueprint graphs
