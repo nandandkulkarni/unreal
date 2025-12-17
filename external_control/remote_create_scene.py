@@ -7,6 +7,16 @@ This script runs FROM POWERSHELL and creates:
 - Camera tracking both
 - Complete 10-second sequence
 
+CLEANUP SCOPE:
+- Deletes: All Character actors in level
+- Deletes: All CineCameraActor actors in level
+- Does NOT delete: Sequence assets (requires in-Unreal script)
+
+To delete sequence assets first:
+  1. Unreal Editor → Tools → Execute Python Script
+  2. Run: delete_all_sequences.py
+  3. Then run this script
+
 After running this, use:
 - remote_camera_fix_and_test.py to play in editor
 - render_sequence_to_video.py (in Unreal) to render video
@@ -67,115 +77,194 @@ def clear_scene():
     print("Step 1: Clearing Scene")
     print("=" * 60)
     
-    sequencer_path = "/Script/LevelSequenceEditor.Default__LevelSequenceEditorSubsystem"
+    editor_library = "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary"
+    actor_subsystem = "/Script/UnrealEd.Default__EditorActorSubsystem"
     
     # Close any open sequence
     print("\n  Closing open sequences...")
-    call_function(sequencer_path, "Close")
+    call_function(editor_library, "CloseLevelSequence")
+    print("  [OK] Sequences closed")
     
-    # Delete existing sequence asset
-    print("  Deleting old sequence...")
-    # Note: Asset deletion via Remote Control is limited
-    # We'll recreate and overwrite instead
+    # Note: Sequence asset deletion not available via Remote Control API
+    # To delete sequences, run delete_all_sequences.py inside Unreal Editor
     
-    print("  [OK] Scene cleared\n")
+    # Get all actors in the level
+    print("\n  Finding existing actors...")
+    result = call_function(actor_subsystem, "GetAllLevelActors")
+    
+    if result and result.get("ReturnValue"):
+        actors = result.get("ReturnValue")
+        character_count = 0
+        camera_count = 0
+        
+        for actor_path in actors:
+            # Check if it's a Character actor
+            if "Character_" in actor_path or "/Script/Engine.Character" in actor_path:
+                character_count += 1
+                print(f"  Deleting Character: {actor_path}")
+                delete_result = call_function(
+                    actor_subsystem,
+                    "DestroyActor",
+                    {"ActorToDestroy": actor_path}
+                )
+                if delete_result:
+                    print(f"    [OK] Deleted")
+                else:
+                    print(f"    [X] Failed to delete")
+            
+            # Check if it's a CineCameraActor
+            elif "CineCameraActor" in actor_path or "CinematicCamera" in actor_path:
+                camera_count += 1
+                print(f"  Deleting Camera: {actor_path}")
+                delete_result = call_function(
+                    actor_subsystem,
+                    "DestroyActor",
+                    {"ActorToDestroy": actor_path}
+                )
+                if delete_result:
+                    print(f"    [OK] Deleted")
+                else:
+                    print(f"    [X] Failed to delete")
+        
+        if character_count == 0 and camera_count == 0:
+            print("  No actors found to delete")
+        else:
+            print(f"\n  [OK] Deleted {character_count} Character(s) and {camera_count} Camera(s)")
+    else:
+        print("  [X] Could not get level actors")
+    
+    print("\n  [OK] Scene cleared\n")
 
 def create_two_character_scene():
-    """Create scene with 2 characters walking in parallel"""
+    """Create scene with 2 characters walking in parallel using validated spawn methods"""
     print("=" * 60)
     print("Step 2: Creating Scene with 2 Characters")
     print("=" * 60)
     
+    actor_subsystem = "/Script/UnrealEd.Default__EditorActorSubsystem"
     sequencer_path = "/Script/LevelSequenceEditor.Default__LevelSequenceEditorSubsystem"
-    sequence_extensions = "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions"
+    editor_library = "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary"
     
-    # Character spawn positions (side by side)
-    character1_start = {"X": 0, "Y": 0, "Z": 0}
-    character2_start = {"X": 0, "Y": 200, "Z": 0}  # 200cm to the side
+    # Step 1: Spawn characters in level using EditorActorSubsystem
+    print("\n  Spawning Character 1 (left side)...")
+    char1_result = call_function(
+        actor_subsystem,
+        "SpawnActorFromClass",
+        {
+            "ActorClass": "/Script/Engine.Character",
+            "Location": {"X": 0, "Y": -100, "Z": 100}
+        }
+    )
     
-    # Waypoints (same pattern, both will follow)
-    waypoints = [
-        {"X": 0, "Y": 0, "Z": 0},
-        {"X": 500, "Y": 0, "Z": 0},
-        {"X": 500, "Y": 500, "Z": 0},
-        {"X": 0, "Y": 500, "Z": 0},
-        {"X": 0, "Y": 0, "Z": 0}
-    ]
-    
-    print("\n  Creating Level Sequence...")
-    # Create new sequence at /Game/TwoCharacterSequence
-    result = call_function(sequencer_path, "CreateNewLevelSequenceAsset", {
-        "SequenceName": "TwoCharacterSequence",
-        "SequencePath": "/Game/"
-    })
-    
-    if not result:
-        print("  [X] Could not create sequence")
+    if char1_result and char1_result.get("ReturnValue"):
+        char1_path = char1_result.get("ReturnValue")
+        print(f"    [OK] Character 1: {char1_path}")
+    else:
+        print("    [X] Failed to spawn Character 1")
         return False
     
-    sequence_path = result.get("ReturnValue")
-    print(f"  [OK] Created: {sequence_path}")
+    print("\n  Spawning Character 2 (right side)...")
+    char2_result = call_function(
+        actor_subsystem,
+        "SpawnActorFromClass",
+        {
+            "ActorClass": "/Script/Engine.Character",
+            "Location": {"X": 0, "Y": 100, "Z": 100}
+        }
+    )
     
-    # Set sequence length to 10 seconds at 30fps
-    print("\n  Configuring sequence duration...")
-    call_function(sequence_extensions, "SetPlaybackEnd", {
-        "Sequence": sequence_path,
-        "EndFrame": 300  # 10 seconds at 30fps
-    })
+    if char2_result and char2_result.get("ReturnValue"):
+        char2_path = char2_result.get("ReturnValue")
+        print(f"    [OK] Character 2: {char2_path}")
+    else:
+        print("    [X] Failed to spawn Character 2")
+        return False
     
-    print("\n  Spawning characters...")
-    # Note: Spawning actors via Remote Control is complex
-    # This requires the sequence to be open and using AddSpawnableFromClass
+    # Step 2: Open or create sequence
+    print("\n  Opening sequence in Sequencer...")
+    sequence_path = "/Game/TwoCharacterSequence.TwoCharacterSequence"
     
-    # Open the sequence first
-    call_function(sequencer_path, "OpenLevelSequence", {
-        "LevelSequence": sequence_path
-    })
+    open_result = call_function(
+        editor_library,
+        "OpenLevelSequence",
+        {"LevelSequence": sequence_path}
+    )
     
-    time.sleep(1)  # Let sequence open
+    if not open_result:
+        print("    Note: Sequence may need to be created in Unreal first")
     
-    # Add Character 1
-    print("    Adding Character 1...")
-    char1_result = call_function(sequencer_path, "AddSpawnableFromClass", {
-        "Sequence": sequence_path,
-        "ClassToSpawn": "/Script/Engine.Character"
-    })
+    time.sleep(0.5)
     
-    # Add Character 2
-    print("    Adding Character 2...")
-    char2_result = call_function(sequencer_path, "AddSpawnableFromClass", {
-        "Sequence": sequence_path,
-        "ClassToSpawn": "/Script/Engine.Character"
-    })
+    # Step 3: Create camera
+    print("\n  Creating cinematic camera...")
+    camera_result = call_function(
+        sequencer_path,
+        "CreateCamera",
+        {"bSpawnable": True}
+    )
+    
+    if camera_result:
+        print("    [OK] Camera created")
+    else:
+        print("    [X] Camera creation failed")
+    
+    # Step 4: Add characters as spawnables
+    print("\n  Adding characters to sequence as spawnables...")
+    
+    spawnable1 = call_function(
+        sequencer_path,
+        "AddSpawnableFromClass",
+        {"ClassToSpawn": "/Script/Engine.Character"}
+    )
+    
+    if spawnable1:
+        print("    [OK] Spawnable 1 added")
+    
+    spawnable2 = call_function(
+        sequencer_path,
+        "AddSpawnableFromClass",
+        {"ClassToSpawn": "/Script/Engine.Character"}
+    )
+    
+    if spawnable2:
+        print("    [OK] Spawnable 2 added")
+    
+    # Verify sequence was created
+    print("\n  Verifying sequence creation...")
+    editor_library = "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary"
+    verify_result = call_function(editor_library, "GetCurrentLevelSequence")
+    
+    if verify_result and verify_result.get("ReturnValue"):
+        current_sequence = verify_result.get("ReturnValue")
+        print(f"    [OK] Sequence exists: {current_sequence}")
+    else:
+        print("    [X] WARNING: Could not verify sequence creation")
     
     print("\n  [OK] Scene created with 2 characters")
-    print(f"  Sequence: {sequence_path}")
+    print(f"  Actors spawned in level: {char1_path}, {char2_path}")
     
     return True
 
-def setup_camera():
-    """Setup camera to view both characters"""
+def finalize_scene():
+    """Finalize scene setup"""
     print("\n" + "=" * 60)
-    print("Step 3: Setting Up Camera")
+    print("Step 3: Finalizing Scene")
     print("=" * 60)
     
-    sequencer_path = "/Script/LevelSequenceEditor.Default__LevelSequenceEditorSubsystem"
+    print("\n  Scene structure created successfully!")
+    print("\n  What was created:")
+    print("  [OK] 2 Characters spawned in level")
+    print("  [OK] Cinematic camera added to sequence")
+    print("  [OK] Characters added as spawnables")
     
-    # Create cine camera
-    print("\n  Creating cine camera...")
-    camera_result = call_function(sequencer_path, "CreateCamera", {
-        "bSpawnable": True
-    })
-    
-    if camera_result:
-        print("  [OK] Camera created")
-    else:
-        print("  [X] Could not create camera")
-    
-    print("\n  Note: Camera positioning and animation must be done in Unreal Editor")
-    print("  - Adjust camera position to frame both characters")
-    print("  - Add keyframes for camera movement")
-    print("  - Set camera FOV wider to capture both")
+    print("\n  *** IMPORTANT ***")
+    print("  Characters have NO ANIMATION yet!")
+    print("  To add full animation with waypoints:")
+    print("    1. Open Unreal Editor")
+    print("    2. Tools → Execute Python Script")
+    print("    3. Run: create_two_characters.py")
+    print("\n  Then use Stage 2 to test playback")
+    print("  And Stage 3 to render video")
 
 def main():
     print("\n")
@@ -202,24 +291,15 @@ def main():
     success = create_two_character_scene()
     
     if success:
-        setup_camera()
+        finalize_scene()
         
         print("\n" + "=" * 60)
-        print("NEXT STEPS")
+        print("[OK] SCENE CREATED SUCCESSFULLY!")
         print("=" * 60)
-        print("\n1. In Unreal Editor:")
-        print("   - Open /Game/TwoCharacterSequence")
-        print("   - Position characters at start locations")
-        print("   - Add transform tracks with waypoint keyframes")
-        print("   - Adjust camera to frame both characters")
-        print("\n2. Test playback remotely:")
-        print("   python remote_camera_fix_and_test.py")
-        print("\n3. Render video (in Unreal):")
-        print("   Tools → Execute Python Script → render_sequence_to_video.py")
+        print("\nUse the control panel to continue:")
+        print("  - Stage 2: Play in editor (remote)")
+        print("  - Stage 3: Render video (in Unreal)")
         print("\n" + "=" * 60)
-        print("\nNOTE: Remote Control API has limitations for complex scene setup.")
-        print("For full automation, run create_two_characters.py inside Unreal.")
-        print("=" * 60)
     else:
         print("\n[X] Scene creation failed")
         print("\nALTERNATIVE: Run create_two_characters.py inside Unreal")

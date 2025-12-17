@@ -10,7 +10,14 @@ from datetime import datetime
 
 REMOTE_CONTROL_URL = "http://localhost:30010/remote/object/call"
 REMOTE_PROPERTY_URL = "http://localhost:30010/remote/object/property"
-SEQUENCE_PATH = '/Game/Sequences/CharacterWalkSequence.CharacterWalkSequence'
+
+# Try multiple sequence paths - use whichever exists and has animation
+SEQUENCE_PATHS = [
+    '/Game/Sequences/CharacterWalkSequence.CharacterWalkSequence',  # Original with animation
+    '/Game/CharacterWalkSequence.CharacterWalkSequence',            # Alternate location
+    '/Game/TwoCharacterSequence.TwoCharacterSequence'                # New from remote creation
+]
+
 EDITOR_LIBRARY = '/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary'
 
 def log(message):
@@ -55,13 +62,27 @@ def fix_camera_binding_remote():
     log("REMOTE CAMERA BINDING FIX - STARTING")
     log("=" * 70)
     
-    # Step 1: Open the sequence
-    log("\n[1/4] Opening sequence...")
-    success, result = call_function(EDITOR_LIBRARY, 'OpenLevelSequence', {'LevelSequence': SEQUENCE_PATH})
-    if not success:
-        log(f"FAILED: Could not open sequence: {result}")
+    # Try to find and open a sequence
+    log("\n[1/4] Finding and opening sequence...")
+    sequence_path = None
+    
+    for path in SEQUENCE_PATHS:
+        log(f"  Trying: {path}")
+        success, result = call_function(EDITOR_LIBRARY, 'OpenLevelSequence', {'LevelSequence': path})
+        if success:
+            sequence_path = path
+            log(f"  SUCCESS: Opened {path}")
+            break
+        else:
+            log(f"  Not found or failed")
+    
+    if not sequence_path:
+        log("FAILED: Could not open any sequence")
+        log("Available sequences to try:")
+        for path in SEQUENCE_PATHS:
+            log(f"  - {path}")
         return False
-    log("SUCCESS: Sequence opened")
+    
     time.sleep(0.5)
     
     # Step 2: Check if camera cut is locked to viewport
@@ -85,6 +106,14 @@ def fix_camera_binding_remote():
     if success:
         log("SUCCESS: Sequencer updated")
     
+    # Extra step: Focus the sequence to ensure it's active
+    log("\n[5/5] Focusing sequence...")
+    success, result = call_function(EDITOR_LIBRARY, 'FocusLevelSequence', {'LevelSequence': sequence_path})
+    if success:
+        log("SUCCESS: Sequence focused")
+    else:
+        log("WARNING: Could not focus sequence")
+    
     log("\n" + "=" * 70)
     log("CAMERA SETUP COMPLETED")
     log("=" * 70)
@@ -96,6 +125,16 @@ def test_playback():
     log("\n" + "=" * 70)
     log("TESTING PLAYBACK")
     log("=" * 70)
+    
+    # First, scrub to frame 0
+    log("\n[TEST] Scrubbing to start (frame 0)...")
+    success, result = call_function(EDITOR_LIBRARY, 'SetCurrentLocalTime', {'NewFrame': 0})
+    if success:
+        log("SUCCESS: Timeline at frame 0")
+    else:
+        log(f"WARNING: Could not set time: {result}")
+    
+    time.sleep(0.3)
     
     log("\n[TEST] Starting playback...")
     success, result = call_function(EDITOR_LIBRARY, 'Play')

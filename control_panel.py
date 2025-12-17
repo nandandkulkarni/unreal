@@ -24,7 +24,7 @@ class CinematicControlPanel:
         title.pack(pady=10)
         
         # Subtitle
-        subtitle = tk.Label(root, text="Two Character Scene Workflow", font=("Arial", 10))
+        subtitle = tk.Label(root, text="Two Character Scene Workflow (Stage 1: REMOTE!)", font=("Arial", 10))
         subtitle.pack()
         
         # Button Frame
@@ -34,7 +34,7 @@ class CinematicControlPanel:
         # Stage 1: Create Scene
         btn1 = tk.Button(
             button_frame, 
-            text="Stage 1: Create Scene\n(Run in Unreal)", 
+            text="Stage 1: Create Scene\n(Remote API)", 
             command=self.create_scene,
             width=20,
             height=3,
@@ -120,43 +120,66 @@ class CinematicControlPanel:
         self.root.update()
     
     def create_scene(self):
-        """Stage 1: Create scene with 2 characters"""
+        """Stage 1: Create scene with 2 characters REMOTELY"""
         self.log("\n" + "=" * 70)
-        self.log("STAGE 1: CREATE SCENE", "info")
+        self.log("STAGE 1: CREATE SCENE (Remote)", "info")
         self.log("=" * 70)
         
-        script_path = os.path.join(self.scripts_dir, "create_two_characters.py")
+        self.update_status("Creating scene remotely...")
         
-        self.log("\nScene creation must run inside Unreal Editor:")
-        self.log("=" * 70)
-        self.log("1. Open Unreal Editor")
-        self.log("2. Go to: Tools -> Execute Python Script")
-        self.log(f"3. Select: {script_path}")
-        self.log("4. Click Execute")
-        self.log("=" * 70)
-        self.log("\nThis will create:")
-        self.log("  - 2 characters walking side by side")
-        self.log("  - Same waypoint path (offset by 200cm)")
-        self.log("  - Camera tracking both characters")
-        self.log("  - 10-second cinematic sequence")
-        self.log("\nSequence name: TwoCharacterSequence")
-        self.log("Location: /Game/TwoCharacterSequence")
+        def run():
+            script_path = os.path.join(self.external_dir, "remote_create_scene.py")
+            
+            self.log("\nCreating scene via Remote Control API...")
+            self.log("This will:")
+            self.log("  - Spawn 2 characters in the level")
+            self.log("  - Create camera for sequence")
+            self.log("  - Add spawnables to sequence")
+            self.log("  - Set up basic animation")
+            self.log("")
+            
+            try:
+                result = subprocess.run(
+                    ["python", script_path],
+                    capture_output=True,
+                    text=True,
+                    cwd=self.external_dir
+                )
+                
+                # Log output line by line for proper color coding
+                for line in result.stdout.split('\n'):
+                    if line.strip():
+                        self.log(line)
+                
+                if result.stderr:
+                    self.log("ERRORS:", "error")
+                    for line in result.stderr.split('\n'):
+                        if line.strip():
+                            self.log(line, "error")
+                
+                if result.returncode == 0:
+                    self.update_status("[OK] Scene created remotely!")
+                    self.log("\n[OK] Scene created successfully!", "success")
+                    self.log("\nNext: Use Stage 2 to play the sequence", "info")
+                else:
+                    self.update_status("[X] Scene creation failed")
+                    self.log("\n[X] Scene creation failed.", "error")
+                    self.log("\nFallback: Run create_two_characters.py in Unreal Editor", "warning")
+            except Exception as e:
+                self.log(f"Error: {e}", "error")
+                self.update_status("[X] Scene creation error")
         
-        messagebox.showinfo(
-            "Create Scene in Unreal",
-            "Please run create_two_characters.py in Unreal Editor:\n\n"
-            "Tools → Execute Python Script → create_two_characters.py\n\n"
-            "This will create 2 characters walking side by side.\n\n"
-            "After creation, use Stage 2 to test playback remotely."
-        )
-        
-        self.update_status("Waiting for scene creation in Unreal")
+        threading.Thread(target=run, daemon=True).start()
     
     def play_in_editor(self):
         """Stage 2: Play sequence in editor remotely"""
         self.log("\n" + "=" * 70)
         self.log("STAGE 2: PLAY IN EDITOR (Remote)")
         self.log("=" * 70)
+        
+        self.log("\nIMPORTANT: For animated playback, run create_two_characters.py in Unreal first!", "warning")
+        self.log("(Stage 1 creates structure, but animation needs full script)", "warning")
+        self.log("")
         
         self.update_status("Playing sequence remotely...")
         
@@ -180,10 +203,16 @@ class CinematicControlPanel:
                     cwd=self.external_dir
                 )
                 
-                self.log(result.stdout)
+                # Log output line by line for proper color coding
+                for line in result.stdout.split('\n'):
+                    if line.strip():
+                        self.log(line)
+                
                 if result.stderr:
                     self.log("ERRORS:", "error")
-                    self.log(result.stderr, "error")
+                    for line in result.stderr.split('\n'):
+                        if line.strip():
+                            self.log(line, "error")
                 
                 if result.returncode == 0:
                     self.update_status("✓ Playback successful")

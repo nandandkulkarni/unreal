@@ -1,32 +1,54 @@
 # Unreal Cinematic Pipeline - Project Status
 
-**Last Updated:** 2025-12-16 (Evening - Remote Spawning Discovery)  
-**Commit:** e7136c3  
+**Last Updated:** 2025-12-17 (Deep Dive - Remote Animation Research)  
+**Commit:** [pending]  
 **Goal:** Create automated YouTube-ready cinematic videos using Unreal Engine 5.7
 
-## 🎉 MAJOR BREAKTHROUGH: Remote Scene Creation Now Possible!
+## 🔍 DEEP RESEARCH FINDINGS: Remote Animation Capabilities
 
-**Discovery Date:** 2025-12-16 Evening  
-**Status:** ✅ **Fully validated and working**
+**Research Date:** 2025-12-17  
+**Status:** ⚠️ **CRITICAL LIMITATIONS DISCOVERED**
 
-We can now create actors and sequences **entirely remotely** via the Remote Control API!
+### What We Tested:
+After discovering remote actor spawning works, we investigated if **animation keyframes** can be added remotely via MovieSceneExtensions API.
 
-**What works remotely:**
-- ✅ **SpawnActorFromClass** - Create actors in level
-- ✅ **CreateCamera** - Add camera to sequences
-- ✅ **AddSpawnableFromClass** - Add spawnables to sequences
-- ✅ **Full scene creation** - No need to run scripts inside Unreal!
+### Key Findings:
 
-**Test file:** `external_control/quick_spawn_test.py`  
-**Documentation:** `external_control/remote_api_complete_list.md` (317 lines, 7 accessible subsystems)
+**✅ What WORKS remotely:**
+- `SpawnActorFromClass` - Create actors in level
+- `DestroyActor` - Delete actors
+- `OpenLevelSequence` - Open sequences (NOTE: requires correct path format `/Game/Path/Asset.Asset`)
+- `GetCurrentLevelSequence` - Query open sequence
+- `Play/Pause/Stop` - Playback control
+- `SetLockCameraCutToViewport` - Camera viewport locking
 
-**Key accessible subsystems:**
-- `EditorActorSubsystem` - 23 functions (spawn, destroy, transform actors)
-- `LevelSequenceEditorSubsystem` - 33 functions (add spawnables, create cameras)
-- `LevelSequenceEditorBlueprintLibrary` - 63 functions (playback control)
-- `MovieSceneSequenceExtensions` - 71 functions (sequence manipulation)
+**❌ What DOES NOT work remotely:**
+- `AddPossessable` - Returns all-zero binding ID (invalid)
+- `AddTrack` - Returns empty track object
+- `AddSection` - Returns empty section
+- `GetChannels` - Returns 0 channels
+- `AddKey` - Cannot add keyframes (no valid channels)
 
-This changes everything - we can now automate the entire workflow remotely!
+### Root Cause Analysis:
+**Files:** `deep_research_possessable.py`, `remote_add_animation_full.py`
+
+The MovieSceneExtensions API functions are **exposed** via Remote Control but return **null/empty objects**:
+- API calls succeed (200 status)
+- Functions return "success" but objects are invalid
+- Binding IDs are all zeros: `{'A': 0, 'B': 0, 'C': 0, 'D': 0}`
+- Query functions return 0 counts after "successful" additions
+
+**Why:** Remote Control API can call subsystem functions but cannot manipulate sequence **object instances**. These require direct Python API access inside Unreal.
+
+### Conclusion:
+**Animation keyframes CANNOT be added remotely.** Must use in-Unreal Python scripts for:
+- Adding possessables/spawnables to sequences
+- Creating animation tracks
+- Adding keyframe data
+
+**Control Panel v2 Implementation:**
+- GREEN buttons: Remote execution (spawn/delete actors, playback)
+- BLUE buttons: Clipboard copy for in-Unreal execution (animation, sequence creation)
 
 ---
 
