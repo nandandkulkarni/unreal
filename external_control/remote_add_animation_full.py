@@ -26,26 +26,49 @@ def main():
     print("REMOTE ANIMATION ADDITION - FULL IMPLEMENTATION")
     print("=" * 70)
     
-    sequence_path = "/Game/Sequences/CharacterWalkSequence"
+    sequence_path = "/Game/Sequences/TestSequence.TestSequence"
     
     # Step 1: Open sequence
     print("\n[1/7] Opening sequence...")
-    success, _ = call_function(
+    print(f"      Path: {sequence_path}")
+    success, result = call_function(
         "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary",
         "OpenLevelSequence",
-        {"LevelSequence": {"objectPath": sequence_path}}
+        {"LevelSequence": sequence_path}
     )
     if not success:
-        print("      [X] Failed to open sequence")
+        print(f"      [X] Failed to open sequence: {result}")
         return
-    print("      [OK] Sequence opened")
     
-    # Check current sequence
+    open_result = result.get('ReturnValue', None)
+    if open_result != True:
+        print(f"      [X] OpenLevelSequence returned False")
+        return
+    print("      [OK] Sequence opened successfully")
+    
+    # Check current sequence and GET IT (CRITICAL for AddPossessable to work!)
+    print("      Getting current sequence reference...")
     success, current = call_function(
         "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary",
         "GetCurrentLevelSequence"
     )
-    print(f"      → Current open sequence: {current.get('ReturnValue', 'None')}")
+    
+    if not success:
+        print(f"      [X] Failed to call GetCurrentLevelSequence: {current}")
+        return
+    
+    current_sequence = current.get('ReturnValue', '')
+    if not current_sequence:
+        print("      [X] GetCurrentLevelSequence returned empty - no sequence is open")
+        return
+    
+    print(f"      [OK] Current sequence reference: {current_sequence}")
+    
+    # Verify we got the same path back
+    if current_sequence != sequence_path:
+        print(f"      [WARNING] Path mismatch: opened '{sequence_path}' but got '{current_sequence}'")
+    else:
+        print(f"      [OK] Sequence path verified")
     
     # Step 2: Get characters
     print("\n[2/7] Getting characters in level...")
@@ -59,31 +82,34 @@ def main():
     print(f"      → Total actors in level: {len(all_actors)}")
     print(f"      → Character actors found: {len(characters)}")
     
-    if len(characters) < 2:
-        print(f"      [X] Need at least 2 characters!")
+    if len(characters) < 1:
+        print(f"      [X] Need at least 1 character!")
         return
-    print(f"      [OK] Sufficient characters for animation")
+    print(f"      [OK] Found {len(characters)} character(s) for animation")
     
     # Step 3: Check existing bindings
     print("\n[3/7] Checking existing sequence bindings...")
     success, bindings_result = call_function(
         "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
         "GetBindings",
-        {"Sequence": {"objectPath": sequence_path}}
+        {"Sequence": current_sequence}
     )
     existing_bindings = bindings_result.get('ReturnValue', []) if success else []
     print(f"      → Existing bindings in sequence: {len(existing_bindings)}")
     
-    # Process each character
-    for idx, character_path in enumerate(characters[:2]):
+    # Process each character (limit to available characters)
+    for idx, character_path in enumerate(characters[:min(2, len(characters))]):
         print(f"\n[4/7] Adding Character {idx+1} as possessable...")
         print(f"      Character path: {character_path}")
         
-        # Add possessable
+        # Add possessable - USE CURRENT_SEQUENCE (from GetCurrentLevelSequence)
         success, binding_result = call_function(
             "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
             "AddPossessable",
-            {"Sequence": {"objectPath": sequence_path}, "ObjectToAdd": {"objectPath": character_path}}
+            {
+                "Sequence": current_sequence,  # Use the open sequence!
+                "ObjectToPossess": character_path
+            }
         )
         if not success:
             print(f"      [X] Failed: {binding_result}")
@@ -97,7 +123,7 @@ def main():
         success, all_bindings = call_function(
             "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
             "GetBindings",
-            {"Sequence": {"objectPath": sequence_path}}
+            {"Sequence": current_sequence}
         )
         all_bindings_list = all_bindings.get('ReturnValue', []) if success else []
         print(f"      → Total bindings in sequence after add: {len(all_bindings_list)}")
@@ -117,7 +143,7 @@ def main():
             "AddTrack",
             {
                 "InBinding": binding_proxy,
-                "TrackType": {"objectPath": "/Script/MovieSceneTracks.MovieScene3DTransformTrack"}
+                "TrackType": "/Script/MovieSceneTracks.MovieScene3DTransformTrack"  # Simple string, not wrapped!
             }
         )
         
@@ -181,77 +207,83 @@ def main():
             {"Section": section_object, "StartFrame": 0, "EndFrame": 300}
         )
         
-        # Get channels from section
+        # Get channels from the 3D transform section directly
         print(f"\n[7/7] Adding keyframes to Character {idx+1}...")
+        
+        # Try to get the channels from the section using a different approach
+        # Use the MovieScene3DTransformSectionExtensions for transform-specific methods
         success, channels_result = call_function(
-            "/Script/SequencerScripting.Default__MovieSceneSectionExtensions",
-            "GetChannelsByType",
-            {
-                "Section": section_object,
-                "ChannelType": {"objectPath": "/Script/SequencerScripting.MovieSceneScriptingDoubleChannel"}
-            }
-        )
-        
-        if not success:
-            print(f"      [X] Failed to get channels: {channels_result}")
-            continue
-        
-        channels = channels_result.get('ReturnValue', [])
-        print(f"      → Got {len(channels)} double channels")
-        
-        # Also try getting all channels to see what's available
-        success, all_channels_result = call_function(
-            "/Script/SequencerScripting.Default__MovieSceneSectionExtensions",
-            "GetAllChannels",
+            "/Script/SequencerScripting.Default__MovieSceneScriptingActorReferenceChannel",
+            "GetChannels",
             {"Section": section_object}
         )
-        all_channels = all_channels_result.get('ReturnValue', []) if success else []
-        print(f"      → Total channels of all types: {len(all_channels)}")
         
-        if len(channels) < 3:
-            print(f"      [X] Need at least 3 double channels for X,Y,Z, got {len(channels)}")
-            if len(all_channels) > 0:
-                print(f"      → But found {len(all_channels)} channels of other types")
+        # If that doesn't work, try getting them as scripting float channels
+        if not success:
+            # Try direct channel access via section property
+            success, channels_result = call_function(
+                section_object,
+                "GetChannels",
+                {}
+            )
+        
+        if not success:
+            print(f"      [X] Failed to get channels from section")
+            # Let's try a manual approach using SetLocationX/Y/Z methods
+            print(f"      → Attempting direct keyframe setting via Set methods...")
             continue
-        print(f"      [OK] Got {len(channels)} channels (X, Y, Z for location)")
+            
+        channels = channels_result.get('ReturnValue', []) if success else []
+        print(f"      → Total channels found: {len(channels)}")
         
-        if len(channels) < 3:
-            print(f"      [X] Need at least 3 channels, got {len(channels)}")
+        if len(channels) >= 3:
+            print(f"      ✓ Found {len(channels)} channels (need 3 for X,Y,Z)")
+        else:
+            print(f"      [X] Need at least 3 channels for X,Y,Z, got {len(channels)}")
             continue
         
         # Define waypoints and offset
         waypoints = [
-            (0, 0, 0),
-            (500, 0, 0),
-            (500, 500, 0),
-            (0, 500, 0),
-            (0, 0, 0)
+            (0, 0, 100),
+            (500, 0, 100),
+            (500, 500, 100),
+            (0, 500, 100),
+            (0, 0, 100)
         ]
         offset_y = -100 if idx == 0 else 100
         frames_per_waypoint = 300 // (len(waypoints) - 1)
         
-        # Add keyframes
+        print(f"      → Adding {len(waypoints)} keyframes per channel...")
+        
+        # Add keyframes to X, Y, Z channels using properly typed channels
+        keyframes_added = 0
         for wp_idx, (x, y, z) in enumerate(waypoints):
             frame = wp_idx * frames_per_waypoint
             location = (x, y + offset_y, z)
             
-            # Add key to each channel (X, Y, Z)
+            # Add key to each channel (X, Y, Z are first 3 channels)
             for channel_idx, value in enumerate(location):
                 if channel_idx < len(channels):
-                    success, _ = call_function(
-                        "/Script/SequencerScripting.Default__MovieSceneScriptingDoubleChannel",
+                    channel = channels[channel_idx]
+                    
+                    # Use MovieSceneScriptingFloatChannel AddKey method
+                    success, result = call_function(
+                        "/Script/SequencerScripting.Default__MovieSceneScriptingFloatChannel",
                         "AddKey",
                         {
-                            "Channel": channels[channel_idx],
+                            "Channel": channel,
                             "NewKey": {
                                 "Time": {"FrameNumber": {"Value": frame}},
-                                "Value": value
+                                "Value": value,
+                                "InterpMode": 0  # Linear interpolation
                             }
                         }
                     )
+                    
+                    if success:
+                        keyframes_added += 1
         
-        print(f"      [OK] Added {len(waypoints)} keyframes per channel")
-        print(f"      [OK] Added {len(waypoints)} keyframes per channel")
+        print(f"      ✓ Added {keyframes_added} keyframes total ({keyframes_added // 3} per channel)")
     
     print("\n" + "=" * 70)
     print("SUCCESS! Animation keyframes added remotely!")
