@@ -14,24 +14,58 @@ import json
 UNREAL_URL = "http://localhost:30010/remote/object/call"
 
 def execute_python_in_unreal(script_path):
-    """Execute Python script in Unreal Engine via console command"""
+    """Execute Python script in Unreal Engine via PythonScriptLibrary"""
     
-    # Use console command to run the Python script
-    console_command = f'py "{script_path}"'
+    # Read the script file
+    with open(script_path, 'r', encoding='utf-8') as f:
+        python_code = f.read()
     
-    payload = {
-        "objectPath": "/Script/Engine.Default__Engine",
-        "functionName": "Exec",
-        "parameters": {
-            "Command": console_command
-        },
-        "generateTransaction": False
-    }
+    print(f"Attempting multiple object paths and methods...\n")
     
-    print(f"Executing Python script via console command...")
-    print(f"URL: {UNREAL_URL}")
-    print(f"Command: {console_command}")
-    print("-" * 60)
+    # Try different object paths
+    object_paths = [
+        "/Script/PythonScriptPlugin.Default__PythonScriptLibrary",
+        "/Engine/PythonTypes.Default__PythonScriptLibrary",
+        "/Script/PythonScriptPlugin.PythonScriptLibrary",
+        "/Engine/Transient.PythonScriptPlugin:Default__PythonScriptLibrary"
+    ]
+    
+    for i, obj_path in enumerate(object_paths, 1):
+        print("=" * 60)
+        print(f"ATTEMPT {i}: {obj_path}")
+        print("=" * 60)
+        
+        payload = {
+            "objectPath": obj_path,
+            "functionName": "ExecutePythonCommand",
+            "parameters": {
+                "PythonCommand": python_code
+            },
+            "generateTransaction": False
+        }
+        
+        try:
+            response = requests.put(UNREAL_URL, json=payload, timeout=60)
+            
+            if response.status_code == 200:
+                print(f"✓ SUCCESS with path: {obj_path}")
+                result = response.json()
+                print(f"Response: {json.dumps(result, indent=2)}")
+                
+                print("\n" + "=" * 60)
+                print("Check logs: C:\\U\\CinematicPipeline_Scripts\\logs\\")
+                print("=" * 60)
+                return True
+            else:
+                print(f"✗ Failed: HTTP {response.status_code}")
+                print(f"Response: {response.text}\n")
+        except Exception as e:
+            print(f"✗ Error: {e}\n")
+    
+    print("=" * 60)
+    print("✗ ALL ATTEMPTS FAILED")
+    print("=" * 60)
+    return False
     
     try:
         response = requests.put(UNREAL_URL, json=payload, timeout=60)

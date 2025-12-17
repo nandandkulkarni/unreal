@@ -50,7 +50,7 @@ WebControl.EnableServerOnStartup=1
         content += new_config
     else:
         # Add after WebControl section
-        replacement = r'\1\n\n; Remote Control API Configuration\n[RemoteControl]\n+RemoteControlWebInterfaceAllowedObjects=/Script/PythonScriptPlugin.PythonScriptLibrary'
+        replacement = r'\1\n\n; Remote Control API Configuration\n[RemoteControl]\nbDeveloperMode=True\nbRemoteExecution=True\nbEnableRemotePythonExecution=True\n+RemoteControlWebInterfaceAllowedObjects=/Script/PythonScriptPlugin.PythonScriptLibrary'
         content = re.sub(pattern, replacement, content)
     
     # Backup original file

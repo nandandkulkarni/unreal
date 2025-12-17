@@ -35,29 +35,15 @@ CinematicPipeline_Scripts/
 ### 1. Prerequisites
 
 - Unreal Engine 5.7
-- Python 3.11+ (for external scripts)
-- `requests` library: `pip install requests`
+- Python 3.11+ (embedded in Unreal)
 
-### 2. Remote Control API Setup
+### 2. Project Setup
 
-To execute scripts remotely (optional):
-
-```bash
-python setup_remote_control.py
-```
-
-This configures `DefaultEngine.ini` to allow Python script execution via Remote Control API by adding:
-
-```ini
-[RemoteControl]
-+RemoteControlWebInterfaceAllowedObjects=/Script/PythonScriptPlugin.PythonScriptLibrary
-```
-
-**After running setup, restart Unreal Engine.**
+No additional setup required. Scripts run directly inside Unreal Engine.
 
 ## Usage
 
-### Method 1: Run Inside Unreal Editor (Recommended)
+### Running Scripts Inside Unreal Editor
 
 1. Open Unreal Engine project
 2. Go to **Tools → Execute Python Script**
@@ -71,20 +57,12 @@ The script will:
 - Add cinematic camera with orbital movement
 - Save and open in Sequencer
 
-### Method 2: Remote Execution via API
+### Quick Access to Scripts
 
-1. **Start Unreal Engine** with your project
-2. **Start the web server** in Unreal console (press `` ` `` or `~`):
-   ```
-   WebControl.StartServer
-   ```
-3. **Run the external script**:
-   ```bash
-   cd external_control
-   python run_cinematic_script.py
-   ```
-
-Check logs in `logs/` folder for execution details.
+Scripts are located at:
+- Main: `C:\U\CinematicPipeline_Scripts\unreal_scripts\create_complete_cinematic.py`
+- Character only: `create_walk_sequence.py`  
+- Camera only: `add_camera_to_sequence.py`
 
 ## Scripts
 
@@ -118,16 +96,15 @@ Adds camera to existing sequence:
 ### Utility Scripts
 
 #### `setup_remote_control.py`
-Configures project for Remote Control API:
-- Adds PythonScriptLibrary to allowed objects
-- Creates backup of DefaultEngine.ini
-- Idempotent (safe to run multiple times)
+Configures project for Remote Control API (experimental - not fully functional in UE 5.7):
+- Adds Python execution settings to DefaultEngine.ini
+- Creates backup of configuration
+- Note: Remote Control API blocks PythonScriptLibrary in UE 5.7 for security
 
 #### `run_cinematic_script.py`
-Executes Unreal Python scripts via HTTP API:
-- Connects to Remote Control Web Server (port 30010)
-- Sends Python code for execution
-- Displays results and log locations
+Attempts to execute scripts via Remote Control API:
+- Not currently functional due to UE 5.7 security restrictions
+- Kept for reference and future versions
 
 ## Configuration
 
@@ -177,18 +154,6 @@ camera_component.focus_settings.manual_focus_distance = 400.0  # cm
 
 ## Troubleshooting
 
-### Remote Control API Issues
-
-**Error: "Could not connect to Unreal Engine"**
-- Make sure Unreal Engine is running
-- Run in console: `WebControl.StartServer`
-- Check if port 30010 is accessible
-
-**Error: "Object Default__PythonScriptLibrary cannot be accessed remotely"**
-- Run `python setup_remote_control.py`
-- Restart Unreal Engine
-- Verify `DefaultEngine.ini` has the Remote Control configuration
-
 ### Script Execution Issues
 
 **Error: "Character not found"**
@@ -203,6 +168,10 @@ camera_component.focus_settings.manual_focus_distance = 400.0  # cm
 - Known issue with UE 5.7 Python API
 - Camera still animates correctly
 - Workaround: Fix applied in script, may need Unreal restart
+
+### Remote Control API Note
+
+Remote execution via Remote Control API is not currently functional in UE 5.7 due to security restrictions on PythonScriptLibrary access. Use the in-editor execution method (Tools → Execute Python Script) instead.
 
 ## Logs
 
