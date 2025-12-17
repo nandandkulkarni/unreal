@@ -1,6 +1,6 @@
 """
 Deep Research: AddPossessable via Remote Control API
-Investigating why binding is added but count stays 0
+Testing with CORRECT sequence path format
 """
 import requests
 import json
@@ -17,57 +17,58 @@ def call_function(object_path, function_name, parameters=None):
     
     response = requests.put(f"{BASE_URL}/object/call", json=payload)
     
-    print(f"\n>>> CALL: {function_name}")
-    print(f"    Payload: {json.dumps(parameters, indent=8)}")
-    print(f"    Status: {response.status_code}")
-    
     if response.status_code == 200:
         result = response.json()
-        print(f"    Result: {json.dumps(result, indent=8)}")
         return True, result
     else:
-        print(f"    Error: {response.text}")
         return False, response.text
 
-def deep_research_add_possessable():
-    """Deep dive into AddPossessable behavior"""
+def test_add_possessable():
+    """Test AddPossessable with correct sequence path"""
     
     print("=" * 80)
-    print("DEEP RESEARCH: AddPossessable")
+    print("DEEP RESEARCH: AddPossessable with CORRECT path format")
     print("=" * 80)
     
-    sequence_path = "/Game/Sequences/CharacterWalkSequence"
+    # Use CORRECT format with .AssetName
+    sequence_path = "/Game/Sequences/TestSequence.TestSequence"
     
-    # Step 1: Open sequence and verify
-    print("\n[STEP 1] Open sequence")
+    # Step 1: Open sequence
+    print("\n[1] Opening sequence with correct path...")
+    print(f"    Path: {sequence_path}")
     success, result = call_function(
         "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary",
         "OpenLevelSequence",
-        {"LevelSequence": {"objectPath": sequence_path}}
+        {"LevelSequence": sequence_path}
     )
     
-    # Step 2: Get current sequence (should return the sequence object)
-    print("\n[STEP 2] Get current sequence object")
-    success, result = call_function(
+    open_result = result.get('ReturnValue', None)
+    print(f"    OpenLevelSequence returned: {open_result}")
+    
+    # Verify it's open
+    success, current = call_function(
         "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary",
         "GetCurrentLevelSequence"
     )
-    current_sequence = result.get('ReturnValue', '')
-    print(f"\n>>> Current sequence path: '{current_sequence}'")
+    current_seq = current.get('ReturnValue', '')
+    print(f"    Current sequence: '{current_seq}'")
     
-    # Step 3: Get bindings BEFORE adding (using sequence object path)
-    print("\n[STEP 3] Get bindings BEFORE adding (using objectPath)")
+    if not current_seq:
+        print("\n[ERROR] Sequence not open! Cannot proceed.")
+        return
+    
+    # Step 2: Get bindings BEFORE adding
+    print("\n[2] Get bindings BEFORE adding...")
     success, result = call_function(
         "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
         "GetBindings",
-        {"Sequence": {"objectPath": sequence_path}}
+        {"Sequence": sequence_path}
     )
     bindings_before = result.get('ReturnValue', []) if success else []
-    print(f"\n>>> Bindings count BEFORE: {len(bindings_before)}")
-    print(f">>> Bindings data: {bindings_before}")
+    print(f"    Bindings count BEFORE: {len(bindings_before)}")
     
-    # Step 4: Get a character actor
-    print("\n[STEP 4] Get character actor")
+    # Step 3: Get a character actor
+    print("\n[3] Getting character actor...")
     success, result = call_function(
         "/Script/UnrealEd.Default__EditorActorSubsystem",
         "GetAllLevelActors"
@@ -79,27 +80,14 @@ def deep_research_add_possessable():
             character = actor
             break
     
-    print(f"\n>>> Character found: {character}")
-    
     if not character:
-        print("\n[ERROR] No character found!")
+        print("    [ERROR] No character found!")
         return
     
-    # Step 5: Try AddPossessable with different parameter formats
-    print("\n[STEP 5a] AddPossessable - Format 1: objectPath in nested dict")
-    success, result = call_function(
-        "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
-        "AddPossessable",
-        {
-            "Sequence": {"objectPath": sequence_path},
-            "ObjectToAdd": {"objectPath": character}
-        }
-    )
-    binding1 = result.get('ReturnValue', {}) if success else {}
-    print(f"\n>>> Binding returned: {binding1}")
+    print(f"    Character: {character}")
     
-    # Step 5b: Try different parameter format
-    print("\n[STEP 5b] AddPossessable - Format 2: direct paths")
+    # Step 4: AddPossessable
+    print("\n[4] Adding possessable...")
     success, result = call_function(
         "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
         "AddPossessable",
@@ -108,61 +96,69 @@ def deep_research_add_possessable():
             "ObjectToAdd": character
         }
     )
-    binding2 = result.get('ReturnValue', {}) if success else {}
-    print(f"\n>>> Binding returned: {binding2}")
     
-    # Step 6: Get bindings AFTER adding
-    print("\n[STEP 6a] Get bindings AFTER (using objectPath)")
-    success, result = call_function(
-        "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
-        "GetBindings",
-        {"Sequence": {"objectPath": sequence_path}}
-    )
-    bindings_after_1 = result.get('ReturnValue', []) if success else []
-    print(f"\n>>> Bindings count AFTER: {len(bindings_after_1)}")
-    print(f">>> Bindings data: {bindings_after_1}")
+    binding = result.get('ReturnValue', {}) if success else {}
+    print(f"    Success: {success}")
+    print(f"    Binding returned: {json.dumps(binding, indent=4)}")
     
-    # Step 6b: Try GetBindings with different format
-    print("\n[STEP 6b] Get bindings AFTER (direct path)")
+    binding_id = binding.get('BindingID', {})
+    print(f"    Binding ID: A={binding_id.get('A')}, B={binding_id.get('B')}, C={binding_id.get('C')}, D={binding_id.get('D')}")
+    
+    # Step 5: Get bindings AFTER adding
+    print("\n[5] Get bindings AFTER adding...")
     success, result = call_function(
         "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
         "GetBindings",
         {"Sequence": sequence_path}
     )
-    bindings_after_2 = result.get('ReturnValue', []) if success else []
-    print(f"\n>>> Bindings count AFTER: {len(bindings_after_2)}")
+    bindings_after = result.get('ReturnValue', []) if success else []
+    print(f"    Bindings count AFTER: {len(bindings_after)}")
     
-    # Step 7: Try to use the returned binding
-    print("\n[STEP 7] Try to use returned binding to get its name")
-    if binding1:
-        success, result = call_function(
-            "/Script/SequencerScripting.Default__MovieSceneBindingExtensions",
-            "GetName",
-            {"InBinding": binding1}
-        )
-        name = result.get('ReturnValue', '') if success else ''
-        print(f"\n>>> Binding name: '{name}'")
+    if len(bindings_after) > len(bindings_before):
+        print(f"    ✓ Binding was added! (+{len(bindings_after) - len(bindings_before)})")
+    else:
+        print(f"    ✗ No change in binding count")
     
-    # Step 8: Try GetPossessables
-    print("\n[STEP 8] Get possessables from sequence")
+    # Step 6: Try GetPossessables
+    print("\n[6] Get possessables...")
     success, result = call_function(
         "/Script/SequencerScripting.Default__MovieSceneSequenceExtensions",
         "GetPossessables",
-        {"Sequence": {"objectPath": sequence_path}}
+        {"Sequence": sequence_path}
     )
     possessables = result.get('ReturnValue', []) if success else []
-    print(f"\n>>> Possessables count: {len(possessables)}")
-    print(f">>> Possessables data: {possessables}")
+    print(f"    Possessables count: {len(possessables)}")
+    
+    if possessables:
+        print(f"    ✓ Found possessables!")
+        for i, poss in enumerate(possessables):
+            print(f"      [{i}] {poss}")
+    
+    # Step 7: Try to use the binding
+    if binding:
+        print("\n[7] Testing if binding is valid...")
+        success, result = call_function(
+            "/Script/SequencerScripting.Default__MovieSceneBindingExtensions",
+            "GetName",
+            {"InBinding": binding}
+        )
+        name = result.get('ReturnValue', '') if success else ''
+        print(f"    Binding name: '{name}'")
+        
+        if name:
+            print(f"    ✓ Binding IS valid! Name: {name}")
+        else:
+            print(f"    ✗ Binding returned empty name (invalid)")
     
     print("\n" + "=" * 80)
-    print("CONCLUSION:")
+    print("SUMMARY:")
     print("=" * 80)
-    print("Check if:")
-    print("1. Binding ID is all zeros = invalid/null binding")
-    print("2. GetBindings needs specific sequence object reference")
-    print("3. AddPossessable works but returns proxy that doesn't persist")
-    print("4. Need to call SaveLoadedAsset after adding")
+    if len(bindings_after) > len(bindings_before) or len(possessables) > 0:
+        print("✓ AddPossessable WORKS! Binding was successfully added.")
+    else:
+        print("✗ AddPossessable returns success but binding not persisted.")
+        print("  Possible cause: Remote Control API limitation")
     print("=" * 80)
 
 if __name__ == "__main__":
-    deep_research_add_possessable()
+    test_add_possessable()
