@@ -12,6 +12,22 @@ import json
 
 BASE_URL = "http://localhost:30010/remote/object/call"
 
+def call_function(object_path, function_name, parameters=None):
+    """Call a function on an Unreal object via Remote Control API"""
+    payload = {
+        "objectPath": object_path,
+        "functionName": function_name
+    }
+    
+    if parameters:
+        payload["parameters"] = parameters
+    
+    response = requests.put(BASE_URL, json=payload)
+    if response.status_code == 200:
+        return True, response.json()
+    else:
+        return False, response.text
+
 def execute_python(python_code):
     """Execute Python code inside Unreal Engine"""
     payload = {
@@ -134,8 +150,51 @@ print("="*60)
 result = "SUCCESS: 2 characters with full animation!"
 """
     
-    print("\n[1/1] Executing complete scene creation inside Unreal...")
-    success, result = execute_python(complete_scene_code)
+    # Step 0: Delete and create fresh sequence
+    print("\n[0/7] Creating fresh sequence...")
+    sequence_setup_code = """
+import unreal
+
+# Close any open sequence
+current_seq = unreal.LevelSequenceEditorBlueprintLibrary.get_current_level_sequence()
+if current_seq:
+    print(f"  Closing: {current_seq.get_name()}")
+    unreal.LevelSequenceEditorBlueprintLibrary.close()
+
+# Delete existing sequence if it exists
+sequence_path = '/Game/Sequences/TwoCharacterSequence'
+if unreal.EditorAssetLibrary.does_asset_exist(sequence_path + '.TwoCharacterSequence'):
+    print(f"  Deleting: {sequence_path}")
+    unreal.EditorAssetLibrary.delete_asset(sequence_path + '.TwoCharacterSequence')
+    if not unreal.EditorAssetLibrary.does_asset_exist(sequence_path + '.TwoCharacterSequence'):
+        print("  ✓ Deleted successfully")
+
+# Create new sequence
+print("  Creating new sequence...")
+asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
+seq = asset_tools.create_asset(
+    "TwoCharacterSequence",
+    "/Game/Sequences",
+    unreal.LevelSequence,
+    unreal.LevelSequenceFactoryNew()
+)
+unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(seq)
+
+# Set sequence properties
+unreal.MovieSceneSequenceExtensions.set_playback_end_seconds(seq, 10.0)
+unreal.MovieSceneSequenceExtensions.set_display_rate(seq, unreal.FrameRate(30, 1))
+
+print(f"  ✓ Created and opened: {seq.get_name()}")
+result = "SUCCESS"
+"""
+    
+    success, result = execute_python(sequence_setup_code)
+    if not success:
+        print(f"      [X] Failed to setup sequence: {result}")
+        return
+    print(f"      [OK] Fresh sequence created")
+    
+    print("\n[1/7] Getting sequence reference...")
     success, current = call_function(
         "/Script/LevelSequenceEditor.Default__LevelSequenceEditorBlueprintLibrary",
         "GetCurrentLevelSequence"
@@ -152,9 +211,12 @@ result = "SUCCESS: 2 characters with full animation!"
     
     print(f"      [OK] Current sequence reference: {current_sequence}")
     
+    # Expected sequence path
+    sequence_path = '/Game/Sequences/TwoCharacterSequence.TwoCharacterSequence'
+    
     # Verify we got the same path back
-    if current_sequence != sequence_path:
-        print(f"      [WARNING] Path mismatch: opened '{sequence_path}' but got '{current_sequence}'")
+    if sequence_path not in current_sequence:
+        print(f"      [WARNING] Path mismatch: expected '{sequence_path}' but got '{current_sequence}'")
     else:
         print(f"      [OK] Sequence path verified")
     
