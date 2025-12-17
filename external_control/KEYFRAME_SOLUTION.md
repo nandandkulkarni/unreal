@@ -1,39 +1,77 @@
 # Solution: Adding Keyframes to Sequencer
 
+## ✅ SOLVED: ExecutePythonCommand Works!
+
 ## Problem
-MovieSceneScriptingFloatChannel objects returned by `GetAllChannels()` are Python wrapper objects that cannot be serialized through the Remote Control API. When we try to call `AddKey` on these channels, we get "Invalid ChannelHandle" errors.
+MovieSceneScriptingFloatChannel objects returned by `GetAllChannels()` are **transient Python wrapper objects** that cannot be serialized through the Remote Control API's HTTP/JSON interface. When we try to call `AddKey` on these channels remotely, we get "Invalid ChannelHandle" errors.
 
 ## Root Cause
-The Unreal Remote Control API can only pass simple data types (strings, numbers, structs) - it cannot pass Python object references. Channel objects must exist in the same Python interpreter session where they're used.
+- Remote Control API can only pass **primitive types** (strings, ints, floats, structs of primitives)
+- Channels are `/Engine/Transient` Python objects that only exist in the current interpreter session
+- When passed through HTTP, the transient path cannot be deserialized back into a valid channel object
+- Result: HTTP 200 response but "Invalid ChannelHandle" logged in Unreal
 
-## Solution Options
+## ✅ THE SOLUTION: ExecutePythonCommand
 
-### Option 1: Run Python Script Inside Unreal (RECOMMENDED)
-Execute the Python script directly in Unreal's Python console or via a startup script.
+Run Python code **inside Unreal** where channel objects exist natively:
 
-**Script location:** `CinematicPipeline_Scripts/unreal_scripts/add_keyframes_to_sequence.py`
+```python
+import requests
 
-**How to run:**
-1. Open Unreal Engine
-2. Open Output Log (Window > Developer Tools > Output Log)
-3. Switch to "Python" tab or Cmd prompt
-4. Run:
-   ```python
-   exec(open(r'C:/U/CinematicPipeline_Scripts/unreal_scripts/add_keyframes_to_sequence.py').read())
-   ```
+python_code = '''
+import unreal
 
-### Option 2: Enable PythonScriptLibrary in Remote Control
-1. Edit > Project Settings
-2. Plugins > Remote Control API
-3. Add `/Script/PythonScriptPlugin.Default__PythonScriptLibrary` to allowed objects
-4. Restart Unreal
-5. Run: `python CinematicPipeline_Scripts/external_control/execute_python_file.py`
+# Get sequence and channels
+seq = unreal.LevelSequenceEditorBlueprintLibrary.get_current_level_sequence()
+bindings = unreal.MovieSceneSequenceExtensions.get_bindings(seq)
+binding = bindings[0]
+tracks = unreal.MovieSceneBindingExtensions.get_tracks(binding)
+transform_track = next(t for t in tracks if isinstance(t, unreal.MovieScene3DTransformTrack))
+sections = unreal.MovieSceneTrackExtensions.get_sections(transform_track)
+section = sections[0]
+channels = unreal.MovieSceneSectionExtensions.get_all_channels(section)
 
-### Option 3: Use Recording/Baking Instead
-Instead of manually adding keyframes, record actor movement:
-- Use "Record" feature in Sequencer
-- Move actors in viewport while recording
-- Sequencer automatically creates keyframes
+# Add keyframes - channels are REAL objects here!
+frame = unreal.FrameNumber(100)
+channels[0].add_key(frame, 500.0)  # Location.X
+channels[1].add_key(frame, 300.0)  # Location.Y
+channels[2].add_key(frame, 150.0)  # Location.Z
+
+print("Keyframes added successfully!")
+'''
+
+response = requests.put(
+    "http://localhost:30010/remote/object/call",
+    json={
+        "objectPath": "/Script/PythonScriptPlugin.Default__PythonScriptLibrary",
+        "functionName": "ExecutePythonCommand",
+        "parameters": {"PythonCommand": python_code}
+    }
+)
+```
+
+## Configuration Required
+
+In `CinematicPipeline/Config/DefaultEngine.ini`:
+
+```ini
+[RemoteControl]
+bRestrictServerAccess=true
+bRemoteExecution=true
+bEnableRemotePythonExecution=true
++RemoteControlWebInterfaceAllowedObjects=/Script/PythonScriptPlugin.PythonScriptLibrary
+```
+
+**Important:** Restart Unreal Editor after config changes!
+
+## Why This Works
+
+| Approach | Why It Fails/Works |
+|----------|-------------------|
+| HTTP AddKey with channel path | ❌ Channel is transient `/Engine/Transient.Location.X_7` |
+| GetChannel + ChannelIndex | ❌ Returns empty string, silently fails |
+| Section + ChannelName params | ❌ No such API method exists |
+| **ExecutePythonCommand** | ✅ **Code runs inside Unreal's Python interpreter where channels are real objects** |
 
 ## Technical Details
 

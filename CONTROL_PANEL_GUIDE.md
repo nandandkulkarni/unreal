@@ -26,7 +26,7 @@ The **Cinematic Pipeline Control Panel** is a 3-button UI that automates the com
 - Camera created as spawnable in sequence
 
 **Limitations:**
-- Animation keyframes still need manual setup in Sequencer
+- Animation keyframes can now be added via ExecutePythonCommand
 - Camera positioning needs adjustment in Unreal
 - Basic scene structure only - full animation via create_two_characters.py
 
