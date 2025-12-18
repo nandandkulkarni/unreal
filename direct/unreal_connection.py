@@ -118,9 +118,29 @@ print(f"Found {len(actors)} actors")
             Tuple of (success: bool, result: dict or str)
         """
         import os
+        import py_compile
+        import tempfile
         
         if not os.path.exists(file_path):
             return False, f"File not found: {file_path}"
+        
+        # Syntax check with py_compile
+        print(f"Checking syntax of {file_path}...")
+        try:
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.pyc', delete=False) as tmp:
+                tmp_path = tmp.name
+            
+            py_compile.compile(file_path, cfile=tmp_path, doraise=True)
+            print("✓ Syntax check passed")
+            
+            # Clean up temp file
+            try:
+                os.remove(tmp_path)
+            except:
+                pass
+                
+        except py_compile.PyCompileError as e:
+            return False, f"Syntax error in {file_path}:\n{str(e)}"
         
         # Read the file
         try:

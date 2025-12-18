@@ -34,13 +34,37 @@ try:
     log("Complete Cinematic Scene Setup")
     log("=" * 60)
     
-    # Get timestamp for unique naming
+    # Get timestamp and find next sequence number
     timestamp = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
-    sequence_name = f"TestSequence_{timestamp}"
-    camera_name = f"TestCamera_{timestamp}"
-    mannequin_name = f"TestMannequin_{timestamp}"
     
-    log(f"\nCreating scene with timestamp: {timestamp}")
+    # Find existing Test* sequences to determine next number
+    sequences_path = "/Game/Sequences"
+    next_num = 1
+    
+    if unreal.EditorAssetLibrary.does_directory_exist(sequences_path):
+        assets = unreal.EditorAssetLibrary.list_assets(sequences_path, recursive=False)
+        existing_nums = []
+        for asset_path in assets:
+            asset_name = asset_path.split('/')[-1].split('.')[0]
+            if asset_name.startswith("TestSequence_"):
+                # Extract number from name like TestSequence_25_12_18_02_20_42_001
+                parts = asset_name.split('_')
+                if len(parts) >= 8:  # Has timestamp and number
+                    try:
+                        num = int(parts[-1])
+                        existing_nums.append(num)
+                    except:
+                        pass
+        
+        if existing_nums:
+            next_num = max(existing_nums) + 1
+    
+    # Format number with leading zeros
+    sequence_name = f"TestSequence_{timestamp}_{next_num:03d}"
+    camera_name = f"TestCamera_{timestamp}_{next_num:03d}"
+    mannequin_name = f"TestMannequin_{timestamp}_{next_num:03d}"
+    
+    log(f"\nCreating scene #{next_num}")
     log(f"  Sequence: {sequence_name}")
     log(f"  Camera: {camera_name}")
     log(f"  Mannequin: {mannequin_name}")
@@ -49,6 +73,19 @@ try:
     log("\n" + "=" * 60)
     log("STEP 1: Cleaning up old Test* assets")
     log("=" * 60)
+    
+    # Close any currently open sequences first
+    log("\nClosing any open sequences...")
+    try:
+        current_seq = unreal.LevelSequenceEditorBlueprintLibrary.get_current_level_sequence()
+        if current_seq:
+            log(f"  Closing: {current_seq.get_name()}")
+            unreal.LevelSequenceEditorBlueprintLibrary.close_level_sequence()
+            log("✓ Closed open sequence")
+        else:
+            log("  No sequence currently open")
+    except Exception as e:
+        log(f"  Could not close sequence: {e}")
     
     # Delete old sequences
     log("\nDeleting old Test* sequences...")
@@ -60,9 +97,12 @@ try:
         for asset_path in assets:
             asset_name = asset_path.split('/')[-1].split('.')[0]
             if asset_name.startswith("Test"):
-                unreal.EditorAssetLibrary.delete_asset(asset_path)
-                log(f"  Deleted sequence: {asset_name}")
-                deleted_sequences += 1
+                try:
+                    unreal.EditorAssetLibrary.delete_asset(asset_path)
+                    log(f"  Deleted sequence: {asset_name}")
+                    deleted_sequences += 1
+                except Exception as e:
+                    log(f"  Failed to delete {asset_name}: {e}")
     
     if deleted_sequences > 0:
         log(f"✓ Deleted {deleted_sequences} old sequence(s)")
@@ -126,7 +166,8 @@ try:
     log("=" * 60)
     
     camera_location = unreal.Vector(0, -500, 200)
-    camera_rotation = unreal.Rotator(0, 0, 0)
+    # Rotate camera to face origin: Pitch=-22 (look down), Yaw=90 (face +Y direction)
+    camera_rotation = unreal.Rotator(pitch=-22.0, yaw=90.0, roll=0.0)
     
     camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
         unreal.CineCameraActor,
@@ -144,6 +185,7 @@ try:
         
         log(f"✓ Camera created: {camera_name}")
         log(f"  Location: {camera_location}")
+        log(f"  Rotation: {camera_rotation}")
         log(f"  Focal Length: 50mm")
         log(f"  Aperture: f/2.8")
     else:
@@ -155,7 +197,7 @@ try:
     log("STEP 4: Creating mannequin")
     log("=" * 60)
     
-    mannequin_location = unreal.Vector(0, 0, 88)
+    mannequin_location = unreal.Vector(0, 0, 0)
     mannequin_rotation = unreal.Rotator(0, 0, 0)
     
     # Get the Third Person Character blueprint
@@ -192,23 +234,16 @@ try:
         # Add camera cut track
         camera_cut_track = sequence.add_track(unreal.MovieSceneCameraCutTrack)
         camera_cut_section = camera_cut_track.add_section()
-        unreal.MovieSceneSectionExtensions.set_range(camera_cut_section, 0, duration_frames)
+        camera_cut_section.set_range(0, duration_frames)
         
-        # Set camera binding ID - try both methods
+        # Set camera binding - using guid property
         try:
-            camera_binding_id = unreal.MovieSceneObjectBindingID()
-            camera_binding_id.set_guid(camera_binding.get_id())
-            camera_cut_section.set_camera_binding_id(camera_binding_id)
-            log("✓ Camera cut track added")
+            binding_id = unreal.MovieSceneObjectBindingID()
+            binding_id.guid = camera_binding.get_id()
+            camera_cut_section.set_camera_binding_id(binding_id)
+            log("✓ Camera cut track added with binding")
         except Exception as e:
-            log(f"  Trying alternative binding method...")
-            try:
-                camera_binding_id = camera_cut_section.get_editor_property('camera_binding_id')
-                camera_binding_id.guid = camera_binding.get_id()
-                camera_cut_section.set_editor_property('camera_binding_id', camera_binding_id)
-                log("✓ Camera cut track added (using editor property)")
-            except Exception as e2:
-                log(f"⚠ Warning: Could not set camera binding: {e2}")
+            log(f"⚠ Warning: Could not set camera binding: {e}")
     else:
         log("⚠ Warning: Failed to add camera binding")
     
@@ -243,6 +278,32 @@ try:
             anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
             unreal.MovieSceneSectionExtensions.set_range(anim_section, 0, duration_frames)
             log("✓ Skeletal animation track added")
+        
+        # Add movement keyframes
+        log("\nAdding movement keyframes...")
+        transform_sections = unreal.MovieSceneTrackExtensions.get_sections(transform_track)
+        if transform_sections:
+            transform_section = transform_sections[0]
+            
+            # Get the transform channels
+            channels = transform_section.get_all_channels()
+            location_channels = channels[0:3]  # X, Y, Z channels
+            
+            # Add keyframes for movement (move forward along Y axis)
+            # Start position: (0, 0, 0) at frame 0
+            # End position: (0, 500, 0) at frame 300 (10 seconds)
+            
+            # Frame 0: Start at origin
+            location_channels[0].add_key(unreal.FrameNumber(0), 0.0)  # X = 0
+            location_channels[1].add_key(unreal.FrameNumber(0), 0.0)  # Y = 0
+            location_channels[2].add_key(unreal.FrameNumber(0), 0.0)  # Z = 0
+            
+            # Frame 300: Move 500 units forward on Y
+            location_channels[0].add_key(unreal.FrameNumber(300), 0.0)    # X = 0
+            location_channels[1].add_key(unreal.FrameNumber(300), 500.0)  # Y = 500
+            location_channels[2].add_key(unreal.FrameNumber(300), 0.0)    # Z = 0
+            
+            log("✓ Movement keyframes added: (0,0,0) → (0,500,0) over 10 seconds")
     else:
         log("⚠ Warning: Failed to add mannequin binding")
     
