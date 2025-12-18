@@ -236,10 +236,10 @@ try:
         camera_cut_section = camera_cut_track.add_section()
         camera_cut_section.set_range(0, duration_frames)
         
-        # Set camera binding - using guid property
+        # Set camera binding - using MovieSceneObjectBindingID with guid as editor property
         try:
             binding_id = unreal.MovieSceneObjectBindingID()
-            binding_id.guid = camera_binding.get_id()
+            binding_id.set_editor_property('guid', camera_binding.get_id())
             camera_cut_section.set_camera_binding_id(binding_id)
             log("✓ Camera cut track added with binding")
         except Exception as e:
