@@ -197,29 +197,40 @@ try:
     log("STEP 4: Creating mannequin")
     log("=" * 60)
     
-    mannequin_location = unreal.Vector(0, 0, 0)
+    mannequin_location = unreal.Vector(0, 0, 90)  # Z=90 so character stands on ground
     mannequin_rotation = unreal.Rotator(0, 0, 0)
     
-    # Get the Third Person Character blueprint
-    mannequin_class = unreal.load_object(None, "/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.BP_ThirdPersonCharacter_C")
+    # Load the skeletal mesh asset directly
+    skeletal_mesh = unreal.load_object(None, "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple")
     
-    if mannequin_class:
+    if not skeletal_mesh:
+        # Try alternative path
+        skeletal_mesh = unreal.load_object(None, "/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple")
+    
+    if skeletal_mesh:
+        # Spawn a SkeletalMeshActor
         mannequin = unreal.EditorLevelLibrary.spawn_actor_from_class(
-            mannequin_class,
+            unreal.SkeletalMeshActor,
             mannequin_location,
             mannequin_rotation
         )
         
         if mannequin:
             mannequin.set_actor_label(mannequin_name)
+            
+            # Set the skeletal mesh on the component
+            skel_comp = mannequin.skeletal_mesh_component
+            skel_comp.set_skeletal_mesh(skeletal_mesh)
+            
             log(f"✓ Mannequin created: {mannequin_name}")
             log(f"  Location: {mannequin_location}")
+            log(f"  Mesh: {skeletal_mesh.get_name()}")
         else:
             log("✗ ERROR: Failed to spawn mannequin")
             raise Exception("Mannequin spawn failed")
     else:
-        log("✗ ERROR: Could not load BP_ThirdPersonCharacter")
-        raise Exception("Mannequin class not found")
+        log("✗ ERROR: Could not load skeletal mesh")
+        raise Exception("Skeletal mesh not found")
     
     # ===== STEP 5: Add camera to sequence =====
     log("\n" + "=" * 60)
@@ -293,17 +304,17 @@ try:
             # Start position: (0, 0, 0) at frame 0
             # End position: (0, 500, 0) at frame 300 (10 seconds)
             
-            # Frame 0: Start at origin
-            location_channels[0].add_key(unreal.FrameNumber(0), 0.0)  # X = 0
-            location_channels[1].add_key(unreal.FrameNumber(0), 0.0)  # Y = 0
-            location_channels[2].add_key(unreal.FrameNumber(0), 0.0)  # Z = 0
+            # Frame 0: Start at origin with Z=90
+            location_channels[0].add_key(unreal.FrameNumber(0), 0.0)   # X = 0
+            location_channels[1].add_key(unreal.FrameNumber(0), 0.0)   # Y = 0
+            location_channels[2].add_key(unreal.FrameNumber(0), 90.0)  # Z = 90
             
-            # Frame 300: Move 500 units forward on Y
+            # Frame 300: Move 500 units forward on Y, go up to Z=300
             location_channels[0].add_key(unreal.FrameNumber(300), 0.0)    # X = 0
             location_channels[1].add_key(unreal.FrameNumber(300), 500.0)  # Y = 500
-            location_channels[2].add_key(unreal.FrameNumber(300), 0.0)    # Z = 0
+            location_channels[2].add_key(unreal.FrameNumber(300), 300.0)  # Z = 300
             
-            log("✓ Movement keyframes added: (0,0,0) → (0,500,0) over 10 seconds")
+            log("✓ Movement keyframes added: (0,0,90) → (0,500,300) over 10 seconds")
     else:
         log("⚠ Warning: Failed to add mannequin binding")
     
