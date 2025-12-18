@@ -242,6 +242,54 @@ try:
     if camera_binding:
         log(f"✓ Camera added to sequence: {str(camera_binding.get_display_name())}")
         
+        # Add transform track for camera movement
+        camera_transform_track = unreal.MovieSceneBindingExtensions.add_track(
+            camera_binding, 
+            unreal.MovieScene3DTransformTrack
+        )
+        camera_transform_section = unreal.MovieSceneTrackExtensions.add_section(camera_transform_track)
+        unreal.MovieSceneSectionExtensions.set_range(camera_transform_section, 0, duration_frames)
+        
+        # Add camera movement keyframes - follow the mannequin and get closer
+        log("\nAdding camera movement keyframes...")
+        camera_transform_sections = unreal.MovieSceneTrackExtensions.get_sections(camera_transform_track)
+        if camera_transform_sections:
+            cam_section = camera_transform_sections[0]
+            cam_channels = cam_section.get_all_channels()
+            cam_location_channels = cam_channels[0:3]  # X, Y, Z channels
+            
+            # Frame 0: Start at (0, -500, 200)
+            cam_location_channels[0].add_key(unreal.FrameNumber(0), 0.0)     # X = 0
+            cam_location_channels[1].add_key(unreal.FrameNumber(0), -500.0)  # Y = -500
+            cam_location_channels[2].add_key(unreal.FrameNumber(0), 200.0)   # Z = 200
+            log("  Frame 0: (0, -500, 200)")
+            
+            # Frame 100: Move to (0, -300, 220)
+            cam_location_channels[0].add_key(unreal.FrameNumber(100), 0.0)    # X = 0
+            cam_location_channels[1].add_key(unreal.FrameNumber(100), -300.0) # Y = -300
+            cam_location_channels[2].add_key(unreal.FrameNumber(100), 220.0)  # Z = 220
+            log("  Frame 100: (0, -300, 220)")
+            
+            # Frame 200: Move to (0, 100, 250)
+            cam_location_channels[0].add_key(unreal.FrameNumber(200), 0.0)   # X = 0
+            cam_location_channels[1].add_key(unreal.FrameNumber(200), 100.0) # Y = 100
+            cam_location_channels[2].add_key(unreal.FrameNumber(200), 250.0) # Z = 250
+            log("  Frame 200: (0, 100, 250)")
+            
+            # Frame 300: End very close at (0, 400, 280)
+            cam_location_channels[0].add_key(unreal.FrameNumber(300), 0.0)   # X = 0
+            cam_location_channels[1].add_key(unreal.FrameNumber(300), 400.0) # Y = 400
+            cam_location_channels[2].add_key(unreal.FrameNumber(300), 280.0) # Z = 280
+            log("  Frame 300: (0, 400, 280)")
+            
+            # Count the keys in each channel
+            x_keys = cam_location_channels[0].get_keys()
+            y_keys = cam_location_channels[1].get_keys()
+            z_keys = cam_location_channels[2].get_keys()
+            log(f"  Keyframe count - X: {len(x_keys)}, Y: {len(y_keys)}, Z: {len(z_keys)}")
+            
+            log("✓ Camera movement: 4 keyframes added")
+        
         # Add camera cut track
         camera_cut_track = sequence.add_track(unreal.MovieSceneCameraCutTrack)
         camera_cut_section = camera_cut_track.add_section()
@@ -309,12 +357,22 @@ try:
             location_channels[1].add_key(unreal.FrameNumber(0), 0.0)   # Y = 0
             location_channels[2].add_key(unreal.FrameNumber(0), 90.0)  # Z = 90
             
-            # Frame 300: Move 500 units forward on Y, go up to Z=300
+            # Frame 100: Go up high (0, 166, 500)
+            location_channels[0].add_key(unreal.FrameNumber(100), 0.0)    # X = 0
+            location_channels[1].add_key(unreal.FrameNumber(100), 166.0)  # Y = 166
+            location_channels[2].add_key(unreal.FrameNumber(100), 500.0)  # Z = 500 (up)
+            
+            # Frame 200: Come down (0, 333, 150)
+            location_channels[0].add_key(unreal.FrameNumber(200), 0.0)    # X = 0
+            location_channels[1].add_key(unreal.FrameNumber(200), 333.0)  # Y = 333
+            location_channels[2].add_key(unreal.FrameNumber(200), 150.0)  # Z = 150 (down)
+            
+            # Frame 300: Go up again (0, 500, 450)
             location_channels[0].add_key(unreal.FrameNumber(300), 0.0)    # X = 0
             location_channels[1].add_key(unreal.FrameNumber(300), 500.0)  # Y = 500
-            location_channels[2].add_key(unreal.FrameNumber(300), 300.0)  # Z = 300
+            location_channels[2].add_key(unreal.FrameNumber(300), 450.0)  # Z = 450 (up again)
             
-            log("✓ Movement keyframes added: (0,0,90) → (0,500,300) over 10 seconds")
+            log("✓ Movement keyframes added: 4 frames with up-down-up motion")
     else:
         log("⚠ Warning: Failed to add mannequin binding")
     
@@ -331,6 +389,20 @@ try:
     # Open in Sequencer
     unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(sequence)
     log("✓ Sequence opened in Sequencer")
+    
+    # Wait 2 seconds to allow UI to update
+    import time
+    time.sleep(2)
+    
+    # Refresh the current sequence to update UI
+    unreal.LevelSequenceEditorBlueprintLibrary.refresh_current_level_sequence()
+    
+    # Set playback position to frame 0
+    unreal.LevelSequenceEditorBlueprintLibrary.set_current_time(0)
+    
+    # Play the sequence
+    unreal.LevelSequenceEditorBlueprintLibrary.play()
+    log("✓ Sequence playing from frame 0")
     
     # ===== COMPLETE =====
     log("\n" + "=" * 60)
