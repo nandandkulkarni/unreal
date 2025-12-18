@@ -21,12 +21,17 @@ def create_sequence(sequence_name="MySequence", duration_seconds=10.0, fps=30):
         fps: Frames per second
     """
     
+    # Add timestamp to sequence name
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
+    sequence_name_with_timestamp = f"{sequence_name}_{timestamp}"
+    
     # Python code to execute inside Unreal
     code = f"""
 import unreal
 
 print("=" * 60)
-print("Creating Level Sequence: {sequence_name}")
+print("Creating Level Sequence: {sequence_name_with_timestamp}")
 print("=" * 60)
 
 # Delete all sequences starting with "TestSequence"
@@ -73,7 +78,7 @@ if unreal.EditorAssetLibrary.does_asset_exist(sequence_full_path):
 print("Creating new Level Sequence...")
 asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
 sequence = asset_tools.create_asset(
-    "{sequence_name}",
+    "{sequence_name_with_timestamp}",
     sequence_path,
     unreal.LevelSequence,
     unreal.LevelSequenceFactoryNew()
@@ -115,7 +120,7 @@ else:
         print("Make sure Unreal is running and WebControl.StartServer has been executed.")
         return False
     
-    print(f"Creating sequence '{sequence_name}' ({duration_seconds}s @ {fps}fps)...")
+    print(f"Creating sequence '{sequence_name_with_timestamp}' ({duration_seconds}s @ {fps}fps)...")
     success, result = unreal.execute_python(code)
     
     if success:

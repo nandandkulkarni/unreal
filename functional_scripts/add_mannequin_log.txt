@@ -1,0 +1,24 @@
+[01:34:54] ============================================================
+[01:34:54] Adding Mannequin to Sequence
+[01:34:54] ============================================================
+[01:34:54] 
+Finding most recent Test* sequence...
+[01:34:54] ✓ Found 1 Test* sequence(s)
+[01:34:54] ✓ Using most recent: TestSequence_25_12_18_00_48_11
+[01:34:54]   Path: /Game/Sequences/TestSequence_25_12_18_00_48_11.TestSequence_25_12_18_00_48_11
+[01:34:54] ✓ Sequence loaded: TestSequence_25_12_18_00_48_11
+[01:34:54] 
+Removing existing test mannequin bindings...
+[01:34:54]   Removing: TestMannequin1
+[01:34:54] 
+============================================================
+[01:34:54] ✗ FATAL ERROR
+[01:34:54] ============================================================
+[01:34:54] Error type: AttributeError
+[01:34:54] Error message: 'LevelSequence' object has no attribute 'remove_possessable'
+[01:34:54] 
+Full traceback:
+[01:34:54]   Traceback (most recent call last):
+[01:34:54]     File "<string>", line 77, in <module>
+[01:34:54]   AttributeError: 'LevelSequence' object has no attribute 'remove_possessable'
+[01:34:54] ============================================================
