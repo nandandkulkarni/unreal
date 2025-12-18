@@ -9,15 +9,30 @@ It creates a complete cinematic scene:
 4. Creates a mannequin
 5. Adds both to the sequence
 
-Usage: Run from PowerShell or press Ctrl+Enter in VS Code
+Usage: Open this file in VS Code and press Ctrl+Enter to run
 """
 import unreal
 from datetime import datetime
+import os
+
+# Setup logging
+log_dir = r"C:\RemoteProjects\reference\unreal\direct"
+log_file = os.path.join(log_dir, "scene_setup.log")
+
+def log(message):
+    """Print and write to log file"""
+    print(message)
+    try:
+        with open(log_file, 'a', encoding='utf-8') as f:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            f.write(f"[{timestamp}] {message}\n")
+    except Exception as e:
+        print(f"Warning: Could not write to log: {e}")
 
 try:
-    print("=" * 60)
-    print("Complete Cinematic Scene Setup")
-    print("=" * 60)
+    log("=" * 60)
+    log("Complete Cinematic Scene Setup")
+    log("=" * 60)
     
     # Get timestamp for unique naming
     timestamp = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
@@ -25,18 +40,18 @@ try:
     camera_name = f"TestCamera_{timestamp}"
     mannequin_name = f"TestMannequin_{timestamp}"
     
-    print(f"\nCreating scene with timestamp: {timestamp}")
-    print(f"  Sequence: {sequence_name}")
-    print(f"  Camera: {camera_name}")
-    print(f"  Mannequin: {mannequin_name}")
+    log(f"\nCreating scene with timestamp: {timestamp}")
+    log(f"  Sequence: {sequence_name}")
+    log(f"  Camera: {camera_name}")
+    log(f"  Mannequin: {mannequin_name}")
     
     # ===== STEP 1: Delete old Test* assets =====
-    print("\n" + "=" * 60)
-    print("STEP 1: Cleaning up old Test* assets")
-    print("=" * 60)
+    log("\n" + "=" * 60)
+    log("STEP 1: Cleaning up old Test* assets")
+    log("=" * 60)
     
     # Delete old sequences
-    print("\nDeleting old Test* sequences...")
+    log("\nDeleting old Test* sequences...")
     sequences_path = "/Game/Sequences"
     deleted_sequences = 0
     
@@ -46,16 +61,16 @@ try:
             asset_name = asset_path.split('/')[-1].split('.')[0]
             if asset_name.startswith("Test"):
                 unreal.EditorAssetLibrary.delete_asset(asset_path)
-                print(f"  Deleted sequence: {asset_name}")
+                log(f"  Deleted sequence: {asset_name}")
                 deleted_sequences += 1
     
     if deleted_sequences > 0:
-        print(f"✓ Deleted {deleted_sequences} old sequence(s)")
+        log(f"✓ Deleted {deleted_sequences} old sequence(s)")
     else:
-        print("  No old sequences found")
+        log("  No old sequences found")
     
     # Delete old actors
-    print("\nDeleting old Test* actors...")
+    log("\nDeleting old Test* actors...")
     editor_actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     all_actors = editor_actor_subsystem.get_all_level_actors()
     deleted_actors = 0
@@ -64,18 +79,18 @@ try:
         actor_label = actor.get_actor_label()
         if actor_label.startswith("TestCamera") or actor_label.startswith("TestMannequin"):
             unreal.EditorLevelLibrary.destroy_actor(actor)
-            print(f"  Deleted actor: {actor_label}")
+            log(f"  Deleted actor: {actor_label}")
             deleted_actors += 1
     
     if deleted_actors > 0:
-        print(f"✓ Deleted {deleted_actors} old actor(s)")
+        log(f"✓ Deleted {deleted_actors} old actor(s)")
     else:
-        print("  No old actors found")
+        log("  No old actors found")
     
     # ===== STEP 2: Create new sequence =====
-    print("\n" + "=" * 60)
-    print("STEP 2: Creating new sequence")
-    print("=" * 60)
+    log("\n" + "=" * 60)
+    log("STEP 2: Creating new sequence")
+    log("=" * 60)
     
     sequence_path = f"/Game/Sequences/{sequence_name}"
     factory = unreal.LevelSequenceFactoryNew()
@@ -87,7 +102,7 @@ try:
     )
     
     if sequence:
-        print(f"✓ Sequence created: {sequence_name}")
+        log(f"✓ Sequence created: {sequence_name}")
         
         # Set sequence properties
         fps = 30
@@ -99,16 +114,16 @@ try:
         sequence.set_playback_end(duration_frames)
         sequence.set_display_rate(unreal.FrameRate(numerator=int(fps), denominator=1))
         
-        print(f"  FPS: {fps}")
-        print(f"  Duration: {duration_seconds}s ({duration_frames} frames)")
+        log(f"  FPS: {fps}")
+        log(f"  Duration: {duration_seconds}s ({duration_frames} frames)")
     else:
-        print("✗ ERROR: Failed to create sequence")
+        log("✗ ERROR: Failed to create sequence")
         raise Exception("Sequence creation failed")
     
     # ===== STEP 3: Create camera =====
-    print("\n" + "=" * 60)
-    print("STEP 3: Creating camera")
-    print("=" * 60)
+    log("\n" + "=" * 60)
+    log("STEP 3: Creating camera")
+    log("=" * 60)
     
     camera_location = unreal.Vector(0, -500, 200)
     camera_rotation = unreal.Rotator(0, 0, 0)
@@ -127,18 +142,18 @@ try:
         camera_component.set_editor_property("current_focal_length", 50.0)
         camera_component.set_editor_property("current_aperture", 2.8)
         
-        print(f"✓ Camera created: {camera_name}")
-        print(f"  Location: {camera_location}")
-        print(f"  Focal Length: 50mm")
-        print(f"  Aperture: f/2.8")
+        log(f"✓ Camera created: {camera_name}")
+        log(f"  Location: {camera_location}")
+        log(f"  Focal Length: 50mm")
+        log(f"  Aperture: f/2.8")
     else:
-        print("✗ ERROR: Failed to create camera")
+        log("✗ ERROR: Failed to create camera")
         raise Exception("Camera creation failed")
     
     # ===== STEP 4: Create mannequin =====
-    print("\n" + "=" * 60)
-    print("STEP 4: Creating mannequin")
-    print("=" * 60)
+    log("\n" + "=" * 60)
+    log("STEP 4: Creating mannequin")
+    log("=" * 60)
     
     mannequin_location = unreal.Vector(0, 0, 88)
     mannequin_rotation = unreal.Rotator(0, 0, 0)
@@ -155,24 +170,24 @@ try:
         
         if mannequin:
             mannequin.set_actor_label(mannequin_name)
-            print(f"✓ Mannequin created: {mannequin_name}")
-            print(f"  Location: {mannequin_location}")
+            log(f"✓ Mannequin created: {mannequin_name}")
+            log(f"  Location: {mannequin_location}")
         else:
-            print("✗ ERROR: Failed to spawn mannequin")
+            log("✗ ERROR: Failed to spawn mannequin")
             raise Exception("Mannequin spawn failed")
     else:
-        print("✗ ERROR: Could not load BP_ThirdPersonCharacter")
+        log("✗ ERROR: Could not load BP_ThirdPersonCharacter")
         raise Exception("Mannequin class not found")
     
     # ===== STEP 5: Add camera to sequence =====
-    print("\n" + "=" * 60)
-    print("STEP 5: Adding camera to sequence")
-    print("=" * 60)
+    log("\n" + "=" * 60)
+    log("STEP 5: Adding camera to sequence")
+    log("=" * 60)
     
     camera_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, camera)
     
     if camera_binding:
-        print(f"✓ Camera added to sequence: {str(camera_binding.get_display_name())}")
+        log(f"✓ Camera added to sequence: {str(camera_binding.get_display_name())}")
         
         # Add camera cut track
         camera_cut_track = sequence.add_track(unreal.MovieSceneCameraCutTrack)
@@ -184,28 +199,28 @@ try:
             camera_binding_id = unreal.MovieSceneObjectBindingID()
             camera_binding_id.set_guid(camera_binding.get_id())
             camera_cut_section.set_camera_binding_id(camera_binding_id)
-            print("✓ Camera cut track added")
+            log("✓ Camera cut track added")
         except Exception as e:
-            print(f"  Trying alternative binding method...")
+            log(f"  Trying alternative binding method...")
             try:
                 camera_binding_id = camera_cut_section.get_editor_property('camera_binding_id')
                 camera_binding_id.guid = camera_binding.get_id()
                 camera_cut_section.set_editor_property('camera_binding_id', camera_binding_id)
-                print("✓ Camera cut track added (using editor property)")
+                log("✓ Camera cut track added (using editor property)")
             except Exception as e2:
-                print(f"⚠ Warning: Could not set camera binding: {e2}")
+                log(f"⚠ Warning: Could not set camera binding: {e2}")
     else:
-        print("⚠ Warning: Failed to add camera binding")
+        log("⚠ Warning: Failed to add camera binding")
     
     # ===== STEP 6: Add mannequin to sequence =====
-    print("\n" + "=" * 60)
-    print("STEP 6: Adding mannequin to sequence")
-    print("=" * 60)
+    log("\n" + "=" * 60)
+    log("STEP 6: Adding mannequin to sequence")
+    log("=" * 60)
     
     mannequin_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, mannequin)
     
     if mannequin_binding:
-        print(f"✓ Mannequin added to sequence: {str(mannequin_binding.get_display_name())}")
+        log(f"✓ Mannequin added to sequence: {str(mannequin_binding.get_display_name())}")
         
         # Add transform track
         transform_track = unreal.MovieSceneBindingExtensions.add_track(
@@ -216,7 +231,7 @@ try:
         if transform_track:
             section = unreal.MovieSceneTrackExtensions.add_section(transform_track)
             unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
-            print("✓ Transform track added")
+            log("✓ Transform track added")
         
         # Add skeletal animation track
         anim_track = unreal.MovieSceneBindingExtensions.add_track(
@@ -227,47 +242,47 @@ try:
         if anim_track:
             anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
             unreal.MovieSceneSectionExtensions.set_range(anim_section, 0, duration_frames)
-            print("✓ Skeletal animation track added")
+            log("✓ Skeletal animation track added")
     else:
-        print("⚠ Warning: Failed to add mannequin binding")
+        log("⚠ Warning: Failed to add mannequin binding")
     
     # ===== STEP 7: Save and open sequence =====
-    print("\n" + "=" * 60)
-    print("STEP 7: Finalizing")
-    print("=" * 60)
+    log("\n" + "=" * 60)
+    log("STEP 7: Finalizing")
+    log("=" * 60)
     
     # Save sequence
     saved = unreal.EditorAssetLibrary.save_loaded_asset(sequence)
     if saved:
-        print("✓ Sequence saved")
+        log("✓ Sequence saved")
     
     # Open in Sequencer
     unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(sequence)
-    print("✓ Sequence opened in Sequencer")
+    log("✓ Sequence opened in Sequencer")
     
     # ===== COMPLETE =====
-    print("\n" + "=" * 60)
-    print("✓ SCENE SETUP COMPLETE!")
-    print("=" * 60)
-    print(f"Sequence: {sequence_name}")
-    print(f"Camera: {camera_name}")
-    print(f"Mannequin: {mannequin_name}")
-    print(f"Duration: {duration_seconds}s @ {fps}fps")
-    print("=" * 60)
-    print("\nCheck Sequencer to see your complete scene!")
+    log("\n" + "=" * 60)
+    log("✓ SCENE SETUP COMPLETE!")
+    log("=" * 60)
+    log(f"Sequence: {sequence_name}")
+    log(f"Camera: {camera_name}")
+    log(f"Mannequin: {mannequin_name}")
+    log(f"Duration: {duration_seconds}s @ {fps}fps")
+    log("=" * 60)
+    log("\nCheck Sequencer to see your complete scene!")
     
 except Exception as e:
-    print("\n" + "=" * 60)
-    print("✗ FATAL ERROR")
-    print("=" * 60)
-    print("Error type: " + type(e).__name__)
-    print("Error message: " + str(e))
+    log("\n" + "=" * 60)
+    log("✗ FATAL ERROR")
+    log("=" * 60)
+    log("Error type: " + type(e).__name__)
+    log("Error message: " + str(e))
     
     import traceback
-    print("\nFull traceback:")
+    log("\nFull traceback:")
     for line in traceback.format_exc().split('\n'):
         if line:
-            print("  " + line)
-    print("=" * 60)
+            log("  " + line)
+    log("=" * 60)
 
 print("\nDone!")

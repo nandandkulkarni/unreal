@@ -1,63 +1,59 @@
 """
-View recent Unreal Engine Python logs
+View recent scene setup logs
 
-This script reads the Unreal Engine log file and displays recent Python-related entries.
+This script reads the scene_setup.log file and displays recent entries.
 """
 import os
 import sys
 
-def find_unreal_log():
-    """Find the most recent Unreal Engine log file"""
-    # Common log locations
+def find_log():
+    """Find the scene setup log file"""
+    # Local log file
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    local_log = os.path.join(script_dir, "scene_setup.log")
+    
+    if os.path.exists(local_log):
+        return local_log
+    
+    # Fallback: Unreal Engine log
     log_paths = [
-        os.path.expandvars(r"%LOCALAPPDATA%\UnrealEngine\5.7\Saved\Logs"),
-        os.path.expandvars(r"%USERPROFILE%\AppData\Local\UnrealEngine\5.7\Saved\Logs"),
+        os.path.expandvars(r"%LOCALAPPDATA%\UnrealEngine\5.7\Saved\Logs\FirstVideo.log"),
+        os.path.expandvars(r"%USERPROFILE%\AppData\Local\UnrealEngine\5.7\Saved\Logs\FirstVideo.log"),
     ]
     
-    for log_dir in log_paths:
-        if os.path.exists(log_dir):
-            # Find FirstVideo.log (project log)
-            project_log = os.path.join(log_dir, "FirstVideo.log")
-            if os.path.exists(project_log):
-                return project_log
+    for log_path in log_paths:
+        if os.path.exists(log_path):
+            return log_path
     
     return None
 
-def tail_log(log_file, lines=50, filter_python=True):
+def tail_log(log_file, lines=50):
     """Read the last N lines from the log file"""
     try:
         with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
             all_lines = f.readlines()
-            
-        if filter_python:
-            # Filter for Python-related logs
-            python_lines = [line for line in all_lines if 'LogPython' in line or 'Python' in line or 'Error:' in line]
-            relevant_lines = python_lines[-lines:] if len(python_lines) > lines else python_lines
-        else:
-            relevant_lines = all_lines[-lines:]
         
+        relevant_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
         return relevant_lines
     except Exception as e:
         return [f"Error reading log: {str(e)}"]
 
 def main():
     print("=" * 60)
-    print("Unreal Engine Python Logs")
+    print("Scene Setup Logs")
     print("=" * 60)
     
-    log_file = find_unreal_log()
+    log_file = find_log()
     
     if not log_file:
-        print("✗ Could not find Unreal Engine log file")
-        print("\nExpected locations:")
+        print("✗ Could not find log file")
+        print("\nExpected location:")
+        print("  - ./scene_setup.log")
         print("  - %LOCALAPPDATA%\\UnrealEngine\\5.7\\Saved\\Logs\\FirstVideo.log")
-        print("\nMake sure:")
-        print("  1. Unreal Engine is running")
-        print("  2. The FirstVideo project is open")
         return
     
     print(f"✓ Found log file: {log_file}")
-    print("\nRecent Python logs:")
+    print("\nRecent logs:")
     print("-" * 60)
     
     # Get command line arguments
@@ -68,16 +64,16 @@ def main():
         except:
             pass
     
-    lines = tail_log(log_file, num_lines, filter_python=True)
+    lines = tail_log(log_file, num_lines)
     
     if not lines:
-        print("No Python logs found in recent entries")
+        print("No logs found")
     else:
         for line in lines:
             print(line.rstrip())
     
     print("-" * 60)
-    print(f"Showing last {len(lines)} Python-related log entries")
+    print(f"Showing last {len(lines)} log entries")
     print("\nUsage: python view_unreal_log.py [num_lines]")
     print("  Default: 50 lines")
 
