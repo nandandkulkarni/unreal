@@ -165,9 +165,9 @@ try:
     log("STEP 3: Creating camera")
     log("=" * 60)
     
-    camera_location = unreal.Vector(0, -500, 200)
-    # Rotate camera to face origin: Pitch=-22 (look down), Yaw=90 (face +Y direction)
-    camera_rotation = unreal.Rotator(pitch=-22.0, yaw=90.0, roll=0.0)
+    camera_location = unreal.Vector(0, 0, 300)
+    # Face forward (toward +Y) at mannequin - yaw=90
+    camera_rotation = unreal.Rotator(pitch=0.0, yaw=90.0, roll=0.0)
     
     camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
         unreal.CineCameraActor,
@@ -197,7 +197,7 @@ try:
     log("STEP 4: Creating mannequin")
     log("=" * 60)
     
-    mannequin_location = unreal.Vector(0, 0, 90)  # Z=90 so character stands on ground
+    mannequin_location = unreal.Vector(0, 0, 300)  # Z=300
     mannequin_rotation = unreal.Rotator(0, 0, 0)
     
     # Load the skeletal mesh asset directly
@@ -241,54 +241,7 @@ try:
     
     if camera_binding:
         log(f"✓ Camera added to sequence: {str(camera_binding.get_display_name())}")
-        
-        # Add transform track for camera movement
-        camera_transform_track = unreal.MovieSceneBindingExtensions.add_track(
-            camera_binding, 
-            unreal.MovieScene3DTransformTrack
-        )
-        camera_transform_section = unreal.MovieSceneTrackExtensions.add_section(camera_transform_track)
-        unreal.MovieSceneSectionExtensions.set_range(camera_transform_section, 0, duration_frames)
-        
-        # Add camera movement keyframes - follow the mannequin and get closer
-        log("\nAdding camera movement keyframes...")
-        camera_transform_sections = unreal.MovieSceneTrackExtensions.get_sections(camera_transform_track)
-        if camera_transform_sections:
-            cam_section = camera_transform_sections[0]
-            cam_channels = cam_section.get_all_channels()
-            cam_location_channels = cam_channels[0:3]  # X, Y, Z channels
-            
-            # Frame 0: Start at (0, -500, 200)
-            cam_location_channels[0].add_key(unreal.FrameNumber(0), 0.0)     # X = 0
-            cam_location_channels[1].add_key(unreal.FrameNumber(0), -500.0)  # Y = -500
-            cam_location_channels[2].add_key(unreal.FrameNumber(0), 200.0)   # Z = 200
-            log("  Frame 0: (0, -500, 200)")
-            
-            # Frame 100: Move to (0, -300, 220)
-            cam_location_channels[0].add_key(unreal.FrameNumber(100), 0.0)    # X = 0
-            cam_location_channels[1].add_key(unreal.FrameNumber(100), -300.0) # Y = -300
-            cam_location_channels[2].add_key(unreal.FrameNumber(100), 220.0)  # Z = 220
-            log("  Frame 100: (0, -300, 220)")
-            
-            # Frame 200: Move to (0, 100, 250)
-            cam_location_channels[0].add_key(unreal.FrameNumber(200), 0.0)   # X = 0
-            cam_location_channels[1].add_key(unreal.FrameNumber(200), 100.0) # Y = 100
-            cam_location_channels[2].add_key(unreal.FrameNumber(200), 250.0) # Z = 250
-            log("  Frame 200: (0, 100, 250)")
-            
-            # Frame 300: End very close at (0, 400, 280)
-            cam_location_channels[0].add_key(unreal.FrameNumber(300), 0.0)   # X = 0
-            cam_location_channels[1].add_key(unreal.FrameNumber(300), 400.0) # Y = 400
-            cam_location_channels[2].add_key(unreal.FrameNumber(300), 280.0) # Z = 280
-            log("  Frame 300: (0, 400, 280)")
-            
-            # Count the keys in each channel
-            x_keys = cam_location_channels[0].get_keys()
-            y_keys = cam_location_channels[1].get_keys()
-            z_keys = cam_location_channels[2].get_keys()
-            log(f"  Keyframe count - X: {len(x_keys)}, Y: {len(y_keys)}, Z: {len(z_keys)}")
-            
-            log("✓ Camera movement: 4 keyframes added")
+        log("  Camera will stay static at spawn position")
         
         # Add camera cut track
         camera_cut_track = sequence.add_track(unreal.MovieSceneCameraCutTrack)
@@ -389,6 +342,10 @@ try:
     # Open in Sequencer
     unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(sequence)
     log("✓ Sequence opened in Sequencer")
+    
+    # Lock viewport to camera cuts - this makes the viewport show what the camera sees
+    unreal.LevelSequenceEditorBlueprintLibrary.set_lock_camera_cut_to_viewport(True)
+    log("✓ Viewport locked to sequencer camera")
     
     # Wait 2 seconds to allow UI to update
     import time
