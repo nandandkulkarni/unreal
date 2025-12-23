@@ -47,6 +47,15 @@ Set-ItemProperty -Path $regPath -Name "AVCHardwareEncodePreferred" -Value 1 -Typ
 Write-Host "  [4/4] Enabling AVC 444 Graphics mode..."
 Set-ItemProperty -Path $regPath -Name "AVC444ModePreferred" -Value 1 -Type DWord -Force
 
+# Also set system-level keys to ensure policies take effect
+$sysTsPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server"
+$rdpTcpPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp"
+
+Write-Host ""
+Write-Host "Applying system Terminal Server settings..."
+Set-ItemProperty -Path $sysTsPath -Name "UseWDDMGraphicsDriver" -Value 1 -Type DWord -Force
+Set-ItemProperty -Path $rdpTcpPath -Name "UseDefaultGfxAdapter" -Value 1 -Type DWord -Force
+
 Write-Host ""
 Write-Host "=============================================="
 Write-Host "SETTINGS APPLIED SUCCESSFULLY!" -ForegroundColor Green
@@ -54,6 +63,8 @@ Write-Host "=============================================="
 Write-Host ""
 Write-Host "Current registry values:"
 Get-ItemProperty -Path $regPath | Select-Object fEnableWddmDriver, bEnumerateHWBeforeSW, AVCHardwareEncodePreferred, AVC444ModePreferred | Format-List
+Get-ItemProperty -Path $sysTsPath | Select-Object UseWDDMGraphicsDriver | Format-List
+Get-ItemProperty -Path $rdpTcpPath | Select-Object UseDefaultGfxAdapter | Format-List
 
 Write-Host ""
 Write-Host "IMPORTANT: You must RESTART the computer for changes to take effect!" -ForegroundColor Yellow
