@@ -206,11 +206,13 @@ try:
         log("✗ ERROR: Failed to create camera")
         raise Exception("Camera creation failed")
 
-    # ===== STEP 4: Create mannequins =====
+    # ===== STEP 4: Create mannequin =====
     log("\n" + "=" * 60)
-    log("STEP 4: Creating mannequins (3 Belicas)")
+    log("STEP 4: Creating mannequin")
     log("=" * 60)
 
+    mannequin_location = unreal.Vector(0, 0, 300)  # Z=300
+    
     # Load the desired Belica skeletal mesh
     skeletal_mesh = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica")
     
@@ -227,49 +229,29 @@ try:
         skeletal_mesh = unreal.load_object(
             None, "/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple")
 
-    # Create 3 mannequins: center, left, right (1 meter = 100cm gaps)
-    mannequin_positions = [
-        ("Center", 0),      # Y offset = 0
-        ("Left", -100),     # Y offset = -100cm
-        ("Right", 100)      # Y offset = +100cm
-    ]
-    
-    mannequins = []
-    
     if skeletal_mesh:
-        for position_name, y_offset in mannequin_positions:
-            mannequin_location = unreal.Vector(0, y_offset, 300)  # Z=300
-            current_name = f"{mannequin_name}_{position_name}"
+        # Spawn a SkeletalMeshActor
+        mannequin = unreal.EditorLevelLibrary.spawn_actor_from_class(
+            unreal.SkeletalMeshActor,
+            mannequin_location,
+            mannequin_rotation
+        )
+
+        if mannequin:
+            mannequin.set_actor_label(mannequin_name)
+
+            # Set the skeletal mesh on the component
+            skel_comp = mannequin.skeletal_mesh_component
+            skel_comp.set_skeletal_mesh(skeletal_mesh)
+
+            log(f"✓ Mannequin created: {mannequin_name}")
+            log(f"  Location: {mannequin_location}")
+            log(f"  Mesh: {skeletal_mesh.get_name()}")
+            log(f"  Rotation: Pitch={mannequin_rotation.pitch}, Yaw={mannequin_rotation.yaw}, Roll={mannequin_rotation.roll}")
             
-            # Spawn a SkeletalMeshActor
-            mannequin = unreal.EditorLevelLibrary.spawn_actor_from_class(
-                unreal.SkeletalMeshActor,
-                mannequin_location,
-                mannequin_rotation
-            )
-
-            if mannequin:
-                mannequin.set_actor_label(current_name)
-
-                # Set the skeletal mesh on the component
-                skel_comp = mannequin.skeletal_mesh_component
-                skel_comp.set_skeletal_mesh(skeletal_mesh)
-
-                log(f"✓ Mannequin created: {current_name}")
-                log(f"  Location: {mannequin_location}")
-                log(f"  Mesh: {skeletal_mesh.get_name()}")
-                
-                mannequins.append((mannequin, mannequin_location, current_name))
-            else:
-                log(f"✗ ERROR: Failed to spawn mannequin {current_name}")
-        
-        if len(mannequins) > 0:
-            # Use center mannequin for HUD tracking
-            center_mannequin = mannequins[0][0]
-            
-            # Debug: Check center mannequin's forward direction
-            forward_vec = center_mannequin.get_actor_forward_vector()
-            log(f"  Center Forward Vector: X={forward_vec.x:.3f}, Y={forward_vec.y:.3f}, Z={forward_vec.z:.3f}")
+            # Debug: Check mannequin's forward direction
+            forward_vec = mannequin.get_actor_forward_vector()
+            log(f"  Forward Vector: X={forward_vec.x:.3f}, Y={forward_vec.y:.3f}, Z={forward_vec.z:.3f}")
 
             # --- HUD showing Belica X/Y/Z (approx 1x1 inch via 2.54 world size) ---
             # Position HUD in front of camera (Y-forward is camera's forward direction)
@@ -303,8 +285,8 @@ try:
                     log("✓ HUD text actor created and attached to camera")
 
                     def _update_hud(_delta):
-                        loc = center_mannequin.get_actor_location()
-                        text_comp.set_text(f"Belica Center XYZ\nX: {loc.x:.1f}\nY: {loc.y:.1f}\nZ: {loc.z:.1f}")
+                        loc = mannequin.get_actor_location()
+                        text_comp.set_text(f"Belica XYZ\nX: {loc.x:.1f}\nY: {loc.y:.1f}\nZ: {loc.z:.1f}")
 
                     try:
                         unreal.register_slate_post_tick_callback(_update_hud)
@@ -617,11 +599,11 @@ try:
             except Exception as e:
                 log(f"⚠ Warning: Could not create plus sign: {e}")
 
-            # Position camera behind center mannequin using forward vector
+            # Position camera behind mannequin using forward vector
             try:
-                actor_loc = center_mannequin.get_actor_location()
-                forward = center_mannequin.get_actor_forward_vector()
-                up = center_mannequin.get_actor_up_vector()
+                actor_loc = mannequin.get_actor_location()
+                forward = mannequin.get_actor_forward_vector()
+                up = mannequin.get_actor_up_vector()
 
                 follow_distance = 300.0  # cm behind
                 follow_height = 50.0     # cm up
@@ -636,7 +618,7 @@ try:
 
                 camera.set_actor_location(cam_loc, False, False)
                 camera.set_actor_rotation(cam_rot, False)
-                log("✓ Camera positioned behind center mannequin and aimed at it")
+                log("✓ Camera positioned behind mannequin and aimed at it")
 
                 # Verify camera coordinates match expected
                 actual_loc = camera.get_actor_location()
@@ -700,131 +682,128 @@ try:
     else:
         log("⚠ Warning: Failed to add camera binding")
 
-    # ===== STEP 6: Add mannequins to sequence =====
+    # ===== STEP 6: Add mannequin to sequence =====
     log("\n" + "=" * 60)
-    log("STEP 6: Adding mannequins to sequence")
+    log("STEP 6: Adding mannequin to sequence")
     log("=" * 60)
-    
-    # Load jog_fwd animation once
-    jog_anim = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd")
 
-    for mannequin, start_loc, name in mannequins:
-        mannequin_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, mannequin)
+    mannequin_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, mannequin)
 
-        if mannequin_binding:
-            log(f"✓ Mannequin added to sequence: {str(mannequin_binding.get_display_name())}")
+    if mannequin_binding:
+        log(f"✓ Mannequin added to sequence: {str(mannequin_binding.get_display_name())}")
 
-            # Add transform track
-            transform_track = unreal.MovieSceneBindingExtensions.add_track(
-                mannequin_binding,
-                unreal.MovieScene3DTransformTrack
-            )
+        # Add transform track
+        transform_track = unreal.MovieSceneBindingExtensions.add_track(
+            mannequin_binding,
+            unreal.MovieScene3DTransformTrack
+        )
 
-            if transform_track:
-                section = unreal.MovieSceneTrackExtensions.add_section(transform_track)
-                unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
-                log("  ✓ Transform track added")
+        if transform_track:
+            section = unreal.MovieSceneTrackExtensions.add_section(transform_track)
+            unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
+            log("✓ Transform track added")
 
-            # Add skeletal animation track
-            anim_track = unreal.MovieSceneBindingExtensions.add_track(
-                mannequin_binding,
-                unreal.MovieSceneSkeletalAnimationTrack
-            )
+        # Add skeletal animation track
+        anim_track = unreal.MovieSceneBindingExtensions.add_track(
+            mannequin_binding,
+            unreal.MovieSceneSkeletalAnimationTrack
+        )
 
-            if anim_track:
-                anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
-                unreal.MovieSceneSectionExtensions.set_range(anim_section, 0, duration_frames)
-                
-                # Set the jog_fwd animation
-                if jog_anim:
-                    # Use the params property to set the animation sequence
-                    params = anim_section.params
-                    params.animation = jog_anim
-                    log("  ✓ Skeletal animation track added with jog_fwd animation")
-                else:
-                    log("  ✓ Skeletal animation track added (jog_fwd animation not found)")
+        if anim_track:
+            anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
+            unreal.MovieSceneSectionExtensions.set_range(anim_section, 0, duration_frames)
+            
+            # Load and set the jog_fwd animation
+            jog_anim = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd")
+            if jog_anim:
+                # Use the params property to set the animation sequence
+                params = anim_section.params
+                params.animation = jog_anim
+                log("✓ Skeletal animation track added with jog_fwd animation")
             else:
-                log("  ⚠ Warning: Failed to add skeletal animation track")
+                log("✓ Skeletal animation track added (jog_fwd animation not found)")
+        else:
+            log("⚠ Warning: Failed to add skeletal animation track")
 
-            # Add movement keyframes
-            log(f"  Adding movement keyframes for {name}...")
-            transform_sections = unreal.MovieSceneTrackExtensions.get_sections(transform_track)
-            if transform_sections:
-                transform_section = transform_sections[0]
+        # Add movement keyframes
+        log("\nAdding movement keyframes...")
+        transform_sections = unreal.MovieSceneTrackExtensions.get_sections(transform_track)
+        if transform_sections:
+            transform_section = transform_sections[0]
 
-                # Get the transform channels
-                channels = transform_section.get_all_channels()
-                location_channels = channels[0:3]  # X, Y, Z channels
-                rotation_channels = channels[3:6]  # Rotation X (Roll), Y (Pitch), Z (Yaw) channels
+            # Get the transform channels
+            channels = transform_section.get_all_channels()
+            location_channels = channels[0:3]  # X, Y, Z channels
+            rotation_channels = channels[3:6]  # Rotation X (Roll), Y (Pitch), Z (Yaw) channels
 
-                # Use fixed world-space movement vectors (independent of actor rotation)
-                # This allows us to rotate the character visually without changing movement direction
-                world_x = unreal.Vector(1.0, 0.0, 0.0)  # Red (+X)
-                world_y = unreal.Vector(0.0, 1.0, 0.0)  # Green (+Y)
+            # Use fixed world-space movement vectors (independent of actor rotation)
+            # This allows us to rotate the character visually without changing movement direction
+            world_x = unreal.Vector(1.0, 0.0, 0.0)  # Red (+X)
+            world_y = unreal.Vector(0.0, 1.0, 0.0)  # Green (+Y)
+            start = mannequin_location
 
-                # Choose movement direction: 'x' for Red or 'y' for Green
-                movement_direction = 'x'  # change to 'y' for Green direction
-                move_vec = world_x if movement_direction == 'x' else world_y
+            # Choose movement direction: 'x' for Red or 'y' for Green
+            movement_direction = 'x'  # change to 'y' for Green direction
+            move_vec = world_x if movement_direction == 'x' else world_y
 
-                # Distances along chosen direction at each keyframe (cm)
-                # Spread keys over 0..300 frames (adjust if using 60s timeline)
-                keys = [
-                    (0, 0.0),
-                    (100, 166.0),
-                    (200, 333.0),
-                    (300, 500.0),
-                ]
+            # Distances along chosen direction at each keyframe (cm)
+            # Spread keys over 0..300 frames (adjust if using 60s timeline)
+            keys = [
+                (0, 0.0),
+                (100, 166.0),
+                (200, 333.0),
+                (300, 500.0),
+            ]
 
-                distance_scale = 3.0
+            distance_scale = 3.0
 
-                for frame, dist in keys:
-                    dist_scaled = dist * distance_scale
-                    pos_x = start_loc.x + move_vec.x * dist_scaled
-                    pos_y = start_loc.y + move_vec.y * dist_scaled
-                    pos_z = start_loc.z  # grounded
-                    location_channels[0].add_key(unreal.FrameNumber(frame), float(pos_x))
-                    location_channels[1].add_key(unreal.FrameNumber(frame), float(pos_y))
-                    location_channels[2].add_key(unreal.FrameNumber(frame), float(pos_z))
-                    
-                    # Set rotation keyframes to maintain spawn rotation
+            for frame, dist in keys:
+                dist_scaled = dist * distance_scale
+                pos_x = start.x + move_vec.x * dist_scaled
+                pos_y = start.y + move_vec.y * dist_scaled
+                pos_z = start.z  # grounded
+                location_channels[0].add_key(unreal.FrameNumber(frame), float(pos_x))
+                location_channels[1].add_key(unreal.FrameNumber(frame), float(pos_y))
+                location_channels[2].add_key(unreal.FrameNumber(frame), float(pos_z))
+                
+                # Set rotation keyframes to maintain spawn rotation
                 rotation_channels[0].add_key(unreal.FrameNumber(frame), float(mannequin_rotation.roll))
                 rotation_channels[1].add_key(unreal.FrameNumber(frame), float(mannequin_rotation.pitch))
                 rotation_channels[2].add_key(unreal.FrameNumber(frame), float(mannequin_rotation.yaw))
 
-                log(f"  ✓ Movement keyframes added: {movement_direction} direction, Z grounded, distance x{distance_scale}")
-        else:
-            log(f"  ⚠ Warning: Failed to add mannequin binding for {name}")
+            log(f"✓ Movement keyframes added: {movement_direction} direction, Z grounded, distance x{distance_scale}")
 
-    # Resize and align the origin flat cube to match max movement length
-    log("\nFinalizing scene...")
-    try:
-        max_dist_cm = max([d for (_, d) in keys]) * distance_scale
-        editor_actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
-        focus_actor = None
-        for actor in editor_actor_subsystem.get_all_level_actors():
-            if actor.get_actor_label() == "Origin_FlatCube":
-                focus_actor = actor
-                break
-        if focus_actor:
-            width_cm = 5.0
-            thickness_cm = 0.1  # 1mm
-            # Align cube along movement direction in XY plane
-            origin = unreal.Vector(0.0, 0.0, thickness_cm / 2.0)
-            target = unreal.Vector(move_vec.x, move_vec.y, 0.0)
-            rot = unreal.MathLibrary.find_look_at_rotation(origin, target)
-            focus_actor.set_actor_rotation(rot, False)
-            focus_actor.set_actor_location(origin, False, False)
-            focus_actor.set_actor_scale3d(
-                unreal.Vector(max_dist_cm / 100.0, width_cm / 100.0, thickness_cm / 100.0)
-            )
-            log(f"✓ Origin flat cube aligned; length set to {max_dist_cm:.1f}cm")
-        else:
-            log("⚠ Origin flat cube not found to align")
-    except Exception as e:
-        log(f"⚠ Warning: Could not align origin flat cube: {e}")
+            # Resize and align the origin flat cube to match max movement length
+            try:
+                max_dist_cm = max([d for (_, d) in keys]) * distance_scale
+                editor_actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+                focus_actor = None
+                for actor in editor_actor_subsystem.get_all_level_actors():
+                    if actor.get_actor_label() == "Origin_FlatCube":
+                        focus_actor = actor
+                        break
+                if focus_actor:
+                    width_cm = 5.0
+                    thickness_cm = 0.1  # 1mm
+                    # Align cube along movement direction in XY plane
+                    origin = unreal.Vector(0.0, 0.0, thickness_cm / 2.0)
+                    target = unreal.Vector(move_vec.x, move_vec.y, 0.0)
+                    rot = unreal.MathLibrary.find_look_at_rotation(origin, target)
+                    focus_actor.set_actor_rotation(rot, False)
+                    focus_actor.set_actor_location(origin, False, False)
+                    focus_actor.set_actor_scale3d(
+                        unreal.Vector(max_dist_cm / 100.0, width_cm / 100.0, thickness_cm / 100.0)
+                    )
+                    log(f"✓ Origin flat cube aligned; length set to {max_dist_cm:.1f}cm")
+                else:
+                    log("⚠ Origin flat cube not found to align")
+            except Exception as e:
+                log(f"⚠ Warning: Could not align origin flat cube: {e}")
 
-    # TODO: Add Look at Track - need to research correct API
-    log("\n⚠ Camera look-at tracking not yet implemented")
+        # TODO: Add Look at Track - need to research correct API
+        log("\n⚠ Camera look-at tracking not yet implemented")
+    else:
+        log("⚠ Warning: Failed to add mannequin binding")
 
     # ===== STEP 7: Save and open sequence =====
     log("\n" + "=" * 60)
