@@ -48,12 +48,43 @@ def add_camera_to_sequence(sequence, camera, fps, duration_seconds):
         return None
 
 
-def add_camera_look_at_constraint(sequence, camera_binding, mannequin_binding, duration_frames):
-    """Add look-at constraint to make camera track the mannequin"""
+def add_camera_look_at_constraint(camera_actor, mannequin_actor):
+    """Add look-at constraint to make camera track the mannequin
+    
+    Sets the look-at tracking on the camera actor's lookat_tracking_settings property
+    
+    Args:
+        camera_actor: The actual CineCameraActor instance
+        mannequin_actor: The actual SkeletalMeshActor instance
+    """
     try:
         log("\nAdding camera look-at constraint...")
-        log("⚠ Constraint track temporarily disabled - causes Unreal crash")
-        log("  Alternative: Manual rotation keyframes needed")
+        log(f"  Camera actor: {camera_actor}")
+        log(f"  Mannequin actor: {mannequin_actor}")
+        
+        # Create look-at tracking settings
+        lookat_settings = unreal.CameraLookatTrackingSettings()
+        lookat_settings.enable_look_at_tracking = True
+        lookat_settings.actor_to_track = mannequin_actor
+        lookat_settings.allow_roll = False
+        lookat_settings.look_at_tracking_interp_speed = 0.0  # Instant tracking
+        lookat_settings.relative_offset = unreal.Vector(0, 0, 0)
+        
+        # Set the property on the camera actor (from api_reference.txt)
+        try:
+            camera_actor.set_editor_property('lookat_tracking_settings', lookat_settings)
+            log("✓ Camera look-at tracking enabled on camera actor")
+            return True
+        except Exception as e:
+            log(f"⚠ Could not set lookat_tracking_settings on camera actor: {e}")
+            import traceback
+            log(traceback.format_exc())
+            return False
+            
+    except Exception as e:
+        log(f"⚠ Look-at constraint failed: {e}")
+        import traceback
+        log(traceback.format_exc())
         return False
         
         # DISABLED: This causes Unreal to crash when opening the sequence

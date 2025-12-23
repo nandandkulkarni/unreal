@@ -87,8 +87,8 @@ try:
     )
 
     # Add camera look-at constraint
-    if camera_binding and mannequin_binding:
-        track_setup.add_camera_look_at_constraint(sequence, camera_binding, mannequin_binding, duration_frames)
+    if camera and mannequin:
+        track_setup.add_camera_look_at_constraint(camera, mannequin)
 
     # STEP 7: Finalize sequence
     track_setup.finalize_sequence(sequence, sequence_name)
