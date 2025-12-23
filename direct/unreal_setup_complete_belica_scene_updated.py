@@ -712,7 +712,18 @@ try:
         if anim_track:
             anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
             unreal.MovieSceneSectionExtensions.set_range(anim_section, 0, duration_frames)
-            log("✓ Skeletal animation track added")
+            
+            # Load and set the jog_fwd animation
+            jog_anim = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd")
+            if jog_anim:
+                # Use the params property to set the animation sequence
+                params = anim_section.params
+                params.animation = jog_anim
+                log("✓ Skeletal animation track added with jog_fwd animation")
+            else:
+                log("✓ Skeletal animation track added (jog_fwd animation not found)")
+        else:
+            log("⚠ Warning: Failed to add skeletal animation track")
 
         # Add movement keyframes
         log("\nAdding movement keyframes...")
