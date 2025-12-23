@@ -75,8 +75,14 @@ try:
     # Create visual aids (plus sign at origin)
     visual_aids.create_plus_sign_at_origin()
 
-    # Position camera behind mannequin
-    camera_setup.position_camera_behind_mannequin(camera, mannequin, follow_distance=500.0, follow_height=50.0)
+    # Position camera behind mannequin's movement direction (she moves along +X, so camera on -X)
+    # Camera at (-500, 0, 400) looking at origin
+    camera_behind_position = unreal.Vector(-500.0, 0.0, 400.0)
+    camera_target_position = mannequin_location
+    camera_rotation = unreal.MathLibrary.find_look_at_rotation(camera_behind_position, camera_target_position)
+    camera.set_actor_location(camera_behind_position, False, False)
+    camera.set_actor_rotation(camera_rotation, False)
+    logger.log("✓ Camera positioned behind movement direction (-X) looking at mannequin")
 
     # STEP 5: Add camera to sequence
     camera_binding = track_setup.add_camera_to_sequence(sequence, camera, fps, duration_seconds=60)

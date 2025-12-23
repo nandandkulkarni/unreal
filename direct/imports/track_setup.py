@@ -173,8 +173,6 @@ def add_mannequin_to_sequence(sequence, mannequin, mannequin_location, mannequin
 
         # Add movement keyframes
         add_movement_keyframes(transform_track, mannequin_location, mannequin_rotation)
-
-        log("\n⚠ Camera look-at tracking not yet implemented")
         
         return mannequin_binding
     else:
