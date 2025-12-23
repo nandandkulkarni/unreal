@@ -65,7 +65,7 @@ try:
     camera = camera_setup.create_camera(camera_name, camera_location, camera_rotation)
 
     # STEP 4: Create mannequin
-    mannequin_location = unreal.Vector(0, 0, 300)
+    mannequin_location = unreal.Vector(0, 0, 6.882729)
     mannequin_rotation = unreal.Rotator(pitch=0.0, yaw=-90.0, roll=0.0)
     mannequin = mannequin_setup.create_mannequin(mannequin_name, mannequin_location, mannequin_rotation)
 
