@@ -212,10 +212,13 @@ try:
     log("=" * 60)
 
     mannequin_location = unreal.Vector(0, 0, 300)  # Z=300
-    mannequin_rotation = unreal.Rotator(0, 0, 0)
-
+    
     # Load the desired Belica skeletal mesh
     skeletal_mesh = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica")
+    
+    # Character-specific rotation to align visual facing with desired movement direction
+    # Belica's mesh visual is 90° off - rotate -90° to make her face Red (+X)
+    mannequin_rotation = unreal.Rotator(pitch=0.0, yaw=-90.0, roll=0.0)  # Align visual with Red
 
     if not skeletal_mesh:
         # Fallback to Quinn if Belica is missing
@@ -244,6 +247,11 @@ try:
             log(f"✓ Mannequin created: {mannequin_name}")
             log(f"  Location: {mannequin_location}")
             log(f"  Mesh: {skeletal_mesh.get_name()}")
+            log(f"  Rotation: Pitch={mannequin_rotation.pitch}, Yaw={mannequin_rotation.yaw}, Roll={mannequin_rotation.roll}")
+            
+            # Debug: Check mannequin's forward direction
+            forward_vec = mannequin.get_actor_forward_vector()
+            log(f"  Forward Vector: X={forward_vec.x:.3f}, Y={forward_vec.y:.3f}, Z={forward_vec.z:.3f}")
 
             # --- HUD showing Belica X/Y/Z (approx 1x1 inch via 2.54 world size) ---
             # Position HUD in front of camera (Y-forward is camera's forward direction)
@@ -432,52 +440,52 @@ try:
                 else:
                     log("⚠ Warning: Basic cube mesh not found; cannot spawn focus cube")
 
-            # TEST: Spawn a big blue cube in the center for visibility
-            try:
-                test_cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
-                test_base_mat = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/BasicShapeMaterial")
-                if test_cube_mesh:
-                    # Scale 2.0 => 200cm cube; place center at z=100 so it sits on ground
-                    test_cube = unreal.EditorLevelLibrary.spawn_actor_from_class(
-                        unreal.StaticMeshActor,
-                        unreal.Vector(0.0, 0.0, 100.0),
-                        unreal.Rotator(0, 0, 0)
-                    )
-                    if test_cube:
-                        test_cube.set_actor_label("Test_BigBlueCube")
-                        smc = test_cube.static_mesh_component
-                        smc.set_static_mesh(test_cube_mesh)
-                        # Ensure visibility
-                        smc.set_visibility(True, True)
-                        smc.set_hidden_in_game(False)
-                        test_cube.set_actor_hidden_in_game(False)
-                        test_cube.set_is_temporarily_hidden_in_editor(False)
-                        try:
-                            smc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
-                        except Exception:
-                            pass
-                        test_cube.set_actor_scale3d(unreal.Vector(2.0, 2.0, 2.0))
-                        
-                        # Use custom cube color material
-                        cube_color_mat = unreal.EditorAssetLibrary.load_asset("/Game/M_NK_Cube_Color")
-                        if cube_color_mat:
-                            try:
-                                mid = unreal.KismetMaterialLibrary.create_dynamic_material_instance(
-                                    test_cube, cube_color_mat)
-                                mid.set_vector_parameter_value("Color", unreal.LinearColor(0.0, 0.0, 1.0, 1.0))
-                                smc.set_material(0, mid)
-                                log("✓ Test big blue cube spawned with M_NK_Cube_Color material")
-                            except Exception as e:
-                                log(f"⚠ Test cube M_NK_Cube_Color failed: {e}")
-                                smc.set_material(0, cube_color_mat)
-                        else:
-                            log("⚠ Test cube: M_NK_Cube_Color not found; using default material")
-                    else:
-                        log("⚠ Warning: Failed to spawn test big blue cube")
-                else:
-                    log("⚠ Warning: Basic cube mesh not found; cannot spawn test cube")
-            except Exception as e:
-                log(f"⚠ Warning: Could not add test big blue cube: {e}")
+            # TEST: Spawn a big blue cube in the center for visibility - DISABLED
+            # try:
+            #     test_cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
+            #     test_base_mat = unreal.EditorAssetLibrary.load_asset("/Engine/BasicShapes/BasicShapeMaterial")
+            #     if test_cube_mesh:
+            #         # Scale 2.0 => 200cm cube; place center at z=100 so it sits on ground
+            #         test_cube = unreal.EditorLevelLibrary.spawn_actor_from_class(
+            #             unreal.StaticMeshActor,
+            #             unreal.Vector(0.0, 0.0, 100.0),
+            #             unreal.Rotator(0, 0, 0)
+            #         )
+            #         if test_cube:
+            #             test_cube.set_actor_label("Test_BigBlueCube")
+            #             smc = test_cube.static_mesh_component
+            #             smc.set_static_mesh(test_cube_mesh)
+            #             # Ensure visibility
+            #             smc.set_visibility(True, True)
+            #             smc.set_hidden_in_game(False)
+            #             test_cube.set_actor_hidden_in_game(False)
+            #             test_cube.set_is_temporarily_hidden_in_editor(False)
+            #             try:
+            #                 smc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
+            #             except Exception:
+            #                 pass
+            #             test_cube.set_actor_scale3d(unreal.Vector(2.0, 2.0, 2.0))
+            #             
+            #             # Use custom cube color material
+            #             cube_color_mat = unreal.EditorAssetLibrary.load_asset("/Game/M_NK_Cube_Color")
+            #             if cube_color_mat:
+            #                 try:
+            #                     mid = unreal.KismetMaterialLibrary.create_dynamic_material_instance(
+            #                         test_cube, cube_color_mat)
+            #                     mid.set_vector_parameter_value("Color", unreal.LinearColor(0.0, 0.0, 1.0, 1.0))
+            #                     smc.set_material(0, mid)
+            #                     log("✓ Test big blue cube spawned with M_NK_Cube_Color material")
+            #                 except Exception as e:
+            #                     log(f"⚠ Test cube M_NK_Cube_Color failed: {e}")
+            #                     smc.set_material(0, cube_color_mat)
+            #             else:
+            #                 log("⚠ Test cube: M_NK_Cube_Color not found; using default material")
+            #         else:
+            #             log("⚠ Warning: Failed to spawn test big blue cube")
+            #     else:
+            #         log("⚠ Warning: Basic cube mesh not found; cannot spawn test cube")
+            # except Exception as e:
+            #     log(f"⚠ Warning: Could not add test big blue cube: {e}")
             
             # Draw a plus sign at origin using four thin cubes (1mm thick, 1m wide, 10m long each side)
             try:
@@ -494,7 +502,7 @@ try:
                         unreal.Rotator(0, 0, 0)
                     )
                     if plus_x:
-                        plus_x.set_actor_label("Origin_Plus_PosX")
+                        plus_x.set_actor_label("Origin_Plus_PosX_Red")
                         smc = plus_x.static_mesh_component
                         smc.set_static_mesh(cube_mesh)
                         smc.set_visibility(True, True)
@@ -505,37 +513,37 @@ try:
                             smc.set_editor_property("mobility", unreal.ComponentMobility.STATIONARY)
                         except Exception:
                             pass
-                        plus_x.set_actor_scale3d(unreal.Vector(10.0, .25, 0.01))
+                        plus_x.set_actor_scale3d(unreal.Vector(9.5, .25, 0.01))
                         
                         mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyRed")
                         if mat:
                             smc.set_material(0, mat)
                             log("✓ +X axis (Red, 10m)")
                     
-                    # # -X axis (Yellow) - extends from -0.5m to -10.5m in X
-                    # minus_x = unreal.EditorLevelLibrary.spawn_actor_from_class(
-                    #     unreal.StaticMeshActor,
-                    #     unreal.Vector(-550.0, 0.0, 0.5),  # Center at -5.5m X
-                    #     unreal.Rotator(0, 0, 0)
-                    # )
-                    # if minus_x:
-                    #     minus_x.set_actor_label("Origin_Plus_NegX")
-                    #     smc = minus_x.static_mesh_component
-                    #     smc.set_static_mesh(cube_mesh)
-                    #     smc.set_visibility(True, True)
-                    #     smc.set_hidden_in_game(False)
-                    #     minus_x.set_actor_hidden_in_game(False)
-                    #     minus_x.set_is_temporarily_hidden_in_editor(False)
-                    #     try:
-                    #         smc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
-                    #     except Exception:
-                    #         pass
-                    #     minus_x.set_actor_scale3d(unreal.Vector(100.0, 10.0, 0.01))
-                    #     
-                    #     mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyYellow")
-                    #     if mat:
-                    #         smc.set_material(0, mat)
-                    #         log("✓ -X axis (Yellow, 10m)")
+                    # -X axis (Yellow) - extends from 0 to -10m in X
+                    minus_x = unreal.EditorLevelLibrary.spawn_actor_from_class(
+                        unreal.StaticMeshActor,
+                        unreal.Vector(-500.0, 0.0, 0.5),  # Center at -5m X
+                        unreal.Rotator(0, 0, 0)
+                    )
+                    if minus_x:
+                        minus_x.set_actor_label("Origin_Plus_NegX_Yellow")
+                        smc = minus_x.static_mesh_component
+                        smc.set_static_mesh(cube_mesh)
+                        smc.set_visibility(True, True)
+                        smc.set_hidden_in_game(False)
+                        minus_x.set_actor_hidden_in_game(False)
+                        minus_x.set_is_temporarily_hidden_in_editor(False)
+                        try:
+                            smc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
+                        except Exception:
+                            pass
+                        minus_x.set_actor_scale3d(unreal.Vector(9.5, 1.0, 0.01))
+                        
+                        mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyYellow")
+                        if mat:
+                            smc.set_material(0, mat)
+                            log("✓ -X axis (Yellow, 10m)")
                     
                     # +Y axis (Green) - extends from 0 to 10m in Y
                     plus_y = unreal.EditorLevelLibrary.spawn_actor_from_class(
@@ -544,7 +552,7 @@ try:
                         unreal.Rotator(0, 0, 0)
                     )
                     if plus_y:
-                        plus_y.set_actor_label("Origin_Plus_PosY")
+                        plus_y.set_actor_label("Origin_Plus_PosY_Green")
                         smc = plus_y.static_mesh_component
                         smc.set_static_mesh(cube_mesh)
                         smc.set_visibility(True, True)
@@ -555,37 +563,37 @@ try:
                             smc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
                         except Exception:
                             pass
-                        plus_y.set_actor_scale3d(unreal.Vector(1.0, 10.0, 0.01))
+                        plus_y.set_actor_scale3d(unreal.Vector(1.0, 9.5, 0.01))
                         
                         mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyGreen")
                         if mat:
                             smc.set_material(0, mat)
                             log("✓ +Y axis (Green, 10m)")
                     
-                    # # -Y axis (Purple) - extends from -0.5m to -10.5m in Y
-                    # minus_y = unreal.EditorLevelLibrary.spawn_actor_from_class(
-                    #     unreal.StaticMeshActor,
-                    #     unreal.Vector(0.0, -550.0, 0.5),  # Center at -5.5m Y
-                    #     unreal.Rotator(0, 0, 0)
-                    # )
-                    # if minus_y:
-                    #     minus_y.set_actor_label("Origin_Plus_NegY")
-                    #     smc = minus_y.static_mesh_component
-                    #     smc.set_static_mesh(cube_mesh)
-                    #     smc.set_visibility(True, True)
-                    #     smc.set_hidden_in_game(False)
-                    #     minus_y.set_actor_hidden_in_game(False)
-                    #     minus_y.set_is_temporarily_hidden_in_editor(False)
-                    #     try:
-                    #         smc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
-                    #     except Exception:
-                    #         pass
-                    #     minus_y.set_actor_scale3d(unreal.Vector(10.0, 100.0, 0.01))
-                    #     
-                    #     mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyBlue")
-                    #     if mat:
-                    #         smc.set_material(0, mat)
-                    #         log("✓ -Y axis (Purple/Blue, 10m)")
+                    # -Y axis (Purple) - extends from 0 to -10m in Y
+                    minus_y = unreal.EditorLevelLibrary.spawn_actor_from_class(
+                        unreal.StaticMeshActor,
+                        unreal.Vector(0.0, -500.0, 0.5),  # Center at -5m Y
+                        unreal.Rotator(0, 0, 0)
+                    )
+                    if minus_y:
+                        minus_y.set_actor_label("Origin_Plus_NegY_Blue")
+                        smc = minus_y.static_mesh_component
+                        smc.set_static_mesh(cube_mesh)
+                        smc.set_visibility(True, True)
+                        smc.set_hidden_in_game(False)
+                        minus_y.set_actor_hidden_in_game(False)
+                        minus_y.set_is_temporarily_hidden_in_editor(False)
+                        try:
+                            smc.set_editor_property("mobility", unreal.ComponentMobility.MOVABLE)
+                        except Exception:
+                            pass
+                        minus_y.set_actor_scale3d(unreal.Vector(1.0, 9.5, 0.01))
+                        
+                        mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyBlue")
+                        if mat:
+                            smc.set_material(0, mat)
+                            log("✓ -Y axis (Purple/Blue, 10m)")
                 else:
                     log("⚠ Warning: Could not load cube mesh for plus sign")
             except Exception as e:
@@ -715,15 +723,17 @@ try:
             # Get the transform channels
             channels = transform_section.get_all_channels()
             location_channels = channels[0:3]  # X, Y, Z channels
+            rotation_channels = channels[3:6]  # Rotation X (Roll), Y (Pitch), Z (Yaw) channels
 
-            # Move along the mannequin's local basis (forward or right) while keeping Z grounded
-            forward = mannequin.get_actor_forward_vector()
-            right = mannequin.get_actor_right_vector()
+            # Use fixed world-space movement vectors (independent of actor rotation)
+            # This allows us to rotate the character visually without changing movement direction
+            world_x = unreal.Vector(1.0, 0.0, 0.0)  # Red (+X)
+            world_y = unreal.Vector(0.0, 1.0, 0.0)  # Green (+Y)
             start = mannequin_location
 
-            # Choose movement direction: 'forward' or 'right'
-            movement_direction = 'forward'  # change to 'right' for lateral movement
-            move_vec = forward if movement_direction == 'forward' else right
+            # Choose movement direction: 'x' for Red or 'y' for Green
+            movement_direction = 'x'  # change to 'y' for Green direction
+            move_vec = world_x if movement_direction == 'x' else world_y
 
             # Distances along chosen direction at each keyframe (cm)
             # Spread keys over 0..300 frames (adjust if using 60s timeline)
@@ -744,6 +754,11 @@ try:
                 location_channels[0].add_key(unreal.FrameNumber(frame), float(pos_x))
                 location_channels[1].add_key(unreal.FrameNumber(frame), float(pos_y))
                 location_channels[2].add_key(unreal.FrameNumber(frame), float(pos_z))
+                
+                # Set rotation keyframes to maintain spawn rotation
+                rotation_channels[0].add_key(unreal.FrameNumber(frame), float(mannequin_rotation.roll))
+                rotation_channels[1].add_key(unreal.FrameNumber(frame), float(mannequin_rotation.pitch))
+                rotation_channels[2].add_key(unreal.FrameNumber(frame), float(mannequin_rotation.yaw))
 
             log(f"✓ Movement keyframes added: {movement_direction} direction, Z grounded, distance x{distance_scale}")
 
