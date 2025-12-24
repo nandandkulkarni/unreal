@@ -156,18 +156,28 @@ def add_mannequin_to_sequence(sequence, mannequin, mannequin_location, mannequin
         )
 
         if anim_track:
-            anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
-            unreal.MovieSceneSectionExtensions.set_range(anim_section, 0, duration_frames)
+            # First animation: jog_fwd (0 to 5 seconds = 150 frames)
+            anim_section_1 = unreal.MovieSceneTrackExtensions.add_section(anim_track)
+            unreal.MovieSceneSectionExtensions.set_range(anim_section_1, 0, 150)
 
             # Load and set the jog_fwd animation
-            jog_anim = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd")
-            if jog_anim:
-                # Use the params property to set the animation sequence
-                params = anim_section.params
-                params.animation = jog_anim
-                log("✓ Skeletal animation track added with jog_fwd animation")
+            jog_fwd = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd")
+            if jog_fwd:
+                params = anim_section_1.params
+                params.animation = jog_fwd
+                log("✓ Jog_Fwd animation added (0-5s)")
+            
+            # Second animation: jog_left_start (5 seconds onward = 150 to end)
+            anim_section_2 = unreal.MovieSceneTrackExtensions.add_section(anim_track)
+            unreal.MovieSceneSectionExtensions.set_range(anim_section_2, 150, duration_frames)
+            
+            jog_left_start = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Start.Jog_Left_Start")
+            if jog_left_start:
+                params = anim_section_2.params
+                params.animation = jog_left_start
+                log("✓ Jog_Left_Start animation added (5s onward)")
             else:
-                log("✓ Skeletal animation track added (jog_fwd animation not found)")
+                log("⚠ Warning: jog_left_start animation not found")
         else:
             log("⚠ Warning: Failed to add skeletal animation track")
 
@@ -203,9 +213,11 @@ def add_movement_keyframes(transform_track, mannequin_location, mannequin_rotati
 
         # Distances along chosen direction at each keyframe (cm)
         # Spread keys over 0..300 frames (adjust if using 60s timeline)
+        # At 30fps: 5 seconds = 150 frames
         keys = [
             (0, 0.0),
             (100, 166.0),
+            (150, 249.5),   # 5 seconds
             (200, 333.0),
             (300, 500.0),
         ]
@@ -217,6 +229,11 @@ def add_movement_keyframes(transform_track, mannequin_location, mannequin_rotati
             pos_x = start.x + move_vec.x * dist_scaled
             pos_y = start.y + move_vec.y * dist_scaled
             pos_z = start.z  # grounded
+            
+            # At frame 300 (10 seconds), change Y location to -500
+            if frame == 300:
+                pos_y = -500.0
+            
             location_channels[0].add_key(unreal.FrameNumber(frame), float(pos_x))
             location_channels[1].add_key(unreal.FrameNumber(frame), float(pos_y))
             location_channels[2].add_key(unreal.FrameNumber(frame), float(pos_z))
