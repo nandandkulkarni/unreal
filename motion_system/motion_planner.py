@@ -35,6 +35,7 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             "current_time": 0.0,
             "current_pos": {"x": info["location"].x, "y": info["location"].y, "z": info["location"].z},
             "current_rotation": {"pitch": info["rotation"].pitch, "yaw": info["rotation"].yaw, "roll": info["rotation"].roll},
+            "yaw_offset": info.get("yaw_offset", 0.0),
             "current_animation": None,
             "waypoints": {},
             "keyframes": {
@@ -210,11 +211,13 @@ def add_location_keyframe(state, frame, pos):
 
 
 def add_rotation_keyframe(state, frame, rot):
-    """Add rotation keyframe"""
+    """Add rotation keyframe with character yaw offset applied"""
+    yaw_offset = state.get("yaw_offset", 0.0)
+    
     state["keyframes"]["rotation"].append({
         "frame": frame,
         "pitch": rot["pitch"],
-        "yaw": rot["yaw"],
+        "yaw": rot["yaw"] + yaw_offset,
         "roll": rot["roll"]
     })
 
@@ -564,14 +567,22 @@ def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
         rotation_rot = unreal.Rotator(pitch=rot[0], yaw=rot[1], roll=rot[2])
         
     mesh_path = cmd.get("mesh_path")
+    yaw_offset = cmd.get("yaw_offset", 0.0)
     
     mesh_rotation = None
     if "mesh_rotation" in cmd:
         mr = cmd["mesh_rotation"]
         mesh_rotation = unreal.Rotator(pitch=mr[0], yaw=mr[1], roll=mr[2])
+    elif yaw_offset != 0:
+        # If yaw_offset is provided but no mesh_rotation, create a rotator for it
+        mesh_rotation = unreal.Rotator(pitch=0.0, yaw=yaw_offset, roll=0.0)
     
     # create_mannequin can accept mesh_path and mesh_rotation
     actor = mannequin_setup.create_mannequin(actor_name, location_vec, rotation_rot, mesh_path, mesh_rotation)
+    
+    if actor:
+        # Visual Aid: Add colored axis at the spawn point
+        mannequin_setup.add_axis_origin(location_vec)
     
     if not actor:
         log(f"  ✗ Failed to create actor '{actor_name}'")
@@ -588,6 +599,7 @@ def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
     actors_info[actor_name] = {
         "location": location_vec,
         "rotation": rotation_rot,
+        "yaw_offset": yaw_offset,
         "actor": actor,
         "binding": binding
     }
@@ -669,6 +681,7 @@ def init_actor_state(actor_name, info, actor_states):
         "current_time": 0.0,
         "current_pos": {"x": loc.x, "y": loc.y, "z": loc.z},
         "current_rotation": {"pitch": rot.pitch, "yaw": rot.yaw, "roll": rot.roll},
+        "yaw_offset": info.get("yaw_offset", 0.0),
         "current_animation": None,
         "waypoints": {},
         "keyframes": {

@@ -11,16 +11,7 @@
                 0,
                 0
             ],
-            "rotation": [
-                0,
-                0,
-                0
-            ],
-            "mesh_rotation": [
-                0,
-                -90,
-                0
-            ],
+            "yaw_offset": -90,
             "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
         },
         {
@@ -70,19 +61,14 @@
             "speed_mph": 6
         },
         {
-            "command": "camera_move",
             "actor": "MainCam",
+            "command": "camera_move",
             "location": [
                 500,
                 500,
                 500
             ],
-            "rotation": [
-                0,
-                0,
-                0
-            ],
-            "duration": 5.0
+            "duration": 5
         }
     ]
 }

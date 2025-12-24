@@ -11,16 +11,7 @@
                 0,
                 0
             ],
-            "rotation": [
-                0,
-                0,
-                0
-            ],
-            "mesh_rotation": [
-                0,
-                -90,
-                0
-            ],
+            "yaw_offset": -90,
             "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
         },
         {
@@ -48,6 +39,12 @@
             "actor": "Jessica",
             "command": "animation",
             "name": "Jog_Fwd"
+        },
+        {
+            "actor": "Jessica",
+            "command": "face",
+            "direction": "north",
+            "duration": 0.5
         },
         {
             "actor": "Jessica",
