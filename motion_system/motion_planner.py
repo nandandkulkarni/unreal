@@ -482,6 +482,7 @@ def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
     # Initialize state
     init_actor_state(actor_name, actors_info[actor_name], actor_states)
     log(f"  ✓ Actor '{actor_name}' added successfully")
+    log(f"    Initial State -> Pos: {actors_info[actor_name]['location']}, Rot: {actors_info[actor_name]['rotation']}")
 
 
 def process_add_camera(cmd, actors_info, actor_states, sequence, fps):

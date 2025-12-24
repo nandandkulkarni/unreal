@@ -151,16 +151,13 @@ class DebugDB:
         self.current_run_id = self.cursor.lastrowid
         return self.current_run_id
     
-    def start_test(self, test_name, start_position, start_rotation_yaw, fps):
+    def start_test(self, test_name, fps):
         """Start a new test"""
         timestamp = datetime.now().isoformat()
         self.cursor.execute('''
-            INSERT INTO tests (run_id, test_name, start_position_x, start_position_y, 
-                             start_position_z, start_rotation_yaw, fps, timestamp)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (self.current_run_id, test_name, 
-              start_position.x, start_position.y, start_position.z,
-              start_rotation_yaw, fps, timestamp))
+            INSERT INTO tests (run_id, test_name, fps, timestamp)
+            VALUES (?, ?, ?, ?)
+        ''', (self.current_run_id, test_name, fps, timestamp))
         self.conn.commit()
         self.current_test_id = self.cursor.lastrowid
         return self.current_test_id

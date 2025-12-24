@@ -16,6 +16,8 @@ unreal_dir = r"C:\UnrealProjects\Coding\unreal"
 
 if unreal_dir not in sys.path:
     sys.path.insert(0, unreal_dir)
+if motion_system_dir not in sys.path:
+    sys.path.insert(0, motion_system_dir)
 
 # Import motion system modules from parent package
 from motion_system import logger, cleanup, sequence_setup, mannequin_setup
@@ -42,7 +44,7 @@ TEST_CASES = [
         "name": "Simple Forward Movement",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
-            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
+            {"command": "add_camera", "actor": "test_camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3}
         ]
@@ -51,7 +53,7 @@ TEST_CASES = [
         "name": "Turn and Move",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
-            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
+            {"command": "add_camera", "actor": "test_camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3}
@@ -61,7 +63,7 @@ TEST_CASES = [
         "name": "Move to Location",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
-            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
+            {"command": "add_camera", "actor": "test_camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_to_location", "target": [500, 500, 6.88], "speed_mph": 3}
         ]
@@ -70,7 +72,7 @@ TEST_CASES = [
         "name": "Waypoint Test",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
-            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
+            {"command": "add_camera", "actor": "test_camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3, "waypoint_name": "point_A"},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 180},
@@ -80,8 +82,8 @@ TEST_CASES = [
     {
         "name": "Complex Path",
         "plan": [
-            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
-            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
+            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, 0, -90], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+            {"command": "add_camera", "actor": "test_camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
@@ -128,8 +130,6 @@ def run_all_tests():
         # Start test in database
         db.start_test(
             test_name=test_case['name'],
-            start_position=unreal.Vector(0, 0, 6.882729),
-            start_rotation_yaw=-90.0,
             fps=FPS
         )
             

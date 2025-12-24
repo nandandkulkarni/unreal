@@ -54,9 +54,10 @@ def delete_old_actors():
     for actor in all_actors:
         actor_label = actor.get_actor_label()
         # Delete Test* actors and TextRenderActor, but keep Axis_ and Origin_ markers
-        if (actor_label.startswith("TestCamera") or
-            actor_label.startswith("TestMannequin") or
-            actor_label.startswith("Test_") or
+        # Case insensitive check for test prefixes
+        label_lower = actor_label.lower()
+        if (label_lower.startswith("test") or 
+            label_lower.startswith("spawned") or
                 actor.get_class().get_name() == "TextRenderActor"):
             unreal.EditorLevelLibrary.destroy_actor(actor)
             log(f"  Deleted actor: {actor_label}")
