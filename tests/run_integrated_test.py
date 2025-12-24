@@ -31,6 +31,7 @@ import motion_planner
 import keyframe_applier
 import debug_db
 import test_motion_system
+import axis_markers
 
 # Reload for development
 importlib.reload(logger)
@@ -41,6 +42,7 @@ importlib.reload(motion_planner)
 importlib.reload(keyframe_applier)
 importlib.reload(debug_db)
 importlib.reload(test_motion_system)
+importlib.reload(axis_markers)
 
 
 class IntegratedTestRunner:
@@ -303,6 +305,9 @@ class IntegratedTestRunner:
         )
         self.log_troubleshoot(f"Test run ID: {self.run_id}", "DB")
         self.log_troubleshoot(f"Database: {self.db.db_path}", "DB")
+        
+        # Create axis markers at world origin (once for entire test run)
+        axis_markers.create_axis_markers()
         
         # Default test configuration
         start_position = unreal.Vector(0, 0, 6.882729)

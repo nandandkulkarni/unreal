@@ -45,19 +45,17 @@ def delete_old_sequences():
 
 
 def delete_old_actors():
-    """Delete old Test* actors, HUD text actors, axis segments, and debug cubes"""
-    log("\nDeleting old Test* actors, HUD text actors, axis segments, and debug cubes...")
+    """Delete old Test* actors and HUD text actors (but preserve Axis markers)"""
+    log("\nDeleting old Test* actors and HUD text actors...")
     editor_actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     all_actors = editor_actor_subsystem.get_all_level_actors()
     deleted_actors = 0
 
     for actor in all_actors:
         actor_label = actor.get_actor_label()
-        # Delete Test* actors, TextRenderActor, axis segments, and debug cubes
+        # Delete Test* actors and TextRenderActor, but keep Axis_ and Origin_ markers
         if (actor_label.startswith("TestCamera") or
             actor_label.startswith("TestMannequin") or
-            actor_label.startswith("Axis_") or
-            actor_label.startswith("Origin_") or
             actor_label.startswith("Test_") or
                 actor.get_class().get_name() == "TextRenderActor"):
             unreal.EditorLevelLibrary.destroy_actor(actor)
