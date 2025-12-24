@@ -36,7 +36,7 @@ def main():
     print("=" * 80)
     
     # Path to integrated test
-    script_path = r"C:\UnrealProjects\Coding\unreal\tests\run_integrated_test.py"
+    script_path = r"C:\UnrealProjects\Coding\unreal\motion_system\tests\run_integrated_test.py"
     
     if not os.path.exists(script_path):
         print(f"\n✗ Error: Script not found at {script_path}")

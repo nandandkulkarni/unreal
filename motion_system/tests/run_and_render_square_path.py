@@ -23,37 +23,19 @@ print("="*80 + "\n")
 
 test_command = """
 import sys
-sys.path.append('C:/UnrealProjects/Coding/unreal')
-sys.path.append('C:/UnrealProjects/Coding/unreal/tests')
+import unreal
+import os
 
-from tests.run_integrated_test import run_single_test
+# Add motion_system to path
+motion_system_dir = 'C:/UnrealProjects/Coding/unreal/motion_system'
+tests_dir = 'C:/UnrealProjects/Coding/unreal/motion_system/tests'
+if motion_system_dir not in sys.path:
+    sys.path.insert(0, motion_system_dir)
+if tests_dir not in sys.path:
+    sys.path.insert(0, tests_dir)
 
-# Square Path Return test
-test_case = {
-    "name": "Square Path Return",
-    "commands": [
-        {"type": "move_forward", "distance": 500.0, "duration": 2.0},
-        {"type": "turn", "angle": 90.0, "duration": 1.0},
-        {"type": "move_forward", "distance": 500.0, "duration": 2.0},
-        {"type": "turn", "angle": 90.0, "duration": 1.0},
-        {"type": "move_forward", "distance": 500.0, "duration": 2.0},
-        {"type": "turn", "angle": 90.0, "duration": 1.0},
-        {"type": "move_forward", "distance": 500.0, "duration": 2.0},
-        {"type": "turn", "angle": 90.0, "duration": 1.0}
-    ],
-    "expected_final_position": {"x": 0.0, "y": 0.0, "z": 6.88},
-    "expected_final_rotation": {"yaw": 0.0},
-    "keep_sequence": True
-}
-
-result = run_single_test(test_case, test_number=99)
-print(f"Test Result: {result['status']}")
-if result['status'] == 'PASSED':
-    print(f"Sequence: {result.get('sequence_name', 'Unknown')}")
-    result.get('sequence_name', '')
-else:
-    print(f"Error: {result.get('errors', 'Unknown error')}")
-    ''
+# Import and run the integrated test
+exec(open('C:/UnrealProjects/Coding/unreal/motion_system/tests/run_integrated_test.py').read())
 """
 
 result = execute_python_command(test_command)

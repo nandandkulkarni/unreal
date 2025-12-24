@@ -12,26 +12,15 @@ from datetime import datetime
 # Add motion_system directory to path
 # Force absolute paths since __file__ may point to wrong location during remote execution
 parent_dir = r"C:\UnrealProjects\Coding\unreal"
-script_dir = r"C:\UnrealProjects\Coding\unreal\tests"
+script_dir = r"C:\UnrealProjects\Coding\unreal\motion_system\tests"
 
-motion_system_dir = os.path.join(parent_dir, "motion_system")
-if motion_system_dir not in sys.path:
-    sys.path.insert(0, motion_system_dir)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
-# Also add tests directory for test_motion_system module
-if script_dir not in sys.path:
-    sys.path.insert(0, script_dir)
-
-# Import modules directly (not as package)
-import logger
-import cleanup
-import sequence_setup
-import mannequin_setup
-import motion_planner
-import keyframe_applier
-import debug_db
-import test_motion_system
-import axis_markers
+# Import modules from motion_system package
+from motion_system import logger, cleanup, sequence_setup, mannequin_setup
+from motion_system import motion_planner, keyframe_applier, debug_db
+from motion_system import test_motion_system, axis_markers
 
 # Reload for development
 importlib.reload(logger)

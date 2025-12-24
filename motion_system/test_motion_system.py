@@ -4,20 +4,11 @@ Simple verification that motion commands produce expected final positions
 """
 
 import unreal
-import sys
-import os
 
-# Add parent directory to path (to find motion_system)
-script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(script_dir)  # Go up to unreal/
-motion_system_dir = os.path.join(parent_dir, "motion_system")
-if motion_system_dir not in sys.path:
-    sys.path.insert(0, motion_system_dir)
-
-# Import motion system modules directly
-import motion_planner
-import logger
-import debug_db
+# Import motion system modules from same package
+from . import motion_planner
+from . import logger
+from . import debug_db
 
 class MotionTestFramework:
     """Simple testing framework for motion command system"""

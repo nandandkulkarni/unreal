@@ -5,15 +5,15 @@ Database Query Helper - Interactive analysis of motion test results
 import sys
 import os
 
-# Add parent directory to path (to find motion_system)
+# Add parent directories to path
 script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(script_dir)  # Go up to unreal/
-motion_system_dir = os.path.join(parent_dir, "motion_system")
-if motion_system_dir not in sys.path:
-    sys.path.insert(0, motion_system_dir)
+motion_system_dir = os.path.dirname(script_dir)  # Go up to motion_system/
+unreal_dir = os.path.dirname(motion_system_dir)  # Go up to unreal/
+if unreal_dir not in sys.path:
+    sys.path.insert(0, unreal_dir)
 
-import debug_db
-import logger
+from motion_system import debug_db
+from motion_system import logger
 
 # Get database instance
 db = debug_db.get_debug_db()

@@ -11,6 +11,9 @@ from . import visual_aids
 from . import motion_planner
 from . import keyframe_applier
 from . import debug_db
+from . import test_motion_system
+from . import axis_markers
+from . import motion_commands
 
 __all__ = [
     'logger',
@@ -23,4 +26,7 @@ __all__ = [
     'motion_planner',
     'keyframe_applier',
     'debug_db',
+    'test_motion_system',
+    'axis_markers',
+    'motion_commands',
 ]

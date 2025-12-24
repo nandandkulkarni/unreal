@@ -1,4 +1,4 @@
-"""
+""" 
 Cleanup utilities - Delete old test assets and actors
 """
 import unreal
@@ -7,22 +7,22 @@ from logger import log, log_header
 
 def close_open_sequences():
     """Close any currently open sequences"""
-    log("\nClosing any open sequences...")
+    logger.log("\nClosing any open sequences...")
     try:
         current_seq = unreal.LevelSequenceEditorBlueprintLibrary.get_current_level_sequence()
         if current_seq:
-            log(f"  Closing: {current_seq.get_name()}")
+            logger.log(f"  Closing: {current_seq.get_name()}")
             unreal.LevelSequenceEditorBlueprintLibrary.close_level_sequence()
-            log("✓ Closed open sequence")
+            logger.log("✓ Closed open sequence")
         else:
-            log("  No sequence currently open")
+            logger.log("  No sequence currently open")
     except Exception as e:
-        log(f"  Could not close sequence: {e}")
+        logger.log(f"  Could not close sequence: {e}")
 
 
 def delete_old_sequences():
     """Delete old Test* sequences"""
-    log("\nDeleting old Test* sequences...")
+    logger.log("\nDeleting old Test* sequences...")
     sequences_path = "/Game/Sequences"
     deleted_sequences = 0
 
@@ -33,20 +33,20 @@ def delete_old_sequences():
             if asset_name.startswith("Test"):
                 try:
                     unreal.EditorAssetLibrary.delete_asset(asset_path)
-                    log(f"  Deleted sequence: {asset_name}")
+                    logger.log(f"  Deleted sequence: {asset_name}")
                     deleted_sequences += 1
                 except Exception as e:
-                    log(f"  Failed to delete {asset_name}: {e}")
+                    logger.log(f"  Failed to delete {asset_name}: {e}")
 
     if deleted_sequences > 0:
-        log(f"✓ Deleted {deleted_sequences} old sequence(s)")
+        logger.log(f"✓ Deleted {deleted_sequences} old sequence(s)")
     else:
-        log("  No old sequences found")
+        logger.log("  No old sequences found")
 
 
 def delete_old_actors():
     """Delete old Test* actors and HUD text actors (but preserve Axis markers)"""
-    log("\nDeleting old Test* actors and HUD text actors...")
+    logger.log("\nDeleting old Test* actors and HUD text actors...")
     editor_actor_subsystem = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
     all_actors = editor_actor_subsystem.get_all_level_actors()
     deleted_actors = 0
@@ -59,13 +59,13 @@ def delete_old_actors():
             actor_label.startswith("Test_") or
                 actor.get_class().get_name() == "TextRenderActor"):
             unreal.EditorLevelLibrary.destroy_actor(actor)
-            log(f"  Deleted actor: {actor_label}")
+            logger.log(f"  Deleted actor: {actor_label}")
             deleted_actors += 1
 
     if deleted_actors > 0:
-        log(f"✓ Deleted {deleted_actors} old actor(s)")
+        logger.log(f"✓ Deleted {deleted_actors} old actor(s)")
     else:
-        log("  No old actors found")
+        logger.log("  No old actors found")
 
 
 def cleanup_old_assets(keep_sequence=False):
@@ -74,10 +74,10 @@ def cleanup_old_assets(keep_sequence=False):
     Args:
         keep_sequence: If True, skip deleting sequences (to preserve test results)
     """
-    log_header("STEP 1: Cleaning up old Test* assets")
+    logger.log_header("STEP 1: Cleaning up old Test* assets")
     close_open_sequences()
     if not keep_sequence:
         delete_old_sequences()
     else:
-        log("\nSkipping sequence deletion (keep_sequence=True)")
+        logger.log("\nSkipping sequence deletion (keep_sequence=True)")
     delete_old_actors()
