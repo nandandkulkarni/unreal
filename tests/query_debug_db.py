@@ -8,10 +8,12 @@ import os
 # Add parent directory to path (to find motion_system)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)  # Go up to unreal/
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
+motion_system_dir = os.path.join(parent_dir, "motion_system")
+if motion_system_dir not in sys.path:
+    sys.path.insert(0, motion_system_dir)
 
-from motion_system import debug_db, logger
+import debug_db
+import logger
 
 # Get database instance
 db = debug_db.get_debug_db()

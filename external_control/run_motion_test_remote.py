@@ -43,19 +43,24 @@ def main():
         return
     
     print(f"\n[1] Connecting to Unreal Remote Control...")
-    print(f"    URL: {BASE_URL}")
+    print(f"    URL: {BASE_URL}/object/call")
     
     try:
-        # Test connection
-        response = requests.get(f"{BASE_URL}/")
+        # Test connection with a simple command
+        test_payload = {
+            "objectPath": "/Script/PythonScriptPlugin.Default__PythonScriptLibrary",
+            "functionName": "ExecutePythonCommand",
+            "parameters": {"PythonCommand": "print('Remote Control Connected')"}
+        }
+        response = requests.put(f"{BASE_URL}/object/call", json=test_payload)
         if response.status_code != 200:
-            print(f"\n✗ Error: Cannot connect to Unreal Remote Control")
-            print(f"    Make sure Unreal is running with Remote Control enabled")
+            print(f"\n✗ Error: HTTP {response.status_code}")
+            print(f"    Response: {response.text}")
             return
         print(f"    ✓ Connected")
     except Exception as e:
-        print(f"\n✗ Connection failed: {e}")
-        print(f"    Make sure Unreal is running with Remote Control enabled")
+        print(f"\n✗ Connection Error:")
+        print(f"    {type(e).__name__}: {e}")
         return
     
     print(f"\n[2] Executing integrated test suite...")

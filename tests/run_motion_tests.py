@@ -11,12 +11,18 @@ import importlib
 # Add parent directory to path (to find motion_system)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)  # Go up to unreal/
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
+motion_system_dir = os.path.join(parent_dir, "motion_system")
+if motion_system_dir not in sys.path:
+    sys.path.insert(0, motion_system_dir)
 
-# Import modules from motion_system package
-from motion_system import logger, cleanup, sequence_setup, mannequin_setup
-from motion_system import motion_planner, keyframe_applier, debug_db
+# Import modules directly
+import logger
+import cleanup
+import sequence_setup
+import mannequin_setup
+import motion_planner
+import keyframe_applier
+import debug_db
 import test_motion_system
 
 # Reload for development

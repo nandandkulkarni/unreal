@@ -9,15 +9,32 @@ import os
 import importlib
 from datetime import datetime
 
-# Add parent directory to path (to find motion_system)
-script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(script_dir)  # Go up to unreal/
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
+# Add motion_system directory to path
+# Use absolute path to handle remote execution where __file__ may not be set
+try:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+except NameError:
+    # __file__ not defined (remote execution), use absolute paths
+    parent_dir = r"C:\UnrealProjects\Coding\unreal"
+    script_dir = r"C:\UnrealProjects\Coding\unreal\tests"
 
-# Import modules from motion_system package
-from motion_system import logger, cleanup, sequence_setup, mannequin_setup
-from motion_system import motion_planner, keyframe_applier, debug_db
+motion_system_dir = os.path.join(parent_dir, "motion_system")
+if motion_system_dir not in sys.path:
+    sys.path.insert(0, motion_system_dir)
+
+# Also add tests directory for test_motion_system module
+if script_dir not in sys.path:
+    sys.path.insert(0, script_dir)
+
+# Import modules directly (not as package)
+import logger
+import cleanup
+import sequence_setup
+import mannequin_setup
+import motion_planner
+import keyframe_applier
+import debug_db
 import test_motion_system
 
 # Reload for development

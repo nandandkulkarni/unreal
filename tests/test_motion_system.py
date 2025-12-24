@@ -10,15 +10,18 @@ import os
 # Add parent directory to path (to find motion_system)
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)  # Go up to unreal/
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
+motion_system_dir = os.path.join(parent_dir, "motion_system")
+if motion_system_dir not in sys.path:
+    sys.path.insert(0, motion_system_dir)
 
-# Import motion system modules
-from motion_system import motion_planner, logger, debug_db
+# Import motion system modules directly
+import motion_planner
+import logger
+import debug_db
 
 class MotionTestFramework:
     """Simple testing framework for motion command system"""
-    , use_db=True):
+    def __init__(self, use_db=True):
         self.tests_passed = 0
         self.tests_failed = 0
         self.tolerance_cm = 1.0  # Position tolerance in cm
@@ -27,7 +30,6 @@ class MotionTestFramework:
         # Database integration
         self.use_db = use_db
         self.db = debug_db.get_debug_db() if use_db else None
-        self.tolerance_deg = 0.5  # Rotation tolerance in degrees
     
     def log_test(self, message):
         """Log test message"""
@@ -36,6 +38,9 @@ class MotionTestFramework:
     def assert_position(self, actual, expected, test_name):
         """Verify position matches expected within tolerance"""
         diff_x = abs(actual.x - expected.x)
+        diff_y = abs(actual.y - expected.y)
+        diff_z = abs(actual.z - expected.z)
+        max_diff = max(diff_x, diff_y, diff_z)
         passed = max_diff <= self.tolerance_cm
         
         # Log to database
@@ -44,10 +49,6 @@ class MotionTestFramework:
             self.db.log_assertion('position_x', expected.x, actual.x, self.tolerance_cm, diff_x <= self.tolerance_cm)
             self.db.log_assertion('position_y', expected.y, actual.y, self.tolerance_cm, diff_y <= self.tolerance_cm)
             self.db.log_assertion('position_z', expected.z, actual.z, self.tolerance_cm, diff_z <= self.tolerance_cm)
-        
-        if passed.z)
-        
-        max_diff = max(diff_x, diff_y, diff_z)
         
         if max_diff <= self.tolerance_cm:
             self.tests_passed += 1
@@ -71,13 +72,7 @@ class MotionTestFramework:
         def normalize_angle(angle):
             while angle > 180:
                 angle -= 360
-        passed = diff <= self.tolerance_deg
-        
-        # Log to database
-        if self.db:
-            self.db.log_assertion('rotation_yaw', expected_norm, actual_norm, self.tolerance_deg, passed)
-        
-        if passed
+            while angle < -180:
                 angle += 360
             return angle
         
@@ -89,18 +84,19 @@ class MotionTestFramework:
         if diff > 180:
             diff = 360 - diff
         
+        passed = diff <= self.tolerance_deg
+        
+        # Log to database
+        if self.db:
+            self.db.log_assertion('rotation_yaw', expected_norm, actual_norm, self.tolerance_deg, passed)
+        
         if diff <= self.tolerance_deg:
             self.tests_passed += 1
             self.log_test(f"✓ PASS: {test_name}")
             self.log_test(f"  Expected: {expected_norm:.2f}°")
             self.log_test(f"  Actual:   {actual_norm:.2f}°")
-        passed = diff <= tolerance_sec
-        
-        # Log to database
-        if self.db:
-            self.db.log_assertion('duration', expected_seconds, actual_seconds, tolerance_sec, passed)
-        
-        if passed
+            self.log_test(f"  Diff:     {diff:.2f}°")
+            return True
         else:
             self.tests_failed += 1
             self.log_test(f"✗ FAIL: {test_name}")
@@ -113,6 +109,11 @@ class MotionTestFramework:
         """Verify duration matches expected"""
         tolerance_sec = 0.1  # 100ms tolerance
         diff = abs(actual_seconds - expected_seconds)
+        passed = diff <= tolerance_sec
+        
+        # Log to database
+        if self.db:
+            self.db.log_assertion('duration', expected_seconds, actual_seconds, tolerance_sec, passed)
         
         if diff <= tolerance_sec:
             self.tests_passed += 1
@@ -211,7 +212,10 @@ class MotionTestFramework:
             
         except Exception as e:
             self.log_test(f"⚠ Error reading keyframes: {e}")
-          Log commands and expected keyframes to database
+            return None
+    
+    def log_motion_plan_to_db(self, motion_plan, keyframe_data, fps):
+        """Log commands and expected keyframes to database"""
         if self.db:
             for i, command in enumerate(motion_plan):
                 command_id = self.db.log_command(
@@ -244,7 +248,9 @@ class MotionTestFramework:
                     time_seconds=kf['frame'] / fps,
                     x=0, y=0, z=0, yaw=kf['yaw']
                 )
-        
+    
+    def calculate_expected_final_state(self, keyframe_data, start_rotation):
+        """Calculate expected final state from keyframe data"""
         # Get final position from last location keyframe
         if not keyframe_data['location_keyframes']:
             return None
@@ -269,27 +275,12 @@ class MotionTestFramework:
             'position': final_position,
             'yaw': final_yaw,
             'duration_seconds': duration_seconds,
-            'keyframe_data': keyframe_data  # Store for analysieyframes'][-1]
-        final_position = unreal.Vector(
-            last_loc_kf['x'],
-            last_loc_kf['y'],
-            last_loc_kf['z']
-        )
-        
-        # Get final rotation from last rotation keyframe
-        final_yaw = start_rotation
-        if keyframe_data['rotation_keyframes']:
-            last_rot_kf = keyframe_data['rotation_keyframes'][-1]
-            final_yaw = last_rot_kf['yaw']
-        
-        # Get duration
-        duration_seconds = keyframe_data['duration_seconds']
-        
-        return {
-            'position': final_position,
-            'yaw': final_yaw,
-            'duration_seconds': duration_seconds
+            'keyframe_data': keyframe_data  # Store for analysis
         }
+    
+    def run_tests(self):
+        """Run all motion tests - Override in subclass"""
+        pass
     
     def print_summary(self):
         """Print test summary"""
