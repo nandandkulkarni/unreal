@@ -77,7 +77,11 @@ try:
         print(f"  Output: {output_path}")
         print(f"  Resolution: 1920x1080")
         print(f"  Format: PNG sequence")
-        print(f"\\nRender queued! Open 'Window > Cinematics > Movie Render Queue' to start rendering.")
+        
+        # Start the render
+        print("\\nStarting render...")
+        subsystem.render_queue_with_executor(unreal.MoviePipelinePIEExecutor.static_class())
+        print("SUCCESS: Render started! Check Unreal Editor for progress.")
 
 except Exception as e:
     print(f"ERROR TYPE: {{type(e).__name__}}")
