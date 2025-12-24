@@ -14,7 +14,7 @@ parent_dir = os.path.dirname(script_dir)  # Go up to unreal/
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
-# Import modules
+# Import modules from motion_system package
 from motion_system import logger, cleanup, sequence_setup, mannequin_setup
 from motion_system import motion_planner, keyframe_applier, debug_db
 import test_motion_system

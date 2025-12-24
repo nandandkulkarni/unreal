@@ -14,9 +14,7 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 # Import motion system modules
-from motion_system import motion_planner
-from motion_system import logger
-from motion_system import debug_db
+from motion_system import motion_planner, logger, debug_db
 
 class MotionTestFramework:
     """Simple testing framework for motion command system"""
