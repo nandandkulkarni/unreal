@@ -104,6 +104,8 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             process_wait(cmd, state, fps)
         elif command_type == "camera_move":
             process_camera_move(cmd, state, fps)
+        elif command_type == "camera_look_at":
+            process_camera_look_at(cmd, actors_info)
         elif command_type == "add_actor":
             process_add_actor(cmd, actors_info, actor_states, sequence, fps)
         elif command_type == "add_camera":
@@ -422,6 +424,33 @@ def process_camera_move(cmd, state, fps):
     log(f"  Camera move to ({target_pos['x']}, {target_pos['y']}, {target_pos['z']}) in {duration_sec}s")
 
 
+def process_camera_look_at(cmd, actors_info):
+    """Enable LookAt tracking for a camera targeting another actor"""
+    camera_name = cmd.get("actor", "test_camera")
+    target_name = cmd.get("target") or cmd.get("look_at_actor")
+    
+    if not target_name:
+        log("  ⚠ No target specified for camera_look_at")
+        return
+        
+    if camera_name not in actors_info or target_name not in actors_info:
+        log(f"  ⚠ Camera '{camera_name}' or Target '{target_name}' not found")
+        return
+        
+    camera_actor = actors_info[camera_name]["actor"]
+    target_actor = actors_info[target_name]["actor"]
+    
+    # Process optional cinematic settings
+    offset = None
+    if "offset" in cmd:
+        o = cmd["offset"]
+        offset = unreal.Vector(o[0], o[1], o[2])
+        
+    interp_speed = cmd.get("interp_speed", 0.0)
+    
+    camera_setup.enable_lookat_tracking(camera_actor, target_actor, offset, interp_speed)
+
+
 def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
     """Add a new actor to the scene and sequence"""
     actor_name = cmd.get("actor")
@@ -532,6 +561,15 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
     # Initialize state
     init_actor_state(camera_name, actors_info[camera_name], actor_states)
     log(f"  ✓ Camera '{camera_name}' added successfully")
+    
+    # Handle look_at_actor if specified in creation
+    if "look_at_actor" in cmd:
+        target_name = cmd["look_at_actor"]
+        if target_name in actors_info:
+            # Re-use process_camera_look_at logic
+            process_camera_look_at(cmd, actors_info)
+        else:
+            log(f"  ⚠ Cannot track '{target_name}': actor not yet created")
 
 
 def init_actor_state(actor_name, info, actor_states):

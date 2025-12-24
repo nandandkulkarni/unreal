@@ -1,0 +1,63 @@
+{
+    "name": "Tracking Camera Scene",
+    "fps": 30,
+    "plan": [
+        {
+            "command": "add_actor",
+            "actor": "Hero",
+            "location": [
+                0,
+                0,
+                0
+            ],
+            "rotation": [
+                0,
+                -90,
+                0
+            ],
+            "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
+        },
+        {
+            "command": "add_camera",
+            "actor": "test_camera",
+            "location": [
+                -400,
+                -400,
+                200
+            ],
+            "rotation": [
+                0,
+                0,
+                0
+            ],
+            "look_at_actor": "Hero"
+        },
+        {
+            "actor": "Hero",
+            "command": "animation",
+            "name": "Jog_Fwd"
+        },
+        {
+            "actor": "Hero",
+            "command": "move_by_distance",
+            "direction": "forward",
+            "meters": 10,
+            "speed_mph": 5
+        },
+        {
+            "command": "camera_move",
+            "actor": "test_camera",
+            "location": [
+                400,
+                400,
+                400
+            ],
+            "rotation": [
+                0,
+                0,
+                0
+            ],
+            "duration": 5.0
+        }
+    ]
+}

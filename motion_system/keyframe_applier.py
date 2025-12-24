@@ -45,30 +45,38 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
 
 
 def apply_transform_keyframes(section, keyframes, actor_name):
-    """Apply location and rotation keyframes to transform section"""
+    """Apply location and rotation keyframes to transform section with smooth interpolation"""
     channels = section.get_all_channels()
     location_channels = channels[0:3]  # X, Y, Z
     rotation_channels = channels[3:6]  # Roll, Pitch, Yaw
     
+    # helper for adding smooth keys
+    def add_smooth_key(channel, frame, value):
+        key = channel.add_key(frame, float(value))
+        if hasattr(key, 'set_interpolation'):
+            key.set_interpolation(unreal.MovieSceneKeyInterpolation.CUBIC)
+            if hasattr(key, 'set_tangent_mode'):
+                key.set_tangent_mode(unreal.MovieSceneKeyTangentMode.AUTO)
+
     # Location keyframes
     loc_keys = keyframes.get("location", [])
     for key in loc_keys:
         frame = unreal.FrameNumber(key["frame"])
-        location_channels[0].add_key(frame, float(key["x"]))
-        location_channels[1].add_key(frame, float(key["y"]))
-        location_channels[2].add_key(frame, float(key["z"]))
+        add_smooth_key(location_channels[0], frame, key["x"])
+        add_smooth_key(location_channels[1], frame, key["y"])
+        add_smooth_key(location_channels[2], frame, key["z"])
     
-    log(f"  ✓ Added {len(loc_keys)} location keyframes")
+    log(f"  ✓ Added {len(loc_keys)} location keyframes (Smooth/Cubic)")
     
     # Rotation keyframes
     rot_keys = keyframes.get("rotation", [])
     for key in rot_keys:
         frame = unreal.FrameNumber(key["frame"])
-        rotation_channels[0].add_key(frame, float(key["roll"]))
-        rotation_channels[1].add_key(frame, float(key["pitch"]))
-        rotation_channels[2].add_key(frame, float(key["yaw"]))
+        add_smooth_key(rotation_channels[0], frame, key["roll"])
+        add_smooth_key(rotation_channels[1], frame, key["pitch"])
+        add_smooth_key(rotation_channels[2], frame, key["yaw"])
     
-    log(f"  ✓ Added {len(rot_keys)} rotation keyframes")
+    log(f"  ✓ Added {len(rot_keys)} rotation keyframes (Smooth/Cubic)")
 
 
 def apply_animation_keyframes(binding, keyframes, duration_frames, actor_name):

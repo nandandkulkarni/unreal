@@ -1,0 +1,81 @@
+{
+    "name": "Cinematic Tracking Demo",
+    "fps": 30,
+    "plan": [
+        {
+            "command": "add_actor",
+            "actor": "Hero",
+            "location": [
+                0,
+                0,
+                0
+            ],
+            "rotation": [
+                0,
+                -90,
+                0
+            ],
+            "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
+        },
+        {
+            "command": "add_camera",
+            "actor": "MainCam",
+            "location": [
+                -500,
+                -500,
+                250
+            ],
+            "rotation": [
+                0,
+                0,
+                0
+            ],
+            "look_at_actor": "Hero",
+            "offset": [
+                0,
+                0,
+                150
+            ],
+            "interp_speed": 10.0
+        },
+        {
+            "actor": "Hero",
+            "command": "animation",
+            "name": "Jog_Fwd"
+        },
+        {
+            "actor": "Hero",
+            "command": "move_by_distance",
+            "direction": "forward",
+            "meters": 8,
+            "speed_mph": 6
+        },
+        {
+            "actor": "Hero",
+            "command": "turn_by_degree",
+            "degrees": 90
+        },
+        {
+            "actor": "Hero",
+            "command": "move_by_distance",
+            "direction": "forward",
+            "meters": 8,
+            "speed_mph": 6
+        },
+        {
+            "command": "camera_move",
+            "actor": "MainCam",
+            "location": [
+                500,
+                500,
+                500
+            ],
+            "rotation": [
+                0,
+                0,
+                0
+            ],
+            "duration": 5.0
+        }
+    ]
+}
