@@ -1,0 +1,2285 @@
+UNREAL PYTHON API REFERENCE
+Generated for camera tracking and sequencer automation
+================================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CAMERA CLASSES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+CineCameraActor
+================================================================================
+
+Properties:
+  actor_guid
+  actor_instance_guid
+  always_relevant
+  auto_destroy_when_finished
+  camera_component
+  can_be_damaged
+  content_bundle_guid
+  custom_time_dilation
+  enable_auto_lod_generation
+  find_camera_component_when_view_target
+  generate_overlap_events_during_level_streaming
+  hidden
+  initial_life_span
+  instigator
+  is_spatially_loaded
+  life_span
+  lookat_tracking_settings
+  min_net_update_frequency
+  net_cull_distance_squared
+  net_dormancy
+  net_priority
+  net_update_frequency
+  net_use_owner_relevancy
+  on_actor_begin_overlap
+  on_actor_end_overlap
+  on_actor_hit
+  on_actor_touch
+  on_actor_un_touch
+  on_begin_cursor_over
+  on_clicked
+  on_destroyed
+  on_end_cursor_over
+  on_end_play
+  on_input_touch_begin
+  on_input_touch_end
+  on_input_touch_enter
+  on_input_touch_leave
+  on_released
+  on_take_any_damage
+  on_take_point_damage
+  on_take_radial_damage
+  only_relevant_to_owner
+  pivot_offset
+  replicate_using_registered_sub_object_list
+  replicates
+  root_component
+  runtime_grid
+  scene_component
+  spawn_collision_handling_method
+  sprite_scale
+  tags
+
+Methods:
+  acquire_editor_element_handle()
+  actor_has_tag()
+  add_actor_local_offset()
+  add_actor_local_rotation()
+  add_actor_local_transform()
+  add_actor_world_offset()
+  add_actor_world_rotation()
+  add_actor_world_transform()
+  add_actor_world_transform_keep_scale()
+  add_tick_prerequisite_actor()
+  add_tick_prerequisite_component()
+  attach_to_actor()
+  attach_to_component()
+  call_method()
+  can_trigger_resimulation()
+  cast()
+  create_input_component()
+  destroy_actor()
+  detach_from_actor()
+  disable_input()
+  enable_input()
+  find_component_by_tag()
+  flush_net_dormancy()
+  force_net_update()
+  get_actor_bounds()
+  get_actor_enable_collision()
+  get_actor_eyes_view_point()
+  get_actor_forward_vector()
+  get_actor_label()
+  get_actor_location()
+  get_actor_relative_scale3d()
+  get_actor_right_vector()
+  get_actor_rotation()
+  get_actor_scale3d()
+  get_actor_tick_interval()
+  get_actor_time_dilation()
+  get_actor_transform()
+  get_actor_up_vector()
+  get_all_child_actors()
+  get_attach_parent_actor()
+  get_attach_parent_socket_name()
+  get_attached_actors()
+  get_auto_activate_player_index()
+  get_cine_camera_component()
+  get_class()
+  get_component_by_class()
+  get_components_by_class()
+  get_components_by_interface()
+  get_components_by_tag()
+  get_default_actor_label()
+  get_default_object()
+  get_distance_to()
+  get_dot_product_to()
+  get_editor_property()
+  get_fname()
+  get_folder_path()
+  get_full_name()
+  get_game_time_since_creation()
+  get_horizontal_distance_to()
+  get_horizontal_dot_product_to()
+  get_instigator()
+  get_instigator_controller()
+  get_level()
+  get_level_transform()
+  get_life_span()
+  get_local_role()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_overlapping_actors()
+  get_overlapping_components()
+  get_owner()
+  get_package()
+  get_parent_actor()
+  get_parent_component()
+  get_path_name()
+  get_physics_replication_mode()
+  get_ray_tracing_group_id()
+  get_remote_role()
+  get_resimulation_threshold()
+  get_squared_distance_to()
+  get_squared_horizontal_distance_to()
+  get_tickable_when_paused()
+  get_touching_actors()
+  get_touching_components()
+  get_typed_outer()
+  get_velocity()
+  get_vertical_distance_to()
+  get_world()
+  has_authority()
+  has_tag()
+  is_actor_being_destroyed()
+  is_actor_tick_enabled()
+  is_child_actor()
+  is_editable()
+  is_editor_property_overridden()
+  is_hidden_ed()
+  is_hidden_ed_at_startup()
+  is_overlapping_actor()
+  is_package_external()
+  is_selectable()
+  is_temporarily_hidden_in_editor()
+  make_noise()
+  modify()
+  on_become_view_target()
+  on_end_view_target()
+  on_reset()
+  prestream_textures()
+  receive_actor_begin_cursor_over()
+  receive_actor_begin_overlap()
+  receive_actor_end_cursor_over()
+  receive_actor_end_overlap()
+  receive_actor_on_clicked()
+  receive_actor_on_input_touch_begin()
+  receive_actor_on_input_touch_end()
+  receive_actor_on_input_touch_enter()
+  receive_actor_on_input_touch_leave()
+  receive_actor_on_released()
+  receive_actor_touch()
+  receive_actor_untouch()
+  receive_any_damage()
+  receive_async_physics_tick()
+  receive_begin_play()
+  receive_destroyed()
+  receive_end_play()
+  receive_hit()
+  receive_point_damage()
+  receive_radial_damage()
+  receive_tick()
+  register_as_focal_point_in_physics_replication_lod()
+  remove_tick_prerequisite_actor()
+  remove_tick_prerequisite_component()
+  rename()
+  reset_editor_property()
+  set_actor_enable_collision()
+  set_actor_hidden()
+  set_actor_hidden_in_game()
+  set_actor_label()
+  set_actor_location()
+  set_actor_location_and_rotation()
+  set_actor_relative_location()
+  set_actor_relative_rotation()
+  set_actor_relative_scale3d()
+  set_actor_relative_transform()
+  set_actor_rotation()
+  set_actor_scale3d()
+  set_actor_tick_enabled()
+  set_actor_tick_interval()
+  set_actor_transform()
+  set_editor_properties()
+  set_editor_property()
+  set_folder_path()
+  set_is_temporarily_hidden_in_editor()
+  set_life_span()
+  set_net_dormancy()
+  set_owner()
+  set_physics_replication_mode()
+  set_ray_tracing_group_id()
+  set_replicate_movement()
+  set_replicates()
+  set_tick_enabled()
+  set_tick_group()
+  set_tick_prerequisite()
+  set_tickable_when_paused()
+  static_class()
+  tear_off()
+  teleport()
+  unregister_as_focal_point_in_physics_replication_lod()
+  was_recently_rendered()
+
+================================================================================
+CineCameraComponent
+================================================================================
+
+Properties:
+  absolute_location
+  absolute_rotation
+  absolute_scale
+  aspect_ratio
+  aspect_ratio_axis_constraint
+  auto_activate
+  auto_calculate_ortho_planes
+  auto_plane_shift
+  b_absolute_translation
+  b_use_controller_view_rotation
+  b_use_pawn_view_rotation
+  camera_mesh
+  camera_mesh_hidden_in_game
+  component_tags
+  constrain_aspect_ratio
+  crop_overscan
+  crop_settings
+  current_aperture
+  current_focal_length
+  current_focus_distance
+  custom_near_clipping_plane
+  detail_mode
+  draw_frustum_allowed
+  enable_first_person_field_of_view
+  enable_first_person_scale
+  exposure_method
+  field_of_view
+  filmback
+  first_person_field_of_view
+  first_person_scale
+  focus_settings
+  hidden_in_game
+  is_editor_only
+  lens_settings
+  lock_to_hmd
+  mobility
+  modify_frequency
+  on_component_activated
+  on_component_deactivated
+  ortho_far_clip_plane
+  ortho_near_clip_plane
+  ortho_width
+  override_aspect_ratio_axis_constraint
+  override_custom_near_clipping_plane
+  overscan
+  physics_volume_changed_delegate
+  post_process_blend_weight
+  post_process_settings
+  projection_mode
+  relative_location
+  relative_rotation
+  relative_scale3d
+  relative_translation
+  replicate_using_registered_sub_object_list
+  replicates
+  scale_resolution_with_overscan
+  should_update_physics_volume
+  update_ortho_planes
+  use_attach_parent_bound
+  use_camera_height_as_view_target
+  use_field_of_view_for_lod
+  use_pawn_control_rotation
+  visible
+
+Methods:
+  acquire_editor_element_handle()
+  activate()
+  add_asset_user_data_of_class()
+  add_local_offset()
+  add_local_rotation()
+  add_local_transform()
+  add_or_update_blendable()
+  add_relative_location()
+  add_relative_rotation()
+  add_tick_prerequisite_actor()
+  add_tick_prerequisite_component()
+  add_world_offset()
+  add_world_rotation()
+  add_world_transform()
+  add_world_transform_keep_scale()
+  attach_to()
+  attach_to_component()
+  call_method()
+  cast()
+  component_has_tag()
+  deactivate()
+  destroy_component()
+  detach_from_component()
+  detach_from_parent()
+  does_socket_exist()
+  get_all_socket_names()
+  get_asset_user_data_of_class()
+  get_attach_parent()
+  get_attach_socket_name()
+  get_camera_view()
+  get_child_component()
+  get_children_components()
+  get_class()
+  get_component_tick_interval()
+  get_component_velocity()
+  get_crop_preset_name()
+  get_default_filmback_preset_name()
+  get_default_object()
+  get_editor_property()
+  get_filmback_preset_name()
+  get_filmback_presets_copy()
+  get_fname()
+  get_forward_vector()
+  get_full_name()
+  get_horizontal_field_of_view()
+  get_horizontal_projection_offset()
+  get_lens_preset_name()
+  get_lens_presets_copy()
+  get_name()
+  get_num_children_components()
+  get_outer()
+  get_outermost()
+  get_owner()
+  get_package()
+  get_parent_components()
+  get_path_name()
+  get_physics_volume()
+  get_relative_transform()
+  get_right_vector()
+  get_socket_location()
+  get_socket_quaternion()
+  get_socket_rotation()
+  get_socket_transform()
+  get_typed_outer()
+  get_up_vector()
+  get_vertical_field_of_view()
+  get_vertical_projection_offset()
+  get_world()
+  get_world_location()
+  get_world_rotation()
+  get_world_scale()
+  get_world_transform()
+  has_asset_user_data_of_class()
+  is_active()
+  is_any_simulating_physics()
+  is_being_destroyed()
+  is_component_tick_enabled()
+  is_editor_property_overridden()
+  is_package_external()
+  is_simulating_physics()
+  is_visible()
+  k2_attach_to()
+  modify()
+  receive_async_physics_tick()
+  receive_begin_play()
+  receive_end_play()
+  receive_initialize_component()
+  receive_tick()
+  receive_uninitialize_component()
+  remove_blendable()
+  remove_tick_prerequisite_actor()
+  remove_tick_prerequisite_component()
+  rename()
+  reset_editor_property()
+  reset_relative_transform()
+  set_absolute()
+  set_active()
+  set_aspect_ratio()
+  set_aspect_ratio_axis_constraint()
+  set_auto_activate()
+  set_auto_calculate_ortho_planes()
+  set_auto_plane_shift()
+  set_component_tick_enabled()
+  set_component_tick_interval()
+  set_component_tick_interval_and_cooldown()
+  set_constraint_aspect_ratio()
+  set_crop_overscan()
+  set_crop_preset_by_name()
+  set_editor_properties()
+  set_editor_property()
+  set_enable_first_person_field_of_view()
+  set_enable_first_person_scale()
+  set_field_of_view()
+  set_filmback_preset_by_name()
+  set_first_person_field_of_view()
+  set_first_person_scale()
+  set_hidden_in_game()
+  set_is_replicated()
+  set_lens_preset_by_name()
+  set_mobility()
+  set_ortho_far_clip_plane()
+  set_ortho_near_clip_plane()
+  set_ortho_width()
+  set_overscan()
+  set_post_process_blend_weight()
+  set_projection_mode()
+  set_relative_location()
+  set_relative_location_and_rotation()
+  set_relative_rotation()
+  set_relative_scale3d()
+  set_relative_transform()
+  set_scale_resolution_with_overscan()
+  set_tick_group()
+  set_tickable_when_paused()
+  set_update_ortho_planes()
+  set_use_camera_height_as_view_target()
+  set_use_field_of_view_for_lod()
+  set_visibility()
+  set_world_location()
+  set_world_location_and_rotation()
+  set_world_rotation()
+  set_world_scale3d()
+  set_world_transform()
+  static_class()
+  toggle_active()
+  toggle_visibility()
+
+================================================================================
+CameraComponent
+================================================================================
+
+Properties:
+  absolute_location
+  absolute_rotation
+  absolute_scale
+  aspect_ratio
+  aspect_ratio_axis_constraint
+  auto_activate
+  auto_calculate_ortho_planes
+  auto_plane_shift
+  b_absolute_translation
+  b_use_controller_view_rotation
+  b_use_pawn_view_rotation
+  camera_mesh
+  camera_mesh_hidden_in_game
+  component_tags
+  constrain_aspect_ratio
+  crop_overscan
+  detail_mode
+  draw_frustum_allowed
+  enable_first_person_field_of_view
+  enable_first_person_scale
+  field_of_view
+  first_person_field_of_view
+  first_person_scale
+  hidden_in_game
+  is_editor_only
+  lock_to_hmd
+  mobility
+  modify_frequency
+  on_component_activated
+  on_component_deactivated
+  ortho_far_clip_plane
+  ortho_near_clip_plane
+  ortho_width
+  override_aspect_ratio_axis_constraint
+  overscan
+  physics_volume_changed_delegate
+  post_process_blend_weight
+  post_process_settings
+  projection_mode
+  relative_location
+  relative_rotation
+  relative_scale3d
+  relative_translation
+  replicate_using_registered_sub_object_list
+  replicates
+  scale_resolution_with_overscan
+  should_update_physics_volume
+  update_ortho_planes
+  use_attach_parent_bound
+  use_camera_height_as_view_target
+  use_field_of_view_for_lod
+  use_pawn_control_rotation
+  visible
+
+Methods:
+  acquire_editor_element_handle()
+  activate()
+  add_asset_user_data_of_class()
+  add_local_offset()
+  add_local_rotation()
+  add_local_transform()
+  add_or_update_blendable()
+  add_relative_location()
+  add_relative_rotation()
+  add_tick_prerequisite_actor()
+  add_tick_prerequisite_component()
+  add_world_offset()
+  add_world_rotation()
+  add_world_transform()
+  add_world_transform_keep_scale()
+  attach_to()
+  attach_to_component()
+  call_method()
+  cast()
+  component_has_tag()
+  deactivate()
+  destroy_component()
+  detach_from_component()
+  detach_from_parent()
+  does_socket_exist()
+  get_all_socket_names()
+  get_asset_user_data_of_class()
+  get_attach_parent()
+  get_attach_socket_name()
+  get_camera_view()
+  get_child_component()
+  get_children_components()
+  get_class()
+  get_component_tick_interval()
+  get_component_velocity()
+  get_default_object()
+  get_editor_property()
+  get_fname()
+  get_forward_vector()
+  get_full_name()
+  get_name()
+  get_num_children_components()
+  get_outer()
+  get_outermost()
+  get_owner()
+  get_package()
+  get_parent_components()
+  get_path_name()
+  get_physics_volume()
+  get_relative_transform()
+  get_right_vector()
+  get_socket_location()
+  get_socket_quaternion()
+  get_socket_rotation()
+  get_socket_transform()
+  get_typed_outer()
+  get_up_vector()
+  get_world()
+  get_world_location()
+  get_world_rotation()
+  get_world_scale()
+  get_world_transform()
+  has_asset_user_data_of_class()
+  is_active()
+  is_any_simulating_physics()
+  is_being_destroyed()
+  is_component_tick_enabled()
+  is_editor_property_overridden()
+  is_package_external()
+  is_simulating_physics()
+  is_visible()
+  k2_attach_to()
+  modify()
+  receive_async_physics_tick()
+  receive_begin_play()
+  receive_end_play()
+  receive_initialize_component()
+  receive_tick()
+  receive_uninitialize_component()
+  remove_blendable()
+  remove_tick_prerequisite_actor()
+  remove_tick_prerequisite_component()
+  rename()
+  reset_editor_property()
+  reset_relative_transform()
+  set_absolute()
+  set_active()
+  set_aspect_ratio()
+  set_aspect_ratio_axis_constraint()
+  set_auto_activate()
+  set_auto_calculate_ortho_planes()
+  set_auto_plane_shift()
+  set_component_tick_enabled()
+  set_component_tick_interval()
+  set_component_tick_interval_and_cooldown()
+  set_constraint_aspect_ratio()
+  set_crop_overscan()
+  set_editor_properties()
+  set_editor_property()
+  set_enable_first_person_field_of_view()
+  set_enable_first_person_scale()
+  set_field_of_view()
+  set_first_person_field_of_view()
+  set_first_person_scale()
+  set_hidden_in_game()
+  set_is_replicated()
+  set_mobility()
+  set_ortho_far_clip_plane()
+  set_ortho_near_clip_plane()
+  set_ortho_width()
+  set_overscan()
+  set_post_process_blend_weight()
+  set_projection_mode()
+  set_relative_location()
+  set_relative_location_and_rotation()
+  set_relative_rotation()
+  set_relative_scale3d()
+  set_relative_transform()
+  set_scale_resolution_with_overscan()
+  set_tick_group()
+  set_tickable_when_paused()
+  set_update_ortho_planes()
+  set_use_camera_height_as_view_target()
+  set_use_field_of_view_for_lod()
+  set_visibility()
+  set_world_location()
+  set_world_location_and_rotation()
+  set_world_rotation()
+  set_world_scale3d()
+  set_world_transform()
+  static_class()
+  toggle_active()
+  toggle_visibility()
+
+================================================================================
+CameraLookatTrackingSettings
+================================================================================
+
+Properties:
+  actor_to_track
+  allow_roll
+  draw_debug_look_at_tracking_position
+  enable_look_at_tracking
+  look_at_tracking_interp_speed
+  relative_offset
+
+Methods:
+  assign()
+  cast()
+  copy()
+  export_text()
+  get_editor_property()
+  import_text()
+  set_editor_properties()
+  set_editor_property()
+  static_struct()
+  to_tuple()
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEQUENCER CLASSES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+LevelSequence
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  add_asset_user_data_of_class()
+  add_marked_frame()
+  add_marked_frame_to_sequence()
+  add_possessable()
+  add_root_folder_to_sequence()
+  add_spawnable_from_class()
+  add_spawnable_from_instance()
+  add_track()
+  are_marked_frames_locked()
+  call_method()
+  cast()
+  copy_meta_data()
+  delete_marked_frame()
+  delete_marked_frames()
+  find_binding_by_id()
+  find_binding_by_name()
+  find_binding_by_tag()
+  find_bindings_by_tag()
+  find_marked_frame_by_frame_number()
+  find_marked_frame_by_frame_number_in_sequence()
+  find_marked_frame_by_label()
+  find_meta_data_by_class()
+  find_next_marked_frame()
+  find_next_marked_frame_in_sequence()
+  find_or_add_meta_data_by_class()
+  find_tracks_by_exact_type()
+  find_tracks_by_type()
+  get_asset_user_data_of_class()
+  get_binding_id()
+  get_bindings()
+  get_class()
+  get_clock_source()
+  get_custom_clock()
+  get_default_object()
+  get_display_rate()
+  get_earliest_timecode_source()
+  get_editor_property()
+  get_evaluation_type()
+  get_fname()
+  get_full_name()
+  get_marked_frames()
+  get_marked_frames_from_sequence()
+  get_movie_scene()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_playback_end()
+  get_playback_end_seconds()
+  get_playback_range()
+  get_playback_start()
+  get_playback_start_seconds()
+  get_portable_binding_id()
+  get_possessables()
+  get_root_folders_in_sequence()
+  get_spawnables()
+  get_tick_resolution()
+  get_tracks()
+  get_typed_outer()
+  get_view_range_end()
+  get_view_range_start()
+  get_work_range_end()
+  get_work_range_start()
+  get_world()
+  has_asset_user_data_of_class()
+  is_editor_property_overridden()
+  is_package_external()
+  is_playback_range_locked()
+  is_read_only()
+  locate_bound_objects()
+  make_range()
+  make_range_seconds()
+  modify()
+  remove_meta_data_by_class()
+  remove_root_folder_from_sequence()
+  remove_track()
+  rename()
+  reset_editor_property()
+  resolve_binding_id()
+  set_clock_source()
+  set_display_rate()
+  set_editor_properties()
+  set_editor_property()
+  set_evaluation_type()
+  set_marked_frame()
+  set_marked_frame_in_sequence()
+  set_marked_frames_locked()
+  set_playback_end()
+  set_playback_end_seconds()
+  set_playback_range_locked()
+  set_playback_start()
+  set_playback_start_seconds()
+  set_read_only()
+  set_tick_resolution()
+  set_tick_resolution_directly()
+  set_view_range_end()
+  set_view_range_start()
+  set_work_range_end()
+  set_work_range_start()
+  sort_marked_frames()
+  static_class()
+
+================================================================================
+MovieSceneSequence
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  add_marked_frame()
+  add_marked_frame_to_sequence()
+  add_possessable()
+  add_root_folder_to_sequence()
+  add_spawnable_from_class()
+  add_spawnable_from_instance()
+  add_track()
+  are_marked_frames_locked()
+  call_method()
+  cast()
+  delete_marked_frame()
+  delete_marked_frames()
+  find_binding_by_id()
+  find_binding_by_name()
+  find_binding_by_tag()
+  find_bindings_by_tag()
+  find_marked_frame_by_frame_number()
+  find_marked_frame_by_frame_number_in_sequence()
+  find_marked_frame_by_label()
+  find_next_marked_frame()
+  find_next_marked_frame_in_sequence()
+  find_tracks_by_exact_type()
+  find_tracks_by_type()
+  get_binding_id()
+  get_bindings()
+  get_class()
+  get_clock_source()
+  get_custom_clock()
+  get_default_object()
+  get_display_rate()
+  get_earliest_timecode_source()
+  get_editor_property()
+  get_evaluation_type()
+  get_fname()
+  get_full_name()
+  get_marked_frames()
+  get_marked_frames_from_sequence()
+  get_movie_scene()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_playback_end()
+  get_playback_end_seconds()
+  get_playback_range()
+  get_playback_start()
+  get_playback_start_seconds()
+  get_portable_binding_id()
+  get_possessables()
+  get_root_folders_in_sequence()
+  get_spawnables()
+  get_tick_resolution()
+  get_tracks()
+  get_typed_outer()
+  get_view_range_end()
+  get_view_range_start()
+  get_work_range_end()
+  get_work_range_start()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  is_playback_range_locked()
+  is_read_only()
+  locate_bound_objects()
+  make_range()
+  make_range_seconds()
+  modify()
+  remove_root_folder_from_sequence()
+  remove_track()
+  rename()
+  reset_editor_property()
+  resolve_binding_id()
+  set_clock_source()
+  set_display_rate()
+  set_editor_properties()
+  set_editor_property()
+  set_evaluation_type()
+  set_marked_frame()
+  set_marked_frame_in_sequence()
+  set_marked_frames_locked()
+  set_playback_end()
+  set_playback_end_seconds()
+  set_playback_range_locked()
+  set_playback_start()
+  set_playback_start_seconds()
+  set_read_only()
+  set_tick_resolution()
+  set_tick_resolution_directly()
+  set_view_range_end()
+  set_view_range_start()
+  set_work_range_end()
+  set_work_range_start()
+  sort_marked_frames()
+  static_class()
+
+================================================================================
+MovieSceneSequenceExtensions
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  add_marked_frame()
+  add_marked_frame_to_sequence()
+  add_possessable()
+  add_root_folder_to_sequence()
+  add_spawnable_from_class()
+  add_spawnable_from_instance()
+  add_track()
+  are_marked_frames_locked()
+  call_method()
+  cast()
+  delete_marked_frame()
+  delete_marked_frames()
+  find_binding_by_id()
+  find_binding_by_name()
+  find_marked_frame_by_frame_number()
+  find_marked_frame_by_frame_number_in_sequence()
+  find_marked_frame_by_label()
+  find_next_marked_frame()
+  find_next_marked_frame_in_sequence()
+  find_tracks_by_exact_type()
+  find_tracks_by_type()
+  get_binding_id()
+  get_bindings()
+  get_class()
+  get_clock_source()
+  get_custom_clock()
+  get_default_object()
+  get_display_rate()
+  get_editor_property()
+  get_evaluation_type()
+  get_fname()
+  get_full_name()
+  get_marked_frames()
+  get_marked_frames_from_sequence()
+  get_movie_scene()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_playback_end()
+  get_playback_end_seconds()
+  get_playback_range()
+  get_playback_start()
+  get_playback_start_seconds()
+  get_portable_binding_id()
+  get_possessables()
+  get_root_folders_in_sequence()
+  get_spawnables()
+  get_tick_resolution()
+  get_tracks()
+  get_typed_outer()
+  get_view_range_end()
+  get_view_range_start()
+  get_work_range_end()
+  get_work_range_start()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  is_playback_range_locked()
+  is_read_only()
+  locate_bound_objects()
+  make_range()
+  make_range_seconds()
+  modify()
+  remove_root_folder_from_sequence()
+  remove_track()
+  rename()
+  reset_editor_property()
+  resolve_binding_id()
+  set_clock_source()
+  set_display_rate()
+  set_editor_properties()
+  set_editor_property()
+  set_evaluation_type()
+  set_marked_frame()
+  set_marked_frame_in_sequence()
+  set_marked_frames_locked()
+  set_playback_end()
+  set_playback_end_seconds()
+  set_playback_range_locked()
+  set_playback_start()
+  set_playback_start_seconds()
+  set_read_only()
+  set_tick_resolution()
+  set_tick_resolution_directly()
+  set_view_range_end()
+  set_view_range_start()
+  set_work_range_end()
+  set_work_range_start()
+  sort_marked_frames()
+  static_class()
+
+================================================================================
+MovieSceneBindingExtensions
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  add_track()
+  call_method()
+  cast()
+  equal_equal_movie_scene_binding_proxy()
+  find_tracks_by_exact_type()
+  find_tracks_by_type()
+  get_child_possessables()
+  get_class()
+  get_default_object()
+  get_display_name()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_id()
+  get_name()
+  get_object_template()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_parent()
+  get_path_name()
+  get_possessed_object_class()
+  get_sorting_order()
+  get_tracks()
+  get_typed_outer()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  is_valid()
+  modify()
+  move_binding_contents()
+  not_equal_movie_scene_binding_proxy()
+  remove()
+  remove_track()
+  rename()
+  reset_editor_property()
+  set_display_name()
+  set_editor_properties()
+  set_editor_property()
+  set_name()
+  set_parent()
+  set_sorting_order()
+  set_spawnable_binding_id()
+  static_class()
+
+================================================================================
+MovieSceneTrackExtensions
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  add_section()
+  call_method()
+  cast()
+  get_class()
+  get_color_tint()
+  get_default_object()
+  get_display_name()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_section_to_key()
+  get_sections()
+  get_sorting_order()
+  get_track_row_display_name()
+  get_typed_outer()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  remove_section()
+  rename()
+  reset_editor_property()
+  set_color_tint()
+  set_display_name()
+  set_editor_properties()
+  set_editor_property()
+  set_section_to_key()
+  set_sorting_order()
+  set_track_row_display_name()
+  static_class()
+
+================================================================================
+MovieSceneSectionExtensions
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  call_method()
+  cast()
+  get_all_channels()
+  get_auto_size_end_frame()
+  get_auto_size_end_frame_seconds()
+  get_auto_size_has_end_frame()
+  get_auto_size_has_start_frame()
+  get_auto_size_start_frame()
+  get_auto_size_start_frame_seconds()
+  get_channel()
+  get_channels_by_type()
+  get_class()
+  get_default_object()
+  get_editor_property()
+  get_end_frame()
+  get_end_frame_seconds()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_parent_sequence_frame()
+  get_path_name()
+  get_start_frame()
+  get_start_frame_seconds()
+  get_typed_outer()
+  get_world()
+  has_end_frame()
+  has_start_frame()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  rename()
+  reset_editor_property()
+  set_editor_properties()
+  set_editor_property()
+  set_end_frame()
+  set_end_frame_bounded()
+  set_end_frame_seconds()
+  set_range()
+  set_range_seconds()
+  set_start_frame()
+  set_start_frame_bounded()
+  set_start_frame_seconds()
+  static_class()
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TRACK CLASSES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+MovieScene3DTransformTrack
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  add_section()
+  call_method()
+  cast()
+  get_class()
+  get_color_tint()
+  get_default_object()
+  get_display_name()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_property_name()
+  get_property_path()
+  get_section_to_key()
+  get_sections()
+  get_sorting_order()
+  get_track_row_display_name()
+  get_typed_outer()
+  get_unique_track_name()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  remove_section()
+  rename()
+  reset_editor_property()
+  set_color_tint()
+  set_display_name()
+  set_editor_properties()
+  set_editor_property()
+  set_property_name_and_path()
+  set_section_to_key()
+  set_sorting_order()
+  set_track_row_display_name()
+  static_class()
+
+================================================================================
+MovieScene3DTransformSection
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  call_method()
+  cast()
+  get_all_channels()
+  get_auto_size_end_frame()
+  get_auto_size_end_frame_seconds()
+  get_auto_size_has_end_frame()
+  get_auto_size_has_start_frame()
+  get_auto_size_start_frame()
+  get_auto_size_start_frame_seconds()
+  get_blend_type()
+  get_channel()
+  get_channels_by_type()
+  get_class()
+  get_color_tint()
+  get_completion_mode()
+  get_default_object()
+  get_editor_property()
+  get_end_frame()
+  get_end_frame_seconds()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_overlap_priority()
+  get_package()
+  get_path_name()
+  get_post_roll_frames()
+  get_pre_roll_frames()
+  get_row_index()
+  get_start_frame()
+  get_start_frame_seconds()
+  get_typed_outer()
+  get_world()
+  has_end_frame()
+  has_start_frame()
+  is_active()
+  is_editor_property_overridden()
+  is_locked()
+  is_package_external()
+  modify()
+  rename()
+  reset_editor_property()
+  set_blend_type()
+  set_color_tint()
+  set_completion_mode()
+  set_editor_properties()
+  set_editor_property()
+  set_end_frame()
+  set_end_frame_bounded()
+  set_end_frame_seconds()
+  set_is_active()
+  set_is_locked()
+  set_overlap_priority()
+  set_post_roll_frames()
+  set_pre_roll_frames()
+  set_range()
+  set_range_seconds()
+  set_row_index()
+  set_start_frame()
+  set_start_frame_bounded()
+  set_start_frame_seconds()
+  static_class()
+
+================================================================================
+MovieSceneCameraCutTrack
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  add_section()
+  call_method()
+  cast()
+  get_class()
+  get_color_tint()
+  get_default_object()
+  get_display_name()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_section_to_key()
+  get_sections()
+  get_sorting_order()
+  get_track_row_display_name()
+  get_typed_outer()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  remove_section()
+  rename()
+  reset_editor_property()
+  set_color_tint()
+  set_display_name()
+  set_editor_properties()
+  set_editor_property()
+  set_section_to_key()
+  set_sorting_order()
+  set_track_row_display_name()
+  static_class()
+
+================================================================================
+MovieSceneCameraCutSection
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  call_method()
+  cast()
+  get_all_channels()
+  get_auto_size_end_frame()
+  get_auto_size_end_frame_seconds()
+  get_auto_size_has_end_frame()
+  get_auto_size_has_start_frame()
+  get_auto_size_start_frame()
+  get_auto_size_start_frame_seconds()
+  get_blend_type()
+  get_camera_binding_id()
+  get_channel()
+  get_channels_by_type()
+  get_class()
+  get_color_tint()
+  get_completion_mode()
+  get_default_object()
+  get_editor_property()
+  get_end_frame()
+  get_end_frame_seconds()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_overlap_priority()
+  get_package()
+  get_path_name()
+  get_post_roll_frames()
+  get_pre_roll_frames()
+  get_row_index()
+  get_start_frame()
+  get_start_frame_seconds()
+  get_typed_outer()
+  get_world()
+  has_end_frame()
+  has_start_frame()
+  is_active()
+  is_editor_property_overridden()
+  is_locked()
+  is_package_external()
+  modify()
+  rename()
+  reset_editor_property()
+  set_blend_type()
+  set_camera_binding_id()
+  set_color_tint()
+  set_completion_mode()
+  set_editor_properties()
+  set_editor_property()
+  set_end_frame()
+  set_end_frame_bounded()
+  set_end_frame_seconds()
+  set_is_active()
+  set_is_locked()
+  set_overlap_priority()
+  set_post_roll_frames()
+  set_pre_roll_frames()
+  set_range()
+  set_range_seconds()
+  set_row_index()
+  set_start_frame()
+  set_start_frame_bounded()
+  set_start_frame_seconds()
+  static_class()
+
+================================================================================
+MovieSceneSkeletalAnimationTrack
+================================================================================
+
+Properties:
+  swap_root_bone
+
+Methods:
+  acquire_editor_element_handle()
+  add_section()
+  call_method()
+  cast()
+  get_class()
+  get_color_tint()
+  get_default_object()
+  get_display_name()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_section_to_key()
+  get_sections()
+  get_sorting_order()
+  get_track_row_display_name()
+  get_typed_outer()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  remove_section()
+  rename()
+  reset_editor_property()
+  set_color_tint()
+  set_display_name()
+  set_editor_properties()
+  set_editor_property()
+  set_section_to_key()
+  set_sorting_order()
+  set_track_row_display_name()
+  static_class()
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONSTRAINT & TRACKING CLASSES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+AngularConstraintMotion
+================================================================================
+
+Properties:
+  ACM_FREE
+  ACM_LIMITED
+  ACM_LOCKED
+  name
+  value
+
+Methods:
+  cast()
+  get_display_name()
+  static_enum()
+
+================================================================================
+AngularDriveConstraint
+================================================================================
+
+Methods:
+  assign()
+  cast()
+  copy()
+  export_text()
+  get_editor_property()
+  import_text()
+  set_editor_properties()
+  set_editor_property()
+  static_struct()
+  to_tuple()
+
+================================================================================
+AnimGraphNode_Constraint
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  call_method()
+  cast()
+  get_class()
+  get_default_object()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_typed_outer()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  rename()
+  reset_editor_property()
+  set_editor_properties()
+  set_editor_property()
+  static_class()
+
+================================================================================
+AnimNode_Constraint
+================================================================================
+
+Properties:
+  alpha
+  alpha_bool_blend
+  alpha_bool_enabled
+  alpha_curve_name
+  alpha_input_type
+  alpha_scale_bias
+  alpha_scale_bias_clamp
+  component_pose
+  lod_threshold
+
+Methods:
+  assign()
+  cast()
+  copy()
+  export_text()
+  get_editor_property()
+  import_text()
+  set_editor_properties()
+  set_editor_property()
+  static_struct()
+  to_tuple()
+
+================================================================================
+AnimPhysAngularConstraintType
+================================================================================
+
+Properties:
+  ANGULAR
+  CONE
+  name
+  value
+
+Methods:
+  cast()
+  get_display_name()
+  static_enum()
+
+================================================================================
+AnimPhysConstraintSetup
+================================================================================
+
+Methods:
+  assign()
+  cast()
+  copy()
+  export_text()
+  get_editor_property()
+  import_text()
+  set_editor_properties()
+  set_editor_property()
+  static_struct()
+  to_tuple()
+
+================================================================================
+AnimPhysConstraintType
+================================================================================
+
+Properties:
+  ANGULAR
+  CONE
+  name
+  value
+
+Methods:
+  cast()
+  get_display_name()
+  static_enum()
+
+================================================================================
+AnimPhysLinearConstraintType
+================================================================================
+
+Properties:
+  FREE
+  LIMITED
+  name
+  value
+
+Methods:
+  cast()
+  get_display_name()
+  static_enum()
+
+================================================================================
+AspectRatioAxisConstraint
+================================================================================
+
+Properties:
+  ASPECT_RATIO_MAINTAIN_XFOV
+  ASPECT_RATIO_MAINTAIN_YFOV
+  ASPECT_RATIO_MAJOR_AXIS_FOV
+  name
+  value
+
+Methods:
+  cast()
+  get_display_name()
+  static_enum()
+
+================================================================================
+ChaosVDConstraintDataComponent
+================================================================================
+
+Properties:
+  auto_activate
+  component_tags
+  is_editor_only
+  on_component_activated
+  on_component_deactivated
+  replicate_using_registered_sub_object_list
+  replicates
+
+Methods:
+  acquire_editor_element_handle()
+  activate()
+  add_asset_user_data_of_class()
+  add_tick_prerequisite_actor()
+  add_tick_prerequisite_component()
+  call_method()
+  cast()
+  component_has_tag()
+  deactivate()
+  destroy_component()
+  get_asset_user_data_of_class()
+  get_class()
+  get_component_tick_interval()
+  get_default_object()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_owner()
+  get_package()
+  get_path_name()
+  get_typed_outer()
+  get_world()
+  has_asset_user_data_of_class()
+  is_active()
+  is_being_destroyed()
+  is_component_tick_enabled()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  receive_async_physics_tick()
+  receive_begin_play()
+  receive_end_play()
+  receive_initialize_component()
+  receive_tick()
+  receive_uninitialize_component()
+  remove_tick_prerequisite_actor()
+  remove_tick_prerequisite_component()
+  rename()
+  reset_editor_property()
+  set_active()
+  set_auto_activate()
+  set_component_tick_enabled()
+  set_component_tick_interval()
+  set_component_tick_interval_and_cooldown()
+  set_editor_properties()
+  set_editor_property()
+  set_is_replicated()
+  set_tick_group()
+  set_tickable_when_paused()
+  static_class()
+  toggle_active()
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACTOR CLASSES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+Actor
+================================================================================
+
+Properties:
+  actor_guid
+  actor_instance_guid
+  always_relevant
+  auto_destroy_when_finished
+  can_be_damaged
+  content_bundle_guid
+  custom_time_dilation
+  enable_auto_lod_generation
+  find_camera_component_when_view_target
+  generate_overlap_events_during_level_streaming
+  hidden
+  initial_life_span
+  instigator
+  is_spatially_loaded
+  life_span
+  min_net_update_frequency
+  net_cull_distance_squared
+  net_dormancy
+  net_priority
+  net_update_frequency
+  net_use_owner_relevancy
+  on_actor_begin_overlap
+  on_actor_end_overlap
+  on_actor_hit
+  on_actor_touch
+  on_actor_un_touch
+  on_begin_cursor_over
+  on_clicked
+  on_destroyed
+  on_end_cursor_over
+  on_end_play
+  on_input_touch_begin
+  on_input_touch_end
+  on_input_touch_enter
+  on_input_touch_leave
+  on_released
+  on_take_any_damage
+  on_take_point_damage
+  on_take_radial_damage
+  only_relevant_to_owner
+  pivot_offset
+  replicate_using_registered_sub_object_list
+  replicates
+  root_component
+  runtime_grid
+  spawn_collision_handling_method
+  sprite_scale
+  tags
+
+Methods:
+  acquire_editor_element_handle()
+  actor_has_tag()
+  add_actor_local_offset()
+  add_actor_local_rotation()
+  add_actor_local_transform()
+  add_actor_world_offset()
+  add_actor_world_rotation()
+  add_actor_world_transform()
+  add_actor_world_transform_keep_scale()
+  add_tick_prerequisite_actor()
+  add_tick_prerequisite_component()
+  attach_to_actor()
+  attach_to_component()
+  call_method()
+  can_trigger_resimulation()
+  cast()
+  create_input_component()
+  destroy_actor()
+  detach_from_actor()
+  disable_input()
+  enable_input()
+  find_component_by_tag()
+  flush_net_dormancy()
+  force_net_update()
+  get_actor_bounds()
+  get_actor_enable_collision()
+  get_actor_eyes_view_point()
+  get_actor_forward_vector()
+  get_actor_label()
+  get_actor_location()
+  get_actor_relative_scale3d()
+  get_actor_right_vector()
+  get_actor_rotation()
+  get_actor_scale3d()
+  get_actor_tick_interval()
+  get_actor_time_dilation()
+  get_actor_transform()
+  get_actor_up_vector()
+  get_all_child_actors()
+  get_attach_parent_actor()
+  get_attach_parent_socket_name()
+  get_attached_actors()
+  get_class()
+  get_component_by_class()
+  get_components_by_class()
+  get_components_by_interface()
+  get_components_by_tag()
+  get_default_actor_label()
+  get_default_object()
+  get_distance_to()
+  get_dot_product_to()
+  get_editor_property()
+  get_fname()
+  get_folder_path()
+  get_full_name()
+  get_game_time_since_creation()
+  get_horizontal_distance_to()
+  get_horizontal_dot_product_to()
+  get_instigator()
+  get_instigator_controller()
+  get_level()
+  get_level_transform()
+  get_life_span()
+  get_local_role()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_overlapping_actors()
+  get_overlapping_components()
+  get_owner()
+  get_package()
+  get_parent_actor()
+  get_parent_component()
+  get_path_name()
+  get_physics_replication_mode()
+  get_ray_tracing_group_id()
+  get_remote_role()
+  get_resimulation_threshold()
+  get_squared_distance_to()
+  get_squared_horizontal_distance_to()
+  get_tickable_when_paused()
+  get_touching_actors()
+  get_touching_components()
+  get_typed_outer()
+  get_velocity()
+  get_vertical_distance_to()
+  get_world()
+  has_authority()
+  has_tag()
+  is_actor_being_destroyed()
+  is_actor_tick_enabled()
+  is_child_actor()
+  is_editable()
+  is_editor_property_overridden()
+  is_hidden_ed()
+  is_hidden_ed_at_startup()
+  is_overlapping_actor()
+  is_package_external()
+  is_selectable()
+  is_temporarily_hidden_in_editor()
+  make_noise()
+  modify()
+  on_become_view_target()
+  on_end_view_target()
+  on_reset()
+  prestream_textures()
+  receive_actor_begin_cursor_over()
+  receive_actor_begin_overlap()
+  receive_actor_end_cursor_over()
+  receive_actor_end_overlap()
+  receive_actor_on_clicked()
+  receive_actor_on_input_touch_begin()
+  receive_actor_on_input_touch_end()
+  receive_actor_on_input_touch_enter()
+  receive_actor_on_input_touch_leave()
+  receive_actor_on_released()
+  receive_actor_touch()
+  receive_actor_untouch()
+  receive_any_damage()
+  receive_async_physics_tick()
+  receive_begin_play()
+  receive_destroyed()
+  receive_end_play()
+  receive_hit()
+  receive_point_damage()
+  receive_radial_damage()
+  receive_tick()
+  register_as_focal_point_in_physics_replication_lod()
+  remove_tick_prerequisite_actor()
+  remove_tick_prerequisite_component()
+  rename()
+  reset_editor_property()
+  set_actor_enable_collision()
+  set_actor_hidden()
+  set_actor_hidden_in_game()
+  set_actor_label()
+  set_actor_location()
+  set_actor_location_and_rotation()
+  set_actor_relative_location()
+  set_actor_relative_rotation()
+  set_actor_relative_scale3d()
+  set_actor_relative_transform()
+  set_actor_rotation()
+  set_actor_scale3d()
+  set_actor_tick_enabled()
+  set_actor_tick_interval()
+  set_actor_transform()
+  set_editor_properties()
+  set_editor_property()
+  set_folder_path()
+  set_is_temporarily_hidden_in_editor()
+  set_life_span()
+  set_net_dormancy()
+  set_owner()
+  set_physics_replication_mode()
+  set_ray_tracing_group_id()
+  set_replicate_movement()
+  set_replicates()
+  set_tick_enabled()
+  set_tick_group()
+  set_tick_prerequisite()
+  set_tickable_when_paused()
+  static_class()
+  tear_off()
+  teleport()
+  unregister_as_focal_point_in_physics_replication_lod()
+  was_recently_rendered()
+
+================================================================================
+SkeletalMeshActor
+================================================================================
+
+Properties:
+  actor_guid
+  actor_instance_guid
+  always_relevant
+  auto_destroy_when_finished
+  can_be_damaged
+  content_bundle_guid
+  custom_time_dilation
+  enable_auto_lod_generation
+  find_camera_component_when_view_target
+  generate_overlap_events_during_level_streaming
+  hidden
+  initial_life_span
+  instigator
+  is_spatially_loaded
+  life_span
+  min_net_update_frequency
+  net_cull_distance_squared
+  net_dormancy
+  net_priority
+  net_update_frequency
+  net_use_owner_relevancy
+  on_actor_begin_overlap
+  on_actor_end_overlap
+  on_actor_hit
+  on_actor_touch
+  on_actor_un_touch
+  on_begin_cursor_over
+  on_clicked
+  on_destroyed
+  on_end_cursor_over
+  on_end_play
+  on_input_touch_begin
+  on_input_touch_end
+  on_input_touch_enter
+  on_input_touch_leave
+  on_released
+  on_take_any_damage
+  on_take_point_damage
+  on_take_radial_damage
+  only_relevant_to_owner
+  pivot_offset
+  replicate_using_registered_sub_object_list
+  replicates
+  root_component
+  runtime_grid
+  should_do_anim_notifies
+  skeletal_mesh_component
+  spawn_collision_handling_method
+  sprite_scale
+  tags
+
+Methods:
+  acquire_editor_element_handle()
+  actor_has_tag()
+  add_actor_local_offset()
+  add_actor_local_rotation()
+  add_actor_local_transform()
+  add_actor_world_offset()
+  add_actor_world_rotation()
+  add_actor_world_transform()
+  add_actor_world_transform_keep_scale()
+  add_tick_prerequisite_actor()
+  add_tick_prerequisite_component()
+  attach_to_actor()
+  attach_to_component()
+  call_method()
+  can_trigger_resimulation()
+  cast()
+  create_input_component()
+  destroy_actor()
+  detach_from_actor()
+  disable_input()
+  enable_input()
+  find_component_by_tag()
+  flush_net_dormancy()
+  force_net_update()
+  get_actor_bounds()
+  get_actor_enable_collision()
+  get_actor_eyes_view_point()
+  get_actor_forward_vector()
+  get_actor_label()
+  get_actor_location()
+  get_actor_relative_scale3d()
+  get_actor_right_vector()
+  get_actor_rotation()
+  get_actor_scale3d()
+  get_actor_tick_interval()
+  get_actor_time_dilation()
+  get_actor_transform()
+  get_actor_up_vector()
+  get_all_child_actors()
+  get_attach_parent_actor()
+  get_attach_parent_socket_name()
+  get_attached_actors()
+  get_class()
+  get_component_by_class()
+  get_components_by_class()
+  get_components_by_interface()
+  get_components_by_tag()
+  get_default_actor_label()
+  get_default_object()
+  get_distance_to()
+  get_dot_product_to()
+  get_editor_property()
+  get_fname()
+  get_folder_path()
+  get_full_name()
+  get_game_time_since_creation()
+  get_horizontal_distance_to()
+  get_horizontal_dot_product_to()
+  get_instigator()
+  get_instigator_controller()
+  get_level()
+  get_level_transform()
+  get_life_span()
+  get_local_role()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_overlapping_actors()
+  get_overlapping_components()
+  get_owner()
+  get_package()
+  get_parent_actor()
+  get_parent_component()
+  get_path_name()
+  get_physics_replication_mode()
+  get_ray_tracing_group_id()
+  get_remote_role()
+  get_resimulation_threshold()
+  get_squared_distance_to()
+  get_squared_horizontal_distance_to()
+  get_tickable_when_paused()
+  get_touching_actors()
+  get_touching_components()
+  get_typed_outer()
+  get_velocity()
+  get_vertical_distance_to()
+  get_world()
+  has_authority()
+  has_tag()
+  is_actor_being_destroyed()
+  is_actor_tick_enabled()
+  is_child_actor()
+  is_editable()
+  is_editor_property_overridden()
+  is_hidden_ed()
+  is_hidden_ed_at_startup()
+  is_overlapping_actor()
+  is_package_external()
+  is_selectable()
+  is_temporarily_hidden_in_editor()
+  make_noise()
+  modify()
+  on_become_view_target()
+  on_end_view_target()
+  on_reset()
+  prestream_textures()
+  receive_actor_begin_cursor_over()
+  receive_actor_begin_overlap()
+  receive_actor_end_cursor_over()
+  receive_actor_end_overlap()
+  receive_actor_on_clicked()
+  receive_actor_on_input_touch_begin()
+  receive_actor_on_input_touch_end()
+  receive_actor_on_input_touch_enter()
+  receive_actor_on_input_touch_leave()
+  receive_actor_on_released()
+  receive_actor_touch()
+  receive_actor_untouch()
+  receive_any_damage()
+  receive_async_physics_tick()
+  receive_begin_play()
+  receive_destroyed()
+  receive_end_play()
+  receive_hit()
+  receive_point_damage()
+  receive_radial_damage()
+  receive_tick()
+  register_as_focal_point_in_physics_replication_lod()
+  remove_tick_prerequisite_actor()
+  remove_tick_prerequisite_component()
+  rename()
+  reset_editor_property()
+  set_actor_enable_collision()
+  set_actor_hidden()
+  set_actor_hidden_in_game()
+  set_actor_label()
+  set_actor_location()
+  set_actor_location_and_rotation()
+  set_actor_relative_location()
+  set_actor_relative_rotation()
+  set_actor_relative_scale3d()
+  set_actor_relative_transform()
+  set_actor_rotation()
+  set_actor_scale3d()
+  set_actor_tick_enabled()
+  set_actor_tick_interval()
+  set_actor_transform()
+  set_editor_properties()
+  set_editor_property()
+  set_folder_path()
+  set_is_temporarily_hidden_in_editor()
+  set_life_span()
+  set_net_dormancy()
+  set_owner()
+  set_physics_replication_mode()
+  set_ray_tracing_group_id()
+  set_replicate_movement()
+  set_replicates()
+  set_tick_enabled()
+  set_tick_group()
+  set_tick_prerequisite()
+  set_tickable_when_paused()
+  static_class()
+  tear_off()
+  teleport()
+  unregister_as_focal_point_in_physics_replication_lod()
+  was_recently_rendered()
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EDITOR LIBRARIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+================================================================================
+EditorAssetLibrary
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  call_method()
+  cast()
+  checkout_asset()
+  checkout_directory()
+  checkout_loaded_asset()
+  checkout_loaded_assets()
+  consolidate_assets()
+  delete_asset()
+  delete_directory()
+  delete_loaded_asset()
+  delete_loaded_assets()
+  do_assets_exist()
+  does_asset_exist()
+  does_directory_exist()
+  does_directory_have_assets()
+  duplicate_asset()
+  duplicate_directory()
+  duplicate_loaded_asset()
+  find_asset_data()
+  find_package_referencers_for_asset()
+  get_class()
+  get_default_object()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_metadata_tag()
+  get_metadata_tag_values()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_package_for_object()
+  get_path_name()
+  get_path_name_for_loaded_asset()
+  get_project_root_asset_directory()
+  get_tag_values()
+  get_typed_outer()
+  get_world()
+  is_editor_property_overridden()
+  is_package_external()
+  list_asset_by_tag_value()
+  list_assets()
+  load_asset()
+  load_blueprint_class()
+  make_directory()
+  modify()
+  remove_metadata_tag()
+  rename()
+  rename_asset()
+  rename_directory()
+  rename_loaded_asset()
+  reset_editor_property()
+  save_asset()
+  save_directory()
+  save_loaded_asset()
+  save_loaded_assets()
+  set_editor_properties()
+  set_editor_property()
+  set_metadata_tag()
+  static_class()
+  sync_browser_to_objects()
+
+================================================================================
+LevelSequenceEditorBlueprintLibrary
+================================================================================
+
+Methods:
+  acquire_editor_element_handle()
+  call_method()
+  cast()
+  close_level_sequence()
+  delete_color_for_channels()
+  deselect_bindings()
+  empty_selection()
+  focus_level_sequence()
+  focus_parent_sequence()
+  force_update()
+  get_bound_objects()
+  get_channels_with_selected_keys()
+  get_class()
+  get_current_level_sequence()
+  get_current_local_time()
+  get_current_time()
+  get_custom_color_for_channel()
+  get_default_object()
+  get_editor_property()
+  get_fname()
+  get_focused_level_sequence()
+  get_full_name()
+  get_global_position()
+  get_local_position()
+  get_loop_mode()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_playback_end_position()
+  get_playback_speed()
+  get_playback_start_position()
+  get_selected_bindings()
+  get_selected_channels()
+  get_selected_folders()
+  get_selected_keys()
+  get_selected_sections()
+  get_selected_tracks()
+  get_selection_range_end()
+  get_selection_range_start()
+  get_sub_sequence_hierarchy()
+  get_track_filter_names()
+  get_typed_outer()
+  get_world()
+  has_custom_color_for_channel()
+  is_camera_cut_locked_to_viewport()
+  is_editor_property_overridden()
+  is_level_sequence_locked()
+  is_package_external()
+  is_playing()
+  is_track_filter_active()
+  is_track_filter_enabled()
+  modify()
+  open_level_sequence()
+  pause()
+  play()
+  play_to()
+  refresh_current_level_sequence()
+  rename()
+  reset_editor_property()
+  select_bindings()
+  select_channels()
+  select_folders()
+  select_keys()
+  select_sections()
+  select_tracks()
+  set_current_local_time()
+  set_current_time()
+  set_custom_color_for_channel()
+  set_custom_color_for_channels()
+  set_editor_properties()
+  set_editor_property()
+  set_global_position()
+  set_local_position()
+  set_lock_camera_cut_to_viewport()
+  set_lock_level_sequence()
+  set_loop_mode()
+  set_playback_speed()
+  set_random_color_for_channels()
+  set_selection_range_end()
+  set_selection_range_start()
+  set_track_filter_active()
+  set_track_filter_enabled()
+  static_class()
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INSTANCE EXAMPLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Note: Run this during scene creation to get instance properties
+      Add enumerate_instance_properties() calls in your main script
+================================================================================
+CameraLookatTrackingSettings Instance - INSTANCE PROPERTIES
+================================================================================
+  Could not get editor properties: 'CameraLookatTrackingSettings' object has no attribute 'get_editor_property_names'
+
+
+================================================================================
+END OF API REFERENCE
+================================================================================

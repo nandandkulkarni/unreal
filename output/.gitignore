@@ -1,0 +1,20 @@
+# Generated output files
+troubleshooting_log*.txt
+motion_debug.db
+*.db
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
