@@ -73,3 +73,13 @@ def create_sequence(fps=30, duration_seconds=60):
     else:
         log("✗ ERROR: Failed to create sequence")
         raise Exception("Sequence creation failed")
+
+def add_actor_to_sequence(sequence, actor, actor_name="Actor"):
+    """Add actor to sequence as possessable and return binding"""
+    import logger
+    
+    logger.log(f"Adding {actor_name} to sequence...")
+    binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, actor)
+    logger.log(f"✓ {actor_name} added to sequence")
+    
+    return binding

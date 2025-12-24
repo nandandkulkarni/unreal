@@ -10,14 +10,9 @@ import importlib
 from datetime import datetime
 
 # Add motion_system directory to path
-# Use absolute path to handle remote execution where __file__ may not be set
-try:
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(script_dir)
-except NameError:
-    # __file__ not defined (remote execution), use absolute paths
-    parent_dir = r"C:\UnrealProjects\Coding\unreal"
-    script_dir = r"C:\UnrealProjects\Coding\unreal\tests"
+# Force absolute paths since __file__ may point to wrong location during remote execution
+parent_dir = r"C:\UnrealProjects\Coding\unreal"
+script_dir = r"C:\UnrealProjects\Coding\unreal\tests"
 
 motion_system_dir = os.path.join(parent_dir, "motion_system")
 if motion_system_dir not in sys.path:
@@ -190,7 +185,37 @@ class IntegratedTestRunner:
                 self.log_troubleshoot("No keyframe data generated!", "ERROR")
                 return False
             
-            keyframe_data = keyframe_data_all["test_actor"]
+            # Adapt data structure (motion_planner returns "keyframes.location" but test expects "location_keyframes")
+            raw_data = keyframe_data_all["test_actor"]
+            
+            # Convert frame-based keyframes to include time
+            location_kf = []
+            for kf in raw_data["keyframes"]["location"]:
+                location_kf.append({
+                    "frame": kf["frame"],
+                    "time": kf["frame"] / fps,
+                    "x": kf["x"],
+                    "y": kf["y"],
+                    "z": kf["z"]
+                })
+            
+            rotation_kf = []
+            for kf in raw_data["keyframes"]["rotation"]:
+                rotation_kf.append({
+                    "frame": kf["frame"],
+                    "time": kf["frame"] / fps,
+                    "pitch": kf["pitch"],
+                    "yaw": kf["yaw"],
+                    "roll": kf["roll"]
+                })
+            
+            keyframe_data = {
+                "location_keyframes": location_kf,
+                "rotation_keyframes": rotation_kf,
+                "duration_seconds": location_kf[-1]["time"] if location_kf else 0,
+                "waypoints": raw_data.get("waypoints", {})
+            }
+            
             self.log_troubleshoot(f"Generated {len(keyframe_data['location_keyframes'])} location keyframes", "PASS1")
             self.log_troubleshoot(f"Generated {len(keyframe_data['rotation_keyframes'])} rotation keyframes", "PASS1")
             self.log_troubleshoot(f"Total duration: {keyframe_data['duration_seconds']:.2f}s", "PASS1")

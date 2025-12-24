@@ -4,6 +4,30 @@ A high-level, command-based motion choreography system for Unreal Engine that re
 
 ## 🚀 Quick Start
 
+### Initial Setup (One-Time)
+
+**1. Setup VS Code IntelliSense for Unreal Python**
+- Press `Ctrl+Shift+P` in VS Code
+- Run: `Unreal Python: Setup Code Completion`
+- Wait for stub generation to complete
+- This enables autocomplete and type checking for Unreal Engine APIs
+
+**2. Verify Python Environment**
+- Ensure Unreal Engine 5.7+ is installed
+- Remote Control plugin should be enabled (for remote execution)
+
+**3. Clear Python Cache (When Developing)**
+If you modify motion_system modules and they don't reload:
+```python
+# Run in Unreal or remotely:
+exec(open(r'C:\UnrealProjects\Coding\unreal\tools\clear_python_cache.py').read())
+
+# Or use the remote script:
+python c:\UnrealProjects\Coding\unreal\tools\run_clear_cache.py
+```
+
+This clears cached modules so Unreal loads your latest changes.
+
 ### Run Tests (Recommended First Step)
 ```python
 # In Unreal Python console:
