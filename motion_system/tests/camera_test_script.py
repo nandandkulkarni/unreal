@@ -45,7 +45,7 @@ def main():
         actors_info = {
             "camera": {"location": camera.get_actor_location(), "rotation": camera.get_actor_rotation()}
         }
-        keyframe_data = motion_planner.plan_motion(motion_plan, actors_info, fps)
+        keyframe_data = motion_planner.plan_motion(motion_plan, actors_info, fps, sequence=sequence)
 
         # 6. Apply to Sequence
         motion_commands.add_camera_with_motion(sequence, camera, fps, duration_frames, keyframe_data["camera"]["keyframes"])

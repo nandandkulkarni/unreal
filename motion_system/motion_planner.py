@@ -5,10 +5,14 @@ Takes high-level motion commands and calculates exact positions, times, and keyf
 Outputs structured keyframe data ready for Unreal application.
 """
 import math
+import unreal
 from logger import log
+import mannequin_setup
+import camera_setup
+import sequence_setup
 
 
-def plan_motion(motion_plan, actors_info, fps):
+def plan_motion(motion_plan, actors_info, fps, sequence=None):
     """
     Convert motion commands to keyframe data
     
@@ -61,13 +65,22 @@ def plan_motion(motion_plan, actors_info, fps):
     
     # Process each command sequentially
     for i, cmd in enumerate(motion_plan):
+        command_type = cmd["command"]
+        
+        # Handle creation commands (don't require existing state)
+        if command_type == "add_actor":
+            process_add_actor(cmd, actors_info, actor_states, sequence, fps)
+            continue
+        elif command_type == "add_camera":
+            process_add_camera(cmd, actors_info, actor_states, sequence, fps)
+            continue
+
         actor_name = cmd.get("actor")
         if not actor_name or actor_name not in actor_states:
             log(f"⚠ Command {i}: Unknown actor '{actor_name}', skipping")
             continue
         
         state = actor_states[actor_name]
-        command_type = cmd["command"]
         
         log(f"\n[{i}] Actor '{actor_name}': {command_type}")
         
@@ -91,6 +104,10 @@ def plan_motion(motion_plan, actors_info, fps):
             process_wait(cmd, state, fps)
         elif command_type == "camera_move":
             process_camera_move(cmd, state, fps)
+        elif command_type == "add_actor":
+            process_add_actor(cmd, actors_info, actor_states, sequence, fps)
+        elif command_type == "add_camera":
+            process_add_camera(cmd, actors_info, actor_states, sequence, fps)
         else:
             log(f"  ⚠ Unknown command type: {command_type}")
     
@@ -403,4 +420,138 @@ def process_camera_move(cmd, state, fps):
     add_rotation_keyframe(state, end_frame, state["current_rotation"])
     
     log(f"  Camera move to ({target_pos['x']}, {target_pos['y']}, {target_pos['z']}) in {duration_sec}s")
+
+
+def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
+    """Add a new actor to the scene and sequence"""
+    actor_name = cmd.get("actor")
+    if not actor_name:
+        log("  ⚠ Add actor missing name")
+        return
+        
+    if actor_name in actors_info:
+        log(f"  ℹ Actor '{actor_name}' already exists, skipping creation")
+        
+        # Ensure state exists even if actor exists (if referenced first time here)
+        if actor_name not in actor_states:
+            init_actor_state(actor_name, actors_info[actor_name], actor_states)
+        return
+
+    # Check if we have the sequence to add to
+    if not sequence:
+        log("  ⚠ Cannot add actor: No sequence provided to plan_motion")
+        return
+
+    log(f"  Creating actor '{actor_name}'...")
+    
+    # Extract properties
+    location_vec = unreal.Vector(0, 0, 0)
+    if "location" in cmd:
+        loc = cmd["location"]
+        location_vec = unreal.Vector(loc[0], loc[1], loc[2])
+        
+    rotation_rot = unreal.Rotator(0, 0, 0)
+    if "rotation" in cmd:
+        rot = cmd["rotation"]
+        rotation_rot = unreal.Rotator(rot[0], rot[1], rot[2])
+        
+    mesh_path = cmd.get("mesh_path")
+    
+    # create_mannequin can accept mesh_path now
+    actor = mannequin_setup.create_mannequin(actor_name, location_vec, rotation_rot, mesh_path)
+    
+    if not actor:
+        log(f"  ✗ Failed to create actor '{actor_name}'")
+        return
+        
+    # Add to sequence
+    binding = sequence_setup.add_actor_to_sequence(sequence, actor, actor_name)
+    
+    if not binding:
+        log(f"  ✗ Failed to bind actor '{actor_name}' to sequence")
+        return
+        
+    # Update actors_info
+    actors_info[actor_name] = {
+        "location": location_vec,
+        "rotation": rotation_rot,
+        "actor": actor,
+        "binding": binding
+    }
+    
+    # Initialize state
+    init_actor_state(actor_name, actors_info[actor_name], actor_states)
+    log(f"  ✓ Actor '{actor_name}' added successfully")
+
+
+def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
+    """Add a new camera to the scene and sequence"""
+    camera_name = cmd.get("actor", "camera")
+    
+    if camera_name in actors_info:
+        log(f"  ℹ Camera '{camera_name}' already exists")
+        if camera_name not in actor_states:
+            init_actor_state(camera_name, actors_info[camera_name], actor_states)
+        return
+
+    if not sequence:
+        log("  ⚠ Cannot add camera: No sequence provided")
+        return
+
+    log(f"  Creating camera '{camera_name}'...")
+    camera_actor = camera_setup.create_camera("CineCameraActor")
+    
+    # Rename if possible/needed (camera_setup creates it with default name usually, 
+    # but we can try to rename or just track it by our internal name)
+    if camera_actor:
+        camera_actor.set_actor_label(camera_name)
+        
+    if "location" in cmd:
+        loc = cmd["location"]
+        camera_actor.set_actor_location(unreal.Vector(loc[0], loc[1], loc[2]), False, True)
+        
+    if "rotation" in cmd:
+        rot = cmd["rotation"]
+        camera_actor.set_actor_rotation(unreal.Rotator(rot[0], rot[1], rot[2]), False)
+
+    # Add to sequence
+    binding = sequence_setup.add_actor_to_sequence(sequence, camera_actor, camera_name)
+    
+    # Reset to spawnable if needed? camera_setup creates spawnable usually? 
+    # ACTUALLY camera_setup.create_camera likely creates a requested actor.
+    # sequence_setup.add_actor_to_sequence adds it as possessable usually.
+    
+    actors_info[camera_name] = {
+        "location": camera_actor.get_actor_location(),
+        "rotation": camera_actor.get_actor_rotation(),
+        "actor": camera_actor,
+        "binding": binding
+    }
+    
+    # Initialize state
+    init_actor_state(camera_name, actors_info[camera_name], actor_states)
+    log(f"  ✓ Camera '{camera_name}' added successfully")
+
+
+def init_actor_state(actor_name, info, actor_states):
+    """Helper to initialize state for dynamically added actors"""
+    if actor_name in actor_states:
+        return
+
+    # Use default 0 if info missing components (unlikely if we just created it)
+    loc = info.get("location", unreal.Vector(0,0,0))
+    rot = info.get("rotation", unreal.Rotator(0,0,0))
+    
+    actor_states[actor_name] = {
+        "current_time": 0.0,
+        "current_pos": {"x": loc.x, "y": loc.y, "z": loc.z},
+        "current_rotation": {"pitch": rot.pitch, "yaw": rot.yaw, "roll": rot.roll},
+        "current_animation": None,
+        "waypoints": {},
+        "keyframes": {
+            "location": [],
+            "rotation": [],
+            "animations": []
+        }
+    }
 

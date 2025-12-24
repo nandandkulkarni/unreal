@@ -41,6 +41,7 @@ TEST_CASES = [
     {
         "name": "Simple Forward Movement",
         "plan": [
+            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3}
         ]
@@ -48,6 +49,7 @@ TEST_CASES = [
     {
         "name": "Turn and Move",
         "plan": [
+            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3}
@@ -56,6 +58,7 @@ TEST_CASES = [
     {
         "name": "Move to Location",
         "plan": [
+            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_to_location", "target": [500, 500, 6.88], "speed_mph": 3}
         ]
@@ -63,6 +66,7 @@ TEST_CASES = [
     {
         "name": "Waypoint Test",
         "plan": [
+            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3, "waypoint_name": "point_A"},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 180},
@@ -72,6 +76,7 @@ TEST_CASES = [
     {
         "name": "Complex Path",
         "plan": [
+            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
@@ -80,6 +85,17 @@ TEST_CASES = [
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3}
+        ]
+    },
+    {
+        "name": "Dynamic Spawning",
+        "verify_actor": "spawned_actor",
+        "plan": [
+            {"command": "add_actor", "actor": "spawned_actor", "location": [200, 200, 6.88], "rotation": [0, -90, 0], "mesh_path": "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple"},
+            {"actor": "spawned_actor", "command": "animation", "name": "Jog_Fwd"},
+            {"actor": "spawned_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
+            {"command": "add_camera", "actor": "spawned_cam", "location": [200, 0, 150], "rotation": [0, -45, 0]},
+            {"actor": "spawned_cam", "command": "camera_move", "location": [200, 200, 150], "rotation": [0, -45, 90], "duration": 2.0}
         ]
     }
 ]
@@ -127,29 +143,12 @@ def run_all_tests():
                 duration_seconds=SEQUENCE_DURATION
             )
             
-            # Create test mannequin
-            start_position = unreal.Vector(0, 0, 6.882729)
-            start_rotation = unreal.Rotator(pitch=0.0, yaw=-90.0, roll=0.0)
-            
-            mannequin_name = f"TestMannequin_{i:02d}"
-            mannequin = mannequin_setup.create_mannequin(mannequin_name, start_position, start_rotation)
-            
-            # Add to sequence
-            mannequin_binding = sequence_setup.add_actor_to_sequence(sequence, mannequin, mannequin_name)
-            
-            # Setup actors info
-            actors_info = {
-                "test_actor": {
-                    "location": start_position,
-                    "rotation": start_rotation,
-                    "actor": mannequin,
-                    "binding": mannequin_binding
-                }
-            }
+            # Setup actors info (initially empty)
+            actors_info = {}
             
             # Apply motion plan
             logger.log(f"\nApplying motion plan ({len(test_case['plan'])} commands)...")
-            keyframe_data_all = motion_planner.plan_motion(test_case['plan'], actors_info, fps)
+            keyframe_data_all = motion_planner.plan_motion(test_case['plan'], actors_info, fps, sequence=sequence)
             
             for actor_name, actor_info in actors_info.items():
                 if actor_name in keyframe_data_all:
@@ -162,8 +161,15 @@ def run_all_tests():
                         duration_frames
                     )
             
+            # Determine which actor to verify
+            verify_actor_name = test_case.get("verify_actor", "test_actor")
+            
             # Adapt data structure for verifier
-            raw_data = keyframe_data_all["test_actor"]
+            if verify_actor_name not in keyframe_data_all:
+                raise Exception(f"Verification actor '{verify_actor_name}' not found in keyframe data")
+                
+            raw_data = keyframe_data_all[verify_actor_name]
+            verify_actor_info = actors_info[verify_actor_name]
             
             # Convert frame-based keyframes to include time
             location_kf = []
@@ -190,13 +196,13 @@ def run_all_tests():
             }
 
             # Run test validation
-            logger.log(f"\nValidating results...")
+            logger.log(f"\nValidating results for '{verify_actor_name}'...")
             passed = test_motion_system.run_test(
                 keyframe_data,
                 sequence,
-                mannequin_binding,
-                start_position,
-                start_rotation.yaw,
+                verify_actor_info["binding"],
+                verify_actor_info["location"],
+                verify_actor_info["rotation"].yaw,
                 fps
             )
             

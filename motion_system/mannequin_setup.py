@@ -5,7 +5,7 @@ import unreal
 from logger import log, log_header
 
 
-def create_mannequin(mannequin_name, location=None, rotation=None):
+def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=None):
     """Create a skeletal mesh actor (Belica character)"""
     log_header("STEP 4: Creating mannequin")
 
@@ -15,8 +15,13 @@ def create_mannequin(mannequin_name, location=None, rotation=None):
         # Belica's mesh visual is 90° off - rotate -90° to make her face Red (+X)
         rotation = unreal.Rotator(pitch=0.0, yaw=-90.0, roll=0.0)  # Align visual with Red
 
-    # Load the desired Belica skeletal mesh
-    skeletal_mesh = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica")
+    # Load the desired skeletal mesh
+    skeletal_mesh = None
+    if mesh_path:
+        skeletal_mesh = unreal.load_object(None, mesh_path)
+    
+    if not skeletal_mesh:
+        skeletal_mesh = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica")
 
     if not skeletal_mesh:
         # Fallback to Quinn if Belica is missing

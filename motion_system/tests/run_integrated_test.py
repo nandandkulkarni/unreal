@@ -171,7 +171,7 @@ class IntegratedTestRunner:
             
             # Pass 1: Motion commands → Keyframes
             self.log_troubleshoot("Pass 1: Planning motion (commands → keyframes)", "PASS1")
-            keyframe_data_all = motion_planner.plan_motion(motion_plan, actors_info, fps)
+            keyframe_data_all = motion_planner.plan_motion(motion_plan, actors_info, fps, sequence=sequence)
             
             if "test_actor" not in keyframe_data_all:
                 self.log_troubleshoot("No keyframe data generated!", "ERROR")
