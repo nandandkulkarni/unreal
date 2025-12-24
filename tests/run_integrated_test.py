@@ -154,7 +154,8 @@ class IntegratedTestRunner:
             self.log_troubleshoot("Creating sequence", "SETUP")
             sequence, seq_name, next_num, fps_actual, duration_frames = sequence_setup.create_sequence(
                 fps=fps, 
-                duration_seconds=60
+                duration_seconds=60,
+                test_name=test_name
             )
             
             # STEP 3: Create test actor

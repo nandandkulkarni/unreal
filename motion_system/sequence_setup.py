@@ -32,16 +32,21 @@ def get_next_sequence_number():
     return next_num
 
 
-def create_sequence(fps=30, duration_seconds=60):
-    """Create a new level sequence with timestamp"""
+def create_sequence(fps=30, duration_seconds=60, test_name=None):
+    """Create a new level sequence with timestamp and optional test name"""
     log_header("STEP 2: Creating new sequence")
 
     # Get timestamp and find next sequence number
     timestamp = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
     next_num = get_next_sequence_number()
 
-    # Format number with leading zeros
-    sequence_name = f"TestSequence_{timestamp}_{next_num:03d}"
+    # Format sequence name with test name if provided
+    if test_name:
+        # Sanitize test name for use in asset name
+        safe_name = test_name.replace(" ", "_").replace("-", "_")
+        sequence_name = f"TestSequence_{safe_name}_{timestamp}_{next_num:03d}"
+    else:
+        sequence_name = f"TestSequence_{timestamp}_{next_num:03d}"
     
     log(f"\nCreating scene #{next_num}")
     log(f"  Sequence: {sequence_name}")
