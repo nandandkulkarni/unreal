@@ -99,6 +99,13 @@ Create an intuitive, high-level motion command API for Unreal Engine that allows
    - Custom SQL support
    - Pretty-printed results
 
+8. **run_integrated_test.py** ✓ COMPLETE
+   - All-in-one test runner
+   - Executes test → Verifies → Reports → Troubleshoots
+   - Timestamped troubleshooting logs with detailed diagnostics
+   - Automatic failure analysis (error sources, Pass 1→2 issues)
+   - Saves comprehensive troubleshooting_log.txt for AI debugging
+
 **Command Types Implemented**:
 - ✓ `move_by_distance` - Move N meters in direction (forward/backward/left/right)
 - ✓ `move_for_seconds` - Move for N seconds at speed
