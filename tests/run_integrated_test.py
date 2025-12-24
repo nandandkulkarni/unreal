@@ -386,7 +386,7 @@ TEST_CASES = [
         "name": "Move to Location",
         "plan": [
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
-            {"actor": "test_actor", "command": "move_to_location", "x": 500, "y": 500, "z": 6.88, "speed_mph": 3}
+            {"actor": "test_actor", "command": "move_to_location", "target": [500, 500, 6.88], "speed_mph": 3}
         ]
     },
     {

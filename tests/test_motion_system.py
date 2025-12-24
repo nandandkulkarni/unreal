@@ -168,13 +168,14 @@ class MotionTestFramework:
             
             for channel in channels:
                 channel_name = channel.get_name()
-                if channel_name == "Location.X":
+                logger.log(f"    Channel: {channel_name}")
+                if "Location.X" in channel_name:
                     location_x = channel
-                elif channel_name == "Location.Y":
+                elif "Location.Y" in channel_name:
                     location_y = channel
-                elif channel_name == "Location.Z":
+                elif "Location.Z" in channel_name:
                     location_z = channel
-                elif channel_name == "Rotation.Z":  # Yaw is Z in Unreal
+                elif "Rotation.Z" in channel_name:  # Yaw is Z in Unreal
                     rotation_yaw = channel
             
             if not all([location_x, location_y, location_z]):
