@@ -56,32 +56,26 @@ def enable_lookat_tracking(camera, target_actor, offset=None, interp_speed=0.0):
         return
 
     try:
-        component = camera.get_cine_camera_component()
-        
-        # 1. Setup LookAt Tracking
-        # Try both common property names
-        tracking_settings = None
-        for prop in ["lookat_tracking_settings", "look_at_tracking_settings"]:
-            if hasattr(component, prop):
-                tracking_settings = component.get_editor_property(prop)
-                break
+        # 1. Setup LookAt Tracking on the CineCameraActor (not component!)
+        tracking_settings = camera.get_editor_property("lookat_tracking_settings")
         
         if not tracking_settings:
-            log("  ⚠ Could not find LookAt tracking property on CineCameraComponent")
+            log("  ⚠ Could not find LookAt tracking property on CineCameraActor")
             return
             
-        tracking_settings.set_editor_property("enable_lookat_tracking", True)
+        tracking_settings.set_editor_property("enable_look_at_tracking", True)
         tracking_settings.set_editor_property("actor_to_track", target_actor)
         
         if offset:
             tracking_settings.set_editor_property("relative_offset", offset)
         
         if interp_speed > 0:
-            tracking_settings.set_editor_property("lookat_tracking_interp_speed", interp_speed)
+            tracking_settings.set_editor_property("look_at_tracking_interp_speed", interp_speed)
         
-        component.set_editor_property("lookat_tracking_settings", tracking_settings)
+        camera.set_editor_property("lookat_tracking_settings", tracking_settings)
         
-        # 2. Setup Focus Tracking (Auto Focus)
+        # 2. Setup Focus Tracking (Auto Focus) on the component
+        component = camera.get_cine_camera_component()
         focus_settings = component.focus_settings
         focus_settings.focus_method = unreal.CameraFocusMethod.TRACKING
         
@@ -97,6 +91,8 @@ def enable_lookat_tracking(camera, target_actor, offset=None, interp_speed=0.0):
             
     except Exception as e:
         log(f"  ⚠ Failed to enable cinematic tracking: {e}")
+        import traceback
+        log(traceback.format_exc())
 
 
 def position_camera_behind_mannequin(camera, mannequin, follow_distance=300.0, follow_height=50.0):

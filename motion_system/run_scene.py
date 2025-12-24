@@ -115,6 +115,26 @@ def run_scene(json_path):
                 fps, 
                 total_frames
             )
+    
+    # Lock viewport to camera cuts and play
+    try:
+        unreal.LevelSequenceEditorBlueprintLibrary.set_lock_camera_cut_to_viewport(True)
+        logger.log("✓ Viewport locked to camera cuts")
+    except Exception as e:
+        logger.log(f"⚠ Warning: Could not lock viewport: {e}")
+    
+    # Wait for UI update
+    import time
+    time.sleep(1)
+    
+    try:
+        # Refresh and play from start
+        unreal.LevelSequenceEditorBlueprintLibrary.refresh_current_level_sequence()
+        unreal.LevelSequenceEditorBlueprintLibrary.set_current_time(0)
+        unreal.LevelSequenceEditorBlueprintLibrary.play()
+        logger.log("✓ Sequence playing from frame 0")
+    except Exception as e:
+        logger.log(f"⚠ Warning: Could not play sequence: {e}")
             
     logger.log_header("SCENE GENERATION COMPLETE")
 
