@@ -164,6 +164,14 @@ def get_cardinal_angle(direction, offset=None):
     return cardinal_angles.get(direction)
 
 
+def get_shortest_path_yaw(current_yaw, target_yaw):
+    """Calculate target yaw that minimizes rotation distance from current_yaw"""
+    delta = (target_yaw - current_yaw) % 360
+    if delta > 180:
+        delta -= 360
+    return current_yaw + delta
+
+
 def get_speed_cm_per_sec(cmd):
     """Convert speed to cm/s"""
     if "speed_mph" in cmd:
@@ -443,13 +451,16 @@ def process_face(cmd, state, fps):
     start_frame = int(state["current_time"] * fps)
     end_frame = int((state["current_time"] + duration_sec) * fps)
     
+    # Shortest path!
+    target_yaw = get_shortest_path_yaw(state["current_rotation"]["yaw"], target_yaw)
+    
     new_rot = state["current_rotation"].copy()
     new_rot["yaw"] = target_yaw
     
     add_rotation_keyframe(state, start_frame, state["current_rotation"])
     add_rotation_keyframe(state, end_frame, new_rot)
     
-    log(f"  Face {direction or target_yaw}° in {duration_sec:.2f}s")
+    log(f"  Face {direction or target_yaw}° in {duration_sec:.2f}s (Adjusted Target: {target_yaw:.1f}°)")
     
     state["current_rotation"] = new_rot
     state["current_time"] += duration_sec
