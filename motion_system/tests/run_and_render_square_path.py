@@ -98,5 +98,5 @@ print(f"\nRender queue result: {result}")
 
 print("\n" + "="*80)
 print("NEXT STEP: Open Movie Render Queue and click 'Render (Local)'")
-print("  Window → Cinematics → Movie Render Queue")
+print("  Window -> Cinematics -> Movie Render Queue")
 print("="*80)
