@@ -5,15 +5,19 @@ import unreal
 from logger import log, log_header
 
 
-def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=None):
+def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=None, mesh_rotation=None):
     """Create a skeletal mesh actor (Belica character)"""
     log_header("STEP 4: Creating mannequin")
 
     if location is None:
-        location = unreal.Vector(0, 0, 300)  # Z=300
+        location = unreal.Vector(0, 0, 0)  # On the floor
     if rotation is None:
-        # Belica's mesh visual is 90° off - rotate -90° to make her face Red (+X)
-        rotation = unreal.Rotator(pitch=0.0, yaw=-90.0, roll=0.0)  # Align visual with Red
+        # Standard Unreal forward is X+ (Yaw=0)
+        rotation = unreal.Rotator(pitch=0.0, yaw=0.0, roll=0.0)
+    
+    if mesh_rotation is None and ("Belica" in str(mesh_path) or not mesh_path):
+        # Belica faces Right (+Y) by default. Turn her Left (-90) to face Forward (X+).
+        mesh_rotation = unreal.Rotator(pitch=0.0, yaw=-90.0, roll=0.0)
 
     # Load the desired skeletal mesh
     skeletal_mesh = None
@@ -42,10 +46,14 @@ def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=Non
 
         if mannequin:
             mannequin.set_actor_label(mannequin_name)
+            mannequin.tags.append("MotionSystemActor")
 
             # Set the skeletal mesh on the component
             skel_comp = mannequin.skeletal_mesh_component
-            skel_comp.set_skeletal_mesh(skeletal_mesh)
+            skel_comp.set_skinned_asset_and_update(skeletal_mesh)
+            
+            if mesh_rotation:
+                skel_comp.set_editor_property("relative_rotation", mesh_rotation)
 
             log(f"✓ Mannequin created: {mannequin_name}")
             log(f"  Location: {location}")

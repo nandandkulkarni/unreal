@@ -98,6 +98,12 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             process_turn_by_direction(cmd, state, fps)
         elif command_type == "turn_by_degree":
             process_turn_by_degree(cmd, state, fps)
+        elif command_type == "turn_left":
+            process_turn_left(cmd, state, fps)
+        elif command_type == "turn_right":
+            process_turn_right(cmd, state, fps)
+        elif command_type == "face":
+            process_face(cmd, state, fps)
         elif command_type == "animation":
             process_animation(cmd, state, fps)
         elif command_type == "wait":
@@ -132,6 +138,31 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
     return result
 
 
+def get_cardinal_angle(direction, offset=None):
+    """Get absolute world angle for a cardinal direction string"""
+    if offset is None:
+        # If no offset is given, compound directions (north_east) default to perfect diagonal (45)
+        offset = 45 if "_" in direction else 0
+        
+    # Absolute Cardinal Mappings (Degrees in Unreal: North=0, East=90, South=180, West=-90)
+    cardinal_angles = {
+        "north": 0,
+        "east": 90,
+        "south": 180,
+        "west": -90,
+        "north_east": 0 + offset,   # Offset from North (0) toward East (+90)
+        "north_west": 0 - offset,   # Offset from North (0) toward West (-90)
+        "south_east": 180 - offset, # Offset from South (180) toward East (+90)
+        "south_west": 180 + offset, # Offset from South (180) toward West (-90)
+        "east_north": 90 - offset,  # Offset from East (90) toward North (0)
+        "east_south": 90 + offset,  # Offset from East (90) toward South (180)
+        "west_north": -90 + offset, # Offset from West (-90) toward North (0)
+        "west_south": -90 - offset  # Offset from West (-90) toward South (-180)
+    }
+    
+    return cardinal_angles.get(direction)
+
+
 def get_speed_cm_per_sec(cmd):
     """Convert speed to cm/s"""
     if "speed_mph" in cmd:
@@ -143,8 +174,14 @@ def get_speed_cm_per_sec(cmd):
         return 100.0
 
 
-def calculate_direction_vector(direction, yaw_degrees):
-    """Calculate movement vector from direction and current yaw"""
+def calculate_direction_vector(direction, yaw_degrees, offset=None):
+    """Calculate movement vector from direction and current yaw/offset"""
+    cardinal_angle = get_cardinal_angle(direction, offset)
+    
+    if cardinal_angle is not None:
+        angle_rad = math.radians(cardinal_angle)
+        return {"x": math.cos(angle_rad), "y": math.sin(angle_rad)}
+    
     yaw_rad = math.radians(yaw_degrees)
     forward_x = math.cos(yaw_rad)
     forward_y = math.sin(yaw_rad)
@@ -189,10 +226,11 @@ def process_move_by_distance(cmd, state, fps):
     distance_cm = distance_m * 100
     speed_cm_s = get_speed_cm_per_sec(cmd)
     
+    offset = cmd.get("offset")
     duration_sec = distance_cm / speed_cm_s
     
     # Calculate new position
-    dir_vec = calculate_direction_vector(direction, state["current_rotation"]["yaw"])
+    dir_vec = calculate_direction_vector(direction, state["current_rotation"]["yaw"], offset)
     new_pos = {
         "x": state["current_pos"]["x"] + dir_vec["x"] * distance_cm,
         "y": state["current_pos"]["y"] + dir_vec["y"] * distance_cm,
@@ -226,10 +264,11 @@ def process_move_for_seconds(cmd, state, fps):
     duration_sec = cmd.get("seconds", 1)
     speed_cm_s = get_speed_cm_per_sec(cmd)
     
+    offset = cmd.get("offset")
     distance_cm = speed_cm_s * duration_sec
     
     # Calculate new position
-    dir_vec = calculate_direction_vector(direction, state["current_rotation"]["yaw"])
+    dir_vec = calculate_direction_vector(direction, state["current_rotation"]["yaw"], offset)
     new_pos = {
         "x": state["current_pos"]["x"] + dir_vec["x"] * distance_cm,
         "y": state["current_pos"]["y"] + dir_vec["y"] * distance_cm,
@@ -316,37 +355,41 @@ def process_move_and_turn(cmd, state, fps):
     log(f"  + Turn {turn_degrees}° → yaw={new_yaw:.1f}°")
 
 
-def process_turn_by_direction(cmd, state, fps):
-    """Turn left or right by degrees"""
-    direction = cmd.get("direction", "left")
-    degrees = cmd.get("degrees", 90)
-    
-    if direction == "right":
-        degrees = -degrees
-    
-    turn_speed = cmd.get("turn_speed_deg_per_sec", 45)
-    duration_sec = abs(degrees) / turn_speed
+def process_turn_by_degree(cmd, state, fps):
+    """Turn relative to current yaw"""
+    degrees = cmd.get("degrees", 0)
+    duration_sec = cmd.get("duration", 2.0)
     
     start_frame = int(state["current_time"] * fps)
     end_frame = int((state["current_time"] + duration_sec) * fps)
     
+    old_yaw = state["current_rotation"]["yaw"]
+    new_yaw = old_yaw + degrees
+    
+    new_rot = state["current_rotation"].copy()
+    new_rot["yaw"] = new_yaw
+    
     add_rotation_keyframe(state, start_frame, state["current_rotation"])
+    add_rotation_keyframe(state, end_frame, new_rot)
     
-    state["current_rotation"]["yaw"] += degrees
-    add_rotation_keyframe(state, end_frame, state["current_rotation"])
-    add_location_keyframe(state, start_frame, state["current_pos"])
+    log(f"  Turn {degrees}° in {duration_sec:.2f}s   yaw={new_yaw:.1f}°")
     
-    log(f"  Turn {direction} {abs(degrees)}° in {duration_sec:.2f}s → yaw={state['current_rotation']['yaw']:.1f}°")
-    
+    state["current_rotation"] = new_rot
     state["current_time"] += duration_sec
 
 
-def process_turn_by_degree(cmd, state, fps):
-    """Turn by exact degrees (positive=left/CCW, negative=right/CW)"""
-    degrees = cmd.get("degrees", 0)
-    cmd_modified = {"direction": "left" if degrees >= 0 else "right", "degrees": abs(degrees)}
-    cmd_modified.update({k: v for k, v in cmd.items() if k not in ["command", "degrees"]})
-    process_turn_by_direction(cmd_modified, state, fps)
+def process_turn_left(cmd, state, fps):
+    """Shorthand for turning left (minus yaw)"""
+    degrees = cmd.get("degrees", 90)
+    cmd["degrees"] = -degrees  # Left is negative yaw in our standard coord
+    process_turn_by_degree(cmd, state, fps)
+
+
+def process_turn_right(cmd, state, fps):
+    """Shorthand for turning right (plus yaw)"""
+    degrees = cmd.get("degrees", 90)
+    cmd["degrees"] = degrees  # Right is positive yaw
+    process_turn_by_degree(cmd, state, fps)
 
 
 def process_animation(cmd, state, fps):
@@ -372,6 +415,41 @@ def process_animation(cmd, state, fps):
     state["current_animation"] = new_anim
     
     log(f"  Animation: {anim_name} from frame {current_frame}")
+
+
+def process_face(cmd, state, fps):
+    """Face an absolute world direction or degree"""
+    direction = cmd.get("direction")
+    offset = cmd.get("offset")
+    duration_sec = cmd.get("duration", 1.0) # Faster than move usually
+    
+    target_yaw = 0
+    if direction:
+        angle = get_cardinal_angle(direction, offset)
+        if angle is not None:
+            target_yaw = angle
+        else:
+            log(f"  ⚠ Unknown direction for face: {direction}")
+            return
+    elif "degrees" in cmd:
+        target_yaw = cmd["degrees"]
+    else:
+        log("  ⚠ face command missing direction or degrees")
+        return
+
+    start_frame = int(state["current_time"] * fps)
+    end_frame = int((state["current_time"] + duration_sec) * fps)
+    
+    new_rot = state["current_rotation"].copy()
+    new_rot["yaw"] = target_yaw
+    
+    add_rotation_keyframe(state, start_frame, state["current_rotation"])
+    add_rotation_keyframe(state, end_frame, new_rot)
+    
+    log(f"  Face {direction or target_yaw}° in {duration_sec:.2f}s")
+    
+    state["current_rotation"] = new_rot
+    state["current_time"] += duration_sec
 
 
 def process_wait(cmd, state, fps):
@@ -479,15 +557,21 @@ def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
         loc = cmd["location"]
         location_vec = unreal.Vector(loc[0], loc[1], loc[2])
         
-    rotation_rot = unreal.Rotator(0, 0, 0)
+    rotation_rot = unreal.Rotator(pitch=0, yaw=0, roll=0)
     if "rotation" in cmd:
         rot = cmd["rotation"]
-        rotation_rot = unreal.Rotator(rot[0], rot[1], rot[2])
+        # Standardize on [Pitch, Yaw, Roll] from JSON
+        rotation_rot = unreal.Rotator(pitch=rot[0], yaw=rot[1], roll=rot[2])
         
     mesh_path = cmd.get("mesh_path")
     
-    # create_mannequin can accept mesh_path now
-    actor = mannequin_setup.create_mannequin(actor_name, location_vec, rotation_rot, mesh_path)
+    mesh_rotation = None
+    if "mesh_rotation" in cmd:
+        mr = cmd["mesh_rotation"]
+        mesh_rotation = unreal.Rotator(pitch=mr[0], yaw=mr[1], roll=mr[2])
+    
+    # create_mannequin can accept mesh_path and mesh_rotation
+    actor = mannequin_setup.create_mannequin(actor_name, location_vec, rotation_rot, mesh_path, mesh_rotation)
     
     if not actor:
         log(f"  ✗ Failed to create actor '{actor_name}'")
@@ -542,7 +626,7 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
         
     if "rotation" in cmd:
         rot = cmd["rotation"]
-        camera_actor.set_actor_rotation(unreal.Rotator(rot[0], rot[1], rot[2]), False)
+        camera_actor.set_actor_rotation(unreal.Rotator(pitch=rot[0], yaw=rot[1], roll=rot[2]), False)
 
     # Add to sequence
     binding = sequence_setup.add_actor_to_sequence(sequence, camera_actor, camera_name)
@@ -579,7 +663,7 @@ def init_actor_state(actor_name, info, actor_states):
 
     # Use default 0 if info missing components (unlikely if we just created it)
     loc = info.get("location", unreal.Vector(0,0,0))
-    rot = info.get("rotation", unreal.Rotator(0,0,0))
+    rot = info.get("rotation", unreal.Rotator(pitch=0, yaw=0, roll=0))
     
     actor_states[actor_name] = {
         "current_time": 0.0,

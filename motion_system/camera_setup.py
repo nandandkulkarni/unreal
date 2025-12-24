@@ -23,6 +23,7 @@ def create_camera(camera_name, location=None, rotation=None):
 
     if camera:
         camera.set_actor_label(camera_name)
+        camera.tags.append("MotionSystemActor")
 
         # Set camera properties
         camera_component = camera.get_cine_camera_component()

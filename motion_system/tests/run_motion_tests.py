@@ -82,7 +82,7 @@ TEST_CASES = [
     {
         "name": "Complex Path",
         "plan": [
-            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, 0, -90], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+            {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
             {"command": "add_camera", "actor": "test_camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},

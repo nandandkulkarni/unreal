@@ -56,9 +56,13 @@ def delete_old_actors():
         # Delete Test* actors and TextRenderActor, but keep Axis_ and Origin_ markers
         # Case insensitive check for test prefixes
         label_lower = actor_label.lower()
+        is_motion_actor = "MotionSystemActor" in actor.tags
+        
         if (label_lower.startswith("test") or 
             label_lower.startswith("spawned") or
-                actor.get_class().get_name() == "TextRenderActor"):
+            label_lower == "hero" or
+            is_motion_actor or
+            actor.get_class().get_name() == "TextRenderActor"):
             unreal.EditorLevelLibrary.destroy_actor(actor)
             log(f"  Deleted actor: {actor_label}")
             deleted_actors += 1
