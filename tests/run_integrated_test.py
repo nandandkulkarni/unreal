@@ -130,7 +130,7 @@ class IntegratedTestRunner:
         self.log_troubleshoot(f"Troubleshooting log saved: {log_path}", "SUCCESS")
         return log_path
     
-    def run_single_test(self, test_name, motion_plan, start_position, start_rotation, fps=30):
+    def run_single_test(self, test_name, motion_plan, start_position, start_rotation, fps=30, keep_sequence=False):
         """Run a single test with verification"""
         
         self.log_troubleshoot(f"Starting test: {test_name}", "TEST")
@@ -147,7 +147,7 @@ class IntegratedTestRunner:
             
             # STEP 2: Cleanup and create sequence
             self.log_troubleshoot("Cleaning up previous assets", "SETUP")
-            cleanup.cleanup_old_assets()
+            cleanup.cleanup_old_assets(keep_sequence=keep_sequence)
             
             self.log_troubleshoot("Creating sequence", "SETUP")
             sequence, seq_name, next_num, fps_actual, duration_frames = sequence_setup.create_sequence(
@@ -320,7 +320,8 @@ class IntegratedTestRunner:
                 motion_plan=test_case['plan'],
                 start_position=start_position,
                 start_rotation=start_rotation,
-                fps=fps
+                fps=fps,
+                keep_sequence=test_case.get('keep_sequence', False)
             )
             
             self.test_results.append({
@@ -409,6 +410,20 @@ TEST_CASES = [
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3}
+        ]
+    },
+    {
+        "name": "Square Path Return",
+        "keep_sequence": True,
+        "plan": [
+            {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3},
+            {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
+            {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3},
+            {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
+            {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3},
+            {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
+            {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3},
+            {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90}
         ]
     }
 ]

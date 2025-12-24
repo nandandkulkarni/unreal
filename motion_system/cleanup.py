@@ -70,9 +70,16 @@ def delete_old_actors():
         log("  No old actors found")
 
 
-def cleanup_old_assets():
-    """Main cleanup function - removes all old test assets"""
+def cleanup_old_assets(keep_sequence=False):
+    """Main cleanup function - removes all old test assets
+    
+    Args:
+        keep_sequence: If True, skip deleting sequences (to preserve test results)
+    """
     log_header("STEP 1: Cleaning up old Test* assets")
     close_open_sequences()
-    delete_old_sequences()
+    if not keep_sequence:
+        delete_old_sequences()
+    else:
+        log("\nSkipping sequence deletion (keep_sequence=True)")
     delete_old_actors()
