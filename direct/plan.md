@@ -70,6 +70,35 @@ Create an intuitive, high-level motion command API for Unreal Engine that allows
    - Example motion plan with 7 commands
    - Two-pass integration
 
+4. **test_motion_system.py** ✓ COMPLETE
+   - Core testing framework class
+   - Position assertion (1cm tolerance)
+   - Rotation assertion (0.5° tolerance)
+   - Duration assertion (100ms tolerance)
+   - Expected state calculator (uses motion_planner)
+   - Actual state reader (from Unreal sequence keyframes)
+
+5. **run_motion_tests.py** ✓ COMPLETE
+   - Automated test suite runner
+   - 5 pre-defined test cases
+   - Creates fresh sequence per test
+   - Validates final position/rotation/duration
+   - Comprehensive pass/fail reporting
+   - SQLite database integration
+
+6. **debug_db.py** ✓ COMPLETE
+   - SQLite database for structured logging
+   - Stores test runs, commands, keyframes (expected & actual), assertions
+   - Built-in analysis queries (error sources, command stats, Pass 1 vs Pass 2)
+   - Historical tracking and regression detection
+   - Speed validation and waypoint tracking
+
+7. **query_debug_db.py** ✓ COMPLETE
+   - Interactive query helper
+   - Pre-built analysis queries
+   - Custom SQL support
+   - Pretty-printed results
+
 **Command Types Implemented**:
 - ✓ `move_by_distance` - Move N meters in direction (forward/backward/left/right)
 - ✓ `move_for_seconds` - Move for N seconds at speed
@@ -92,6 +121,16 @@ motion_plan = [
     {"actor": "belica", "command": "animation", "name": "Jog_Fwd"},
     {"actor": "belica", "command": "move_for_seconds", "direction": "forward", "seconds": 3, "speed_mph": 2},
 ]
+```
+
+**Test Cases**:
+```python
+# 5 automated test cases in run_motion_tests.py:
+1. Simple Forward Movement - Basic 5m forward
+2. Turn and Move - 90° turn then 3m forward
+3. Move to Location - Absolute position (500, 500, 6.88)
+4. Waypoint Test - Move 5m, turn 180°, return to waypoint
+5. Complex Path - Square pattern (4x3m sides with 90° turns)
 ```
 
 ---
@@ -128,7 +167,10 @@ current_time = 0
 for command in motion_plan:
     start_time = current_time
     duration = calculate_duration(command)
-    end_time = start_time + duration
+    e✓ Testing framework created (test_motion_system.py)
+   - ✓ Automated test suite created (run_motion_tests.py)
+   - Run `run_motion_tests.py` in Unreal to execute all tests
+   - Or run `belica_scene_v3_motion_commands.py` for full demo
     current_time = end_time
 ```
 
@@ -237,7 +279,9 @@ actors_info = {
 ---
 
 ## 📁 File Structure
-
+ (full demo)
+├── run_motion_tests.py                   # Automated test suite (5 tests)
+├── test_motion_system.py                 # Testing framework core
 ```
 unreal/direct/
 ├── belica_scene_v3_motion_commands.py    # V3 main script
@@ -336,20 +380,114 @@ When things don't work:
 
 5. **Actor Field Enables Choreography**
    - Single unified timeline
-   - Easy to visualize multi-actor scenes
-   - Simple to coordinate interactions
+   🧪 Testing Framework
+
+### Test Architecture
+```
+Motion Plan → [Expected Calculator] → Expected Final State → [SQLite DB]
+                                             ↓
+Motion Plan → [Unreal Execution] → Actual Keyframes → [SQLite DB]
+                                             ↓
+                                      [Comparison]
+                                             ↓
+                                   Pass/Fail Report (✓/✗)
+                                             ↓
+                                      [Database Analysis]
+```
+
+### Database Schema
+- **test_runs** - Test suite executions with timestamps
+- **tests** - Individual test cases with start position/rotation
+- **commands** - Motion commands with parameters (JSON)
+- **keyframes_expected** - Pass 1 output (motion_planner)
+- **keyframes_actual** - Pass 2 read from Unreal sequence
+- **assertions** - Test results (position, rotation, duration)
+- **waypoints** - Named positions created during tests
+
+### Assertions
+- **Position Tolerance**: 1 cm (catches position errors)
+- **Rotation Tolerance**: 0.5° (catches rotation drift)
+- **Duration Tolerance**: 100ms (catches timing errors)
+
+### Analysis Queries
+```python with SQLite logging
+exec(open(r'C:\UnrealProjects\Coding\unreal\direct\run_motion_tests.py').read())
+
+# After tests, analyze results interactively
+exec(open(r'C:\UnrealProjects\Coding\unreal\direct\query_debug_db.py').read())
+
+# Or query programmatically
+from motion_system.debug_db import get_debug_db
+db = get_debug_db()
+db.get_test_summary()
+db.find_error_source(tolerance_cm=1.0
+
+# Compare Pass 1 vs Pass 2 (conversion issues)
+db.compare_pass1_pass2(tolerance=0.1)
+
+# Detect regressions vs baseline
+db.get_regression_analysis(baseline_run_id=1)
+
+# Validate speed calculations
+db.calculate_actual_speed(command_id=5)
+```
+
+### Test Cases
+1. **Simple Forward Movement** - Validates basic linear motion
+2. **Turn and Move** - Validates rotation then movement
+3.Run full demo with camera tracking
+exec(open(r'C:\UnrealProjects\Coding\unreal\direct\belica_scene_v3_motion_commands.py').read())
+
+# Run automated test suite (recommended first)
+exec(open(r'C:\UnrealProjects\Coding\unreal\direct\run_motion_test
+5. **Complex Path** - Validates square pattern (accumulation errors)
+
+### Running Tests
+```python
+# Run full test suite (all 5 tests)
+exec(open(r'C:\UnrealProjects\Coding\unreal\direct\run_motion_tests.py').read())
+
+# Run single test manually
+from test_motion_system import run_test
+run_test(motion_plan, sequence, actor_binding, start_position, start_rotation)
+```
 
 ---
 
 ## 🚀 Success Criteria
 
-V3 system is ready for production when:
+V3 system is ready for production when:+ SQLite Database Complete  
+**Next Action**: Run `run_motion_tests.py` to validate all 5 test cases  
+**Files Ready**: 
+- ✓ belica_scene_v3_motion_commands.py (full demo)
+- ✓ run_motion_tests.py (automated tests with DB)
+- ✓ test_motion_system.py (test framework)
+- ✓ debug_db.py (SQLite integration)
+- ✓ query_debug_db.py (interactive analysis)
+- ✓ motion_planner.py (Pass 1)
+- ✓ keyframe_applier.py (Pass 2)
 
-- ✅ All command types execute without errors
-- ✅ Sequential chaining produces correct timing
+**Database Benefits**:
+- 🎯 Pinpoint exact command that introduced error
+- 📊 Pattern detection across multiple test runs
+- 🔍 Pass 1 vs Pass 2 validation (data flow integrity)
+- 📈 Historical regression tracking
+- 🏃 Speed calculation verification
+- 👥 Multi-actor coordination analysis (future
+- ✓ belica_scene_v3_motion_commands.py (full demo)
+- ✓ run_motion_tests.py (automated tests)
+- ✓ test_motion_system.py (test framework)
+- ✓ motion_planner.py (Pass 1)
+- ✓ keyframe_applier.py (Pass 2)
 - ✅ Speed conversions yield expected movement distances
 - ✅ Waypoints can be created and referenced
 - ✅ Multi-actor support works (2+ actors simultaneously)
+- ✅ Camera look-at tracking follows moving actors
+- ✅ Animations change at correct times
+- ✅ Turn commands update rotation correctly
+- ✅ Direction vectors (forward/left/etc) relative to current yaw
+- ✅ Logs provide clear visibility into execution
+- ✅ Final positions match expected within toleranceneously)
 - ✅ Camera look-at tracking follows moving actors
 - ✅ Animations change at correct times
 - ✅ Turn commands update rotation correctly
