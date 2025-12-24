@@ -44,6 +44,68 @@ def add_camera_to_sequence(sequence, camera, fps, duration_seconds):
         return None
 
 
+def add_camera_with_motion(sequence, camera, fps, duration_frames, keyframe_data):
+    """Add camera to sequence with motion keyframes"""
+    log_header("STEP 5: Adding camera with motion")
+    
+    camera_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, camera)
+    
+    if not camera_binding:
+        log("⚠ Warning: Failed to add camera binding")
+        return None
+        
+    log(f"✓ Camera added to sequence: {str(camera_binding.get_display_name())}")
+
+    # Add camera cut track
+    camera_cut_track = sequence.add_track(unreal.MovieSceneCameraCutTrack)
+    camera_cut_section = camera_cut_track.add_section()
+    camera_cut_section.set_range(0, duration_frames)
+    
+    # Set camera binding
+    try:
+        binding_id = unreal.MovieSceneObjectBindingID()
+        binding_id.set_editor_property('guid', camera_binding.get_id())
+        camera_cut_section.set_camera_binding_id(binding_id)
+        log("✓ Camera cut track added")
+    except Exception as e:
+        log(f"⚠ Warning: Could not set camera binding: {e}")
+
+    # Apply Transform Keyframes
+    if keyframe_data:
+        # Add transform track
+        transform_track = unreal.MovieSceneBindingExtensions.add_track(
+            camera_binding,
+            unreal.MovieScene3DTransformTrack
+        )
+        if transform_track:
+            section = unreal.MovieSceneTrackExtensions.add_section(transform_track)
+            unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
+            
+            # Use the existing keyframe applier logic (we can import it or duplicate simple logic here)
+            # For simplicity, implementing basic applier here
+            channels = section.get_all_channels()
+            location_channels = channels[0:3]
+            rotation_channels = channels[3:6]
+            
+            # Location
+            for kf in keyframe_data["location"]:
+                frame = unreal.FrameNumber(kf["frame"])
+                location_channels[0].add_key(frame, float(kf["x"]))
+                location_channels[1].add_key(frame, float(kf["y"]))
+                location_channels[2].add_key(frame, float(kf["z"]))
+                
+            # Rotation
+            for kf in keyframe_data["rotation"]:
+                frame = unreal.FrameNumber(kf["frame"])
+                rotation_channels[0].add_key(frame, float(kf["roll"]))
+                rotation_channels[1].add_key(frame, float(kf["pitch"]))
+                rotation_channels[2].add_key(frame, float(kf["yaw"]))
+                
+            log(f"✓ Applied {len(keyframe_data['location'])} camera transform keyframes")
+
+    return camera_binding
+
+
 def add_camera_look_at_constraint(camera_actor, mannequin_actor):
     """Add look-at constraint to make camera track the mannequin"""
     try:

@@ -424,7 +424,7 @@ TEST_CASES = [
 ]
 
 
-if __name__ == "__main__":
+def main():
     try:
         runner = IntegratedTestRunner()
         all_passed = runner.run_test_suite(TEST_CASES)
@@ -442,3 +442,6 @@ if __name__ == "__main__":
         traceback.print_exc()
     
     print("\nTest run complete!")
+
+if __name__ == "__main__":
+    main()

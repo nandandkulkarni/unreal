@@ -40,6 +40,25 @@ def plan_motion(motion_plan, actors_info, fps):
             }
         }
     
+    # Ensure camera keyframes structure exists if there are camera commands
+    if any(c["command"] == "camera_move" for c in motion_plan):
+        if "camera" not in actor_states:
+            actor_states["camera"] = {
+                "current_time": 0.0,
+                "current_pos": {"x": 0, "y": 0, "z": 0},  # Default, will be overwritten by actual
+                "current_rotation": {"pitch": 0, "yaw": 0, "roll": 0},
+                "current_animation": None,
+                "waypoints": {},
+                "keyframes": {
+                    "location": [],
+                    "rotation": [],
+                    "animations": []
+                }
+            }
+    
+    # Ensure camera keyframes structure exists if there are camera commands
+
+    
     # Process each command sequentially
     for i, cmd in enumerate(motion_plan):
         actor_name = cmd.get("actor")
@@ -70,6 +89,8 @@ def plan_motion(motion_plan, actors_info, fps):
             process_animation(cmd, state, fps)
         elif command_type == "wait":
             process_wait(cmd, state, fps)
+        elif command_type == "camera_move":
+            process_camera_move(cmd, state, fps)
         else:
             log(f"  ⚠ Unknown command type: {command_type}")
     
@@ -350,3 +371,36 @@ def process_wait(cmd, state, fps):
     log(f"  Wait {duration_sec}s ({start_frame}-{end_frame})")
     
     state["current_time"] += duration_sec
+
+
+def process_camera_move(cmd, state, fps):
+    """Move camera with location and rotation"""
+    location = cmd.get("location")
+    rotation = cmd.get("rotation")
+    duration_sec = cmd.get("duration", 2.0)
+    
+    if not location or not rotation:
+        log("  ⚠ Camera move missing location or rotation")
+        return
+        
+    start_frame = int(state["current_time"] * fps)
+    end_frame = int((state["current_time"] + duration_sec) * fps)
+    
+    # Add start keyframes (current position)
+    add_location_keyframe(state, start_frame, state["current_pos"])
+    add_rotation_keyframe(state, start_frame, state["current_rotation"])
+    
+    # Update state
+    target_pos = {"x": location[0], "y": location[1], "z": location[2]}
+    target_rot = {"pitch": rotation[0], "yaw": rotation[1], "roll": rotation[2]}
+    
+    state["current_pos"] = target_pos
+    state["current_rotation"] = target_rot
+    state["current_time"] += duration_sec
+    
+    # Add end keyframes (new position)
+    add_location_keyframe(state, end_frame, state["current_pos"])
+    add_rotation_keyframe(state, end_frame, state["current_rotation"])
+    
+    log(f"  Camera move to ({target_pos['x']}, {target_pos['y']}, {target_pos['z']}) in {duration_sec}s")
+

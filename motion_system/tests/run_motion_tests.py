@@ -9,9 +9,11 @@ import os
 import importlib
 
 # Add parent directories to path
-script_dir = os.path.dirname(os.path.abspath(__file__))
-motion_system_dir = os.path.dirname(script_dir)  # Go up to motion_system/
-unreal_dir = os.path.dirname(motion_system_dir)  # Go up to unreal/
+# Use absolute paths since __file__ is not available in remove execution context
+script_dir = r"C:\UnrealProjects\Coding\unreal\motion_system\tests"
+motion_system_dir = r"C:\UnrealProjects\Coding\unreal\motion_system"
+unreal_dir = r"C:\UnrealProjects\Coding\unreal"
+
 if unreal_dir not in sys.path:
     sys.path.insert(0, unreal_dir)
 
@@ -55,7 +57,7 @@ TEST_CASES = [
         "name": "Move to Location",
         "plan": [
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
-            {"actor": "test_actor", "command": "move_to_location", "x": 500, "y": 500, "z": 6.88, "speed_mph": 3}
+            {"actor": "test_actor", "command": "move_to_location", "target": [500, 500, 6.88], "speed_mph": 3}
         ]
     },
     {
@@ -102,13 +104,13 @@ def run_all_tests():
         logger.log(f"\n{'='*60}")
         logger.log(f"TEST {i}/{len(TEST_CASES)}: {test_case['name']}")
         logger.log(f"{'='*60}")
-        Start test in database
-            db.start_test(
-                test_name=test_case['name'],
-                start_position=unreal.Vector(0, 0, 6.882729),
-                start_rotation_yaw=-90.0,
-                fps=FPS
-            )
+        # Start test in database
+        db.start_test(
+            test_name=test_case['name'],
+            start_position=unreal.Vector(0, 0, 6.882729),
+            start_rotation_yaw=-90.0,
+            fps=FPS
+        )
             
             # 
         try:
@@ -160,19 +162,47 @@ def run_all_tests():
                         duration_frames
                     )
             
+            # Adapt data structure for verifier
+            raw_data = keyframe_data_all["test_actor"]
+            
+            # Convert frame-based keyframes to include time
+            location_kf = []
+            for kf in raw_data["keyframes"]["location"]:
+                location_kf.append({
+                    "frame": kf["frame"],
+                    "time": kf["frame"] / fps,
+                    "x": kf["x"], "y": kf["y"], "z": kf["z"]
+                })
+            
+            rotation_kf = []
+            for kf in raw_data["keyframes"]["rotation"]:
+                rotation_kf.append({
+                    "frame": kf["frame"],
+                    "time": kf["frame"] / fps,
+                    "pitch": kf["pitch"], "yaw": kf["yaw"], "roll": kf["roll"]
+                })
+            
+            keyframe_data = {
+                "location_keyframes": location_kf,
+                "rotation_keyframes": rotation_kf,
+                "duration_seconds": location_kf[-1]["time"] if location_kf else 0,
+                "waypoints": raw_data.get("waypoints", {})
+            }
+
             # Run test validation
             logger.log(f"\nValidating results...")
             passed = test_motion_system.run_test(
-            # End test in database
-            db.end_test(passed=passed, duration_seconds=0)  # Duration calculated in test
-            
-                test_case['plan'],
+                keyframe_data,
                 sequence,
                 mannequin_binding,
                 start_position,
                 start_rotation.yaw,
                 fps
             )
+            
+            # End test in database
+            duration = keyframe_data['duration_seconds']
+            db.end_test(passed=passed, duration_seconds=duration)
             
             test_results.append({
                 'name': test_case['name'],
