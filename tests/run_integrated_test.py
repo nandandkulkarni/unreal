@@ -239,7 +239,7 @@ class IntegratedTestRunner:
             self.log_troubleshoot("Starting verification", "VERIFY")
             
             passed = test_motion_system.run_test(
-                motion_plan,
+                keyframe_data,
                 sequence,
                 mannequin_binding,
                 start_position,

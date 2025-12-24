@@ -73,6 +73,13 @@ def plan_motion(motion_plan, actors_info, fps):
         else:
             log(f"  ⚠ Unknown command type: {command_type}")
     
+    # Finalize any open animations
+    for actor_name, state in actor_states.items():
+        if state["current_animation"] and state["current_animation"]["end_frame"] is None:
+            final_frame = int(state["current_time"] * fps)
+            state["current_animation"]["end_frame"] = final_frame
+            log(f"  ✓ Finalized animation '{state['current_animation']['name']}' to frame {final_frame}")
+    
     # Convert to output format
     result = {}
     for actor_name, state in actor_states.items():

@@ -134,27 +134,33 @@ class MotionTestFramework:
         try:
             # Find transform track
             tracks = actor_binding.get_tracks()
+            logger.log(f"  Found {len(tracks)} tracks")
             transform_track = None
             
             for track in tracks:
-                if track.get_class().get_name() == "MovieScene3DTransformTrack":
+                track_class = track.get_class().get_name()
+                logger.log(f"  Track: {track_class}")
+                if track_class == "MovieScene3DTransformTrack":
                     transform_track = track
                     break
             
             if not transform_track:
-                self.log_test("⚠ No transform track found")
+                logger.log("  ⚠ No transform track found")
                 return None
             
             # Get sections
             sections = transform_track.get_sections()
+            logger.log(f"  Found {len(sections)} sections in transform track")
             if not sections:
-                self.log_test("⚠ No sections in transform track")
+                logger.log("  ⚠ No sections in transform track")
                 return None
             
             section = sections[0]
+            logger.log(f"  Using section: {section.get_name()}")
             
             # Get channels
-            channels = section.get_channels()
+            channels = section.get_all_channels()
+            logger.log(f"  Found {len(channels)} channels")
             location_x = None
             location_y = None
             location_z = None
@@ -301,12 +307,12 @@ class MotionTestFramework:
 
 
 # Test runner function
-def run_test(motion_plan, sequence, actor_binding, start_position, start_rotation, fps=30):
+def run_test(keyframe_data, sequence, actor_binding, start_position, start_rotation, fps=30):
     """
     Run a single motion test
     
     Args:
-        motion_plan: List of motion commands
+        keyframe_data: Processed keyframe data from motion planner
         sequence: Unreal sequence object
         actor_binding: Actor binding in sequence
         start_position: Starting position (Vector)
@@ -322,7 +328,7 @@ def run_test(motion_plan, sequence, actor_binding, start_position, start_rotatio
     # Calculate expected final state
     logger.log("\n[1] Calculating expected final state...")
     expected = framework.calculate_expected_final_state(
-        motion_plan, start_position, start_rotation, fps
+        keyframe_data, start_rotation
     )
     
     if not expected:
