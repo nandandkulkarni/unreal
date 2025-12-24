@@ -19,7 +19,7 @@ if parent_dir not in sys.path:
 if script_dir not in sys.path:
     sys.path.insert(0, script_dir)
 
-from motion_system import logger, cleanup, sequence_setup, camera_setup, mannequin_setup, motion_planner, keyframe_applier
+from motion_system import logger, cleanup, sequence_setup, camera_setup, mannequin_setup, level_setup, motion_planner, keyframe_applier
 
 def run_scene(json_path):
     """Load and run a scene from a JSON file"""
@@ -30,7 +30,7 @@ def run_scene(json_path):
     
     modules_to_reload = [
         "logger", "cleanup", "sequence_setup", "camera_setup", 
-        "mannequin_setup", "motion_planner", "keyframe_applier", "debug_db"
+        "mannequin_setup", "level_setup", "motion_planner", "keyframe_applier", "debug_db"
     ]
     
     for mod_name in modules_to_reload:
@@ -59,26 +59,26 @@ def run_scene(json_path):
     fps = scene_data.get("fps", 30)
     plan = scene_data.get("plan", [])
     
-    logger.log(f"Scene: {scene_name}")
-    logger.log(f"FPS: {fps}")
     logger.log(f"Commands: {len(plan)}")
     
-    # Cleanup old actors only if requested or generic cleanup?
-    # For movie making, maybe we want to keep previous stuff?
-    # But current system relies on exclusive control.
+    # 0. Global Setup: Create New Level if requested
+    # if scene_data.get("create_new_level", False):
+    #     level_setup.create_basic_level()
+
+    # 1. Cleanup old state
     cleanup.close_open_sequences()
-    cleanup.delete_old_actors() # This might be aggressive if user has set dressing?
+    cleanup.delete_old_actors() 
     # Update cleanup to only delete Test* or Spawned* actors? We did that.
     
     # Create Sequence
     # sequence_setup.create_sequence signature: (fps=30, duration_seconds=60, test_name=None)
     # returns: (sequence, name, num, fps, frames)
-    result = sequence_setup.create_sequence(fps=fps, test_name=scene_name)
+    result = sequence_setup.create_sequence(fps=fps, duration_seconds=15, test_name=scene_name)
     sequence = result[0]
     
-    if not sequence:
-        logger.log("✗ Failed to create sequence")
-        return
+    # if not sequence:
+    #     logger.log("✗ Failed to create sequence")
+    #     return
         
     unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(sequence)
     

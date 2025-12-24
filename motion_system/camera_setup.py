@@ -58,11 +58,17 @@ def enable_lookat_tracking(camera, target_actor, offset=None, interp_speed=0.0):
         component = camera.get_cine_camera_component()
         
         # 1. Setup LookAt Tracking
-        # Try-except is safer for property detection in different UE versions
-        try:
-            tracking_settings = component.get_editor_property("lookat_tracking_settings")
-        except Exception:
-            tracking_settings = component.get_editor_property("look_at_tracking_settings")
+        # Try both common property names
+        tracking_settings = None
+        for prop in ["lookat_tracking_settings", "look_at_tracking_settings"]:
+            if hasattr(component, prop):
+                tracking_settings = component.get_editor_property(prop)
+                break
+        
+        if not tracking_settings:
+            log("  ⚠ Could not find LookAt tracking property on CineCameraComponent")
+            return
+            
         tracking_settings.set_editor_property("enable_lookat_tracking", True)
         tracking_settings.set_editor_property("actor_to_track", target_actor)
         
