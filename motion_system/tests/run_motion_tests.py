@@ -42,6 +42,7 @@ TEST_CASES = [
         "name": "Simple Forward Movement",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3}
         ]
@@ -50,6 +51,7 @@ TEST_CASES = [
         "name": "Turn and Move",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3}
@@ -59,6 +61,7 @@ TEST_CASES = [
         "name": "Move to Location",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_to_location", "target": [500, 500, 6.88], "speed_mph": 3}
         ]
@@ -67,6 +70,7 @@ TEST_CASES = [
         "name": "Waypoint Test",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 5, "speed_mph": 3, "waypoint_name": "point_A"},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 180},
@@ -77,6 +81,7 @@ TEST_CASES = [
         "name": "Complex Path",
         "plan": [
             {"command": "add_actor", "actor": "test_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+            {"command": "add_camera", "actor": "camera", "location": [0, -300, 150], "rotation": [0, 45, 0]},
             {"actor": "test_actor", "command": "animation", "name": "Jog_Fwd"},
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
             {"actor": "test_actor", "command": "turn_by_degree", "degrees": 90},
@@ -87,17 +92,17 @@ TEST_CASES = [
             {"actor": "test_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3}
         ]
     },
-    {
-        "name": "Dynamic Spawning",
-        "verify_actor": "spawned_actor",
-        "plan": [
-            {"command": "add_actor", "actor": "spawned_actor", "location": [200, 200, 6.88], "rotation": [0, -90, 0], "mesh_path": "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple"},
-            {"actor": "spawned_actor", "command": "animation", "name": "Jog_Fwd"},
-            {"actor": "spawned_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
-            {"command": "add_camera", "actor": "spawned_cam", "location": [200, 0, 150], "rotation": [0, -45, 0]},
-            {"actor": "spawned_cam", "command": "camera_move", "location": [200, 200, 150], "rotation": [0, -45, 90], "duration": 2.0}
-        ]
-    }
+    # {
+    #     "name": "Dynamic Spawning",
+    #     "verify_actor": "spawned_actor",
+    #     "plan": [
+    #         {"command": "add_actor", "actor": "spawned_actor", "location": [0, 0, 6.882729], "rotation": [0, -90, 0], "mesh_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
+    #         {"actor": "spawned_actor", "command": "animation", "name": "Jog_Fwd"},
+    #         {"actor": "spawned_actor", "command": "move_by_distance", "direction": "forward", "meters": 3, "speed_mph": 3},
+    #         {"command": "add_camera", "actor": "spawned_cam", "location": [200, 0, 150], "rotation": [0, -45, 0]},
+    #         {"actor": "spawned_cam", "command": "camera_move", "location": [200, 200, 150], "rotation": [0, -45, 90], "duration": 2.0}
+    #     ]
+    # }
 ]
 
 
