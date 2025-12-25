@@ -27,19 +27,19 @@ MOVIE = {
         {"actor":"Sarah","command":"animation","name":"Jog_Fwd"},
         {"actor":"Jessica","command":"face","direction":"north","duration":0.5},
         {"actor":"Sarah","command":"face","direction":"north","duration":0.5},
-        {"actor":"Jessica","command":"move_for_seconds","direction":"north","seconds":5,"speed_mph":8},
-        {"actor":"Sarah","command":"move_for_seconds","direction":"north","seconds":5,"speed_mph":8},
+        {"actor":"Jessica","command":"move_for_seconds","direction":"north","seconds":5,"speed_mtps":3.58},
+        {"actor":"Sarah","command":"move_for_seconds","direction":"north","seconds":5,"speed_mtps":3.58},
         {"actor":"Jessica","command":"face","direction":"east"},
         {"actor":"Sarah","command":"face","direction":"east"},
-        {"actor":"Jessica","command":"move_for_seconds","direction":"east","seconds":5,"speed_mph":8},
-        {"actor":"Sarah","command":"move_for_seconds","direction":"east","seconds":5,"speed_mph":8},
+        {"actor":"Jessica","command":"move_for_seconds","direction":"east","seconds":5,"speed_mtps":3.58},
+        {"actor":"Sarah","command":"move_for_seconds","direction":"east","seconds":5,"speed_mtps":3.58},
         {"actor":"Jessica","command":"face","direction":"south"},
         {"actor":"Sarah","command":"face","direction":"south"},
-        {"actor":"Jessica","command":"move_for_seconds","direction":"south","seconds":5,"speed_mph":8},
-        {"actor":"Sarah","command":"move_for_seconds","direction":"south","seconds":5,"speed_mph":8},
+        {"actor":"Jessica","command":"move_for_seconds","direction":"south","seconds":5,"speed_mtps":3.58},
+        {"actor":"Sarah","command":"move_for_seconds","direction":"south","seconds":5,"speed_mtps":3.58},
         {"actor":"Jessica","command":"face","direction":"west"},
         {"actor":"Sarah","command":"face","direction":"west"},
-        {"actor":"Jessica","command":"move_for_seconds","direction":"west","seconds":5,"speed_mph":8},
-        {"actor":"Sarah","command":"move_for_seconds","direction":"west","seconds":5,"speed_mph":8}
+        {"actor":"Jessica","command":"move_for_seconds","direction":"west","seconds":5,"speed_mtps":3.58},
+        {"actor":"Sarah","command":"move_for_seconds","direction":"west","seconds":5,"speed_mtps":3.58}
     ]
 }

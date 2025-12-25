@@ -178,7 +178,9 @@ def get_speed_cm_per_sec(cmd):
     """Convert speed to cm/s"""
     if "speed_mph" in cmd:
         return cmd["speed_mph"] * 44.704  # mph to cm/s
-    elif "speed_mps" in cmd:
+    elif "speed_mtps" in cmd:
+        return cmd["speed_mtps"] * 100  # m/s to cm/s
+    elif "speed_mps" in cmd:  # Legacy support
         return cmd["speed_mps"] * 100  # m/s to cm/s
     else:
         log("  ⚠ No speed specified, using default 100 cm/s")
