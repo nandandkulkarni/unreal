@@ -12,8 +12,13 @@ def compact_json_commands(input_file):
     with open(input_file, 'w') as f:
         f.write('{\n')
         f.write(f'    "name": "{data["name"]}",\n')
-        f.write(f'    "create_new_level": {str(data["create_new_level"]).lower()},\n')
-        f.write(f'    "fps": {data["fps"]},\n')
+        
+        # Handle optional fields
+        if "create_new_level" in data:
+            f.write(f'    "create_new_level": {str(data["create_new_level"]).lower()},\n')
+        if "fps" in data:
+            f.write(f'    "fps": {data["fps"]},\n')
+        
         f.write('    "plan": [\n')
         
         for i, cmd in enumerate(data['plan']):
