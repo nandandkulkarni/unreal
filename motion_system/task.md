@@ -1,9 +1,34 @@
-# Movie Making Workflow Enhancements
+# Directional Light Implementation Task
 
-- [x] Implement Unreal Native LookAt Tracking
-- [x] Create JSON-based Scene Runner (`run_scene.py`)
-- [x] Smooth Motion (Cubic Interpolation)
-- [x] Camera Shake / Handheld effects (Implemented via Smooth Cinematic Motion)
-- [x] Easy UI Button in Unreal (Implemented via trigger_movie.py CLI)
-- [ ] Dynamic Level Creation ("Basic" template) - *Paused (fixing context issues later)*
-- [ ] Reactive Procedural Camera (Blueprint/C++ logic)
+## Goal
+Add directional light support to the motion system with `add_directional_light` command.
+
+## Tasks
+
+### Planning
+- [x] Design directional light specification
+- [x] Test directional light spawning with diagnostic script
+- [x] Create implementation plan
+
+### Implementation
+- [x] Create `light_setup.py` in `motion_includes/`
+  - [x] Cardinal direction to yaw mapping
+  - [x] Angle preset to pitch mapping
+  - [x] Intensity preset mapping
+  - [x] Color preset mapping
+  - [x] `create_directional_light()` function
+- [x] Update `motion_planner.py`
+  - [x] Add `process_add_directional_light()` handler
+  - [x] Import light_setup module
+- [x] Update `run_scene.py` reload list
+- [x] Fix binding_map to exclude lights
+
+### Testing
+- [x] Add directional light to `tandem_run_square.json`
+- [x] Run tandem scene with lighting
+- [x] Verify light appears and works correctly
+
+### Documentation
+- [x] Update walkthrough with directional light feature
+
+## Status: ✅ COMPLETE
