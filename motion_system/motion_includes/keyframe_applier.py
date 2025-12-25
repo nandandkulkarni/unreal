@@ -7,7 +7,7 @@ import unreal
 from ..logger import log
 
 
-def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, duration_frames):
+def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, duration_frames, sequence=None):
     """
     Apply keyframe data to an actor in the sequence
     
@@ -29,6 +29,7 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
     
     # Only click create transform track if we have keys to apply
     # Otherwise, an empty track might reset the actor to 0,0,0
+    # Location/Rotation track
     if loc_keys or rot_keys:
         # Add transform track
         transform_track = unreal.MovieSceneBindingExtensions.add_track(
@@ -45,6 +46,74 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
             apply_transform_keyframes(section, keyframes, actor_name)
     else:
         log(f"  (Skipping transform track: no keyframes for {actor_name})")
+    
+    # Focal Length Track (Smart Zoom)
+    focal_keys = keyframes.get("current_focal_length", [])
+    if focal_keys and isinstance(actor, unreal.CineCameraActor) and sequence:
+        log(f"  Applying {len(focal_keys)} Focal Length keyframes (Component Property Binding)...")
+        
+        try:
+            # 1. Get the component
+            component = actor.get_cine_camera_component()
+            
+            # 2. Add component to sequence (possessable)
+            # Use MovieSceneSequenceExtensions for better stability in 5.7
+            comp_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, component)
+            if comp_binding:
+                comp_binding.set_parent(binding)
+                
+                # 3. Use FloatPropertyTrack specifically for properties
+                # This class is often more stable for "CurrentFocalLength"
+                track_class = unreal.MovieSceneFloatTrack
+                if hasattr(unreal, "MovieSceneFloatPropertyTrack"):
+                    track_class = unreal.MovieSceneFloatPropertyTrack
+                
+                fl_track = unreal.MovieSceneBindingExtensions.add_track(comp_binding, track_class)
+                
+                if fl_track:
+                    # On the component, the path is just the property name
+                    fl_track.set_property_name_and_path("CurrentFocalLength", "CurrentFocalLength")
+                    
+                    section = unreal.MovieSceneTrackExtensions.add_section(fl_track)
+                    unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
+                    
+                    channels = section.get_all_channels()
+                    if channels:
+                        fl_channel = channels[0]
+                        for key in focal_keys:
+                            frame = unreal.FrameNumber(key["frame"])
+                            key_obj = fl_channel.add_key(frame, float(key["value"]))
+                            
+                            # Use simple interpolation for now
+                            if key_obj and hasattr(key_obj, 'set_interpolation'):
+                                try:
+                                    key_obj.set_interpolation(unreal.MovieSceneKeyInterpolation.USER)
+                                except:
+                                    pass
+                        
+                        log(f"  ✓ Applied {len(focal_keys)} keyframes to Focal Length track on component")
+                    else:
+                        log(f"  ⚠ Track section has no channels")
+                else:
+                    log(f"  ✗ Failed to create {track_class.__name__} on component")
+            else:
+                log(f"  ✗ Failed to bind CameraComponent to sequence")
+        except Exception as e:
+            log(f"  ⚠ Failed to apply Focal Length track: {e}")
+            import traceback
+            log(traceback.format_exc())
+        
+        channels = section.get_all_channels()
+        fl_channel = channels[0]
+        
+        for key in focal_keys:
+            frame = unreal.FrameNumber(key["frame"])
+            val = float(key["value"])
+            key_obj = fl_channel.add_key(frame, val)
+            if hasattr(key_obj, 'set_interpolation'):
+                 key_obj.set_interpolation(unreal.MovieSceneKeyInterpolation.CUBIC)
+        
+        log(f"  ✓ Focal Length track applied to {actor_name}'s CameraComponent")
     
     # Apply animation keyframes (only for skeletal mesh actors)
     if hasattr(actor, 'skeletal_mesh_component') or isinstance(actor, unreal.SkeletalMeshActor):

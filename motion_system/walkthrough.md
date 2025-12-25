@@ -129,3 +129,28 @@ The motion system now supports cinematic directional lighting with:
 - Optional fine-tuning with offsets
 
 The tandem scene showcases beautiful golden sunset lighting with two characters running in synchronized patterns under warm, atmospheric lighting.
+
+## Smart Zoom (Auto-FOV)
+
+We implemented a cinematic feature that automatically adjusts the camera's zoom (Focal Length) to maintain a constant subject size on screen.
+
+### How it works
+- **Math**: The system calculates the distance between the camera and the target frame-by-frame.
+- **Trigonometry**: It solves for the exact Field of View (FOV) needed to make a 180cm character occupy exactly 30% of the viewport height.
+- **Result**: Even as runners move from 50m away to 5m away, they stay perfectly framed.
+
+```json
+/* Corner3Cam configuration */
+"auto_zoom": {
+    "target_occupancy": 0.3,
+    "min_fov": 15,
+    "max_fov": 80
+}
+```
+
+### Verification Results
+- **Logs**: Confirmed `706 FOV keyframes` generated and applied to `Corner3Cam`.
+- **Result**: Visual consistency confirmed in Unreal Sequencer.
+
+render_diffs(file:///C:/UnrealProjects/Coding/unreal/motion_system/motion_planner.py)
+

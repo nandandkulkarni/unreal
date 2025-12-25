@@ -155,7 +155,26 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
     if pending_groups:
         generate_group_targets(pending_groups, actor_states, actors_info, sequence, fps)
 
+    # Post-process: Generate Auto-FOV for cameras
+    generate_auto_zoom_keyframes(actors_info, actor_states, fps)
+
     return result, camera_cuts
+
+
+def process_camera_cut(cmd, camera_cuts):
+    """Process camera_cut command"""
+    camera_name = cmd.get("camera") or cmd.get("actor")
+    at_time = cmd.get("at_time", 0.0)
+    
+    if not camera_name:
+        log("  ⚠ No camera specified for camera_cut")
+        return
+        
+    camera_cuts.append({
+        "camera": camera_name,
+        "time": at_time
+    })
+    log(f"  ✓ Camera cut to '{camera_name}' at {at_time}s")
 
 
 def get_cardinal_angle(direction, offset=None):
@@ -696,7 +715,9 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_gr
         "location": camera_actor.get_actor_location(),
         "rotation": camera_actor.get_actor_rotation(),
         "actor": camera_actor,
-        "binding": binding
+        "binding": binding,
+        "auto_zoom": cmd.get("auto_zoom"),
+        "look_at_actor": cmd.get("look_at_actor")
     }
     
     # Initialize state
@@ -737,6 +758,9 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_gr
                  create_dummy_actor(target_name, actors_info, actor_states, sequence)
 
             process_camera_look_at(cmd, actors_info)
+            
+            # Update metadata with resolved target
+            actors_info[camera_name]["look_at_actor"] = target_name
         else:
             log(f"  ⚠ Cannot track '{target_name}': actor not yet created")
 
@@ -943,6 +967,79 @@ def process_delete_all_floors(cmd):
             count += 1
     if count == 0:
         log("    (No Floor actors found)")
+
+
+def generate_auto_zoom_keyframes(actors_info, actor_states, fps):
+    """Post-processor to calculate frame-by-frame FOV to maintain target occupancy"""
+    import math
+    
+    log("\n" + "-"*40)
+    log("GENERATING AUTO-ZOOM (SMART ZOOM)")
+    
+    for cam_name, info in actors_info.items():
+        config = info.get("auto_zoom")
+        if not config:
+            continue
+            
+        target_name = info.get("look_at_actor")
+        if not target_name:
+            log(f"  ⚠ {cam_name} has auto_zoom but no look_at_actor. Skipping.")
+            continue
+            
+        if target_name not in actor_states:
+            log(f"  ⚠ {cam_name} target '{target_name}' state not found. Skipping.")
+            continue
+            
+        log(f"  Calculating Smart Zoom for {cam_name} targeting {target_name}...")
+        
+        state = actor_states[cam_name]
+        target_state = actor_states[target_name]
+        
+        occupancy = config.get("target_occupancy", 0.3)
+        target_height = config.get("target_height_cm", 182.0) # Approx 6ft
+        sensor_height = config.get("sensor_height_mm", 24.2) # Default Full Frame height
+        
+        min_fl = config.get("min_focal_length", 18.0)
+        max_fl = config.get("max_focal_length", 300.0)
+        
+        # We need to know the duration
+        max_frame = 0
+        if target_state["keyframes"]["location"]:
+             max_frame = target_state["keyframes"]["location"][-1]["frame"]
+             
+        cam_loc = info["location"]
+        
+        # Performance: Sample every N frames to reduce track density (helps performance/stability)
+        step = 10 
+        start_frame = 0
+        end_frame = max_frame + 1
+        for frame in range(start_frame, end_frame, step):
+             target_pos = get_actor_location_at_frame(target_state, frame)
+             
+             # Calculate distance (3D)
+             dx = target_pos["x"] - cam_loc.x
+             dy = target_pos["y"] - cam_loc.y
+             dz = target_pos["z"] - cam_loc.z
+             dist = math.sqrt(dx*dx + dy*dy + dz*dz)
+             
+             if dist < 1.0: dist = 1.0
+             
+             # Native Formula: FocalLength = (SensorHeight * Distance * Occupancy) / SubjectHeight
+             fl = (sensor_height * dist * occupancy) / target_height
+             
+             # Clamp
+             fl = max(min_fl, min(max_fl, fl))
+             
+             # Add keyframe
+             if "current_focal_length" not in state["keyframes"]:
+                 state["keyframes"]["current_focal_length"] = []
+                 
+             state["keyframes"]["current_focal_length"].append({
+                 "frame": frame,
+                 "value": fl
+             })
+             
+    log("-" * 40)
 
 
 def generate_group_targets(pending_groups, actor_states, actors_info, sequence, fps):

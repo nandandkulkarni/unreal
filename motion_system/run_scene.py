@@ -121,7 +121,8 @@ def run_scene(json_path):
                 binding_map[actor_name], 
                 keyframe_data, 
                 fps, 
-                total_frames
+                total_frames,
+                sequence=sequence
             )
     
     # 3. Apply Camera Cuts

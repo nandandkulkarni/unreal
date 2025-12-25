@@ -19,7 +19,7 @@ MOVIE = {
         
         # 2. Corner3Cam (Green) - Tracks Jessica
         # Runners moving +Y towards Y=5000. Cam at Y=5500 looking back (-Y).
-        {"command": "add_camera", "actor": "Corner3Cam", "location": [4700,5500,100], "fov": 30, "look_at_actor": "Jessica, Sarah"},
+        {"command":"add_camera","actor":"Corner3Cam","location":[4700,5500,100],"look_at_actor":"Jessica, Sarah","auto_zoom":{"target_occupancy":0.35,"min_focal_length":18.0,"max_focal_length":200.0}},
         
         # 3. Side3Cam (Red) - Tracks Jessica
         # Runners moving -X along Y=5000 line. Cam at side (Y=4000) looking at path (Y=5000).
