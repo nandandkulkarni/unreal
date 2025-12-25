@@ -38,6 +38,7 @@
                 0,
                 0
             ],
+            "fov": 55,
             "look_at_actor": "Jessica",
             "offset": [
                 0,

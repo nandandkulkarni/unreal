@@ -5,8 +5,15 @@ import unreal
 from ..logger import log, log_header
 
 
-def create_camera(camera_name, location=None, rotation=None):
-    """Create a cine camera actor"""
+def create_camera(camera_name, location=None, rotation=None, fov=90.0):
+    """Create a cine camera actor
+    
+    Args:
+        camera_name: Name for the camera actor
+        location: Camera position (default: [0, 0, 300])
+        rotation: Camera rotation (default: facing +Y)
+        fov: Field of view in degrees (default: 90.0)
+    """
     log_header("STEP 3: Creating camera")
 
     if location is None:
@@ -29,10 +36,12 @@ def create_camera(camera_name, location=None, rotation=None):
         camera_component = camera.get_cine_camera_component()
         camera_component.set_editor_property("current_focal_length", 50.0)
         camera_component.set_editor_property("current_aperture", 2.8)
+        camera_component.set_editor_property("field_of_view", fov)
 
         log(f"✓ Camera created: {camera_name}")
         log(f"  Location: {location}")
         log(f"  Rotation: {rotation}")
+        log(f"  FOV: {fov}°")
         log("  Focal Length: 50mm")
         log("  Aperture: f/2.8")
         

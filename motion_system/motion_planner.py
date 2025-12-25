@@ -640,7 +640,11 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
         return
 
     log(f"  Creating camera '{camera_name}'...")
-    camera_actor = camera_setup.create_camera("CineCameraActor")
+    
+    # Extract FOV if specified
+    fov = cmd.get("fov", 90.0)
+    
+    camera_actor = camera_setup.create_camera("CineCameraActor", fov=fov)
     
     # Rename if possible/needed (camera_setup creates it with default name usually, 
     # but we can try to rename or just track it by our internal name)
