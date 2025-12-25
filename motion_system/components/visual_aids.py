@@ -2,7 +2,7 @@
 Visual aids - origin markers, axis indicators, debug cubes
 """
 import unreal
-from logger import log
+from ..logger import log
 
 
 def create_plus_sign_at_origin():

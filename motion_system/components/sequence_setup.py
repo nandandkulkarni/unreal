@@ -3,7 +3,7 @@ Sequence creation and configuration
 """
 import unreal
 from datetime import datetime
-from logger import log, log_header
+from ..logger import log, log_header
 
 
 def get_next_sequence_number():

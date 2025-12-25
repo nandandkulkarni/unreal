@@ -2,7 +2,7 @@
 Camera creation and configuration
 """
 import unreal
-from logger import log, log_header
+from ..logger import log, log_header
 
 
 def create_camera(camera_name, location=None, rotation=None):

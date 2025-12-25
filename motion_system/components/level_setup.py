@@ -2,7 +2,7 @@
 Level creation and management logic.
 """
 import unreal
-from logger import log, log_header
+from ..logger import log, log_header
 
 def create_basic_level():
     """Create a new level based on the Basic (Template_Default) template."""

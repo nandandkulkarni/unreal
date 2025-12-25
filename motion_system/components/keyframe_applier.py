@@ -4,7 +4,7 @@ Keyframe Applier - Pass 2: Apply keyframe data to Unreal
 Takes structured keyframe data and creates actual Unreal sequencer keyframes.
 """
 import unreal
-from logger import log
+from ..logger import log
 
 
 def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, duration_frames):
