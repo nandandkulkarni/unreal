@@ -5,7 +5,84 @@ import unreal
 from ..logger import log, log_header
 
 
-def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None):
+def create_camera_marker(location, color_name="red"):
+    """Create a visual marker (pillar) for the camera location
+    
+    Args:
+        location: vector location
+        color_name: 'red', 'blue', 'green', etc.
+    """
+    # Create static mesh actor (Cube)
+    marker = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.StaticMeshActor,
+        location,
+        unreal.Rotator(0,0,0)
+    )
+    
+    if not marker:
+        log(f"  ⚠ Failed to spawn camera marker at {location}")
+        return
+
+    marker.set_actor_label(f"CameraMarker_{color_name}")
+    marker.tags.append("MotionSystemDebug") # Tag for easier cleanup
+    
+    # Disable collision
+    marker.set_actor_enable_collision(False)
+
+    # Set mesh to Cube
+    mesh_path = "/Engine/BasicShapes/Cube.Cube"
+    mesh_asset = unreal.EditorAssetLibrary.load_asset(mesh_path)
+    if mesh_asset:
+        marker.static_mesh_component.set_static_mesh(mesh_asset)
+    
+    # Scale: 60cm x 60cm x 182.88cm (6 ft) - Wider
+    marker.set_actor_scale3d(unreal.Vector(0.6, 0.6, 1.8288))
+    
+    # Adjust location so bottom is FLUSH ON GROUND (Z=0).
+    # Pivot is center. Center Z must be half height = 91.44.
+    # Ignore input location.z, force ground.
+    ground_loc = unreal.Vector(location.x, location.y, 91.44)
+    marker.set_actor_location(ground_loc, False, True)
+    
+    # Material/Color
+    # User requested to use existing materials (MyRed, MyBlue, etc.)
+    color_map = {
+        "red": "/Game/MyMaterial/MyRed",
+        "blue": "/Game/MyMaterial/MyBlue",
+        "green": "/Game/MyMaterial/MyGreen",
+        "yellow": "/Game/MyMaterial/MyYellow"
+    }
+    
+    mat_path = color_map.get(color_name.lower(), "/Game/MyMaterial/MyRed")
+    existing_mat = unreal.EditorAssetLibrary.load_asset(mat_path)
+    
+    if existing_mat:
+        marker.static_mesh_component.set_material(0, existing_mat)
+        log(f"  + Set marker material to {mat_path}")
+    else:
+        # Fallback to dynamic if specific asset missing
+        try:
+            # Create dynamic material
+            mat = marker.static_mesh_component.create_dynamic_material_instance(0)
+            
+            # Colors - Solid Opaque for maximum visibility
+            color = unreal.LinearColor(1, 0, 0, 1.0) # Red default
+            if color_name.lower() == "blue":
+                color = unreal.LinearColor(0, 0, 1, 1.0)
+            elif color_name.lower() == "green":
+                color = unreal.LinearColor(0, 1, 0, 1.0)
+            elif color_name.lower() == "yellow":
+                color = unreal.LinearColor(1, 1, 0, 1.0)
+                
+            mat.set_vector_parameter_value("Color", color)
+            mat.set_vector_parameter_value("BaseColor", color)
+        except Exception as e:
+            log(f"  ⚠ Could not set marker color: {e}")
+
+    log(f"  + Marker ({color_name}) created at {location}")
+
+
+def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None, show_marker=None):
     """Create a cine camera actor
     
     Args:
@@ -13,16 +90,23 @@ def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None
         location: Camera position (default: [0, 0, 300])
         rotation: Camera rotation (default: facing +Y)
         fov: Field of view in degrees (default: 90.0)
-        tint: Optional color tint [R, G, B] values 0-1, e.g. [1.0, 0.5, 0.5] for red tint
+        tint: Optional color tint [R, G, B] values 0-1
+        show_marker: Optional color string ('red', 'blue') to show a debug marker at location
     """
     log_header("STEP 3: Creating camera")
 
     if location is None:
         location = unreal.Vector(0, 0, 300)
+    
+    if show_marker:
+        create_camera_marker(location, show_marker)
+
     if rotation is None:
         # Face forward (toward +Y) at mannequin - yaw=90
         rotation = unreal.Rotator(pitch=0.0, yaw=90.0, roll=0.0)
 
+    # Check if we should ignore look at (not implemented inside create_camera yet, handled by caller)
+    
     camera = unreal.EditorLevelLibrary.spawn_actor_from_class(
         unreal.CineCameraActor,
         location,

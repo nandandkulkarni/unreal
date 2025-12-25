@@ -641,11 +641,18 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
 
     log(f"  Creating camera '{camera_name}'...")
     
-    # Extract FOV and tint if specified
+    # Extract FOV, tint, and show_marker if specified
     fov = cmd.get("fov", 90.0)
     tint = cmd.get("tint", None)
+    show_marker = cmd.get("show_marker", None)
     
-    camera_actor = camera_setup.create_camera("CineCameraActor", fov=fov, tint=tint)
+    # Extract location for creation (so marker is placed correctly)
+    location = None
+    if "location" in cmd:
+        loc = cmd["location"]
+        location = unreal.Vector(loc[0], loc[1], loc[2])
+
+    camera_actor = camera_setup.create_camera("CineCameraActor", location=location, fov=fov, tint=tint, show_marker=show_marker)
     
     # Rename if possible/needed (camera_setup creates it with default name usually, 
     # but we can try to rename or just track it by our internal name)
@@ -654,6 +661,7 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
         
     if "location" in cmd:
         loc = cmd["location"]
+        log(f"  > Setting {camera_name} location to: {loc}")
         camera_actor.set_actor_location(unreal.Vector(loc[0], loc[1], loc[2]), False, True)
         
     if "rotation" in cmd:
