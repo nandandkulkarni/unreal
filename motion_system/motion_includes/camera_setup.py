@@ -5,7 +5,7 @@ import unreal
 from ..logger import log, log_header
 
 
-def create_camera(camera_name, location=None, rotation=None, fov=90.0):
+def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None):
     """Create a cine camera actor
     
     Args:
@@ -13,6 +13,7 @@ def create_camera(camera_name, location=None, rotation=None, fov=90.0):
         location: Camera position (default: [0, 0, 300])
         rotation: Camera rotation (default: facing +Y)
         fov: Field of view in degrees (default: 90.0)
+        tint: Optional color tint [R, G, B] values 0-1, e.g. [1.0, 0.5, 0.5] for red tint
     """
     log_header("STEP 3: Creating camera")
 
@@ -37,6 +38,29 @@ def create_camera(camera_name, location=None, rotation=None, fov=90.0):
         camera_component.set_editor_property("current_focal_length", 50.0)
         camera_component.set_editor_property("current_aperture", 2.8)
         camera_component.set_editor_property("field_of_view", fov)
+        
+        # Apply tint if specified
+        if tint:
+            try:
+                # Enable post process settings
+                camera_component.set_editor_property("post_process_blend_weight", 1.0)
+                
+                # Get post process settings
+                post_process = camera_component.get_editor_property("post_process_settings")
+                
+                # Set color grading tint
+                post_process.set_editor_property("color_grading_intensity", 1.0)
+                post_process.set_editor_property("white_temp", 6500.0)
+                
+                # Create color tint using scene color tint
+                tint_color = unreal.LinearColor(tint[0], tint[1], tint[2], 0.3)  # Alpha = intensity
+                post_process.set_editor_property("scene_color_tint", tint_color)
+                
+                camera_component.set_editor_property("post_process_settings", post_process)
+                
+                log(f"  Tint: RGB({tint[0]}, {tint[1]}, {tint[2]})")
+            except Exception as e:
+                log(f"  ⚠ Warning: Could not apply tint: {e}")
 
         log(f"✓ Camera created: {camera_name}")
         log(f"  Location: {location}")

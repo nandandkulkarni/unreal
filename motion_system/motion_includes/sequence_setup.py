@@ -88,3 +88,63 @@ def add_actor_to_sequence(sequence, actor, actor_name="Actor"):
     logger.log(f"✓ {actor_name} added to sequence")
     
     return binding
+
+
+def apply_camera_cuts(sequence, camera_cuts, actors_info, fps):
+    """Apply camera cuts to sequence
+    
+    Args:
+        sequence: Level sequence
+        camera_cuts: List of {"camera": name, "time": seconds} dicts
+        actors_info: Dictionary of actor information including bindings
+        fps: Frames per second
+    """
+    from ..logger import log
+    
+    if not camera_cuts:
+        log("  No camera cuts to apply")
+        return
+    
+    log(f"\nApplying {len(camera_cuts)} camera cut(s)...")
+    
+    # Get or create camera cuts track using the same API as motion_commands.py
+    camera_cut_track = sequence.add_track(unreal.MovieSceneCameraCutTrack)
+    
+    # Sort cuts by time
+    sorted_cuts = sorted(camera_cuts, key=lambda x: x["time"])
+    
+    # Add camera cut sections
+    for i, cut in enumerate(sorted_cuts):
+        camera_name = cut["camera"]
+        start_time = cut["time"]
+        start_frame = int(start_time * fps)
+        
+        # Determine end frame (next cut or sequence end)
+        if i + 1 < len(sorted_cuts):
+            end_frame = int(sorted_cuts[i + 1]["time"] * fps)
+        else:
+            # Last cut goes to end of sequence
+            end_frame = sequence.get_playback_end()
+        
+        # Get camera binding
+        if camera_name not in actors_info:
+            log(f"  ⚠ Camera '{camera_name}' not found, skipping cut")
+            continue
+        
+        camera_binding = actors_info[camera_name].get("binding")
+        if not camera_binding:
+            log(f"  ⚠ Camera '{camera_name}' has no binding, skipping cut")
+            continue
+        
+        # Create camera cut section
+        section = camera_cut_track.add_section()
+        section.set_range(start_frame, end_frame)
+        
+        # Set camera binding
+        binding_id = unreal.MovieSceneObjectBindingID()
+        binding_id.set_editor_property("guid", camera_binding.get_id())
+        section.set_camera_binding_id(binding_id)
+        
+        log(f"  ✓ Cut {i+1}: {camera_name} from {start_time}s (frame {start_frame}) to frame {end_frame}")
+    
+    log(f"✓ Applied {len(sorted_cuts)} camera cut(s)")

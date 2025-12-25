@@ -51,19 +51,14 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         if "camera" not in actor_states:
             actor_states["camera"] = {
                 "current_time": 0.0,
-                "current_pos": {"x": 0, "y": 0, "z": 0},  # Default, will be overwritten by actual
-                "current_rotation": {"pitch": 0, "yaw": 0, "roll": 0},
-                "current_animation": None,
-                "waypoints": {},
                 "keyframes": {
                     "location": [],
-                    "rotation": [],
                     "animations": []
                 }
             }
     
-    # Ensure camera keyframes structure exists if there are camera commands
-
+    # Track camera cuts
+    camera_cuts = []
     
     # Process each command sequentially
     for i, cmd in enumerate(motion_plan):
@@ -78,6 +73,9 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             continue
         elif command_type == "add_directional_light":
             process_add_directional_light(cmd, actors_info)
+            continue
+        elif command_type == "camera_cut":
+            process_camera_cut(cmd, camera_cuts)
             continue
 
         actor_name = cmd.get("actor")
@@ -140,7 +138,7 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         }
         log(f"\n✓ {actor_name}: {len(state['keyframes']['location'])} location keys, {len(state['keyframes']['animations'])} anim sections")
     
-    return result
+    return result, camera_cuts
 
 
 def get_cardinal_angle(direction, offset=None):
@@ -641,10 +639,11 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
 
     log(f"  Creating camera '{camera_name}'...")
     
-    # Extract FOV if specified
+    # Extract FOV and tint if specified
     fov = cmd.get("fov", 90.0)
+    tint = cmd.get("tint", None)
     
-    camera_actor = camera_setup.create_camera("CineCameraActor", fov=fov)
+    camera_actor = camera_setup.create_camera("CineCameraActor", fov=fov, tint=tint)
     
     # Rename if possible/needed (camera_setup creates it with default name usually, 
     # but we can try to rename or just track it by our internal name)
@@ -754,3 +753,20 @@ def process_add_directional_light(cmd, actors_info):
         log(f"  ✓ Light '{light_name}' added successfully")
     else:
         log(f"  ✗ Failed to create light '{light_name}'")
+
+
+def process_camera_cut(cmd, camera_cuts):
+    """Process camera_cut command"""
+    camera_name = cmd.get("camera")
+    at_time = cmd.get("at_time", 0.0)
+    
+    if not camera_name:
+        log("  ⚠ camera_cut command missing 'camera' parameter")
+        return
+    
+    camera_cuts.append({
+        "camera": camera_name,
+        "time": at_time
+    })
+    
+    log(f"  ✓ Camera cut: {camera_name} at {at_time}s")

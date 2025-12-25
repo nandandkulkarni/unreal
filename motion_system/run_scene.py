@@ -94,7 +94,7 @@ def run_scene(json_path):
     actors_info = {}
     
     # 1. Plan Motion (Generate Keyframes)
-    keyframe_data_all = motion_planner.plan_motion(plan, actors_info, fps, sequence=sequence)
+    keyframe_data_all, camera_cuts = motion_planner.plan_motion(plan, actors_info, fps, sequence=sequence)
     
     # 2. Apply Keyframes to Sequencer
     binding_map = {name: info["binding"] for name, info in actors_info.items() if "binding" in info}
@@ -123,6 +123,9 @@ def run_scene(json_path):
                 fps, 
                 total_frames
             )
+    
+    # 3. Apply Camera Cuts
+    sequence_setup.apply_camera_cuts(sequence, camera_cuts, actors_info, fps)
     
     # Lock viewport to camera cuts and play
     try:

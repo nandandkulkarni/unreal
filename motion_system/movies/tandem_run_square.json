@@ -1,5 +1,5 @@
 {
-    "name": "Tandem Square Run",
+    "name": "Tandem Square Run with Camera Cuts",
     "create_new_level": true,
     "fps": 30,
     "plan": [
@@ -27,7 +27,7 @@
         },
         {
             "command": "add_camera",
-            "actor": "MainCam",
+            "actor": "WideCam",
             "location": [
                 -800,
                 -800,
@@ -48,15 +48,41 @@
             "interp_speed": 5.0
         },
         {
+            "command": "add_camera",
+            "actor": "CloseUpCam",
+            "location": [
+                0,
+                150,
+                160
+            ],
+            "rotation": [
+                -10,
+                180,
+                0
+            ],
+            "fov": 35,
+            "look_at_actor": "Jessica",
+            "offset": [
+                0,
+                0,
+                50
+            ]
+        },
+        {
             "command": "add_directional_light",
             "actor": "SunLight",
             "from": "west",
             "angle": "low",
-            "intensity": "moderate",
+            "intensity": "bright",
             "color": "golden",
             "atmosphere_sun": true
         },
         {
+            "command": "camera_cut",
+            "camera": "WideCam",
+            "at_time": 0.0
+        },
+        {
             "actor": "Jessica",
             "command": "animation",
             "name": "Jog_Fwd"
@@ -117,6 +143,11 @@
             "speed_mph": 8
         },
         {
+            "command": "camera_cut",
+            "camera": "CloseUpCam",
+            "at_time": 10.0
+        },
+        {
             "actor": "Jessica",
             "command": "face",
             "direction": "south"
@@ -139,6 +170,11 @@
             "direction": "south",
             "seconds": 5,
             "speed_mph": 8
+        },
+        {
+            "command": "camera_cut",
+            "camera": "WideCam",
+            "at_time": 15.0
         },
         {
             "actor": "Jessica",
