@@ -61,6 +61,8 @@ def delete_old_actors():
         
         if (label_lower.startswith("test") or 
             label_lower.startswith("spawned") or
+            label_lower.startswith("marker_") or
+            label_lower.startswith("cameramarker_") or
             label_lower == "hero" or
             is_motion_actor or
             is_debug_actor or

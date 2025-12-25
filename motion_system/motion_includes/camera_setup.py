@@ -5,12 +5,13 @@ import unreal
 from ..logger import log, log_header
 
 
-def create_camera_marker(location, color_name="red"):
+def create_camera_marker(location, color_name="red", owner_name="Camera"):
     """Create a visual marker (pillar) for the camera location
     
     Args:
         location: vector location
         color_name: 'red', 'blue', 'green', etc.
+        owner_name: Name of the camera this marker belongs to
     """
     # Create static mesh actor (Cube)
     marker = unreal.EditorLevelLibrary.spawn_actor_from_class(
@@ -23,7 +24,7 @@ def create_camera_marker(location, color_name="red"):
         log(f"  ⚠ Failed to spawn camera marker at {location}")
         return
 
-    marker.set_actor_label(f"CameraMarker_{color_name}")
+    marker.set_actor_label(f"Marker_{owner_name}")
     marker.tags.append("MotionSystemDebug") # Tag for easier cleanup
     
     # Disable collision
@@ -79,7 +80,7 @@ def create_camera_marker(location, color_name="red"):
         except Exception as e:
             log(f"  ⚠ Could not set marker color: {e}")
 
-    log(f"  + Marker ({color_name}) created at {location}")
+    log(f"  + Marker ({owner_name}) created at {location}")
 
 
 def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None, show_marker=None):
@@ -99,7 +100,7 @@ def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None
         location = unreal.Vector(0, 0, 300)
     
     if show_marker:
-        create_camera_marker(location, show_marker)
+        create_camera_marker(location, show_marker, camera_name)
 
     if rotation is None:
         # Face forward (toward +Y) at mannequin - yaw=90
