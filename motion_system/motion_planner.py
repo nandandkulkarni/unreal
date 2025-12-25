@@ -57,8 +57,9 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
                 }
             }
     
-    # Track camera cuts
+    # Track camera cuts and pending groups
     camera_cuts = []
+    pending_groups = {}  # "Group_Name" -> ["Actor1", "Actor2"]
     
     # Process each command sequentially
     for i, cmd in enumerate(motion_plan):
@@ -69,7 +70,7 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             process_add_actor(cmd, actors_info, actor_states, sequence, fps)
             continue
         elif command_type == "add_camera":
-            process_add_camera(cmd, actors_info, actor_states, sequence, fps)
+            process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_groups)
             continue
         elif command_type == "add_directional_light":
             process_add_directional_light(cmd, actors_info)
@@ -118,7 +119,7 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         elif command_type == "add_actor":
             process_add_actor(cmd, actors_info, actor_states, sequence, fps)
         elif command_type == "add_camera":
-            process_add_camera(cmd, actors_info, actor_states, sequence, fps)
+            process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_groups)
         else:
             log(f"  ⚠ Unknown command type: {command_type}")
     
@@ -138,6 +139,10 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         }
         log(f"\n✓ {actor_name}: {len(state['keyframes']['location'])} location keys, {len(state['keyframes']['animations'])} anim sections")
     
+    # Post-process: Generate Group Targets
+    if pending_groups:
+        generate_group_targets(pending_groups, actor_states, actors_info, sequence, fps)
+
     return result, camera_cuts
 
 
@@ -625,7 +630,7 @@ def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
     log(f"    Initial State -> Pos: {actors_info[actor_name]['location']}, Rot: {actors_info[actor_name]['rotation']}")
 
 
-def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
+def process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_groups=None):
     """Add a new camera to the scene and sequence"""
     camera_name = cmd.get("actor", "camera")
     
@@ -689,8 +694,36 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps):
     # Handle look_at_actor if specified in creation
     if "look_at_actor" in cmd:
         target_name = cmd["look_at_actor"]
-        if target_name in actors_info:
+        
+        # Check for implicit group (comma separated)
+        if "," in target_name:
+            targets = [t.strip() for t in target_name.split(",") if t.strip()]
+            if len(targets) > 1:
+                # Create a deterministic group name
+                targets.sort()
+                group_name = "Target_" + "_".join(targets)
+                
+                # Update the command to look at the group name
+                cmd["look_at_actor"] = group_name
+                target_name = group_name
+                
+                # Register for generation
+                if pending_groups is not None and group_name not in pending_groups:
+                    pending_groups[group_name] = targets
+                    log(f"  ℹ Registered implicit group target: {group_name} -> {targets}")
+
+        if target_name in actors_info or (pending_groups and target_name in pending_groups):
             # Re-use process_camera_look_at logic
+            # Note: If it's a pending group, actors_info won't have it YET, so process_camera_look_at might warn.
+            # We should probably defer the look_at call or handle it here if it's special?
+            # actually process_camera_look_at checks actors_info immediately.
+            # So if it's a pending group, we need to create the dummy actor NOW or handle look_at later.
+            # STRATEGY: Create the dummy actor immediately (at 0,0,0) so it exists in actors_info.
+            
+            if target_name in pending_groups and target_name not in actors_info:
+                 # Create the dummy actor immediately so we can bind to it
+                 create_dummy_actor(target_name, actors_info, actor_states, sequence)
+
             process_camera_look_at(cmd, actors_info)
         else:
             log(f"  ⚠ Cannot track '{target_name}': actor not yet created")
@@ -765,18 +798,117 @@ def process_add_directional_light(cmd, actors_info):
         log(f"  ✗ Failed to create light '{light_name}'")
 
 
-def process_camera_cut(cmd, camera_cuts):
-    """Process camera_cut command"""
-    camera_name = cmd.get("camera")
-    at_time = cmd.get("at_time", 0.0)
+def generate_group_targets(pending_groups, actor_states, actors_info, sequence, fps):
+    """Calculate centroid paths for group targets"""
+    log("\n" + "-"*40)
+    log("GENERATING GROUP TARGETS")
     
-    if not camera_name:
-        log("  ⚠ camera_cut command missing 'camera' parameter")
-        return
+    for group_name, target_names in pending_groups.items():
+        if group_name not in actor_states:
+            init_actor_state(group_name, {}, actor_states)
+            
+        group_state = actor_states[group_name]
+        source_states = [actor_states[t] for t in target_names if t in actor_states]
+        
+        if not source_states:
+             continue
+             
+        # Determine max frame duration across all source actors
+        max_frame = 0
+        for s in source_states:
+            if s["keyframes"]["location"]:
+                max_frame = max(max_frame, s["keyframes"]["location"][-1]["frame"])
+                
+        log(f"  Calcuating path for {group_name} (Frames 0-{max_frame})...")
+        
+        # Frame-by-frame centroid calculation
+        # We assume standard 30/60 fps keyframe density. detailed sampling.
+        # Ideally we sample every frame.
+        
+        for frame in range(max_frame + 1):
+             # Get position of each actor at this frame
+             x_sum, y_sum, z_sum = 0, 0, 0
+             count = 0
+             
+             for s in source_states:
+                 pos = get_actor_location_at_frame(s, frame)
+                 x_sum += pos["x"]
+                 y_sum += pos["y"]
+                 z_sum += pos["z"]
+                 count += 1
+                 
+             if count > 0:
+                 centroid = {"x": x_sum/count, "y": y_sum/count, "z": z_sum/count}
+                 add_location_keyframe(group_state, frame, centroid)
+                 
+    log("-" * 40)
+
+def get_actor_location_at_frame(state, frame):
+    """Simple linear interpolation for actor location at frame"""
+    # Optimized: Assume keyframes are sorted. 
+    # For now, just find the last key before or at frame.
+    # In a real heavy system this would be optimized.
     
-    camera_cuts.append({
-        "camera": camera_name,
-        "time": at_time
-    })
+    keys = state["keyframes"]["location"]
+    if not keys:
+        return state["current_pos"] # Default/Start
+        
+    # Boundary check
+    if frame <= keys[0]["frame"]:
+        return keys[0]
+    if frame >= keys[-1]["frame"]:
+        return keys[-1]
+        
+    # Linear Search (keys are usually sparse-ish? No, they are generated densely for moves)
+    # Actually our generator generates keys at Start and End of moves. 
+    # So we MUST interpolate.
     
-    log(f"  ✓ Camera cut: {camera_name} at {at_time}s")
+    for i in range(len(keys) - 1):
+        k1 = keys[i]
+        k2 = keys[i+1]
+        
+        if k1["frame"] <= frame <= k2["frame"]:
+             # Interpolate
+             t = (frame - k1["frame"]) / (k2["frame"] - k1["frame"])
+             return {
+                 "x": k1["x"] + (k2["x"] - k1["x"]) * t,
+                 "y": k1["y"] + (k2["y"] - k1["y"]) * t,
+                 "z": k1["z"] + (k2["z"] - k1["z"]) * t
+             }
+             
+    return keys[-1]
+
+def create_dummy_actor(name, actors_info, actor_states, sequence):
+    """Create a hidden dummy actor for tracking"""
+    log(f"  Creating dummy target actor '{name}'...")
+    
+    # We can perform a trick: Create a CineCameraActor? No, StaticMeshActor? 
+    # Or just an Empty Actor. VisualLogger is nice for debug. 
+    # Let's use a standard Empty Actor (Note: In Python API, we might default to StaticMesh or similar).
+    # simplest is camera_setup.create_camera_marker style? 
+    # Or just create a basic actor.
+    
+    # Using EditorLevelLibrary to spawn an Empty Actor
+    location = unreal.Vector(0,0,0)
+    rotation = unreal.Rotator(0,0,0)
+    
+    actor = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, location, rotation)
+    actor.set_actor_label(name)
+    
+    # Make it hidden/game hidden?
+    # actor.set_actor_hidden_in_game(True) 
+    # Actually keeping it visible (default mesh is none for StaticMeshActor usually, or has 'StaticMeshComponent')
+    # A StaticMeshActor defaults to None mesh. perfect.
+    
+    # Bind to sequence
+    binding = sequence_setup.add_actor_to_sequence(sequence, actor, name)
+    
+    actors_info[name] = {
+        "location": location,
+        "rotation": rotation,
+        "actor": actor,
+        "binding": binding
+    }
+    
+    init_actor_state(name, actors_info[name], actor_states)
+
