@@ -31,7 +31,7 @@ def run_scene(json_path):
     
     modules_to_reload = [
         "logger", "cleanup", "sequence_setup", "camera_setup", 
-        "mannequin_setup", "level_setup", "motion_planner", "keyframe_applier", "debug_db"
+        "mannequin_setup", "level_setup", "motion_planner", "keyframe_applier", "debug_db", "light_setup"
     ]
     
     for mod_name in modules_to_reload:
@@ -90,7 +90,7 @@ def run_scene(json_path):
     keyframe_data_all = motion_planner.plan_motion(plan, actors_info, fps, sequence=sequence)
     
     # 2. Apply Keyframes to Sequencer
-    binding_map = {name: info["binding"] for name, info in actors_info.items()}
+    binding_map = {name: info["binding"] for name, info in actors_info.items() if "binding" in info}
     
     # Calculate total duration
     total_frames = 0

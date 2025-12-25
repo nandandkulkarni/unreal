@@ -10,6 +10,7 @@ from .logger import log
 from .motion_includes import mannequin_setup
 from .motion_includes import camera_setup
 from .motion_includes import sequence_setup
+from .motion_includes import light_setup
 
 
 def plan_motion(motion_plan, actors_info, fps, sequence=None):
@@ -74,6 +75,9 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             continue
         elif command_type == "add_camera":
             process_add_camera(cmd, actors_info, actor_states, sequence, fps)
+            continue
+        elif command_type == "add_directional_light":
+            process_add_directional_light(cmd, actors_info)
             continue
 
         actor_name = cmd.get("actor")
@@ -702,3 +706,47 @@ def init_actor_state(actor_name, info, actor_states):
         }
     }
 
+
+def process_add_directional_light(cmd, actors_info):
+    """Add a directional light to the scene"""
+    light_name = cmd.get("actor", "DirectionalLight")
+    
+    if light_name in actors_info:
+        log(f"  ℹ Light '{light_name}' already exists, skipping creation")
+        return
+    
+    log(f"  Creating directional light '{light_name}'...")
+    
+    # Extract parameters
+    from_direction = cmd.get("from", "north")
+    angle = cmd.get("angle", "medium")
+    direction_offset = cmd.get("direction_offset", 0)
+    angle_offset = cmd.get("angle_offset", 0)
+    intensity = cmd.get("intensity", "normal")
+    color = cmd.get("color", "white")
+    cast_shadows = cmd.get("cast_shadows", True)
+    atmosphere_sun = cmd.get("atmosphere_sun", True)
+    
+    # Create the light
+    light_actor = light_setup.create_directional_light(
+        name=light_name,
+        from_direction=from_direction,
+        angle=angle,
+        direction_offset=direction_offset,
+        angle_offset=angle_offset,
+        intensity=intensity,
+        color=color,
+        cast_shadows=cast_shadows,
+        atmosphere_sun=atmosphere_sun
+    )
+    
+    if light_actor:
+        # Store in actors_info for potential future reference
+        actors_info[light_name] = {
+            "location": light_actor.get_actor_location(),
+            "rotation": light_actor.get_actor_rotation(),
+            "actor": light_actor
+        }
+        log(f"  ✓ Light '{light_name}' added successfully")
+    else:
+        log(f"  ✗ Failed to create light '{light_name}'")
