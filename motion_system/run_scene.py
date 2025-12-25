@@ -149,6 +149,13 @@ def run_scene(json_path):
             
     logger.log_header("SCENE GENERATION COMPLETE")
 
+    # Validate Settings (User Request)
+    try:
+        from motion_system import validate_settings
+        validate_settings.validate_plan(plan)
+    except Exception as e:
+        logger.log(f"⚠ Validation failed to run: {e}")
+
 if __name__ == "__main__":
     # Check for environment variable passed from trigger
     json_path = os.environ.get("MOVIE_JSON_PATH")

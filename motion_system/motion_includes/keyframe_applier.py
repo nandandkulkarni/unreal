@@ -24,20 +24,27 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
     log(f"{'='*60}")
     
     keyframes = keyframe_data["keyframes"]
+    loc_keys = keyframes.get("location", [])
+    rot_keys = keyframes.get("rotation", [])
     
-    # Add transform track
-    transform_track = unreal.MovieSceneBindingExtensions.add_track(
-        binding,
-        unreal.MovieScene3DTransformTrack
-    )
-    
-    if transform_track:
-        section = unreal.MovieSceneTrackExtensions.add_section(transform_track)
-        unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
-        log(f"✓ Transform track created")
+    # Only click create transform track if we have keys to apply
+    # Otherwise, an empty track might reset the actor to 0,0,0
+    if loc_keys or rot_keys:
+        # Add transform track
+        transform_track = unreal.MovieSceneBindingExtensions.add_track(
+            binding,
+            unreal.MovieScene3DTransformTrack
+        )
         
-        # Apply location and rotation keyframes
-        apply_transform_keyframes(section, keyframes, actor_name)
+        if transform_track:
+            section = unreal.MovieSceneTrackExtensions.add_section(transform_track)
+            unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
+            log(f"✓ Transform track created")
+            
+            # Apply location and rotation keyframes
+            apply_transform_keyframes(section, keyframes, actor_name)
+    else:
+        log(f"  (Skipping transform track: no keyframes for {actor_name})")
     
     # Apply animation keyframes (only for skeletal mesh actors)
     if hasattr(actor, 'skeletal_mesh_component') or isinstance(actor, unreal.SkeletalMeshActor):
