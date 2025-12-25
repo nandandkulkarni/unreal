@@ -12,15 +12,15 @@ MOVIE = {
         
         # Cameras
         # 1. Corner1Cam (High angle wide) - Tracks Jessica
-        {"command":"add_camera","actor":"Corner1Cam","location":[-800,-800,500],"rotation":[0,0,0],"fov":55,"tint":[0.5,0.5,1.0],"show_marker":"blue","look_at_actor":"Jessica","offset":[0,0,150],"interp_speed":5.0},
+        {"command":"add_camera","actor":"Corner1Cam","location":[0,0,200],"rotation":[0,0,0],"fov":55,"tint":[0.5,0.5,1.0],"show_marker":"blue","look_at_actor":"Jessica","offset":[0,0,150],"interp_speed":5.0},
         
         # 2. Corner3Cam (Green) - Tracks Jessica
         # Runners moving +Y towards Y=2500. Cam at Y=3000 looking back (-Y).
-        {"command":"add_camera","actor":"Corner3Cam","location":[2500,3000,100],"rotation":[0,0,0],"fov":45,"tint":[0.5,1.0,0.5],"show_marker":"green","look_at_actor":"Jessica","offset":[0,0,100]},
+        {"command":"add_camera","actor":"Corner3Cam","location":[2200,3000,100],"rotation":[0,0,0],"fov":45,"tint":[0.5,1.0,0.5],"show_marker":"green","look_at_actor":"Jessica","offset":[0,0,100]},
         
         # 3. Side3Cam (Red) - Tracks Jessica
         # Runners moving -X along Y=2500 line. Cam at side (Y=1800) looking at path (Y=2500).
-        {"command":"add_camera","actor":"Side3Cam","location":[1250,1800,50],"rotation":[0,0,0],"fov":40,"tint":[1.0,0.5,0.5],"show_marker":"red","look_at_actor":"Jessica","offset":[0,0,100]},
+        {"command":"add_camera","actor":"Side3Cam","location":[1250,2500,50],"rotation":[0,0,0],"fov":40,"tint":[1.0,0.5,0.5],"show_marker":"red","look_at_actor":"Jessica","offset":[0,0,100]},
         
         # Lighting
         {"command":"add_directional_light","actor":"SunLight","from":"west","angle":"low","intensity":"bright","color":"golden","atmosphere_sun":True},
