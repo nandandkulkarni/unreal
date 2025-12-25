@@ -6,6 +6,9 @@ MOVIE = {
     "create_new_level": True,
     "fps": 30,
     "plan": [
+        {"command": "delete_all_skylights"},
+        {"command": "delete_all_floors"},
+        
         # Actors
         {"command":"add_actor","actor":"Jessica","location":[0,0,0],"yaw_offset":-90,"mesh_path":"/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
         {"command":"add_actor","actor":"Sarah","location":[0,-300,0],"yaw_offset":-90,"mesh_path":"/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"},
@@ -24,6 +27,8 @@ MOVIE = {
         
         # Lighting
         {"command":"add_directional_light","actor":"SunLight","from":"west","angle":"low","intensity":"bright","color":"golden","atmosphere_sun":True},
+        {"command":"add_rect_light","actor":"FaceFill","location":[0,0,0],"rotation":[0,-90,0],"width":30,"height":100,"intensity":"bright","cast_shadows":False},
+        {"command":"add_floor","actor":"MainFloor","location":[0,0,-0.5],"scale":1000},
         
         # Camera Cuts (Timeline)
         {"command":"camera_cut","camera":"Corner1Cam","at_time":0.0},      # 0-5s: Wide shot start

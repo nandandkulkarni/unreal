@@ -147,10 +147,50 @@ def create_directional_light(name, from_direction, angle, direction_offset=0, an
     light_component.set_mobility(unreal.ComponentMobility.MOVABLE)
     
     log(f"✓ Directional light '{name}' created")
-    log(f"  From: {from_direction} (yaw={yaw}°)")
-    log(f"  Angle: {angle} (pitch={pitch}°)")
-    log(f"  Intensity: {intensity} ({intensity_value})")
-    log(f"  Color: {color}")
     log(f"  Shadows: {cast_shadows}, Atmosphere: {atmosphere_sun}")
     
+    return light_actor
+
+
+def create_rect_light(name, location, rotation, intensity="bright", 
+                     width=100, height=100, barn_door_angle=90, barn_door_length=20,
+                     color="white", cast_shadows=False):
+    """
+    Create a RectLight (Area Light)
+    """
+    log_header(f"Creating Rect Light: {name}")
+    
+    # Spawn
+    light_actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.RectLight,
+        location,
+        rotation
+    )
+    
+    if not light_actor:
+        log("✗ Failed to create rect light")
+        return None
+        
+    light_actor.set_actor_label(name)
+    light_actor.tags.append("MotionSystemActor")
+    
+    # Properties
+    comp = light_actor.light_component
+    intensity_value = get_intensity_value(intensity) * 100 # Rect lights need higher values usually? or use cd
+    # Actually Intensity Units default to cd (Candelas) for RectLights in 5.x usually.
+    # Our presets are simple (10.0). 10 cd is nothing. 
+    # Directional uses Lux (approx). Point/Spot/Rect use Candelas or Lumens.
+    # 10.0 directional ~ 100,000 lux? No, directional is unitless or lux depending on settings.
+    # Let's assume we need to boost it.
+    
+    comp.set_editor_property("intensity", intensity_value * 500) # Boost for non-directional
+    comp.set_editor_property("light_color", get_color_value(color))
+    comp.set_editor_property("cast_shadows", cast_shadows)
+    comp.set_editor_property("source_width", width)
+    comp.set_editor_property("source_height", height)
+    comp.set_editor_property("barn_door_angle", barn_door_angle)
+    comp.set_editor_property("barn_door_length", barn_door_length)
+    comp.set_mobility(unreal.ComponentMobility.MOVABLE)
+    
+    log(f"✓ Rect light '{name}' created")
     return light_actor

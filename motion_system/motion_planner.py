@@ -75,6 +75,18 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         elif command_type == "add_directional_light":
             process_add_directional_light(cmd, actors_info)
             continue
+        elif command_type == "add_rect_light":
+            process_add_rect_light(cmd, actors_info)
+            continue
+        elif command_type == "add_floor":
+            process_add_floor(cmd, actors_info)
+            continue
+        elif command_type == "delete_all_skylights":
+            process_delete_all_skylights(cmd)
+            continue
+        elif command_type == "delete_all_floors":
+            process_delete_all_floors(cmd)
+            continue
         elif command_type == "camera_cut":
             process_camera_cut(cmd, camera_cuts)
             continue
@@ -796,6 +808,141 @@ def process_add_directional_light(cmd, actors_info):
         log(f"  ✓ Light '{light_name}' added successfully")
     else:
         log(f"  ✗ Failed to create light '{light_name}'")
+
+
+def process_add_rect_light(cmd, actors_info):
+    """Add a rect light to the scene"""
+    light_name = cmd.get("actor", "RectLight")
+    
+    if light_name in actors_info:
+        log(f"  ℹ Light '{light_name}' already exists")
+        return
+
+    # Extract parameters
+    location = unreal.Vector(0,0,0)
+    if "location" in cmd:
+        loc = cmd["location"]
+        location = unreal.Vector(loc[0], loc[1], loc[2])
+        
+    rotation = unreal.Rotator(0,0,0)
+    if "rotation" in cmd:
+        rot = cmd["rotation"]
+        rotation = unreal.Rotator(rot[0], rot[1], rot[2])
+        
+    intensity = cmd.get("intensity", "bright")
+    color = cmd.get("color", "white")
+    width = cmd.get("width", 100)
+    height = cmd.get("height", 100)
+    cast_shadows = cmd.get("cast_shadows", False)
+    
+    # Create
+    light_actor = light_setup.create_rect_light(
+        name=light_name,
+        location=location,
+        rotation=rotation,
+        intensity=intensity,
+        color=color,
+        width=width,
+        height=height,
+        cast_shadows=cast_shadows
+    )
+    
+    if light_actor:
+        # Attachment support
+        if "attach_to" in cmd:
+            parent_name = cmd["attach_to"]
+            if parent_name in actors_info:
+                parent_actor = actors_info[parent_name]["actor"]
+                # Attach (KeepRelative)
+                light_actor.attach_to_actor(parent_actor, "", unreal.AttachmentRule.KEEP_RELATIVE, unreal.AttachmentRule.KEEP_RELATIVE, unreal.AttachmentRule.KEEP_RELATIVE, False)
+                log(f"  > Attached to '{parent_name}'")
+            else:
+                log(f"  ⚠ Cannot attach to '{parent_name}': Actor not found")
+
+        actors_info[light_name] = {
+            "location": location,
+            "rotation": rotation,
+            "actor": light_actor
+        }
+
+
+def process_add_floor(cmd, actors_info):
+    """Add a floor plane to the scene"""
+    actor_name = cmd.get("actor", "Floor")
+    
+    if actor_name in actors_info:
+        log(f"  ℹ Actor '{actor_name}' already exists")
+        return
+
+    log(f"  Creating floor '{actor_name}'...")
+    
+    location = unreal.Vector(0,0,0)
+    if "location" in cmd:
+        loc = cmd["location"]
+        location = unreal.Vector(loc[0], loc[1], loc[2])
+        
+    # Spawn StaticMeshActor
+    actor = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, location, unreal.Rotator(0,0,0))
+    actor.set_actor_label(actor_name)
+    
+    # Set Mesh to Plane
+    # Try multiple standard paths just in case
+    mesh_paths = ["/Engine/BasicShapes/Plane", "/Engine/BasicShapes/Plane.Plane"]
+    mesh_asset = None
+    for path in mesh_paths:
+        mesh_asset = unreal.load_asset(path)
+        if mesh_asset:
+            break
+            
+    if mesh_asset:
+        actor.static_mesh_component.set_static_mesh(mesh_asset)
+    else:
+        log("  ⚠ Could not load Plane mesh, floor might be invisible")
+        
+    # Scale it up (Plane is usually 100x100 units (1m), so scale 100 = 100m, scale 1000 = 1km)
+    scale = cmd.get("scale", 100.0) 
+    actor.set_actor_scale3d(unreal.Vector(scale, scale, 1.0))
+    
+    # Material? Optional. Default is usually a checkerboard or grey.
+    if "material" in cmd:
+         mat = unreal.load_asset(cmd["material"])
+         if mat:
+             actor.static_mesh_component.set_material(0, mat)
+             
+    actors_info[actor_name] = {
+        "location": location,
+        "rotation": unreal.Rotator(0,0,0),
+        "actor": actor
+    }
+    log(f"  ✓ Floor created at {location} (Scale: {scale})")
+
+
+def process_delete_all_skylights(cmd):
+    """Delete all SkyLight actors in the level"""
+    log("  Deleting all SkyLights...")
+    all_actors = unreal.EditorLevelLibrary.get_all_level_actors()
+    count = 0
+    for actor in all_actors:
+        if isinstance(actor, unreal.SkyLight):
+            log(f"    - Deleting '{actor.get_actor_label()}'")
+            unreal.EditorLevelLibrary.destroy_actor(actor)
+            count += 1
+    if count == 0:
+        log("    (No SkyLights found)")
+
+
+def process_delete_all_floors(cmd):
+    """Delete all actors with 'Floor' in their name"""
+    log("  Deleting all Floors...")
+    all_actors = unreal.EditorLevelLibrary.get_all_level_actors()
+    count = 0
+    for actor in all_actors:
+        if "floor" in actor.get_actor_label().lower():
+            log(f"    - Deleting '{actor.get_actor_label()}'")
+            unreal.EditorLevelLibrary.destroy_actor(actor)
+            count += 1
+    if count == 0:
+        log("    (No Floor actors found)")
 
 
 def generate_group_targets(pending_groups, actor_states, actors_info, sequence, fps):
