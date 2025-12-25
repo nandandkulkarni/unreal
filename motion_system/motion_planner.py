@@ -7,9 +7,9 @@ Outputs structured keyframe data ready for Unreal application.
 import math
 import unreal
 from .logger import log
-from .components import mannequin_setup
-from .components import camera_setup
-from .components import sequence_setup
+from .motion_includes import mannequin_setup
+from .motion_includes import camera_setup
+from .motion_includes import sequence_setup
 
 
 def plan_motion(motion_plan, actors_info, fps, sequence=None):

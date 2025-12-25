@@ -9,9 +9,9 @@ if motion_system_dir not in sys.path:
 
 import motion_planner
 import motion_commands
-from components import sequence_setup
-from components import camera_setup
-from components import cleanup
+from motion_includes import sequence_setup
+from motion_includes import camera_setup
+from motion_includes import cleanup
 import logger
 import importlib
 

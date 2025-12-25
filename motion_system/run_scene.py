@@ -20,7 +20,7 @@ if script_dir not in sys.path:
     sys.path.insert(0, script_dir)
 
 from motion_system import logger, motion_planner
-from motion_system.components import cleanup, sequence_setup, camera_setup, mannequin_setup, level_setup, keyframe_applier
+from motion_system.motion_includes import cleanup, sequence_setup, camera_setup, mannequin_setup, level_setup, keyframe_applier
 
 def run_scene(json_path):
     """Load and run a scene from a JSON file"""
