@@ -1,0 +1,14 @@
+[15:33:42] [INFO] ============================================================
+[15:33:42] [INFO] MetaHuman Animation Setup - AUTO-GENERATED VERSION
+[15:33:42] [INFO] Target: Pia
+[15:33:42] [INFO] ============================================================
+[15:33:42] [INFO] ============================================================
+[15:33:42] [INFO] Finding MetaHuman Assets
+[15:33:42] [INFO] ============================================================
+[15:33:42] [ERROR] ✗ MetaHuman body mesh not found
+[15:33:42] [INFO] ============================================================
+[15:33:42] [INFO] Finding Manny Assets
+[15:33:42] [INFO] ============================================================
+[15:33:42] [ERROR] ✗ Manny mesh not found
+[15:33:42] [ERROR] ✗ FATAL: MetaHuman assets not found
+[15:33:42] [INFO] Log saved: C:\UnrealProjects\Coding\unreal\metahuman_manage\metahuman_setup_auto_log.txt
