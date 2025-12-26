@@ -3,6 +3,7 @@
 ## 🎯 Status
 **Project Status: SUCCESSFULLY EXECUTED**  
 The automation has been fully implemented, verified, and run for MetaHuman **Pia**.
+**Recent Updates:** Confirmed success in custom project **"FilmIK"** with non-standard asset paths (`SKM_Manny_Simple`, `ABP_Unarmed`).
 
 ## 📁 Project Files
 
@@ -45,9 +46,9 @@ exec(open(r"c:\UnrealProjects\Coding\unreal\metahuman_manage\run_metahuman_setup
 ## ✅ What Gets Automated (18 Steps)
 
 ### Phase 1: Asset Discovery
-- ✅ Find Manny skeletal mesh
+- ✅ Find Manny skeletal mesh (Robust search: Standard paths + Asset Registry fallback)
 - ✅ Find MetaHuman body mesh
-- ✅ Find Manny animations
+- ✅ Find Manny animations (Inferred from mesh location)
 
 ### Phase 2: IK Retargeter Creation
 - ✅ Create IK Retargeter asset

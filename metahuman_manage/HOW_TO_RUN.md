@@ -24,9 +24,9 @@ exec(open(r"c:\UnrealProjects\Coding\unreal\metahuman_manage\metahuman_animation
 ### ✅ Automated Steps (72% of work):
 
 1. **Finds Assets**
-   - Locates Manny skeletal mesh
-   - Finds MetaHuman "Pia" body mesh
-   - Discovers Manny animations
+   - **Manny Mesh**: Searches standard paths, then falls back to searching Asset Registry for any mesh with "Manny" (e.g., `SKM_Manny_Simple`).
+   - **MetaHuman**: Finds body mesh for specific MetaHuman (e.g., "Pia").
+   - **Animations**: automagically infers animation folder from mesh location or searches for them.
 
 2. **Creates IK Retargeter**
    - Creates `RTG_Manny_To_Pia` asset
@@ -124,6 +124,19 @@ See `SCRIPT_COMPARISON.md` for detailed comparison.
 **Foot sliding**
 - Adjust IK blend for legs (should be 1.0 for IK)
 - Check root motion mode (should be "Globally Scaled")
+
+---
+
+## Custom Projects / FilmIK Support
+The script now includes robust discovery logic to handle projects with non-standard folder structures (like **FilmIK**).
+
+1. **Asset Registry Search**: If standard paths fail, it queries the Asset Registry.
+   - Example: Found `SKM_Manny_Simple` when `SKM_Manny` was missing.
+2. **Inferred Paths**: Animation folders are inferred from the mesh location.
+3. **Fallback Animation Blueprints**: If `ABP_Manny` is missing, it looks for `ABP_Unarmed`.
+
+**To run on a new custom project:**
+Just ensure your assets are imported. The script will likely find them automatically.
 
 ---
 

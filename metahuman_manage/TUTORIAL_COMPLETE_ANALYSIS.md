@@ -7,6 +7,7 @@
 - ✅ AnimBP Duplication
 **Total Frames:** 1203 (sampled every 25 frames)  
 **Duration:** ~40 seconds (30 fps)
+**Validation:** Successfully executed on "FilmIK" project with non-standard asset paths.
 
 ---
 

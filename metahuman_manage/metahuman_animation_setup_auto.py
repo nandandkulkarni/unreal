@@ -103,7 +103,7 @@ def find_metahuman_assets():
     return assets
 
 def find_manny_assets():
-    """Find Manny mannequin assets"""
+    """Find Manny mannequin assets with robust fallback"""
     log("=" * 60)
     log("Finding Manny Assets")
     log("=" * 60)
@@ -113,19 +113,43 @@ def find_manny_assets():
     manny_paths = [
         MANNY_MESH_PATH,
         "/Game/Characters/Mannequins/Meshes/SKM_Manny",
+        "/Game/Characters/Mannequin_UE4/Meshes/SK_Mannequin", # UE4 fallback
         "/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Manny",
     ]
     
+    # 1. Try standard paths
     for path in manny_paths:
         if unreal.EditorAssetLibrary.does_asset_exist(path):
             assets['mesh'] = unreal.load_asset(path)
             if assets['mesh']:
-                log(f"✓ Found Manny mesh: {path}")
+                log(f"✓ Found Manny mesh at standard path: {path}")
                 assets['skeleton'] = assets['mesh'].skeleton
                 break
     
+    # 2. Robust fallback: Search all SkeletalMeshes in /Game
     if 'mesh' not in assets:
-        log("✗ Manny mesh not found", "ERROR")
+        log("Standard paths failed. Searching Asset Registry for 'Manny'...", "WARNING")
+        ar = unreal.AssetRegistryHelpers.get_asset_registry()
+        
+        # Filter for SkeletalMeshes
+        filter = unreal.ARFilter(
+            class_names=["SkeletalMesh"], 
+            package_paths=["/Game"], 
+            recursive_paths=True
+        )
+        
+        asset_datas = ar.get_assets(filter)
+        for asset_data in asset_datas:
+            full_path = str(asset_data.package_name)
+            if "Manny" in full_path and "SKM_" in full_path:
+                assets['mesh'] = asset_data.get_asset()
+                if assets['mesh']:
+                    log(f"✓ Found Manny mesh via search: {full_path}")
+                    assets['skeleton'] = assets['mesh'].skeleton
+                    break
+    
+    if 'mesh' not in assets:
+        log("✗ Manny mesh not found anywhere in /Game", "ERROR")
     
     return assets
 
@@ -159,7 +183,7 @@ def create_ik_retargeter_auto(source_mesh, target_mesh):
     try:
         # Create retargeter
         asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
-        factory = unreal.IKRetargeterFactory()
+        factory = unreal.IKRetargetFactory()
         
         retargeter = asset_tools.create_asset(
             retargeter_name,
@@ -182,10 +206,10 @@ def create_ik_retargeter_auto(source_mesh, target_mesh):
         
         # Set source and target meshes - Unreal will auto-generate IK Rigs
         log("  Setting source mesh (Manny)...")
-        controller.set_source_preview_mesh(source_mesh)
+        controller.set_preview_mesh(unreal.RetargetSourceOrTarget.SOURCE, source_mesh)
         
         log("  Setting target mesh (MetaHuman)...")
-        controller.set_target_preview_mesh(target_mesh)
+        controller.set_preview_mesh(unreal.RetargetSourceOrTarget.TARGET, target_mesh)
         
         log("  ✓ Unreal will auto-generate IK Rigs and chains")
         log("  ✓ A-pose will be automatically detected")
@@ -313,31 +337,53 @@ def configure_retargeter_settings(controller, retargeter):
 # ============================================================================
 # ANIMATION RETARGETING
 # ============================================================================  
-def retarget_animations(source_mesh, target_mesh, retargeter):
-    """Batch retarget animations"""
+def retarget_animations(retargeter, source_mesh, target_mesh, source_mesh_path):
+    """Batch retarget all animations from Manny"""
     log("=" * 60)
     log("Retargeting Animations")
     log("=" * 60)
     
-    if not retargeter:
-        log("✗ No retargeter provided", "ERROR")
-        return []
+    # 1. Determine Source Path (Default or Derived from Mesh)
+    source_folder_default = "/Game/Characters/Mannequins/Animations/Manny"
     
-    # Find animation source folder
-    anim_paths = [
-        "/Game/Characters/Mannequins/Animations",
-        "/Game/ThirdPerson/Characters/Mannequins/Animations",
+    # Try to infer from source mesh path
+    mesh_folder = os.path.dirname(source_mesh_path)
+    # Check for parallel "Anims" or "Animations" folder
+    candidates = [
+        source_folder_default,
+        mesh_folder.replace('/Meshes', '/Animations'),
+        mesh_folder.replace('/Meshes', '/Anims'),
+        f"{mesh_folder.replace('/Meshes', '/Anims')}/Unarmed" # FilmIK structure
     ]
     
-    anim_path = None
-    for path in anim_paths:
-        if unreal.EditorAssetLibrary.does_directory_exist(path):
-            anim_path = path
+    found_folder = None
+    for candidate in candidates:
+        if unreal.EditorAssetLibrary.does_directory_exist(candidate):
+            found_folder = candidate
+            log(f"  ✓ Inferred animation source: {found_folder}")
             break
+            
+    if not found_folder:
+        log("  ⚠ Standard animation folder not found. Searching...", "WARNING")
+        ar = unreal.AssetRegistryHelpers.get_asset_registry()
+        filter = unreal.ARFilter(
+            class_names=["AnimSequence"], 
+            package_paths=["/Game"], 
+            recursive_paths=True
+        )
+        assets = ar.get_assets(filter)
+        for asset in assets:
+            path = str(asset.package_name)
+            if "Manny" in path or "Unarmed" in path:
+                found_folder = os.path.dirname(path)
+                log(f"  ✓ Found inferred animation source via search: {found_folder}")
+                break
     
-    if not anim_path:
+    if not found_folder:
         log("✗ Animation folder not found", "ERROR")
         return []
+
+    anim_path = found_folder
     
     log(f"Scanning: {anim_path}")
     
@@ -357,22 +403,38 @@ def retarget_animations(source_mesh, target_mesh, retargeter):
     
     # Batch retarget
     try:
-        retargeted = unreal.IKRetargetBatchOperation.duplicate_and_retarget(
-            assets_to_retarget=anim_sequences,
-            source_mesh=source_mesh,
-            target_mesh=target_mesh,
-            ik_retarget_asset=retargeter,
-            search="Manny",
-            replace=METAHUMAN_NAME,
-            suffix="",
-            prefix="",
-            folder_to_save=OUTPUT_PATH,
-            include_referenced_assets=False
-        )
-        
-        log(f"✓ Retargeted {len(retargeted)} animations")
-        return retargeted
-        
+        # Run batch retarget
+        batch_op = unreal.IKRetargetBatchOperation()
+        try:
+            new_assets = batch_op.duplicate_and_retarget(
+                anim_sequences,
+                source_mesh,
+                target_mesh,
+                retargeter,
+                search="",
+                replace="",
+                prefix="RTG_",
+                suffix="",
+                remap_referenced_assets=True
+            )
+            
+            # Move assets to correct folder
+            moved_count = 0
+            for asset_data in new_assets:
+                source_path = str(asset_data.package_name)
+                asset_name = str(asset_data.asset_name)
+                dest_path = f"{OUTPUT_PATH}/{asset_name}"
+                
+                if unreal.EditorAssetLibrary.rename_asset(source_path, dest_path):
+                    moved_count += 1
+                    
+            log(f"✓ Retargeted and moved {moved_count} animations to {OUTPUT_PATH}")
+            return new_assets
+            
+        except Exception as e:
+            log(f"✗ Retargeting failed: {e}", "ERROR")
+            return []
+            
     except AttributeError:
         log("IKRetargetBatchOperation not available", "WARNING")
         log("Use right-click → Retarget Animations in Content Browser", "WARNING")
@@ -384,34 +446,47 @@ def retarget_animations(source_mesh, target_mesh, retargeter):
 # ============================================================================
 # ANIMATION BLUEPRINT DUPLICATION
 # ============================================================================
-def duplicate_animation_blueprint(target_skeleton):
+def duplicate_animation_blueprint(target_skeleton, source_mesh_path):
     """
-    Duplicate Manny's Animation Blueprint for the MetaHuman.
-    The AnimBP contains the state machine logic for locomotion.
+    Duplicate ABP_Manny (or ABP_Unarmed) and retarget it to the new skeleton.
     """
     log("=" * 60)
     log("Duplicating Animation Blueprint")
     log("=" * 60)
     
-    # Find source Animation Blueprint
-    anim_bp_paths = [
+    # Potential paths for ABP
+    abp_paths = [
         "/Game/Characters/Mannequins/Animations/ABP_Manny",
         "/Game/ThirdPerson/Characters/Mannequins/Animations/ABP_Manny",
-        "/Game/ThirdPerson/Blueprints/Animation/ABP_ThirdPersonCharacter",
+        f"{os.path.dirname(source_mesh_path).replace('/Meshes', '/Animations')}/ABP_Manny",
+        f"{os.path.dirname(source_mesh_path).replace('/Meshes', '/Anims')}/Unarmed/ABP_Unarmed" # FilmIK
     ]
     
-    source_bp = None
-    source_path = None
-    for path in anim_bp_paths:
+    source_abp_path = None
+    for path in abp_paths:
         if unreal.EditorAssetLibrary.does_asset_exist(path):
-            source_bp = unreal.load_asset(path)
-            if source_bp:
-                source_path = path
-                log(f"✓ Found source AnimBP: {path}")
+            source_abp_path = path
+            log(f"  ✓ Found AnimBP: {path}")
+            break
+            
+    # Fallback search
+    if not source_abp_path:
+        log("  Searching for AnimBP...", "WARNING")
+        ar = unreal.AssetRegistryHelpers.get_asset_registry()
+        filter = unreal.ARFilter(
+            class_names=["AnimBlueprint"], 
+            package_paths=["/Game"], 
+            recursive_paths=True
+        )
+        assets = ar.get_assets(filter)
+        for asset in assets:
+            if asset.asset_name in ["ABP_Manny", "ABP_Unarmed"]:
+                source_abp_path = str(asset.package_name)
+                log(f"  ✓ Found AnimBP via search: {source_abp_path}")
                 break
-    
-    if not source_bp:
-        log("✗ Could not find Manny Animation Blueprint", "ERROR")
+
+    if not source_abp_path:
+        log("✗ Could not find Manny or Unarmed Animation Blueprint", "ERROR")
         return None
     
     # Target path for duplicated AnimBP
@@ -428,7 +503,7 @@ def duplicate_animation_blueprint(target_skeleton):
     try:
         # Duplicate the Animation Blueprint
         new_bp = unreal.EditorAssetLibrary.duplicate_asset(
-            source_path,
+            source_abp_path,
             new_bp_path
         )
         
@@ -468,23 +543,23 @@ def main():
     
     try:
         # Find assets
-        metahuman = find_metahuman_assets()
-        manny = find_manny_assets()
+        metahuman_assets = find_metahuman_assets()
+        manny_assets = find_manny_assets()
         
-        if 'mesh' not in metahuman or 'skeleton' not in metahuman:
+        if 'mesh' not in metahuman_assets or 'skeleton' not in metahuman_assets:
             log("✗ FATAL: MetaHuman assets not found", "ERROR")
             save_log()
             return
         
-        if 'mesh' not in manny:
+        if 'mesh' not in manny_assets:
             log("✗ FATAL: Manny assets not found", "ERROR")
             save_log()
             return
         
         # Create IK Retargeter with auto-generated rigs
         retargeter = create_ik_retargeter_auto(
-            manny['mesh'],
-            metahuman['mesh']
+            manny_assets['mesh'],
+            metahuman_assets['mesh']
         )
         
         if not retargeter:
@@ -496,13 +571,16 @@ def main():
         retargeted = []
         if retargeter:
             retargeted = retarget_animations(
-                manny['mesh'],
-                metahuman['mesh'],
-                retargeter
+                retargeter,
+                manny_assets['mesh'],
+                metahuman_assets['mesh'],
+                manny_assets['mesh'].get_path_name()
             )
         
         # Duplicate Animation Blueprint
-        anim_bp = duplicate_animation_blueprint(metahuman['skeleton'])
+        anim_bp = None
+        if metahuman_assets.get('skeleton') and manny_assets.get('mesh'):
+             anim_bp = duplicate_animation_blueprint(metahuman_assets['skeleton'], manny_assets['mesh'].get_path_name())
         
         # Summary
         log("=" * 60)
