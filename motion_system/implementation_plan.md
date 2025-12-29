@@ -1,84 +1,53 @@
-# Directional Light Implementation Plan
+# Motion System Builder Implementation Plan
 
-## Overview
-Add `add_directional_light` command support to the motion system with intuitive cardinal directions, angle presets, and named intensity/color options.
+## Goal Description
+Migrate from error-prone dictionary/JSON configs to a type-safe, fluent Python Builder pattern for defining motion sequences. This will enable IDE autocompletion, compile-time checking, and smarter state tracking during sequence definition.
 
 ## Proposed Changes
 
-### New Module: `motion_includes/light_setup.py`
+### Motion System Core
+#### [EXISTING] [motion_builder.py](file:///c:/UnrealProjects/coding/unreal/motion_system/motion_builder.py)
+- `MovieBuilder` class already exists.
+- Implements `add_actor`, `add_camera`, `for_actor`, `simultaneous` contexts.
+- `build()` returns the `movie_data` dictionary.
 
-Create new module for directional light creation and management.
+#### [MODIFY] [motion_planner.py](file:///c:/UnrealProjects/coding/unreal/direct/motion_system/motion_planner.py)
+- Update `plan_motion` to accept the `plan` list from `MovieBuilder`.
 
-**Functions:**
-- `get_cardinal_yaw(direction)` - Map cardinal direction to yaw angle
-- `get_angle_pitch(angle_preset)` - Map angle preset to pitch value
-- `get_intensity_value(intensity)` - Map intensity preset to numeric value
-- `get_color_value(color)` - Map color preset to RGB Color
-- `create_directional_light(name, from_dir, angle, intensity, color, **kwargs)` - Main creation function
 
----
+## Detailed API Design
 
-### Modified: `motion_planner.py`
-
-Add handler for `add_directional_light` command.
-
-**Changes:**
-1. Import: `from .motion_includes import light_setup`
-2. Add `process_add_directional_light()` function
-3. Add command routing in `plan_motion()`
-
-**Command Structure:**
 ```python
-{
-    "command": "add_directional_light",
-    "actor": "SunLight",
-    "from": "west",
-    "direction_offset": 0,
-    "angle": "low",
-    "angle_offset": 0,
-    "intensity": "moderate",
-    "color": "golden",
-    "cast_shadows": true,
-    "atmosphere_sun": true
-}
-```
+class MovieBuilder:
+    def __init__(self, name: str, create_new_level: bool = True, fps: int = 30):
+        pass
 
----
-
-### Modified: `run_scene.py`
-
-Add `light_setup` to module reload list.
-
----
-
-### Modified: `tandem_run_square.json`
-
-Add directional light command at the beginning of the plan.
-
-```json
-{
-    "command": "add_directional_light",
-    "actor": "SunLight",
-    "from": "west",
-    "angle": "low",
-    "intensity": "moderate",
-    "color": "golden",
-    "atmosphere_sun": true
-}
+    def add_actor(self, name: str, location: Tuple[float, float, float]) -> 'MovieBuilder':
+        pass
+        
+    def for_actor(self, actor_name: str) -> 'ActorBuilder':
+        pass
+        
+    def simultaneous(self) -> 'SimultaneousContext':
+        pass
+        
+    def build(self) -> Dict:
+        """Generates the movie_data dict containing the plan"""
+        pass
 ```
 
 ## Verification Plan
 
-1. Run `python trigger_movie.py movies\tandem_run_square.json`
-2. Verify directional light appears in scene
-3. Verify characters are lit with warm golden sunset lighting
-4. Verify shadows are cast
-5. Verify atmosphere/sky responds to light
+### Automated Tests
+- Create `tests/test_movie_builder.py` to verify the JSON output of `MovieBuilder`.
 
-## Implementation Order
+### Manual Verification
+- Create `motion_system/unreal_builder_test.py`: The script to run **inside** Unreal. It will:
+    1. Import `MovieBuilder`.
+    2. Build a sequence plan.
+    3. Pass the plan to `motion_planner.plan_motion`.
+    4. Apply keyframes using `keyframe_applier`.
+- Create `motion_system/run_builder_test_remote.py`: The local runner script. It will:
+    1. Use `unreal_connection` to connect to Unreal.
+    2. Execute `unreal_builder_test.py` remotely.
 
-1. Create `light_setup.py` with all helper functions
-2. Update `motion_planner.py` with command handler
-3. Update `run_scene.py` reload list
-4. Add light command to `tandem_run_square.json`
-5. Test execution

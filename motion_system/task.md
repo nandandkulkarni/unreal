@@ -1,34 +1,19 @@
-# Directional Light Implementation Task
+# Motion System Builder Design
 
-## Goal
-Add directional light support to the motion system with `add_directional_light` command.
-
-## Tasks
-
-### Planning
-- [x] Design directional light specification
-- [x] Test directional light spawning with diagnostic script
-- [x] Create implementation plan
-
-### Implementation
-- [x] Create `light_setup.py` in `motion_includes/`
-  - [x] Cardinal direction to yaw mapping
-  - [x] Angle preset to pitch mapping
-  - [x] Intensity preset mapping
-  - [x] Color preset mapping
-  - [x] `create_directional_light()` function
-- [x] Update `motion_planner.py`
-  - [x] Add `process_add_directional_light()` handler
-  - [x] Import light_setup module
-- [x] Update `run_scene.py` reload list
-- [x] Fix binding_map to exclude lights
-
-### Testing
-- [x] Add directional light to `tandem_run_square.json`
-- [x] Run tandem scene with lighting
-- [x] Verify light appears and works correctly
-
-### Documentation
-- [x] Update walkthrough with directional light feature
-
-## Status: ✅ COMPLETE
+- [ ] Design Fluent Builder Interface <!-- id: 1 -->
+    - [x] Define helper enums (Direction, Speed, etc.) <!-- id: 2 -->
+    - [x] Create `MovieBuilder` class structure (Already exists) <!-- id: 3 -->
+    - [x] Implement `move_*` methods (Already exists) <!-- id: 4 -->
+    - [x] Implement `turn_*` methods (Already exists) <!-- id: 5 -->
+    - [x] Implement `animate` and `wait` methods (Already exists) <!-- id: 6 -->
+- [ ] Implement State Awareness <!-- id: 7 -->
+    - [ ] Track current position/rotation in builder <!-- id: 8 -->
+    - [ ] Implement validation logic (e.g. check bounds) <!-- id: 9 -->
+- [ ] Refactor Underlying System <!-- id: 10 -->
+    - [ ] Update `motion_planner.py` to accept Builder objects <!-- id: 11 -->
+    - [ ] Verify backward compatibility or migration path <!-- id: 12 -->
+- [ ] Verification <!-- id: 13 -->
+    - [x] Create test script `tests/test_builder_json.py` <!-- id: 14 -->
+    - [x] Create `unreal_builder_test.py` (In-engine logic) <!-- id: 15 -->
+    - [x] Create `run_builder_test_remote.py` (Local runner) <!-- id: 16 -->
+    - [x] Run integrated test in Unreal <!-- id: 17 -->
