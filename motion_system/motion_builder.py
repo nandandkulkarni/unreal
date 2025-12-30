@@ -197,7 +197,7 @@ class ActorBuilder:
         # The underlying system supports 'degrees' in face command
         return self._add({"command": "face", "degrees": angle_deg, "duration": duration})
 
-    def move_for_seconds(self, seconds: float, direction: str = "forward", speed_mtps: float = None, speed_mph: float = None, speed_mps: float = None):
+    def move_for_seconds(self, seconds: float, direction: str = "forward", speed_mtps: float = None, speed_mph: float = None, speed_mps: float = None, acceleration: float = None):
         # Calculate speed
         speed_cm_s = 100.0 # Default
         if speed_mtps is not None:
@@ -208,7 +208,15 @@ class ActorBuilder:
              speed_cm_s = speed_mps * 100
              
         # Update State
-        distance_cm = seconds * speed_cm_s
+        # If acceleration is provided, calculate distance with acceleration
+        if acceleration is not None:
+            # d = v0*t + 0.5*a*t²
+            # Assume starting from current speed (or 0 if not specified)
+            initial_speed_cm_s = 0  # TODO: Track current speed in state
+            distance_cm = initial_speed_cm_s * seconds + 0.5 * (acceleration * 100) * (seconds ** 2)
+        else:
+            distance_cm = seconds * speed_cm_s
+        
         new_pos = motion_math.calculate_new_position(
             start_pos={"x": self.state.x, "y": self.state.y, "z": self.state.z},
             start_yaw=self.state.yaw,
@@ -228,6 +236,7 @@ class ActorBuilder:
         if speed_mtps is not None: cmd["speed_mtps"] = speed_mtps
         if speed_mph is not None: cmd["speed_mph"] = speed_mph
         if speed_mps is not None: cmd["speed_mps"] = speed_mps
+        if acceleration is not None: cmd["acceleration"] = acceleration
         
         return self._add(cmd)
 
