@@ -10,9 +10,10 @@ import math
 class TrackRenderer:
     """Renders 400m track geometry"""
     
-    def __init__(self, screen_width=1200, screen_height=800):
+    def __init__(self, screen_width=1920, screen_height=1920, scale_factor=1.0):
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.scale_factor = scale_factor  # User-adjustable scale
         
         # Track dimensions (in meters, will scale to screen)
         self.straight_length = 84.39  # meters
@@ -23,15 +24,17 @@ class TrackRenderer:
         # Colors
         self.track_color = (200, 100, 50)  # Reddish track
         self.lane_color = (255, 255, 255)   # White lane lines
-        self.grass_color = (34, 139, 34)    # Green grass
+        self.grass_color = (20, 80, 20)     # Darker green grass for better contrast
         
         # Calculate scale to fit screen
-        total_width = self.straight_length + 2 * self.curve_radius
-        total_height = 2 * self.curve_radius + self.num_lanes * self.lane_width
+        # Use outer dimensions to ensure everything fits
+        track_width = self.num_lanes * self.lane_width
+        total_width = self.straight_length + 2 * (self.curve_radius + track_width)
+        total_height = 2 * (self.curve_radius + track_width)
         
         scale_x = (screen_width - 100) / total_width
         scale_y = (screen_height - 100) / total_height
-        self.scale = min(scale_x, scale_y)
+        self.scale = min(scale_x, scale_y) * scale_factor  # Apply user scale
         
         # Offset to center track
         self.offset_x = (screen_width - total_width * self.scale) / 2

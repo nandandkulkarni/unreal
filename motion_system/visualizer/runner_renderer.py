@@ -22,7 +22,10 @@ class RunnerRenderer:
     
     def __init__(self, track_renderer):
         self.track = track_renderer
-        self.runner_radius = 8  # pixels
+        # Calculate radius to fit within lane (40% of lane width to avoid overlap)
+        # Lane width is 1.22m, scale is pixels/meter
+        lane_width_px = 1.22 * self.track.scale
+        self.runner_radius = max(3, int(lane_width_px * 0.4))
     
     def draw_runner(self, screen, runner_id, x, y, speed, name):
         """Draw a single runner
@@ -39,7 +42,10 @@ class RunnerRenderer:
         
         # Draw runner circle
         pygame.draw.circle(screen, color, pos, self.runner_radius)
-        pygame.draw.circle(screen, (0, 0, 0), pos, self.runner_radius, 2)  # Black outline
+        
+        # Only draw outline if runner is large enough
+        if self.runner_radius > 5:
+            pygame.draw.circle(screen, (0, 0, 0), pos, self.runner_radius, 1)  # Thinner outline
         
         # Draw runner name
         font = pygame.font.Font(None, 20)

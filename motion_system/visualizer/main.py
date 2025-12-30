@@ -7,21 +7,22 @@ Pygame-based 2D simulation of 400m dash choreography.
 import pygame
 import sys
 
-from track_renderer import TrackRenderer
-from runner_renderer import RunnerRenderer
-from simulation_engine import SimulationEngine
-from ui_controls import UIControls
+from visualizer.track_renderer import TrackRenderer
+from visualizer.runner_renderer import RunnerRenderer
+from visualizer.simulation_engine import SimulationEngine
+from visualizer.ui_controls import UIControls
 
 class TrackVisualizer:
     """Main visualizer application"""
     
-    def __init__(self, movie_data, width=1200, height=800):
+    def __init__(self, movie_data, width=1920, height=1920, scale_factor=1.0):
         """Initialize visualizer
         
         Args:
             movie_data: Dictionary from MovieBuilder.build()
-            width: Screen width
-            height: Screen height
+            width: Screen width (default 1920 for ~20 inch display)
+            height: Screen height (default 1920 for ~20 inch display)
+            scale_factor: Scale multiplier for track (1.0 = fit to screen)
         """
         pygame.init()
         
@@ -34,7 +35,7 @@ class TrackVisualizer:
         self.fps = 60
         
         # Initialize components
-        self.track_renderer = TrackRenderer(width, height)
+        self.track_renderer = TrackRenderer(width, height, scale_factor)
         self.runner_renderer = RunnerRenderer(self.track_renderer)
         self.simulation = SimulationEngine(movie_data)
         self.ui = UIControls(width, height)
