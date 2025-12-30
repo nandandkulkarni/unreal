@@ -32,6 +32,13 @@ def run_scene(json_path):
     modules_to_reload = [
         "logger", "cleanup", "sequence_setup", "camera_setup", 
         "mannequin_setup", "level_setup", "motion_planner", "keyframe_applier", "debug_db", "light_setup",
+        "motion_includes.camera_setup",
+        "motion_includes.light_setup",
+        "motion_includes.mannequin_setup",
+        "motion_includes.sequence_setup",
+        "motion_includes.cleanup",
+        "motion_includes.level_setup",
+        "motion_includes.keyframe_applier",
         "motion_system.motion_includes.camera_setup",
         "motion_system.motion_includes.light_setup",
         "motion_system.motion_includes.mannequin_setup",

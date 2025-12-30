@@ -34,8 +34,10 @@ def define_movie():
         
         # Front/Finish Camera (Locked to Runner1)
         # Positioned past the finish line (110m), looking back
+        # Using Manual Rotation + Auto-Focus
         movie.add_camera("FrontCam", location=(11000, 244, 200))\
-             .look_at("Runner1")\
+             .rotation(rot=(0, 180, 0))\
+             .focus_on("Runner1")\
              .fov(90)\
              .add()
 

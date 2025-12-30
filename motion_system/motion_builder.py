@@ -614,7 +614,7 @@ class CameraBuilder:
         return self
         
     def look_at(self, actor_name: str, offset: Tuple[float, float, float] = None, interp_speed: float = 0.0):
-        """Lock camera to track an actor"""
+        """Lock camera to track an actor (Rotation + Focus)"""
         if "rotation" in self.cmd:
             raise ValueError("Cannot set look_at_actor when rotation is explicitly set. These are mutually exclusive.")
             
@@ -623,6 +623,14 @@ class CameraBuilder:
             self.cmd["offset"] = list(offset)
         if interp_speed > 0:
             self.cmd["interp_speed"] = interp_speed
+        return self
+
+    def focus_on(self, actor_name: str, offset: Tuple[float, float, float] = None):
+        """Enable Auto-Focus on an actor (Compatible with manual rotation)"""
+        # Note: If look_at() is called, it overrides this (as it does both)
+        self.cmd["focus_actor"] = actor_name
+        if offset:
+            self.cmd["offset"] = list(offset)
         return self
         
     def fov(self, degrees: float):

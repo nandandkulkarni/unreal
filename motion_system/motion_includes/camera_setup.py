@@ -161,13 +161,14 @@ def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None
         raise Exception("Camera creation failed")
 
 
+
 def enable_lookat_tracking(camera, target_actor, offset=None, interp_speed=0.0):
-    """Enable CineCamera LookAt tracking and Focus tracking
+    """Enable CineCamera LookAt tracking (Rotation only)
     
     Args:
         camera: The CineCameraActor
         target_actor: The actor to track
-        offset: unreal.Vector for tracking offset (e.g. tracking the head instead of feet)
+        offset: unreal.Vector for tracking offset
         interp_speed: How fast the camera follows (0 = instant/locking)
     """
     if not camera or not target_actor:
@@ -175,7 +176,7 @@ def enable_lookat_tracking(camera, target_actor, offset=None, interp_speed=0.0):
         return
 
     try:
-        # 1. Setup LookAt Tracking on the CineCameraActor (not component!)
+        # Setup LookAt Tracking on the CineCameraActor
         tracking_settings = camera.get_editor_property("lookat_tracking_settings")
         
         if not tracking_settings:
@@ -193,7 +194,21 @@ def enable_lookat_tracking(camera, target_actor, offset=None, interp_speed=0.0):
         
         camera.set_editor_property("lookat_tracking_settings", tracking_settings)
         
-        # 2. Setup Focus Tracking (Auto Focus) on the component
+        log(f"  ✓ Camera LookAt enabled for: {target_actor.get_actor_label()}")
+            
+    except Exception as e:
+        log(f"  ⚠ Failed to enable LookAt tracking: {e}")
+        import traceback
+        log(traceback.format_exc())
+
+def enable_focus_tracking(camera, target_actor, offset=None):
+    """Enable CineCamera Focus tracking (Auto-Focus only)"""
+    if not camera or not target_actor:
+        log("  ⚠ Cannot enable Focus tracking: Camera or Target is missing")
+        return
+        
+    try:
+        # Setup Focus Tracking (Auto Focus) on the component
         component = camera.get_cine_camera_component()
         focus_settings = component.focus_settings
         focus_settings.focus_method = unreal.CameraFocusMethod.TRACKING
@@ -201,17 +216,16 @@ def enable_lookat_tracking(camera, target_actor, offset=None, interp_speed=0.0):
         tracking_focus_settings = focus_settings.tracking_focus_settings
         tracking_focus_settings.actor_to_track = target_actor
         
+        if offset:
+             tracking_focus_settings.relative_offset = offset
+
         # Re-apply modified struct
         component.set_editor_property("focus_settings", focus_settings)
         
-        log(f"  ✓ Camera tracking & Auto-Focus enabled for: {target_actor.get_actor_label()}")
-        if interp_speed > 0:
-            log(f"    - Cinematic Smoothing (Interp Speed): {interp_speed}")
-            
+        log(f"  ✓ Camera Auto-Focus enabled for: {target_actor.get_actor_label()}")
+        
     except Exception as e:
-        log(f"  ⚠ Failed to enable cinematic tracking: {e}")
-        import traceback
-        log(traceback.format_exc())
+        log(f"  ⚠ Failed to enable Focus tracking: {e}")
 
 
 def position_camera_behind_mannequin(camera, mannequin, follow_distance=300.0, follow_height=50.0):

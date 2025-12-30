@@ -668,7 +668,35 @@ def process_camera_look_at(cmd, actors_info):
         
     interp_speed = cmd.get("interp_speed", 0.0)
     
+    # Enable Rotation Tracking
     camera_setup.enable_lookat_tracking(camera_actor, target_actor, offset, interp_speed)
+    
+    # Enable Focus Tracking (Implicitly enabled with look_at to preserve legacy behavior)
+    camera_setup.enable_focus_tracking(camera_actor, target_actor, offset)
+
+
+def process_camera_focus(cmd, actors_info):
+    """Enable Auto-Focus tracking (Focus only)"""
+    camera_name = cmd.get("actor")
+    target_name = cmd.get("target") or cmd.get("focus_actor")
+    
+    if not target_name:
+        log("  ⚠ No target specified for camera_focus")
+        return
+        
+    if camera_name not in actors_info or target_name not in actors_info:
+        log(f"  ⚠ Camera '{camera_name}' or Target '{target_name}' not found")
+        return
+        
+    camera_actor = actors_info[camera_name]["actor"]
+    target_actor = actors_info[target_name]["actor"]
+    
+    offset = None
+    if "offset" in cmd:
+        o = cmd["offset"]
+        offset = unreal.Vector(o[0], o[1], o[2])
+        
+    camera_setup.enable_focus_tracking(camera_actor, target_actor, offset)
 
 
 def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
@@ -806,7 +834,8 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_gr
         "actor": camera_actor,
         "binding": binding,
         "auto_zoom": cmd.get("auto_zoom"),
-        "look_at_actor": cmd.get("look_at_actor")
+        "look_at_actor": cmd.get("look_at_actor"),
+        "focus_actor": cmd.get("focus_actor")
     }
     
     # Initialize state
@@ -834,24 +863,12 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_gr
                     pending_groups[group_name] = targets
                     log(f"  ℹ Registered implicit group target: {group_name} -> {targets}")
 
-        if target_name in actors_info or (pending_groups and target_name in pending_groups):
-            # Re-use process_camera_look_at logic
-            # Note: If it's a pending group, actors_info won't have it YET, so process_camera_look_at might warn.
-            # We should probably defer the look_at call or handle it here if it's special?
-            # actually process_camera_look_at checks actors_info immediately.
-            # So if it's a pending group, we need to create the dummy actor NOW or handle look_at later.
-            # STRATEGY: Create the dummy actor immediately (at 0,0,0) so it exists in actors_info.
-            
-            if target_name in pending_groups and target_name not in actors_info:
-                 # Create the dummy actor immediately so we can bind to it
-                 create_dummy_actor(target_name, actors_info, actor_states, sequence)
+        process_camera_look_at(cmd, actors_info)
+        
+    # Handle separate focus_actor if specified (and look_at not overriding)
+    if "focus_actor" in cmd and "look_at_actor" not in cmd:
+        process_camera_focus(cmd, actors_info)
 
-            process_camera_look_at(cmd, actors_info)
-            
-            # Update metadata with resolved target
-            actors_info[camera_name]["look_at_actor"] = target_name
-        else:
-            log(f"  ⚠ Cannot track '{target_name}': actor not yet created")
 
 
 def init_actor_state(actor_name, info, actor_states):
