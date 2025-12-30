@@ -29,7 +29,7 @@ class TrackVisualizer:
         self.width = width
         self.height = height
         self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption("400m Dash - 2D Visualizer")
+        pygame.display.set_caption("400m Dash - Fluent Visualizer")
         
         self.clock = pygame.time.Clock()
         self.fps = 60

@@ -3,19 +3,20 @@ import math
 import motion_math
 
 class VirtualState:
-    def __init__(self, x=0.0, y=0.0, z=0.0, yaw=0.0, time=0.0):
+    def __init__(self, x=0.0, y=0.0, z=0.0, yaw=0.0, time=0.0, current_speed=0.0):
         self.x = x
         self.y = y
         self.z = z
         self.yaw = yaw
         self.time = time
+        self.current_speed = current_speed
         
     @property
     def location(self):
         return (self.x, self.y, self.z)
 
     def copy(self):
-        return VirtualState(self.x, self.y, self.z, self.yaw, self.time)
+        return VirtualState(self.x, self.y, self.z, self.yaw, self.time, self.current_speed)
 
 class MovieBuilder:
     def __init__(self, name: str, create_new_level: bool = True, fps: int = 30):
@@ -139,18 +140,31 @@ class ActorBuilder:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        # Finalize any pending fluent move
+        if hasattr(self, '_active_move') and self._active_move:
+            self._active_move._commit()
+            self._active_move = None
+            
         # Update Global Time to match this actor's finish time
-        # Note: In simultaneous blocks, this behavior is overridden/managed by the grouping context
         if self.state.time > self.mb.current_time:
             self.mb.current_time = self.state.time
 
     def get_state(self) -> VirtualState:
         return self.state
 
+    def move(self) -> 'MotionCommandBuilder':
+        """Start a fluent movement command chain"""
+        if hasattr(self, '_active_move') and self._active_move:
+            self._active_move._commit()
+            
+        self._active_move = MotionCommandBuilder(self)
+        return self._active_move
+
     def _add(self, cmd: Dict[str, Any]):
         cmd["actor"] = self.actor_name
         self.mb.add_command(cmd)
         return self
+
 
     # --- Actions ---
     def animation(self, name: str):
@@ -452,3 +466,103 @@ class TimelineBuilder:
             "at_time": self.time_sec
         })
         return self
+
+class MotionCommandBuilder:
+    """Helper for fluent movement chaining move().xxx.move().yyy"""
+    
+    def __init__(self, actor_builder: 'ActorBuilder'):
+        self.ab = actor_builder
+        self.cmd = {
+            "command": "move",
+            "actor": self.ab.actor_name,
+            "direction": "forward",
+            "start_speed": self.ab.state.current_speed
+        }
+    
+    def move(self) -> 'MotionCommandBuilder':
+        """Commit current move and start a new one (chaining)"""
+        self._commit()
+        new_builder = MotionCommandBuilder(self.ab)
+        self.ab._active_move = new_builder # Ensure ActorBuilder knows about the NEXT link
+        return new_builder
+
+    def for_seconds(self, s: float):
+        self.cmd["seconds"] = s
+        return self
+
+    def by_distance(self, m: float):
+        self.cmd["meters"] = m
+        return self
+
+    def speed(self, mtps: float):
+        self.cmd["speed_mtps"] = mtps
+        self.cmd["target_speed"] = mtps
+        return self
+
+    def velocity(self, to: float, start_from: float = None):
+        if start_from is not None:
+            self.cmd["start_speed"] = start_from
+        self.cmd["target_speed"] = to
+        self.cmd["velocity_ramp"] = True
+        return self
+
+    def accelerate(self, rate: float):
+        self.cmd["acceleration"] = rate
+        return self
+
+    def direction(self, d: Union[str, float, Tuple[float, float]]):
+        self.cmd["direction"] = d
+        return self
+
+    def in_corridor(self, left: float, right: float):
+        self.cmd["left_boundary"] = left
+        self.cmd["right_boundary"] = right
+        return self
+
+    def with_radius(self, r: float):
+        self.cmd["radius"] = r
+        return self
+
+    def _commit(self):
+        """Internal: Finalize current command and update virtual state"""
+        if getattr(self, '_finalized', False):
+            return
+        self._finalized = True
+        
+        # Determine Physics Parameters
+        v0 = self.cmd.get("start_speed", self.ab.state.current_speed)
+        v_target = self.cmd.get("target_speed", self.cmd.get("speed_mtps", v0))
+        dist = self.cmd.get("meters", 0.0)
+        secs = self.cmd.get("seconds", 0.0)
+        
+        # Kinematic Duration Calculation
+        if self.cmd.get("velocity_ramp", False):
+            # v_avg = (v0 + v1) / 2
+            v_avg = (v0 + v_target) / 2.0
+            if v_avg <= 0: v_avg = 1.0 # Avoid div by zero
+            
+            if dist > 0 and secs == 0:
+                secs = dist / v_avg
+            elif secs > 0 and dist == 0:
+                dist = secs * v_avg
+        else:
+            speed = self.cmd.get("speed_mtps", 1.0)
+            if dist > 0 and secs == 0:
+                secs = dist / speed
+            elif secs > 0 and dist == 0:
+                dist = secs * speed
+        
+        self.cmd["seconds"] = secs
+        self.cmd["meters"] = dist
+        self.cmd["start_speed"] = v0 # Ensure start_speed is persisted
+            
+        # Update Virtual State
+        self.ab.state.time += secs
+        self.ab.state.current_speed = v_target
+        
+        # Add to global plan
+        self.ab.mb.add_command(self.cmd)
+
+    def __enter__(self): return self
+    def __exit__(self, *args):
+        self._commit()

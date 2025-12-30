@@ -78,32 +78,66 @@ class SimulationEngine:
             start = cmd.get("start_time", 0)
             duration = cmd.get("seconds", 0)
             if start <= self.current_time < (start + duration):
-                if cmd["command"] == "move_for_seconds":
-                    active_cmd = cmd
-                    break
+                active_cmd = cmd
+                break
         
         if active_cmd:
-            accel = active_cmd.get("acceleration", 0.0)
-            target_speed = active_cmd.get("speed_mtps", 0.0)
-            v0 = runner["speed"]
+            cmd_type = active_cmd.get("command")
             
-            if accel > 0:
-                time_to_max = (target_speed - v0) / accel if target_speed > v0 else 0
-                dt_accel = min(dt, max(0, time_to_max))
-                dt_cruise = max(0, dt - dt_accel)
-                
-                d_accel = v0 * dt_accel + 0.5 * accel * (dt_accel ** 2)
-                v_new = v0 + accel * dt_accel
-                d_cruise = v_new * dt_cruise
-                
-                runner["speed"] = v_new
-                displacement = d_accel + d_cruise
+            # 1. Calculate Velocity (Speed + Ramping)
+            v0 = active_cmd.get("start_speed", runner["speed"])
+            v_target = active_cmd.get("target_speed", active_cmd.get("speed_mtps", v0))
+            
+            if active_cmd.get("velocity_ramp", False):
+                # RAMP: Speed scales linearly over the command duration
+                start_t = active_cmd.get("start_time", 0)
+                dur = active_cmd.get("seconds", 1.0)
+                progress = (self.current_time - start_t) / dur
+                progress = max(0, min(1, progress))
+                runner["speed"] = v0 + (v_target - v0) * progress
+            elif active_cmd.get("acceleration", 0) > 0:
+                # ACCEL: Physical acceleration
+                accel = active_cmd["acceleration"]
+                if runner["speed"] < v_target:
+                    runner["speed"] = min(v_target, runner["speed"] + accel * dt)
+                else:
+                    runner["speed"] = v_target
             else:
-                runner["speed"] = target_speed
-                displacement = target_speed * dt
+                runner["speed"] = v_target
+
+            # 2. Movement Logic
+            displacement = runner["speed"] * dt
+            
+            if cmd_type == "move":
+                # Get Direction Vector
+                direction_val = active_cmd.get("direction", "forward")
+                if direction_val == "forward":
+                    vec_f = (1, 0) # X+
+                elif isinstance(direction_val, (int, float)):
+                    rad = math.radians(direction_val)
+                    vec_f = (math.cos(rad), math.sin(rad))
+                else: # Tuple/List
+                    vec_f = direction_val
                 
-            runner["position"]["x"] += displacement
-    
+                # Apply Forward Movement
+                runner["position"]["x"] += vec_f[0] * displacement
+                runner["position"]["y"] += vec_f[1] * displacement
+                
+                # CORRIDOR CLAMPING (Equidistant)
+                left = active_cmd.get("left_boundary")
+                right = active_cmd.get("right_boundary")
+                radius = active_cmd.get("radius", 0.0)
+                
+                if left is not None and right is not None:
+                    # For straight tracks (X-aligned), we center Y between left/right
+                    # TODO: Support arbitrary direction vectors for pure perpendicular clamping
+                    target_y = (left + right) / 2.0
+                    runner["position"]["y"] = target_y
+            
+            elif cmd_type == "move_for_seconds":
+                # Legacy support
+                runner["position"]["x"] += displacement
+            
     def get_runner_state(self, runner_name):
         """Get current state of a runner
         
