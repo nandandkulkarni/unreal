@@ -528,6 +528,18 @@ class MotionCommandBuilder:
         self.cmd["acceleration"] = rate
         return self
 
+    def at_mph(self, mph: float):
+        """Set speed in miles per hour"""
+        return self.speed(mph * 0.44704)  # Convert mph to m/s
+    
+    def at_mps(self, mps: float):
+        """Set speed in meters per second (alias for speed())"""
+        return self.speed(mps)
+    
+    def at_kph(self, kph: float):
+        """Set speed in kilometers per hour"""
+        return self.speed(kph * 0.277778)  # Convert km/h to m/s
+
     def direction(self, d: str, offset: float = None):
         """Set direction (e.g. 'north', 'forward') with optional degree offset"""
         self.cmd["direction"] = d
