@@ -23,8 +23,8 @@ def define_movie():
         # Lane 1 runner at start line (0,0)
         movie.add_actor("Runner1", location=(0, 0, 0), yaw_offset=0)
         
-        # Lane 6 runner (last track) at y=6.1 (5 * 1.22m)
-        movie.add_actor("Runner2", location=(0, 6.1, 0), yaw_offset=0)
+        # Lane 6 runner (last track) at y=6.1m (610cm)
+        movie.add_actor("Runner2", location=(0, 610, 0), yaw_offset=0)
         
         # Race choreography
         with movie.simultaneous() as group:
