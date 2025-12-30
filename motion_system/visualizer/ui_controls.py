@@ -98,4 +98,14 @@ class UIControls:
                 self.show_collision_zones = not self.show_collision_zones
                 return "toggle_collision"
         
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:  # Left click
+                mouse_pos = event.pos
+                
+                # Check play/pause button (approximate area)
+                button_rect = pygame.Rect(10, self.control_bar_y + 30, 100, 25)
+                if button_rect.collidepoint(mouse_pos):
+                    self.playing = not self.playing
+                    return "toggle_play"
+        
         return None

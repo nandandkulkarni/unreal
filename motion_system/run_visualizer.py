@@ -40,8 +40,8 @@ def main():
         print(f"Loaded movie: {args.movie}")
         print(f"Commands: {len(movie_data.get('plan', []))}")
         
-        # Start visualizer (Increased scale factor to 5.0)
-        app = TrackVisualizer(movie_data, width=1920, height=1920, scale_factor=5.0)
+        # Start visualizer (3000x800, 50% scale of previous run)
+        app = TrackVisualizer(movie_data, width=3000, height=800, scale_factor=1.0)
         app.run()
         
     except ImportError as e:

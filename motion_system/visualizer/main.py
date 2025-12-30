@@ -15,13 +15,13 @@ from visualizer.ui_controls import UIControls
 class TrackVisualizer:
     """Main visualizer application"""
     
-    def __init__(self, movie_data, width=1920, height=1920, scale_factor=1.0):
+    def __init__(self, movie_data, width=3000, height=800, scale_factor=1.0):
         """Initialize visualizer
         
         Args:
             movie_data: Dictionary from MovieBuilder.build()
-            width: Screen width (default 1920 for ~20 inch display)
-            height: Screen height (default 1920 for ~20 inch display)
+            width: Screen width (default 3000)
+            height: Screen height (default 800)
             scale_factor: Scale multiplier for track (1.0 = fit to screen)
         """
         pygame.init()
@@ -40,13 +40,13 @@ class TrackVisualizer:
         self.simulation = SimulationEngine(movie_data)
         self.ui = UIControls(width, height)
         
-        self.total_time = 60.0  # 60 second race
+        self.total_time = 60.0 # 60 second race
         self.running = True
     
     def run(self):
         """Main game loop"""
         while self.running:
-            dt = self.clock.tick(self.fps) / 1000.0  # Delta time in seconds
+            dt = self.clock.tick(self.fps) / 1000.0
             
             # Handle events
             for event in pygame.event.get():
@@ -56,8 +56,6 @@ class TrackVisualizer:
                 action = self.ui.handle_event(event)
                 if action == "reset":
                     self.simulation.reset()
-                elif action == "toggle_play":
-                    pass  # UI handles this internally
             
             # Update simulation
             if self.ui.playing:
@@ -69,9 +67,24 @@ class TrackVisualizer:
         pygame.quit()
     
     def render(self):
-        """Render one frame"""
+        """Render one frame to screen"""
+        # Create a surface for the frame
+        frame_surface = pygame.Surface((self.width, self.height))
+        # Fixed camera at x=0 to show the whole wide track
+        self.draw_to_surface(frame_surface, 0)
+        self.screen.blit(frame_surface, (0, 0))
+        pygame.display.flip()
+
+    def draw_to_surface(self, surface, camera_offset_x=0):
+        """Draw simulation state to any surface with optional offset"""
+        # Offset all rendering by camera_offset_x
+        # We manually apply offset to renderers or use a temporary subsurface/transformation
+        # For simplicity, we'll temporarily adjust track_renderer offset
+        original_offset_x = self.track_renderer.offset_x
+        self.track_renderer.offset_x -= camera_offset_x
+        
         # Draw track
-        self.track_renderer.draw(self.screen)
+        self.track_renderer.draw(surface)
         
         # Draw runners
         for runner_name, runner_state in self.simulation.get_all_runners().items():
@@ -80,27 +93,15 @@ class TrackVisualizer:
             runner_id = runner_state["id"]
             
             self.runner_renderer.draw_runner(
-                self.screen,
-                runner_id,
-                pos["x"],
-                pos["y"],
-                speed,
-                runner_name
+                surface, runner_id, pos["x"], pos["y"], speed, runner_name
             )
             
-            # Draw collision zones if enabled
             if self.ui.show_collision_zones:
-                self.runner_renderer.draw_collision_zone(
-                    self.screen,
-                    pos["x"],
-                    pos["y"],
-                    0.5  # 0.5m collision radius
-                )
+                self.runner_renderer.draw_collision_zone(surface, pos["x"], pos["y"], 0.5)
         
-        # Draw UI
-        self.ui.draw(self.screen, self.simulation.current_time, self.total_time)
-        
-        pygame.display.flip()
+        # Draw UI (don't offset UI)
+        self.track_renderer.offset_x = original_offset_x
+        self.ui.draw(surface, self.simulation.current_time, self.total_time)
 
 
 def main():

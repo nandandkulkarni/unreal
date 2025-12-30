@@ -15,14 +15,18 @@ class TrackRenderer:
         self.screen_height = screen_height
         self.scale_factor = scale_factor
         
-        # Base scale: 10 pixels per meter (100m = 1000px)
-        # Apply user scale_factor (e.g., 5.0 means 50px/meter)
-        self.scale = 10.0 * scale_factor
-        
         # Track dimensions (100m straight)
         self.track_length = 100.0     # meters
         self.lane_width = 1.22        # meters
         self.num_lanes = 6
+        
+        # Calculate scale to fit 120m (100m + 10m margin each side) into the window
+        # This ensures the "image is wider than the track end"
+        world_width_to_view = self.track_length + 20.0
+        self.base_scale = self.screen_width / world_width_to_view
+        
+        # Apply user scale_factor (default 5x makes it massive/scrollable)
+        self.scale = self.base_scale * scale_factor
         
         # Colors
         self.track_color = (180, 80, 40)    # Reddish track
@@ -30,11 +34,10 @@ class TrackRenderer:
         self.marker_color = (255, 255, 0)   # Yellow
         self.grass_color = (20, 80, 20)     # Dark green
         
-        # Center vertically, but start from left with margin
-        # margin of 50m * scale to give some space
-        self.offset_x = 50 * scale_factor
-        total_height_m = self.num_lanes * self.lane_width
-        self.offset_y = (screen_height - total_height_m * self.scale) / 2
+        # Center vertically and start from left margin
+        self.offset_x = 10.0 * self.scale
+        total_height_px = self.num_lanes * self.lane_width * self.scale
+        self.offset_y = (screen_height - total_height_px) / 2
     
     def world_to_screen(self, x, y):
         """Convert world coordinates (meters) to screen coordinates (pixels)"""

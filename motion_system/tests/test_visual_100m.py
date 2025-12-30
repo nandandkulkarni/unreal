@@ -25,9 +25,13 @@ class VisualValidator100m:
         self.viz.ui.playing = False
     
     def capture_frame(self):
-        self.viz.render()
-        surface = self.viz.screen
-        frame_array = pygame.surfarray.array3d(surface)
+        """Capture the entire track by rendering to a wide virtual surface"""
+        # width 6000px is enough for 100m track at 5x scale (5000px + margins)
+        wide_surface = pygame.Surface((6000, 1200))
+        self.viz.draw_to_surface(wide_surface, camera_offset_x=0)
+        
+        # Convert to OpenCV format
+        frame_array = pygame.surfarray.array3d(wide_surface)
         frame_array = np.transpose(frame_array, (1, 0, 2))
         return cv2.cvtColor(frame_array, cv2.COLOR_RGB2BGR)
     
