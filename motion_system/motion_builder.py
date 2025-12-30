@@ -27,6 +27,10 @@ class MovieBuilder:
         }
         self.actors: Dict[str, VirtualState] = {}
         self.current_time = 0.0
+        self.waypoints = {}  # Global waypoint registry: name -> waypoint_data
+        self.dependencies = {}  # Track dependencies: actor -> [depends_on_actors]
+        self.auto_waypoint_counters = {}  # Auto-waypoint naming: actor -> counter
+        self.debug_waypoints = False  # Global waypoint visualization flag
 
     def __enter__(self):
         return self
@@ -42,8 +46,17 @@ class MovieBuilder:
         return self
 
     # --- Global Content ---
+    def delete_lights(self, light_types: List[str]):
+        """Delete all lights of specified types
+        
+        Args:
+            light_types: List of light type names, e.g. ["DirectionalLight", "SkyLight", "PointLight", "SpotLight", "RectLight"]
+        """
+        return self.add_command({"command": "delete_lights", "light_types": light_types})
+    
     def delete_all_skylights(self):
-        return self.add_command({"command": "delete_all_skylights"})
+        """Convenience method to delete all skylights"""
+        return self.delete_lights(["SkyLight"])
 
     def delete_all_floors(self):
         return self.add_command({"command": "delete_all_floors"})
@@ -306,6 +319,83 @@ class ActorBuilder:
             "target": list(target),
             "speed_mtps": speed_mtps
         })
+    
+    def mark_waypoint(self, name: str, visualize: bool = None):
+        """Mark current position as a named waypoint
+        
+        Args:
+            name: Waypoint name (use constants for type safety)
+            visualize: Override global visualization setting
+        
+        Returns:
+            self for method chaining
+        """
+        # Determine visualization setting
+        should_visualize = visualize if visualize is not None else self.mb.debug_waypoints
+        
+        # Create waypoint object
+        waypoint = {
+            "name": name,
+            "location": (self.state.x, self.state.y, self.state.z),
+            "actor": self.actor_name,
+            "time": self.state.time,
+            "rotation": self.state.yaw,
+            "visualize": should_visualize
+        }
+        
+        # Store in global registry
+        self.mb.waypoints[name] = waypoint
+        
+        # Add command to plan
+        return self._add({
+            "command": "mark_waypoint",
+            "waypoint": waypoint
+        })
+    
+    def auto_waypoint(self):
+        """Auto-generate waypoint at current position
+        
+        Returns:
+            self for method chaining
+        """
+        # Get or initialize counter for this actor
+        if self.actor_name not in self.mb.auto_waypoint_counters:
+            self.mb.auto_waypoint_counters[self.actor_name] = 0
+        
+        counter = self.mb.auto_waypoint_counters[self.actor_name]
+        self.mb.auto_waypoint_counters[self.actor_name] += 1
+        
+        # Generate name
+        auto_name = f"{self.actor_name}_auto_{counter}"
+        
+        # Use mark_waypoint with auto-generated name
+        return self.mark_waypoint(auto_name, visualize=False)
+    
+    def follow_actor_path(self, actor: str, offset: Tuple[float, float, float] = (0, 0, 0), 
+                         speed_multiplier: float = 1.0):
+        """Follow another actor's path with offset and speed modification
+        
+        Args:
+            actor: Name of actor to follow
+            offset: Spatial offset (x, y, z) from followed actor
+            speed_multiplier: Speed multiplier (1.0 = same speed, 1.2 = 20% faster)
+        
+        Returns:
+            self for method chaining
+        """
+        # Track dependency
+        if self.actor_name not in self.mb.dependencies:
+            self.mb.dependencies[self.actor_name] = []
+        self.mb.dependencies[self.actor_name].append(actor)
+        
+        # Add command (will be processed in multi-pass execution)
+        return self._add({
+            "command": "follow_actor_path",
+            "follow_actor": actor,
+            "offset": list(offset),
+            "speed_multiplier": speed_multiplier
+        })
+
 
 class SimultaneousContext:
     def __init__(self, movie_builder: MovieBuilder):

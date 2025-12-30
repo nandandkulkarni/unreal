@@ -81,6 +81,9 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         elif command_type == "add_floor":
             process_add_floor(cmd, actors_info)
             continue
+        elif command_type == "delete_lights":
+            process_delete_lights(cmd)
+            continue
         elif command_type == "delete_all_skylights":
             process_delete_all_skylights(cmd)
             continue
@@ -940,6 +943,38 @@ def process_add_floor(cmd, actors_info):
     }
     log(f"  ✓ Floor created at {location} (Scale: {scale})")
 
+
+def process_delete_lights(cmd):
+    """Delete all lights of specified types"""
+    light_types = cmd.get("light_types", [])
+    if not light_types:
+        log("  ⚠ No light types specified")
+        return
+    
+    # Map string names to Unreal classes
+    light_class_map = {
+        "DirectionalLight": unreal.DirectionalLight,
+        "SkyLight": unreal.SkyLight,
+        "PointLight": unreal.PointLight,
+        "SpotLight": unreal.SpotLight,
+        "RectLight": unreal.RectLight
+    }
+    
+    log(f"  Deleting lights of types: {', '.join(light_types)}")
+    all_actors = unreal.EditorLevelLibrary.get_all_level_actors()
+    count = 0
+    
+    for actor in all_actors:
+        for light_type_name in light_types:
+            light_class = light_class_map.get(light_type_name)
+            if light_class and isinstance(actor, light_class):
+                log(f"    - Deleting {light_type_name} '{actor.get_actor_label()}'")
+                unreal.EditorLevelLibrary.destroy_actor(actor)
+                count += 1
+                break  # Don't check other types for this actor
+    
+    if count == 0:
+        log(f"    (No lights of specified types found)")
 
 def process_delete_all_skylights(cmd):
     """Delete all SkyLight actors in the level"""
