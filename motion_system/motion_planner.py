@@ -6,11 +6,11 @@ Outputs structured keyframe data ready for Unreal application.
 """
 import math
 import unreal
-from .logger import log
-from .motion_includes import mannequin_setup
-from .motion_includes import camera_setup
-from .motion_includes import sequence_setup
-from .motion_includes import light_setup
+from logger import log
+from motion_includes import mannequin_setup
+from motion_includes import camera_setup
+from motion_includes import sequence_setup
+from motion_includes import light_setup
 
 
 def plan_motion(motion_plan, actors_info, fps, sequence=None):

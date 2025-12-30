@@ -2,7 +2,8 @@
 Cleanup utilities - Delete old test assets and actors
 """
 import unreal
-from ..logger import log, log_header
+import logger
+from logger import log, log_header
 
 
 def close_open_sequences():

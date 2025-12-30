@@ -2,7 +2,8 @@
 Directional light creation and configuration
 """
 import unreal
-from ..logger import log, log_header
+import logger
+from logger import log, log_header
 
 
 # Cardinal direction to yaw mapping

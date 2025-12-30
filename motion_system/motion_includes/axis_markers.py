@@ -2,7 +2,8 @@
 Axis Markers - Create visual reference markers at world origin
 """
 import unreal
-from ..logger import log
+import logger
+from logger import log
 
 
 def create_axis_markers():

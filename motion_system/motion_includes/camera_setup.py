@@ -2,7 +2,8 @@
 Camera creation and configuration
 """
 import unreal
-from ..logger import log, log_header
+import logger
+from logger import log, log_header
 
 
 def create_camera_marker(location, color_name="red", owner_name="Camera"):

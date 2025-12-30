@@ -1,4 +1,4 @@
-from ..motion_builder import MovieBuilder
+from motion_builder import MovieBuilder
 
 # Movie Definition: Tandem Square Run with Camera Cuts
 # Updated to use Context Manager Syntax (v2)

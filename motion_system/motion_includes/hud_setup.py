@@ -2,7 +2,8 @@
 HUD text actor setup for displaying character position
 """
 import unreal
-from ..logger import log
+import logger
+from logger import log
 
 
 def create_hud(camera, mannequin):

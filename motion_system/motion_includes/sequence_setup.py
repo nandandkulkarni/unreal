@@ -3,7 +3,7 @@ Sequence creation and configuration
 """
 import unreal
 from datetime import datetime
-from ..logger import log, log_header
+from logger import log, log_header
 
 
 def get_next_sequence_number():
@@ -99,7 +99,7 @@ def apply_camera_cuts(sequence, camera_cuts, actors_info, fps):
         actors_info: Dictionary of actor information including bindings
         fps: Frames per second
     """
-    from ..logger import log
+    from logger import log
     
     if not camera_cuts:
         log("  No camera cuts to apply")
