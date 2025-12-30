@@ -20,8 +20,8 @@ class VisualValidator100m:
     def __init__(self, movie_data):
         os.environ['SDL_VIDEODRIVER'] = 'dummy'
         pygame.init()
-        # Use simpler resolution
-        self.viz = TrackVisualizer(movie_data, width=800, height=600, scale_factor=1.0)
+        # Use large resolution to fit 5x scaled 100m track (approx 9000px wide)
+        self.viz = TrackVisualizer(movie_data, width=10000, height=1200, scale_factor=5.0)
         self.viz.ui.playing = False
     
     def capture_frame(self):
@@ -62,18 +62,67 @@ class VisualValidator100m:
             print(f"✅ Runner detected at {pos}")
         else:
             print("❌ Runner NOT detected")
-            cv2.imwrite("failed_100m.png", frame)
+            cv2.imwrite("docs/failed_100m.png", frame)
             
         assert pos is not None, "Runner detection failed"
 
+    def test_movement_over_time(self):
+        print("Test: Movement Verification (OpenCV Tracking)")
+        
+        # 1. Capture Start (t=0)
+        self.viz.simulation.reset()
+        frame_0 = self.capture_frame()
+        pos_0 = self.detect_runner(frame_0)
+        assert pos_0 is not None, "Failed to detect runner at start"
+        
+        # Annotate and save
+        cv2.circle(frame_0, pos_0, 20, (0, 255, 0), 2)
+        cv2.putText(frame_0, "Start (t=0)", (pos_0[0], pos_0[1]-30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv2.imwrite("docs/visual_start.png", frame_0)
+        print(f"✅ Start frame saved to docs/visual_start.png")
+
+        # 2. Capture Mid (t=6)
+        for _ in range(60): # 6 seconds at dt=0.1
+            self.viz.simulation.update(0.1)
+        frame_mid = self.capture_frame()
+        pos_mid = self.detect_runner(frame_mid)
+        assert pos_mid is not None, "Failed to detect runner at t=6"
+        assert pos_mid[0] > pos_0[0], f"Runner didn't move forward! {pos_0[0]} -> {pos_mid[0]}"
+        
+        cv2.circle(frame_mid, pos_mid, 20, (0, 255, 0), 2)
+        cv2.putText(frame_mid, "Mid (t=6)", (pos_mid[0], pos_mid[1]-30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv2.imwrite("docs/visual_mid.png", frame_mid)
+        print(f"✅ Mid frame saved to docs/visual_mid.png")
+
+        # 3. Capture Finish (t=13) - Should be past 100m
+        for _ in range(70): # 7 more seconds
+            self.viz.simulation.update(0.1)
+        frame_finish = self.capture_frame()
+        pos_finish = self.detect_runner(frame_finish)
+        assert pos_finish is not None, "Failed to detect runner at t=13"
+        assert pos_finish[0] > pos_mid[0], f"Runner didn't move forward! {pos_mid[0]} -> {pos_finish[0]}"
+        
+        cv2.circle(frame_finish, pos_finish, 20, (0, 255, 0), 2)
+        cv2.putText(frame_finish, "Finish (t=13)", (pos_finish[0], pos_finish[1]-30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv2.imwrite("docs/visual_end.png", frame_finish)
+        print(f"✅ Finish frame saved to docs/visual_end.png")
+        
+        print(f"🏃 Movement tracked: X={pos_0[0]} -> X={pos_mid[0]} -> X={pos_finish[0]}")
+
 def run_test():
-    print("Running 100m Visual Test...")
+    print("="*40)
+    print("Running 100m Visual Verification...")
+    print("="*40)
     validator = VisualValidator100m(MOVIE)
     try:
         validator.test_single_runner_detection()
-        print("PASS")
+        validator.test_movement_over_time()
+        print("\n✅ ALL VISUAL TESTS PASSED")
     except AssertionError as e:
-        print(f"FAIL: {e}")
+        print(f"\n❌ FAIL: {e}")
+    except Exception as e:
+        print(f"\n❌ ERROR: {e}")
+    print("="*40)
 
 if __name__ == "__main__":
     run_test()

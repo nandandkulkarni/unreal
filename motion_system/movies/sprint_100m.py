@@ -31,12 +31,12 @@ def define_movie():
         # Simple straight sprint
         with movie.for_actor("Runner1") as runner:
             runner.animation("Sprint_Fwd")
-            # Accelerate to 10m/s over 100m
+            # Accelerate to 10m/s, total distance will be >100m
             runner.move_for_seconds(
-                seconds=10.0,
+                seconds=15.0,
                 direction="forward",
                 speed_mtps=10.0,
-                acceleration=2.0 # reaches 10m/s after 5s
+                acceleration=2.0 # reaches 10m/s after 5s (25m), then cruises 10s (100m)
             )
             
         movie.add_camera("SideView", location=(5000, -1000, 200), rotation=(0, 90, 0))

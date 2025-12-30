@@ -13,32 +13,28 @@ class TrackRenderer:
     def __init__(self, screen_width=1920, screen_height=1920, scale_factor=1.0):
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.scale_factor = scale_factor  # User-adjustable scale
+        self.scale_factor = scale_factor
         
-        # Track dimensions (in meters, will scale to screen)
-        self.straight_length = 84.39  # meters
-        self.curve_radius = 36.5      # meters
+        # Base scale: 10 pixels per meter (100m = 1000px)
+        # Apply user scale_factor (e.g., 5.0 means 50px/meter)
+        self.scale = 10.0 * scale_factor
+        
+        # Track dimensions (100m straight)
+        self.track_length = 100.0     # meters
         self.lane_width = 1.22        # meters
-        self.num_lanes = 8
+        self.num_lanes = 6
         
         # Colors
-        self.track_color = (200, 100, 50)  # Reddish track
-        self.lane_color = (255, 255, 255)   # White lane lines
-        self.grass_color = (20, 80, 20)     # Darker green grass for better contrast
+        self.track_color = (180, 80, 40)    # Reddish track
+        self.lane_color = (255, 255, 255)   # White
+        self.marker_color = (255, 255, 0)   # Yellow
+        self.grass_color = (20, 80, 20)     # Dark green
         
-        # Calculate scale to fit screen
-        # Use outer dimensions to ensure everything fits
-        track_width = self.num_lanes * self.lane_width
-        total_width = self.straight_length + 2 * (self.curve_radius + track_width)
-        total_height = 2 * (self.curve_radius + track_width)
-        
-        scale_x = (screen_width - 100) / total_width
-        scale_y = (screen_height - 100) / total_height
-        self.scale = min(scale_x, scale_y) * scale_factor  # Apply user scale
-        
-        # Offset to center track
-        self.offset_x = (screen_width - total_width * self.scale) / 2
-        self.offset_y = (screen_height - total_height * self.scale) / 2
+        # Center vertically, but start from left with margin
+        # margin of 50m * scale to give some space
+        self.offset_x = 50 * scale_factor
+        total_height_m = self.num_lanes * self.lane_width
+        self.offset_y = (screen_height - total_height_m * self.scale) / 2
     
     def world_to_screen(self, x, y):
         """Convert world coordinates (meters) to screen coordinates (pixels)"""
@@ -47,68 +43,44 @@ class TrackRenderer:
         return (int(screen_x), int(screen_y))
     
     def draw(self, screen):
-        """Draw the complete track"""
-        # Fill background with grass
+        """Draw the 100m straight track"""
         screen.fill(self.grass_color)
         
-        # Draw track surface (simplified as rounded rectangle)
-        self._draw_track_surface(screen)
-        
-        # Draw lane lines
-        self._draw_lane_lines(screen)
-        
-        # Draw start/finish line
-        self._draw_start_finish_line(screen)
-    
-    def _draw_track_surface(self, screen):
-        """Draw the main track surface"""
-        # For simplicity, draw as rounded rectangle
-        # In reality, it's two straights connected by semicircles
-        
-        # Calculate track bounds
-        inner_radius = self.curve_radius
-        outer_radius = inner_radius + self.num_lanes * self.lane_width
-        
-        # Draw outer track boundary (simplified)
-        # Left straight
+        # Draw track surface
         p1 = self.world_to_screen(0, 0)
-        p2 = self.world_to_screen(self.straight_length, 0)
-        p3 = self.world_to_screen(self.straight_length, outer_radius * 2)
-        p4 = self.world_to_screen(0, outer_radius * 2)
-        
+        p2 = self.world_to_screen(self.track_length, 0)
+        p3 = self.world_to_screen(self.track_length, self.num_lanes * self.lane_width)
+        p4 = self.world_to_screen(0, self.num_lanes * self.lane_width)
         pygame.draw.polygon(screen, self.track_color, [p1, p2, p3, p4])
         
-        # Draw curves (simplified as arcs)
-        # Top curve
-        center_top = self.world_to_screen(self.straight_length + inner_radius, inner_radius)
-        pygame.draw.circle(screen, self.track_color, center_top, int(outer_radius * self.scale))
-        
-        # Bottom curve
-        center_bottom = self.world_to_screen(-inner_radius, inner_radius)
-        pygame.draw.circle(screen, self.track_color, center_bottom, int(outer_radius * self.scale))
-    
-    def _draw_lane_lines(self, screen):
-        """Draw white lane divider lines"""
-        for lane in range(1, self.num_lanes):
-            y = lane * self.lane_width
+        # Draw lane lines
+        for i in range(self.num_lanes + 1):
+            y = i * self.lane_width
+            start = self.world_to_screen(0, y)
+            end = self.world_to_screen(self.track_length, y)
+            # Keep lane thickness at 2-3 pixels regardless of scale
+            pygame.draw.line(screen, self.lane_color, start, end, 2)
             
-            # Draw straight sections
-            p1 = self.world_to_screen(0, y)
-            p2 = self.world_to_screen(self.straight_length, y)
-            pygame.draw.line(screen, self.lane_color, p1, p2, 2)
-    
-    def _draw_start_finish_line(self, screen):
-        """Draw start/finish line"""
-        # Vertical line at x=0
-        p1 = self.world_to_screen(0, 0)
-        p2 = self.world_to_screen(0, self.num_lanes * self.lane_width)
-        pygame.draw.line(screen, (255, 255, 0), p1, p2, 4)  # Yellow line
+        # Draw Start Marker (0m)
+        self._draw_marker(screen, 0, "START (0m)")
         
-        # Draw "START/FINISH" text
-        font = pygame.font.Font(None, 24)
-        text = font.render("START/FINISH", True, (255, 255, 0))
-        text_pos = self.world_to_screen(2, -1)
-        screen.blit(text, text_pos)
+        # Draw Finish Marker (95m)
+        self._draw_marker(screen, 95, "FINISH (95m)")
+        
+    def _draw_marker(self, screen, x, label):
+        """Draw vertical marker line and label"""
+        # Marker lines should span slightly beyond lanes
+        p1 = self.world_to_screen(x, -0.3)
+        p2 = self.world_to_screen(x, self.num_lanes * self.lane_width + 0.3)
+        
+        # Keep thickness at 6 pixels (don't scale thickness)
+        pygame.draw.line(screen, self.marker_color, p1, p2, 6)
+        
+        # Keep font size reasonable (40-48 shifted by scale?)
+        # Actually fixed 40 is good
+        font = pygame.font.Font(None, 40)
+        text = font.render(label, True, self.marker_color)
+        screen.blit(text, (p1[0] - 10, p1[1] - 50))
     
     def draw_waypoint(self, screen, x, y, name, color=(255, 0, 0)):
         """Draw a waypoint marker"""

@@ -138,6 +138,15 @@ class SimulationEngine:
         """Get all runner states"""
         return self.runners
     
+    def check_proximity(self, runner_name, target_x=95.0, range_m=5.0):
+        """Check if runner is within range of target position"""
+        runner = self.get_runner_state(runner_name)
+        if not runner:
+            return False
+            
+        dist = abs(runner["position"]["x"] - target_x)
+        return dist <= range_m
+    
     def reset(self):
         """Reset simulation to t=0"""
         self.current_time = 0.0

@@ -22,38 +22,29 @@ class RunnerRenderer:
     
     def __init__(self, track_renderer):
         self.track = track_renderer
-        # Calculate radius to fit within lane (40% of lane width to avoid overlap)
-        # Lane width is 1.22m, scale is pixels/meter
+        # Scale radius based on track scale but cap it at a reasonable pixel size
         lane_width_px = 1.22 * self.track.scale
-        self.runner_radius = max(3, int(lane_width_px * 0.4))
+        # Cap runner radius at 30 pixels so they don't look like giants at 5x scale
+        self.runner_radius = min(30, max(5, int(lane_width_px * 0.4)))
     
     def draw_runner(self, screen, runner_id, x, y, speed, name):
-        """Draw a single runner
-        
-        Args:
-            screen: Pygame screen
-            runner_id: Runner index (0-5)
-            x, y: Position in meters
-            speed: Current speed in m/s
-            name: Runner name
-        """
+        """Draw a single runner"""
         pos = self.track.world_to_screen(x, y)
         color = self.COLORS[runner_id % len(self.COLORS)]
         
         # Draw runner circle
         pygame.draw.circle(screen, color, pos, self.runner_radius)
         
-        # Only draw outline if runner is large enough
-        if self.runner_radius > 5:
-            pygame.draw.circle(screen, (0, 0, 0), pos, self.runner_radius, 1)  # Thinner outline
+        # Keep outline at fixed 2px thickness
+        pygame.draw.circle(screen, (0, 0, 0), pos, self.runner_radius, 2)
         
-        # Draw runner name
-        font = pygame.font.Font(None, 20)
+        # Draw runner name with slightly larger font than default
+        font = pygame.font.Font(None, 24)
         text = font.render(name, True, (255, 255, 255))
-        text_rect = text.get_rect(center=(pos[0], pos[1] - 20))
+        text_rect = text.get_rect(center=(pos[0], pos[1] - self.runner_radius - 15))
         
         # Draw background for text
-        bg_rect = text_rect.inflate(4, 2)
+        bg_rect = text_rect.inflate(6, 4)
         pygame.draw.rect(screen, (0, 0, 0), bg_rect)
         screen.blit(text, text_rect)
         
