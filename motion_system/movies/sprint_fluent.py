@@ -18,29 +18,36 @@ def define_movie():
         movie.delete_all_floors()
         movie.add_floor("Track", location=(0, 0, -0.5), scale=2000)
         
-        # Add runner at start (305cm is the center of the 2.44m-3.66m corridor)
-        movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=0)
+        # Add runners (radius is set here and stays with the actor)
+        movie.add_actor("Runner1", location=(0, 305, 0), radius=0.5)
+        movie.add_actor("Runner2", location=(0, 183, 0), radius=0.5)
         
-        # Fluent Chained Choreography
+        # Runner 1 Choreography
         with movie.for_actor("Runner1") as r:
             r.animation("Sprint_Fwd")
-            
             r.move() \
-                .by_distance(20.0) \
-                .velocity(to=10.0, start_from=0.0) \
-                .in_corridor(left=2.44, right=3.66) \
-                .with_radius(0.5) \
-              .move() \
-                .by_distance(80.0) \
-                .speed(10.0) \
-                .in_corridor(left=2.44, right=3.66) \
-              .move() \
-                .for_seconds(3.0) \
-                .velocity(to=0.0) \
-                .in_corridor(left=2.44, right=3.66)
+                .by_distance(20.0).velocity(to=10.0, start_from=0.0).in_corridor(2.44, 3.66) \
+                .move() \
+                .by_distance(80.0).speed(10.0).in_corridor(2.44, 3.66) \
+                .move() \
+                .for_seconds(3.0).velocity(to=0.0).in_corridor(2.44, 3.66)
+
+        # Runner 2 Choreography (Lane 2: 1.22m - 2.44m)
+        with movie.for_actor("Runner2") as r:
+            r.animation("Sprint_Fwd")
+            r.move() \
+                .by_distance(22.0).velocity(to=10.5, start_from=0.0).in_corridor(1.22, 2.44) \
+                .move() \
+                .by_distance(78.0).speed(10.5).in_corridor(1.22, 2.44) \
+                .move() \
+                .for_seconds(3.0).velocity(to=0.0).in_corridor(1.22, 2.44)
             
         movie.add_camera("SideView", location=(5000, -1000, 200), rotation=(0, 90, 0))
         movie.at_time(0).camera_cut("SideView")
+        
+        # Standardize export path
+        movie.save_to_json("dist/sprint_fluent.json")
+    movie.run(to_unreal=True)
         
     return movie.build()
 

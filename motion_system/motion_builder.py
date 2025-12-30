@@ -3,20 +3,21 @@ import math
 import motion_math
 
 class VirtualState:
-    def __init__(self, x=0.0, y=0.0, z=0.0, yaw=0.0, time=0.0, current_speed=0.0):
+    def __init__(self, x=0.0, y=0.0, z=0.0, yaw=0.0, time=0.0, current_speed=0.0, radius=0.0):
         self.x = x
         self.y = y
         self.z = z
         self.yaw = yaw
         self.time = time
         self.current_speed = current_speed
+        self.radius = radius
         
     @property
     def location(self):
         return (self.x, self.y, self.z)
 
     def copy(self):
-        return VirtualState(self.x, self.y, self.z, self.yaw, self.time, self.current_speed)
+        return VirtualState(self.x, self.y, self.z, self.yaw, self.time, self.current_speed, self.radius)
 
 class MovieBuilder:
     def __init__(self, name: str, create_new_level: bool = True, fps: int = 30):
@@ -41,6 +42,28 @@ class MovieBuilder:
 
     def build(self):
         return self.movie_data
+
+    def save_to_json(self, filepath: str):
+        import json
+        with open(filepath, "w") as f:
+            json.dump(self.movie_data, f, indent=4)
+        print(f"Movie plan saved to: {filepath}")
+        return self
+
+    def run(self, to_unreal: bool = False):
+        """Unified Run method: Flag-based execution for Sim or Unreal"""
+        if to_unreal:
+            from trigger_movie import trigger_movie
+            # Save temporary and trigger
+            self.save_to_json("dist/unreal_last_run.json")
+            trigger_movie("dist/unreal_last_run.json")
+        else:
+            import subprocess
+            import sys
+            # Launch visualizer as a subprocess
+            self.save_to_json("dist/sim_last_run.json")
+            subprocess.Popen([sys.executable, "run_visualizer.py", "dist/sim_last_run.json"])
+        return self
 
     def add_command(self, command: Dict[str, Any]):
         self.movie_data["plan"].append(command)
@@ -78,15 +101,17 @@ class MovieBuilder:
         })
 
     # --- Actor Management ---
-    def add_actor(self, name: str, location: Tuple[float, float, float], yaw_offset: float = 0.0, mesh_path: str = None):
+    def add_actor(self, name: str, location: Tuple[float, float, float], yaw_offset: float = 0.0, radius: float = 0.35, mesh_path: str = None):
+        """Add actor with a persistent radius (default 0.35m for Unreal)"""
         # Initialize Virtual State
-        self.actors[name] = VirtualState(x=location[0], y=location[1], z=location[2], yaw=yaw_offset, time=self.current_time)
+        self.actors[name] = VirtualState(x=location[0], y=location[1], z=location[2], yaw=yaw_offset, time=self.current_time, radius=radius)
         
         cmd = {
             "command": "add_actor",
             "actor": name,
             "location": list(location),
-            "yaw_offset": yaw_offset
+            "yaw_offset": yaw_offset,
+            "radius": radius
         }
         if mesh_path:
             cmd["mesh_path"] = mesh_path
@@ -148,6 +173,11 @@ class ActorBuilder:
         # Update Global Time to match this actor's finish time
         if self.state.time > self.mb.current_time:
             self.mb.current_time = self.state.time
+
+    def radius(self, r: float):
+        """Update persistent actor radius"""
+        self.state.radius = r
+        return self._add({"command": "set_radius", "radius": r})
 
     def get_state(self) -> VirtualState:
         return self.state
@@ -476,7 +506,8 @@ class MotionCommandBuilder:
             "command": "move",
             "actor": self.ab.actor_name,
             "direction": "forward",
-            "start_speed": self.ab.state.current_speed
+            "start_speed": self.ab.state.current_speed,
+            "radius": self.ab.state.radius
         }
     
     def move(self) -> 'MotionCommandBuilder':

@@ -5,7 +5,10 @@ Takes high-level motion commands and calculates exact positions, times, and keyf
 Outputs structured keyframe data ready for Unreal application.
 """
 import math
-import unreal
+try:
+    import unreal
+except ImportError:
+    import unreal_mock as unreal
 from logger import log
 from motion_includes import mannequin_setup
 from motion_includes import camera_setup
@@ -38,6 +41,8 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             "current_rotation": {"pitch": info["rotation"].pitch, "yaw": info["rotation"].yaw, "roll": info["rotation"].roll},
             "yaw_offset": info.get("yaw_offset", 0.0),
             "current_animation": None,
+            "current_speed": info.get("current_speed", 0.0),
+            "radius": info.get("radius", 0.35),
             "waypoints": {},
             "keyframes": {
                 "location": [],
@@ -103,7 +108,9 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         
         log(f"\n[{i}] Actor '{actor_name}': {command_type}")
         
-        if command_type == "move_by_distance":
+        if command_type == "move":
+            process_move(cmd, state, fps)
+        elif command_type == "move_by_distance":
             process_move_by_distance(cmd, state, fps)
         elif command_type == "move_for_seconds":
             process_move_for_seconds(cmd, state, fps)
@@ -311,6 +318,84 @@ def process_move_by_distance(cmd, state, fps):
         state["waypoints"][cmd["waypoint_name"]] = new_pos.copy()
         log(f"  ✓ Waypoint '{cmd['waypoint_name']}' created")
 
+
+def process_move(cmd, state, fps):
+    """
+    Consolidated Movement Handler (from Fluent API)
+    Supports: Velocity Ramps, Corridors, Radius, Time/Distance termination
+    """
+    direction = cmd.get("direction", "forward")
+    secs = cmd.get("seconds", 0.0)
+    dist = cmd.get("meters", 0.0)
+    v0 = cmd.get("start_speed", state["current_speed"] if "current_speed" in state else 0.0)
+    v1 = cmd.get("target_speed", cmd.get("speed_mtps", v0))
+    radius = cmd.get("radius", state.get("radius", 0.35))
+    
+    # Corridor Constraints
+    left = cmd.get("left_boundary")
+    right = cmd.get("right_boundary")
+    
+    # Kinematic Integration
+    # We must generate dense keyframes for ramps or lateral shifts
+    steps = int(max(1, secs * fps))
+    dt = secs / steps if steps > 0 else 0
+    
+    start_frame = int(state["current_time"] * fps)
+    
+    pos = state["current_pos"].copy()
+    current_v = v0
+    accel = (v1 - v0) / secs if secs > 0 else 0
+    
+    # Determine local forward/right vectors
+    yaw_rad = math.radians(state["current_rotation"]["yaw"])
+    fwd = {"x": math.cos(yaw_rad), "y": math.sin(yaw_rad)}
+    right_vec = {"x": fwd["y"], "y": -fwd["x"]} # 90 deg right
+    
+    # Starting Lateral Position (Assume X-aligned for now, but we can generalized)
+    # y0 = pos["y"] if we are strafing from current
+    y0 = pos["y"]
+    target_y = (left + right) / 2.0 * 100.0 if (left is not None and right is not None) else None
+    
+    for i in range(steps + 1):
+        step_t = i * dt
+        frame = start_frame + i
+        
+        # Velocity at this step
+        v_step = v0 + accel * step_t
+        displacement_m = (v0 * step_t + 0.5 * accel * (step_t**2)) if i > 0 else 0
+        
+        # Calculate Forward Component (relative to START of this command)
+        # We integrate from the specific start position of this leg
+        move_x = fwd["x"] * displacement_m * 100.0
+        move_y = fwd["y"] * displacement_m * 100.0
+        
+        temp_pos = {
+            "x": state["current_pos"]["x"] + move_x,
+            "y": state["current_pos"]["y"] + move_y,
+            "z": pos["z"]
+        }
+        
+        # Apply Lateral Correction (Strafing)
+        if target_y is not None:
+            progress = step_t / secs if secs > 0 else 1.0
+            temp_pos["y"] = y0 + (target_y - y0) * progress
+            
+        add_location_keyframe(state, frame, temp_pos)
+        add_rotation_keyframe(state, frame, state["current_rotation"])
+        
+        if i == steps:
+            pos = temp_pos
+            current_v = v_step
+
+    # Update state
+    state["current_pos"] = pos
+    state["current_time"] += secs
+    state["current_speed"] = v1
+    state["radius"] = radius
+    
+    log(f"  Move fluent: {secs:.2f}s, {dist:.1f}m. Speed {v0:.1f}->{v1:.1f}")
+    if left is not None:
+        log(f"  Corridor: {left} - {right} (m)")
 
 def process_move_for_seconds(cmd, state, fps):
     """Move for specified seconds"""
@@ -654,6 +739,7 @@ def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
         "location": location_vec,
         "rotation": rotation_rot,
         "yaw_offset": yaw_offset,
+        "radius": cmd.get("radius", 0.35),
         "actor": actor,
         "binding": binding
     }
@@ -782,6 +868,8 @@ def init_actor_state(actor_name, info, actor_states):
         "current_pos": {"x": loc.x, "y": loc.y, "z": loc.z},
         "current_rotation": {"pitch": rot.pitch, "yaw": rot.yaw, "roll": rot.roll},
         "yaw_offset": info.get("yaw_offset", 0.0),
+        "current_speed": info.get("current_speed", 0.0),
+        "radius": info.get("radius", 0.35),
         "current_animation": None,
         "waypoints": {},
         "keyframes": {

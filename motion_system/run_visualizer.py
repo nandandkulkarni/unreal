@@ -11,6 +11,14 @@ Examples:
 
 import sys
 import os
+
+# To allow the shared motion_planner to run outside Unreal, inject a mock
+try:
+    import unreal
+except ImportError:
+    import unreal_mock
+    sys.modules["unreal"] = unreal_mock
+
 import argparse
 import importlib
 

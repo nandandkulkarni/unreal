@@ -10,7 +10,7 @@ from .motion_includes import hud_setup
 from .motion_includes import visual_aids
 from . import motion_planner
 from .motion_includes import keyframe_applier
-from . import debug_db
+from .diagnostics import debug_db
 from . import test_motion_system
 from .motion_includes import axis_markers
 from . import motion_commands

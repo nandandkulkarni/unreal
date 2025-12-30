@@ -148,7 +148,21 @@ def run_scene(json_path):
     except Exception as e:
         logger.log(f"⚠ Warning: Could not play sequence: {e}")
             
+    except Exception as e:
+        import traceback
+        error_msg = f"✗ CRITICAL ERROR in run_scene: {e}\n{traceback.format_exc()}"
+        logger.log(error_msg)
+        print(error_msg)
+        # Also write to a local log file for easy access
+        try:
+            with open(os.path.join(script_dir, "unreal_error.log"), "w") as f:
+                f.write(error_msg)
+        except:
+            pass
+        return False
+        
     logger.log_header("SCENE GENERATION COMPLETE")
+    return True
 
     # Validate Settings (User Request)
     try:
