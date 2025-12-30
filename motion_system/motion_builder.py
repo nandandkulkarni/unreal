@@ -117,22 +117,9 @@ class MovieBuilder:
             cmd["mesh_path"] = mesh_path
         return self.add_command(cmd)
 
-    def add_camera(self, name: str, location: Tuple[float, float, float], rotation: Optional[Tuple[float, float, float]] = None, fov: float = 90.0, tint: Optional[Tuple[float, float, float]] = None, show_marker: str = None, look_at_actor: str = None, offset: Optional[Tuple[float, float, float]] = None, interp_speed: float = 0.0, auto_zoom: Optional[Dict[str, Any]] = None):
-        # Cameras are actors too in our state machine (mostly)
-        rot = rotation if rotation else (0,0,0)
-        self.actors[name] = VirtualState(x=location[0], y=location[1], z=location[2], yaw=rot[1], time=self.current_time)
-        
-        cmd = {
-            "command": "add_camera", "actor": name, "location": list(location), "fov": fov
-        }
-        if rotation: cmd["rotation"] = list(rotation)
-        if tint: cmd["tint"] = list(tint)
-        if show_marker: cmd["show_marker"] = show_marker
-        if look_at_actor: cmd["look_at_actor"] = look_at_actor
-        if offset: cmd["offset"] = list(offset)
-        if interp_speed > 0: cmd["interp_speed"] = interp_speed
-        if auto_zoom: cmd["auto_zoom"] = auto_zoom
-        return self.add_command(cmd)
+    def add_camera(self, name: str, location: Tuple[float, float, float], fov: float = 90.0) -> 'CameraBuilder':
+        """Start a fluent camera configuration"""
+        return CameraBuilder(self, name, location, fov)
 
     def get_actor_state(self, name: str) -> VirtualState:
         if name not in self.actors:
@@ -600,3 +587,61 @@ class MotionCommandBuilder:
     def __enter__(self): return self
     def __exit__(self, *args):
         self._commit()
+
+class CameraBuilder:
+    """Helper for fluent camera configuration"""
+    
+    def __init__(self, movie_builder: MovieBuilder, name: str, location: Tuple[float, float, float], fov: float):
+        self.mb = movie_builder
+        self.name = name
+        self.cmd = {
+            "command": "add_camera", 
+            "actor": name, 
+            "location": list(location), 
+            "fov": fov
+        }
+        # Initialize virtual state for camera
+        self.mb.actors[name] = VirtualState(x=location[0], y=location[1], z=location[2], yaw=0, time=self.mb.current_time)
+        
+    def rotation(self, rot: Tuple[float, float, float]):
+        """Set explicit rotation (Roll, Yaw, Pitch)"""
+        if "look_at_actor" in self.cmd:
+            raise ValueError("Cannot set rotation when look_at_actor is enabled. These are mutually exclusive.")
+        
+        self.cmd["rotation"] = list(rot)
+        # Update virtual state yaw (index 1)
+        self.mb.actors[self.name].yaw = rot[1]
+        return self
+        
+    def look_at(self, actor_name: str, offset: Tuple[float, float, float] = None, interp_speed: float = 0.0):
+        """Lock camera to track an actor"""
+        if "rotation" in self.cmd:
+            raise ValueError("Cannot set look_at_actor when rotation is explicitly set. These are mutually exclusive.")
+            
+        self.cmd["look_at_actor"] = actor_name
+        if offset:
+            self.cmd["offset"] = list(offset)
+        if interp_speed > 0:
+            self.cmd["interp_speed"] = interp_speed
+        return self
+        
+    def fov(self, degrees: float):
+        self.cmd["fov"] = degrees
+        return self
+
+    def show_marker(self, color: str = "red"):
+        self.cmd["show_marker"] = color
+        return self
+        
+    def tint(self, rgb: Tuple[float, float, float]):
+        self.cmd["tint"] = list(rgb)
+        return self
+
+    def auto_zoom(self, settings: Dict[str, Any]):
+        self.cmd["auto_zoom"] = settings
+        return self
+    
+    def add(self):
+        """Commit the camera to the movie plan"""
+        self.mb.add_command(self.cmd)
+        return self.mb # Return back to movie builder for chaining

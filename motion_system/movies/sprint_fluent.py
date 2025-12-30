@@ -42,7 +42,7 @@ def define_movie():
                 .move() \
                 .for_seconds(3.0).velocity(to=0.0).in_corridor(1.22, 2.44)
             
-        movie.add_camera("SideView", location=(5000, -1000, 200), rotation=(0, 90, 0))
+        movie.add_camera("SideView", location=(5000, -1000, 200)).rotation((0, 90, 0)).add()
         movie.at_time(0).camera_cut("SideView")
         
         # Standardize export path
