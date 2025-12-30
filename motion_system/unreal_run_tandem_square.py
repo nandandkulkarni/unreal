@@ -111,7 +111,12 @@ def run_tandem_square():
                     duration_frames
                 )
         
-        # 7. Finalize
+        # 5. Apply Camera Cuts
+        if camera_cuts:
+            logger.log_header("Applying Camera Cuts")
+            sequence_setup.apply_camera_cuts(sequence, camera_cuts, actors_info, fps)
+        
+        # 6. Finalize
         unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(sequence)
         unreal.LevelSequenceEditorBlueprintLibrary.set_lock_camera_cut_to_viewport(True)
         unreal.LevelSequenceEditorBlueprintLibrary.play()
