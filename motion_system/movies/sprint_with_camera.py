@@ -32,11 +32,11 @@ def define_movie():
             
         # --- Camera Setup ---
         
-        # Front/Finish Camera (Locked to Runner1)
-        # Positioned past the finish line (110m), looking back
-        # Using Manual Rotation + Auto-Focus
+        # Front/Finish Camera (Tracking Runner1)
+        # Positioned past the finish line (110m)
+        # Using look_at for automatic rotation + focus tracking
         movie.add_camera("FrontCam", location=(11000, 244, 200))\
-             .rotation(rot=(0, 180, 0))\
+             .look_at("Runner1")\
              .focus_on("Runner1")\
              .fov(90)\
              .add()

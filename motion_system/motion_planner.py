@@ -668,11 +668,8 @@ def process_camera_look_at(cmd, actors_info):
         
     interp_speed = cmd.get("interp_speed", 0.0)
     
-    # Enable Rotation Tracking
+    # Enable Rotation Tracking only
     camera_setup.enable_lookat_tracking(camera_actor, target_actor, offset, interp_speed)
-    
-    # Enable Focus Tracking (Implicitly enabled with look_at to preserve legacy behavior)
-    camera_setup.enable_focus_tracking(camera_actor, target_actor, offset)
 
 
 def process_camera_focus(cmd, actors_info):
@@ -865,8 +862,8 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_gr
 
         process_camera_look_at(cmd, actors_info)
         
-    # Handle separate focus_actor if specified (and look_at not overriding)
-    if "focus_actor" in cmd and "look_at_actor" not in cmd:
+    # Handle focus_actor if specified (can be used with or without look_at)
+    if "focus_actor" in cmd:
         process_camera_focus(cmd, actors_info)
 
 
