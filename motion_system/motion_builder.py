@@ -541,8 +541,11 @@ class MotionCommandBuilder:
         self.cmd["acceleration"] = rate
         return self
 
-    def direction(self, d: Union[str, float, Tuple[float, float]]):
+    def direction(self, d: str, offset: float = None):
+        """Set direction (e.g. 'north', 'forward') with optional degree offset"""
         self.cmd["direction"] = d
+        if offset is not None:
+            self.cmd["offset"] = offset
         return self
 
     def in_corridor(self, left: float, right: float):

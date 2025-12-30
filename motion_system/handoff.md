@@ -17,8 +17,6 @@ Establish a single source of truth for motion planning where `motion_planner.py`
 2.  **Generalizing Corridor Math**: 
     - The current `process_move` in `motion_planner.py` uses simplified lateral shifts for corridors.
     - **Goal**: Update the logic to use a full perpendicular vector (`fwd['y'], -fwd['x']`) so that corridor centering works even if the actor is facing a custom direction (e.g., diagonal or 90-degree turns).
-3.  **Corridor Strafe Scenario**:
-    - Verify `python run_visualizer.py sprint_turn`. The actor should "strafe" sideways while continuing to run forward as the corridor boundaries shift.
 
 ## Core Architecture: The "Playback" Model
 The system is divided into three phases:

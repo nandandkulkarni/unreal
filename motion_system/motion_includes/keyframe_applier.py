@@ -182,7 +182,9 @@ def apply_animation_keyframes(binding, keyframes, duration_frames, actor_name):
         unreal.MovieSceneSectionExtensions.set_range(anim_section, start_frame, end_frame)
         
         # Load animation
-        anim_path = f"/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/{anim_name}.{anim_name}"
+        # anim_path = f"/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/{anim_name}.{anim_name}"
+        # TEMPORARY: Force Jog_Fwd as requested
+        anim_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd"
         anim = unreal.load_object(None, anim_path)
         
         if anim:

@@ -15,16 +15,16 @@ def define_movie():
     
     with MovieBuilder("Fluent Sprint", fps=60) as movie:
         
-        movie.delete_all_floors()
-        movie.add_floor("Track", location=(0, 0, -0.5), scale=2000)
+        ##movie.delete_all_floors()
+        ##movie.add_floor("Track", location=(0, 0, -0.5), scale=2000)
         
         # Add runners (radius is set here and stays with the actor)
-        movie.add_actor("Runner1", location=(0, 305, 0), radius=0.5)
-        movie.add_actor("Runner2", location=(0, 183, 0), radius=0.5)
+        movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=-90, radius=0.5)
+        movie.add_actor("Runner2", location=(0, 183, 0), yaw_offset=-90, radius=0.5)
         
         # Runner 1 Choreography
         with movie.for_actor("Runner1") as r:
-            r.animation("Sprint_Fwd")
+            r.animation("Jog_Fwd")
             r.move() \
                 .by_distance(20.0).velocity(to=10.0, start_from=0.0).in_corridor(2.44, 3.66) \
                 .move() \
@@ -34,7 +34,7 @@ def define_movie():
 
         # Runner 2 Choreography (Lane 2: 1.22m - 2.44m)
         with movie.for_actor("Runner2") as r:
-            r.animation("Sprint_Fwd")
+            r.animation("Jog_Fwd")
             r.move() \
                 .by_distance(22.0).velocity(to=10.5, start_from=0.0).in_corridor(1.22, 2.44) \
                 .move() \
