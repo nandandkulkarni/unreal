@@ -190,6 +190,8 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             process_camera_move(cmd, state, fps)
         elif command_type == "camera_look_at":
             process_camera_look_at(cmd, actors_info)
+        elif command_type == "camera_settings":
+            process_camera_settings(cmd, actors_info)
         elif command_type == "add_actor":
             process_add_actor(cmd, actors_info, actor_states, sequence, fps)
         elif command_type == "add_camera":
@@ -737,35 +739,65 @@ def process_wait(cmd, state, fps):
 
 
 def process_camera_move(cmd, state, fps):
-    """Move camera with location and rotation"""
+    """Move camera with location, rotation, or focal length change"""
     location = cmd.get("location")
     rotation = cmd.get("rotation")
+    focal_length = cmd.get("focal_length")
     duration_sec = cmd.get("duration", 2.0)
     
-    if not location or not rotation:
-        log("  ⚠ Camera move missing location or rotation")
-        return
-        
     start_frame = int(state["current_time"] * fps)
     end_frame = int((state["current_time"] + duration_sec) * fps)
     
-    # Add start keyframes (current position)
-    add_location_keyframe(state, start_frame, state["current_pos"])
-    add_rotation_keyframe(state, start_frame, state["current_rotation"])
-    
-    # Update state
-    target_pos = {"x": location[0], "y": location[1], "z": location[2]}
-    target_rot = {"pitch": rotation[0], "yaw": rotation[1], "roll": rotation[2]}
-    
-    state["current_pos"] = target_pos
-    state["current_rotation"] = target_rot
+    # 1. Location
+    if location:
+        # Add start/end location keys
+        add_location_keyframe(state, start_frame, state["current_pos"])
+        
+        target_pos = {"x": location[0], "y": location[1], "z": location[2]}
+        state["current_pos"] = target_pos
+        add_location_keyframe(state, end_frame, state["current_pos"])
+    else:
+        # Hold current location
+        add_location_keyframe(state, start_frame, state["current_pos"])
+        add_location_keyframe(state, end_frame, state["current_pos"])
+
+    # 2. Rotation
+    if rotation:
+        add_rotation_keyframe(state, start_frame, state["current_rotation"])
+        
+        target_rot = {"pitch": rotation[0], "yaw": rotation[1], "roll": rotation[2]}
+        state["current_rotation"] = target_rot
+        add_rotation_keyframe(state, end_frame, state["current_rotation"])
+    else:
+        # Hold current rotation or continue tracking?
+        # If we are tracking (LookAt), rotation keyframes might fight it?
+        # The writer usually respects lookat override.
+        add_rotation_keyframe(state, start_frame, state["current_rotation"])
+        add_rotation_keyframe(state, end_frame, state["current_rotation"])
+        
+    # 3. Focal Length
+    if focal_length:
+        current_fl = state.get("current_focal_length", 35.0) # Need to track this in state!
+        
+        if "current_focal_length" not in state["keyframes"]:
+             state["keyframes"]["current_focal_length"] = []
+             
+        # Start key
+        state["keyframes"]["current_focal_length"].append({
+            "frame": start_frame,
+            "value": current_fl
+        })
+        
+        # End key
+        state["keyframes"]["current_focal_length"].append({
+            "frame": end_frame,
+            "value": focal_length
+        })
+        state["current_focal_length"] = focal_length
+
     state["current_time"] += duration_sec
     
-    # Add end keyframes (new position)
-    add_location_keyframe(state, end_frame, state["current_pos"])
-    add_rotation_keyframe(state, end_frame, state["current_rotation"])
-    
-    log(f"  Camera move to ({target_pos['x']}, {target_pos['y']}, {target_pos['z']}) in {duration_sec}s")
+    log(f"  Camera move/shot in {duration_sec}s (Loc: {bool(location)}, Rot: {bool(rotation)}, Zoom: {bool(focal_length)})")
 
 
 def process_camera_look_at(cmd, actors_info):
@@ -846,6 +878,22 @@ def process_camera_focus(cmd, actors_info):
         log(f"  ℹ Focus height_pct={height_pct:.2f} -> Z-offset={z_offset_cm:.1f}cm")
         
     camera_setup.enable_focus_tracking(camera_actor, target_actor, offset)
+
+
+def process_camera_settings(cmd, actors_info):
+    """Update camera settings (look_at, focus) mid-sequence"""
+    # Just dispatch to specific handlers
+    # NOTE: In standard Sequencer without keyframing properties, this changes the setting GLOBALLY for the actor instance.
+    # To support timeline-based switching, we'd need to Keyframe the properties (ActorToTrack).
+    # For now, we assume user is switching OR we accept the limitation.
+    
+    if "look_at_actor" in cmd:
+        process_camera_look_at(cmd, actors_info)
+        
+    if "focus_actor" in cmd:
+        process_camera_focus(cmd, actors_info)
+        
+    log(f"  > Camera Settings Updated")
 
 
 def process_add_actor(cmd, actors_info, actor_states, sequence, fps):

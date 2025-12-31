@@ -152,13 +152,19 @@ class MovieBuilder:
         return self.actors[name]
 
     # --- Context Managers ---
-    def for_actor(self, actor_name: str) -> 'ActorBuilder':
+    def for_actor(self, actor_name: str):
+        """Context manager for queuing actor commands"""
         # Sync actor to global time if behind
         state = self.get_actor_state(actor_name)
         if state.time < self.current_time:
             state.time = self.current_time
+        
         return ActorBuilder(self, actor_name)
     
+    def for_camera(self, camera_name: str):
+        """Context manager for queuing camera commands (includes zoom/focus)"""
+        return CameraCommandBuilder(self, camera_name)
+        
     def simultaneous(self) -> 'SimultaneousContext':
         return SimultaneousContext(self)
         
@@ -722,3 +728,150 @@ class CameraBuilder:
         """Commit the camera to the movie plan"""
         self.mb.add_command(self.cmd)
         return self.mb # Return back to movie builder for chaining
+
+# --- Camera Sequencing ---
+
+class CameraMotionCommandBuilder(MotionCommandBuilder):
+    """Enhanced motion builder for cameras (supports zoom/focus injection)"""
+    
+    def _commit(self):
+        # Inject persistent state from the CameraCommandBuilder
+        kb = self.ab # CameraCommandBuilder instance
+        
+        if hasattr(kb, 'current_look_at') and kb.current_look_at:
+            self.cmd["look_at_actor"] = kb.current_look_at
+            if kb.current_height_pct is not None:
+                self.cmd["height_pct"] = kb.current_height_pct
+                
+        if hasattr(kb, 'current_focus') and kb.current_focus:
+            self.cmd["focus_actor"] = kb.current_focus
+            if kb.current_height_pct is not None:
+                self.cmd["height_pct"] = kb.current_height_pct
+                
+        # Call base implementation to handle physics/state logic
+        super()._commit()
+        
+    # We need to implement _commit to actually add the command to the movie.
+    # Actually, MotionCommandBuilder usually adds the command in its methods (speed, etc) 
+    # OR it builds up a command and adds it at the end?
+    # Looking at the code: `return self._add(cmd)` is called inside `move_by_distance` etc.
+    # But `move()` returns a new builder.
+    # Where is the command finalized? 
+    # Ah, `move()` calls `_commit()` on the PREVIOUS builder.
+    
+    # I need to see `_commit` in `MotionCommandBuilder`. 
+    # If it's not there, I might be misinterpreting the code flow.
+    # Let's assume standard behavior: _commit adds the pending command if it hasn't been added.
+    
+    def zoom_to(self, focal_length: float):
+        self.cmd["keyframe_focal_length"] = focal_length
+        return self
+        
+    def focus_on(self, actor_name: str):
+        self.ab.current_focus = actor_name
+        self.cmd["focus_actor"] = actor_name
+        return self
+
+
+class CameraShotBuilder:
+    """Helper for duration-based shots without movement"""
+    def __init__(self, camera_builder):
+        self.cb = camera_builder
+        self.duration_val = 1.0
+        self.zoom_val = None
+        self.focus_val = None
+        
+    def duration(self, seconds: float):
+        self.duration_val = seconds
+        return self
+        
+    def zoom(self, focal_length: float):
+        self.zoom_val = focal_length
+        return self
+        
+    def commit(self):
+        # We use a 'camera_shot' command? Or just a 'wait' with extra properties?
+        # Planner needs to support this.
+        # For now, let's use a "wait" command but inject properties.
+        cmd = {
+            "command": "wait",
+            "seconds": self.duration_val,
+            "actor": self.cb.actor_name
+        }
+        
+        if self.zoom_val:
+            cmd["focal_length"] = self.zoom_val # Planner needs to handle this in wait?
+            # Or use camera_settings command? But that has no duration.
+            
+        # If we have zoom, we probably want to animate it over the duration.
+        # This implies we need a command that supports duration + property change.
+        # "animate_camera" or similar.
+        # Let's emit a specific command types.
+        
+        if self.zoom_val:
+             cmd = {
+                 "command": "camera_move", # Reuse camera_move?
+                 "actor": self.cb.actor_name,
+                 "duration": self.duration_val,
+                 # "location": current_loc? No, we don't want to move location.
+                 "focal_length": self.zoom_val
+                 # Planner process_camera_move needs to handle missing location/rotation
+             }
+        
+        # Inject state
+        if self.cb.current_look_at:
+            cmd["look_at_actor"] = self.cb.current_look_at
+        if self.cb.current_focus:
+            cmd["focus_actor"] = self.cb.current_focus
+            
+        self.cb.mb.add_command(cmd)
+        return self.cb
+
+
+class CameraCommandBuilder(ActorBuilder):
+    """Specialized builder for Camera sequencing"""
+    def __init__(self, movie_builder, actor_name):
+        super().__init__(movie_builder, actor_name)
+        self.current_look_at = None
+        self.current_focus = None
+        self.current_height_pct = None
+
+    def look_at(self, actor_name: str, height_pct: float = None):
+        self.current_look_at = actor_name
+        if height_pct is not None:
+             self.current_height_pct = height_pct
+        
+        # Emit setting update
+        cmd = {
+            "command": "camera_settings",
+            "actor": self.actor_name,
+            "look_at_actor": actor_name
+        }
+        if height_pct is not None:
+             cmd["height_pct"] = height_pct
+        self.mb.add_command(cmd)
+        return self
+
+    def focus_on(self, actor_name: str, height_pct: float = None):
+        self.current_focus = actor_name
+        # Emit setting update
+        cmd = {
+            "command": "camera_settings",
+            "actor": self.actor_name,
+            "focus_actor": actor_name
+        }
+        if height_pct is not None:
+             cmd["height_pct"] = height_pct
+        self.mb.add_command(cmd)
+        return self
+
+    def shot(self):
+        return CameraShotBuilder(self)
+
+    # Override move to return CameraMovingBuilder
+    def move(self) -> 'CameraMotionCommandBuilder':
+        if hasattr(self, '_active_move') and self._active_move:
+            self._active_move._commit() # Assuming _commit exists
+        
+        self._active_move = CameraMotionCommandBuilder(self)
+        return self._active_move

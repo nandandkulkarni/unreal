@@ -1,0 +1,137 @@
+{
+    "name": "Fluent Sprint",
+    "create_new_level": true,
+    "fps": 60,
+    "plan": [
+        {
+            "command": "add_actor",
+            "actor": "Runner1",
+            "location": [
+                0,
+                305,
+                0
+            ],
+            "yaw_offset": -90,
+            "radius": 0.5
+        },
+        {
+            "command": "add_actor",
+            "actor": "Runner2",
+            "location": [
+                0,
+                183,
+                0
+            ],
+            "yaw_offset": -90,
+            "radius": 0.5
+        },
+        {
+            "command": "animation",
+            "name": "Jog_Fwd",
+            "actor": "Runner1"
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "direction": "forward",
+            "start_speed": 0.0,
+            "radius": 0.5,
+            "meters": 20.0,
+            "target_speed": 10.0,
+            "velocity_ramp": true,
+            "left_boundary": 2.44,
+            "right_boundary": 3.66,
+            "seconds": 4.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "direction": "forward",
+            "start_speed": 10.0,
+            "radius": 0.5,
+            "meters": 80.0,
+            "speed_mtps": 10.0,
+            "target_speed": 10.0,
+            "left_boundary": 2.44,
+            "right_boundary": 3.66,
+            "seconds": 8.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "direction": "forward",
+            "start_speed": 10.0,
+            "radius": 0.5,
+            "seconds": 3.0,
+            "target_speed": 0.0,
+            "velocity_ramp": true,
+            "left_boundary": 2.44,
+            "right_boundary": 3.66,
+            "meters": 15.0
+        },
+        {
+            "command": "animation",
+            "name": "Jog_Fwd",
+            "actor": "Runner2"
+        },
+        {
+            "command": "move",
+            "actor": "Runner2",
+            "direction": "forward",
+            "start_speed": 0.0,
+            "radius": 0.5,
+            "meters": 22.0,
+            "target_speed": 10.5,
+            "velocity_ramp": true,
+            "left_boundary": 1.22,
+            "right_boundary": 2.44,
+            "seconds": 4.190476190476191
+        },
+        {
+            "command": "move",
+            "actor": "Runner2",
+            "direction": "forward",
+            "start_speed": 10.5,
+            "radius": 0.5,
+            "meters": 78.0,
+            "speed_mtps": 10.5,
+            "target_speed": 10.5,
+            "left_boundary": 1.22,
+            "right_boundary": 2.44,
+            "seconds": 7.428571428571429
+        },
+        {
+            "command": "move",
+            "actor": "Runner2",
+            "direction": "forward",
+            "start_speed": 10.5,
+            "radius": 0.5,
+            "seconds": 3.0,
+            "target_speed": 0.0,
+            "velocity_ramp": true,
+            "left_boundary": 1.22,
+            "right_boundary": 2.44,
+            "meters": 15.75
+        },
+        {
+            "command": "add_camera",
+            "actor": "SideView",
+            "location": [
+                5000,
+                -1000,
+                200
+            ],
+            "fov": 90.0,
+            "rotation": [
+                0,
+                90,
+                0
+            ]
+        },
+        {
+            "command": "camera_cut",
+            "camera": "SideView",
+            "at_time": 0
+        }
+    ]
+}
