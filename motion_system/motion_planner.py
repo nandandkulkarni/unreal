@@ -16,6 +16,38 @@ from motion_includes import sequence_setup
 from motion_includes import light_setup
 
 
+def save_planning_debug(pass_name, actor_states, camera_cuts, scene_name="movie"):
+    """Save intermediate planning data for debugging"""
+    import json
+    import os
+    
+    # Convert actor_states to JSON-serializable format
+    debug_data = {
+        "pass": pass_name,
+        "actors": {},
+        "camera_cuts": camera_cuts
+    }
+    
+    for actor_name, state in actor_states.items():
+        debug_data["actors"][actor_name] = {
+            "keyframes": state.get("keyframes", {}),
+            "frame_subject_timeline": state.get("frame_subject_timeline", [])
+        }
+    
+    # Use absolute path to motion_system/dist folder
+    script_dir = r"C:\UnrealProjects\Coding\unreal\motion_system"
+    output_path = os.path.join(script_dir, "dist", f"{scene_name}_{pass_name}.json")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    with open(output_path, "w") as f:
+        json.dump(debug_data, f, indent=2)
+    
+    log(f"✓ Debug saved: {output_path}")
+
+
+
+
+
 def calculate_focal_length(camera_pos, subject_pos, subject_height=1.8, coverage=0.7, sensor_height=24.0):
     """
     Calculate required focal length to frame subject at desired coverage.
@@ -68,7 +100,7 @@ def calculate_focal_length(camera_pos, subject_pos, subject_height=1.8, coverage
     return focal_length
 
 
-def plan_motion(motion_plan, actors_info, fps, sequence=None):
+def plan_motion(motion_plan, actors_info, fps, sequence=None, scene_name="movie"):
     """
     Convert motion commands to keyframe data
     
@@ -76,6 +108,7 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         motion_plan: List of command dicts with "actor" and "command" fields
         actors_info: Dict of actor_name -> {"location": Vector, "rotation": Rotator}
         fps: Frames per second
+        scene_name: Name of the scene for debug output
         
     Returns:
         Dict of actor_name -> keyframe_data
@@ -188,6 +221,8 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             process_wait(cmd, state, fps)
         elif command_type == "camera_move":
             process_camera_move(cmd, state, fps)
+        elif command_type == "camera_wait":
+            process_camera_wait(cmd, actor_states, fps)
         elif command_type == "camera_look_at":
             process_camera_look_at(cmd, actors_info)
         elif command_type == "camera_settings":
@@ -287,12 +322,21 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
         }
         log(f"\n✓ {actor_name}: {len(state['keyframes']['location'])} location keys, {len(state['keyframes']['animations'])} anim sections")
     
+    # Save debug output after planning (before post-processing)
+    save_planning_debug("pass_1", actor_states, camera_cuts, scene_name)
+    
     # Post-process: Generate Group Targets
     if pending_groups:
         generate_group_targets(pending_groups, actor_states, actors_info, sequence, fps)
 
-    # Post-process: Generate Auto-FOV for cameras
+    # Post-process: Generate timeline-based focal length (dynamic subject switching)
+    generate_timeline_based_focal_length(actors_info, actor_states, fps)
+    
+    # Post-process: Generate Auto-FOV for cameras (legacy single-subject)
     generate_auto_zoom_keyframes(actors_info, actor_states, fps)
+    
+    # Save debug output after post-processing
+    save_planning_debug("pass_2", actor_states, camera_cuts, scene_name)
 
     return result, camera_cuts
 
@@ -880,6 +924,34 @@ def process_camera_focus(cmd, actors_info):
     camera_setup.enable_focus_tracking(camera_actor, target_actor, offset)
 
 
+def process_camera_wait(cmd, actor_states, fps):
+    """Process camera wait command and track frame_subject timeline"""
+    camera_name = cmd.get("actor")
+    seconds = cmd.get("seconds", 0.0)
+    
+    if not camera_name or camera_name not in actor_states:
+        log(f"  ⚠ Camera '{camera_name}' not found in actor_states")
+        return
+    
+    state = actor_states[camera_name]
+    
+    # Build frame_subject timeline if specified
+    if "frame_subject" in cmd:
+        if "frame_subject_timeline" not in state:
+            state["frame_subject_timeline"] = []
+        
+        state["frame_subject_timeline"].append({
+            "start_time": state["current_time"],
+            "end_time": state["current_time"] + seconds,
+            "subject": cmd["frame_subject"],
+            "coverage": cmd.get("coverage", 0.7)
+        })
+        log(f"  > Frame subject: {cmd['frame_subject']} from {state['current_time']:.1f}s to {state['current_time'] + seconds:.1f}s")
+    
+    state["current_time"] += seconds
+    log(f"  Camera wait {seconds}s")
+
+
 def process_camera_settings(cmd, actors_info):
     """Update camera settings (look_at, focus) mid-sequence"""
     # Just dispatch to specific handlers
@@ -1320,6 +1392,100 @@ def process_delete_all_floors(cmd):
             count += 1
     if count == 0:
         log("    (No Floor actors found)")
+
+
+
+
+def generate_timeline_based_focal_length(actors_info, actor_states, fps):
+    """Generate focal length keyframes based on frame_subject timeline (supports dynamic subject switching)"""
+    import math
+    
+    log("\n" + "-"*40)
+    log("GENERATING TIMELINE-BASED FOCAL LENGTH")
+    
+    for camera_name, camera_state in actor_states.items():
+        # Check if this camera has a frame_subject timeline
+        if "frame_subject_timeline" not in camera_state:
+            continue
+            
+        timeline = camera_state["frame_subject_timeline"]
+        if not timeline:
+            continue
+            
+        log(f"  Processing {camera_name} with {len(timeline)} subject segment(s)...")
+        
+        # Get camera location
+        camera_info = actors_info.get(camera_name)
+        if not camera_info:
+            continue
+        camera_loc = camera_info["location"]
+        
+        focal_keyframes = []
+        last_focal_length = None
+        
+        # Process each timeline segment
+        for segment in timeline:
+            subject_name = segment["subject"]
+            coverage = segment["coverage"]
+            start_time = segment["start_time"]
+            end_time = segment["end_time"]
+            start_frame = int(start_time * fps)
+            end_frame = int(end_time * fps)
+            
+            if subject_name not in actor_states:
+                log(f"    ⚠ Subject '{subject_name}' not found, skipping segment")
+                continue
+                
+            subject_state = actor_states[subject_name]
+            subject_height = actors_info.get(subject_name, {}).get("height", 1.8)
+            
+            log(f"    {start_time:.1f}s-{end_time:.1f}s: Tracking {subject_name} (coverage={coverage})")
+            
+            # Always keyframe at segment start (subject switch point)
+            subject_pos = get_actor_location_at_frame(subject_state, start_frame)
+            focal_length = calculate_focal_length(
+                (camera_loc.x, camera_loc.y, camera_loc.z),
+                (subject_pos["x"], subject_pos["y"], subject_pos["z"]),
+                subject_height=subject_height,
+                coverage=coverage
+            )
+            focal_keyframes.append({"frame": start_frame, "value": focal_length})
+            last_focal_length = focal_length
+            
+            # Sample within segment (every 2 seconds, adaptive)
+            sample_interval_frames = int(2.0 * fps)
+            change_threshold = 0.10
+            
+            for frame in range(start_frame + sample_interval_frames, end_frame, sample_interval_frames):
+                subject_pos = get_actor_location_at_frame(subject_state, frame)
+                focal_length = calculate_focal_length(
+                    (camera_loc.x, camera_loc.y, camera_loc.z),
+                    (subject_pos["x"], subject_pos["y"], subject_pos["z"]),
+                    subject_height=subject_height,
+                    coverage=coverage
+                )
+                
+                # Only add if changed significantly
+                if last_focal_length and abs(focal_length - last_focal_length) / last_focal_length > change_threshold:
+                    focal_keyframes.append({"frame": frame, "value": focal_length})
+                    last_focal_length = focal_length
+            
+            # Always keyframe at segment end
+            subject_pos = get_actor_location_at_frame(subject_state, end_frame)
+            focal_length = calculate_focal_length(
+                (camera_loc.x, camera_loc.y, camera_loc.z),
+                (subject_pos["x"], subject_pos["y"], subject_pos["z"]),
+                subject_height=subject_height,
+                coverage=coverage
+            )
+            focal_keyframes.append({"frame": end_frame, "value": focal_length})
+            last_focal_length = focal_length
+        
+        # Store keyframes
+        camera_state["keyframes"]["current_focal_length"] = focal_keyframes
+        log(f"  ✓ Generated {len(focal_keyframes)} focal length keyframes for '{camera_name}'")
+    
+    log("-"*40)
 
 
 def generate_auto_zoom_keyframes(actors_info, actor_states, fps):

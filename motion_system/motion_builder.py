@@ -44,11 +44,15 @@ class MovieBuilder:
     def build(self):
         return self.movie_data
 
-    def save_to_json(self, filepath: str):
+    def save_to_json(self, path: str):
+        """Save movie plan to JSON file"""
         import json
-        with open(filepath, "w") as f:
-            json.dump(self.movie_data, f, indent=4)
-        print(f"Movie plan saved to: {filepath}")
+        import os
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        with open(path, 'w') as f:
+            json.dump(self.build(), f, indent=4)
+        print(f"Movie plan saved to: {path}")
+        self._last_saved_path = path  # Track for run() method
         return self
     
     def verify_at_frames(self, frames: list):
@@ -65,13 +69,15 @@ class MovieBuilder:
         self.movie_data["verification_frames"] = frames
         return self
 
-    def run(self, to_unreal: bool = False):
-        """Unified Run method: Flag-based execution for Sim or Unreal"""
+    def run(self, to_unreal=False):
+        """Execute the movie (optionally trigger in Unreal)"""
         if to_unreal:
             from trigger_movie import trigger_movie
-            # Save temporary and trigger
-            self.save_to_json("dist/unreal_last_run.json")
-            trigger_movie("dist/unreal_last_run.json")
+            # Trigger using the last saved JSON path
+            if hasattr(self, '_last_saved_path') and self._last_saved_path:
+                trigger_movie(self._last_saved_path)
+            else:
+                print("Warning: No movie plan saved yet. Please call .save_to_json() before .run(to_unreal=True).")
         else:
             import subprocess
             import sys
@@ -835,6 +841,8 @@ class CameraCommandBuilder(ActorBuilder):
         self.current_look_at = None
         self.current_focus = None
         self.current_height_pct = None
+        self.current_frame_subject = None
+        self.current_coverage = 0.7
 
     def look_at(self, actor_name: str, height_pct: float = None):
         self.current_look_at = actor_name
@@ -865,6 +873,29 @@ class CameraCommandBuilder(ActorBuilder):
         self.mb.add_command(cmd)
         return self
 
+    def frame_subject(self, actor_name: str, coverage: float = 0.7):
+        """Set the subject to auto-frame (for dynamic zoom calculation)"""
+        self.current_frame_subject = actor_name
+        self.current_coverage = coverage
+        return self
+    
+    def wait(self, seconds: float):
+        """Override wait to capture frame_subject state for timeline"""
+        cmd = {
+            "command": "camera_wait",
+            "actor": self.actor_name,
+            "seconds": seconds
+        }
+        
+        # Inject current frame_subject state if set
+        if self.current_frame_subject:
+            cmd["frame_subject"] = self.current_frame_subject
+            cmd["coverage"] = self.current_coverage
+            
+        self.mb.add_command(cmd)
+        self.state.time += seconds
+        return self
+    
     def shot(self):
         return CameraShotBuilder(self)
 

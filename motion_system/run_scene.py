@@ -101,7 +101,7 @@ def run_scene(json_path):
     actors_info = {}
     
     # 1. Plan Motion (Generate Keyframes)
-    keyframe_data_all, camera_cuts = motion_planner.plan_motion(plan, actors_info, fps, sequence=sequence)
+    keyframe_data_all, camera_cuts = motion_planner.plan_motion(plan, actors_info, fps, sequence=sequence, scene_name=scene_name)
     
     # 2. Apply Keyframes to Sequencer
     binding_map = {name: info["binding"] for name, info in actors_info.items() if "binding" in info}

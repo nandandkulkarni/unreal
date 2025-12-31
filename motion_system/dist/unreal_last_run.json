@@ -16,6 +16,18 @@
             "height": 1.8
         },
         {
+            "command": "add_actor",
+            "actor": "Runner2",
+            "location": [
+                0,
+                183,
+                0
+            ],
+            "yaw_offset": -90,
+            "radius": 0.5,
+            "height": 1.8
+        },
+        {
             "command": "animation",
             "name": "Jog_Fwd",
             "actor": "Runner1"
@@ -34,6 +46,24 @@
             "seconds": 10.0
         },
         {
+            "command": "animation",
+            "name": "Jog_Fwd",
+            "actor": "Runner2"
+        },
+        {
+            "command": "move",
+            "actor": "Runner2",
+            "direction": "forward",
+            "start_speed": 0.0,
+            "radius": 0.5,
+            "meters": 100.0,
+            "speed_mtps": 10.5,
+            "target_speed": 10.5,
+            "left_boundary": 1.22,
+            "right_boundary": 2.44,
+            "seconds": 9.523809523809524
+        },
+        {
             "command": "add_camera",
             "actor": "FrontCam",
             "location": [
@@ -41,14 +71,64 @@
                 244,
                 200
             ],
-            "fov": 90.0,
+            "fov": 90.0
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
             "look_at_actor": "Runner1",
-            "height_pct": 0.7,
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
             "focus_actor": "Runner1",
-            "auto_frame": {
-                "subject": "Runner1",
-                "coverage": 0.7
-            }
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_wait",
+            "actor": "FrontCam",
+            "seconds": 4.0,
+            "frame_subject": "Runner1",
+            "coverage": 0.7
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
+            "look_at_actor": "Runner2",
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
+            "focus_actor": "Runner2",
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_wait",
+            "actor": "FrontCam",
+            "seconds": 4.0,
+            "frame_subject": "Runner2",
+            "coverage": 0.7
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
+            "look_at_actor": "Runner1",
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
+            "focus_actor": "Runner1",
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_wait",
+            "actor": "FrontCam",
+            "seconds": 2.0,
+            "frame_subject": "Runner1",
+            "coverage": 0.7
         },
         {
             "command": "camera_cut",

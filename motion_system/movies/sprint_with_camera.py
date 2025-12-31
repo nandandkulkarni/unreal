@@ -18,28 +18,42 @@ def define_movie():
         
         # Add runners
         movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=-90, radius=0.5, height=1.8)
-        # movie.add_actor("Runner2", location=(0, 183, 0), yaw_offset=-90, radius=0.5)
+        movie.add_actor("Runner2", location=(0, 183, 0), yaw_offset=-90, radius=0.5, height=1.8)
         
         # Runner 1 (Standard Sprint)
         with movie.for_actor("Runner1") as r:
             r.animation("Jog_Fwd")
             r.move().by_distance(100.0).speed(10.0).in_corridor(2.44, 3.66)
 
-        # Runner 2 (Standard Sprint) - COMMENTED OUT
-        # with movie.for_actor("Runner2") as r:
-        #     r.animation("Jog_Fwd")
-        #     r.move().by_distance(100.0).speed(10.5).in_corridor(1.22, 2.44)
+        # Runner 2 (Slightly faster)
+        with movie.for_actor("Runner2") as r:
+            r.animation("Jog_Fwd")
+            r.move().by_distance(100.0).speed(10.5).in_corridor(1.22, 2.44)
             
         # --- Camera Setup ---
         
-        # Front/Finish Camera (Tracking Runner1)
-        # Positioned past the finish line (110m)
-        # Using look_at with height_pct=0.7 to target chest/neck area instead of feet
-        movie.add_camera("FrontCam", location=(11000, 244, 200))\
-             .look_at("Runner1", height_pct=0.7)\
-             .focus_on("Runner1", height_pct=0.7)\
-             .frame_subject("Runner1", coverage=0.7)\
-             .add()
+        # Front/Finish Camera (Positioned between lanes, switches focus every 4s)
+        # Positioned past the finish line (110m), centered between lanes
+        movie.add_camera("FrontCam", location=(11000, 244, 200)).add()
+        
+        with movie.for_camera("FrontCam") as cam:
+            # 0-4s: Focus on Runner1 with auto-zoom
+            cam.frame_subject("Runner1", coverage=0.7)
+            cam.look_at("Runner1", height_pct=0.7)
+            cam.focus_on("Runner1", height_pct=0.7)
+            cam.wait(4.0)
+            
+            # 4-8s: Switch to Runner2 with auto-zoom
+            cam.frame_subject("Runner2", coverage=0.7)
+            cam.look_at("Runner2", height_pct=0.7)
+            cam.focus_on("Runner2", height_pct=0.7)
+            cam.wait(4.0)
+            
+            # 8-10s: Switch back to Runner1 with auto-zoom
+            cam.frame_subject("Runner1", coverage=0.7)
+            cam.look_at("Runner1", height_pct=0.7)
+            cam.focus_on("Runner1", height_pct=0.7)
+            cam.wait(2.0)
 
         # Cut plan
         movie.at_time(0.0).camera_cut("FrontCam")
