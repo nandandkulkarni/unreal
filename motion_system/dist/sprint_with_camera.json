@@ -89,6 +89,10 @@
             "command": "camera_wait",
             "actor": "FrontCam",
             "seconds": 4.0,
+            "look_at_actor": "Runner1",
+            "look_at_height_pct": 0.7,
+            "focus_actor": "Runner1",
+            "focus_height_pct": 0.7,
             "frame_subject": "Runner1",
             "coverage": 0.7
         },
@@ -108,6 +112,10 @@
             "command": "camera_wait",
             "actor": "FrontCam",
             "seconds": 4.0,
+            "look_at_actor": "Runner2",
+            "look_at_height_pct": 0.7,
+            "focus_actor": "Runner2",
+            "focus_height_pct": 0.7,
             "frame_subject": "Runner2",
             "coverage": 0.7
         },
@@ -127,6 +135,10 @@
             "command": "camera_wait",
             "actor": "FrontCam",
             "seconds": 2.0,
+            "look_at_actor": "Runner1",
+            "look_at_height_pct": 0.7,
+            "focus_actor": "Runner1",
+            "focus_height_pct": 0.7,
             "frame_subject": "Runner1",
             "coverage": 0.7
         },

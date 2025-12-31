@@ -10,7 +10,6 @@ ENV/
 build/
 develop-eggs/
 !motion_system/dist/frames/
-dist/
 downloads/
 eggs/
 .eggs/

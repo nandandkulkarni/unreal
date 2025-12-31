@@ -839,13 +839,16 @@ class CameraCommandBuilder(ActorBuilder):
     def __init__(self, movie_builder, actor_name):
         super().__init__(movie_builder, actor_name)
         self.current_look_at = None
+        self.current_look_at_height_pct = 0.7
         self.current_focus = None
+        self.current_focus_height_pct = 0.7
         self.current_height_pct = None
         self.current_frame_subject = None
         self.current_coverage = 0.7
 
-    def look_at(self, actor_name: str, height_pct: float = None):
+    def look_at(self, actor_name: str, height_pct: float = 0.7):
         self.current_look_at = actor_name
+        self.current_look_at_height_pct = height_pct
         if height_pct is not None:
              self.current_height_pct = height_pct
         
@@ -860,8 +863,9 @@ class CameraCommandBuilder(ActorBuilder):
         self.mb.add_command(cmd)
         return self
 
-    def focus_on(self, actor_name: str, height_pct: float = None):
+    def focus_on(self, actor_name: str, height_pct: float = 0.7):
         self.current_focus = actor_name
+        self.current_focus_height_pct = height_pct
         # Emit setting update
         cmd = {
             "command": "camera_settings",
@@ -880,12 +884,22 @@ class CameraCommandBuilder(ActorBuilder):
         return self
     
     def wait(self, seconds: float):
-        """Override wait to capture frame_subject state for timeline"""
+        """Override wait to capture camera state for timeline building"""
         cmd = {
             "command": "camera_wait",
             "actor": self.actor_name,
             "seconds": seconds
         }
+        
+        # Inject current look_at state if set
+        if self.current_look_at:
+            cmd["look_at_actor"] = self.current_look_at
+            cmd["look_at_height_pct"] = self.current_look_at_height_pct
+        
+        # Inject current focus state if set
+        if self.current_focus:
+            cmd["focus_actor"] = self.current_focus
+            cmd["focus_height_pct"] = self.current_focus_height_pct
         
         # Inject current frame_subject state if set
         if self.current_frame_subject:
