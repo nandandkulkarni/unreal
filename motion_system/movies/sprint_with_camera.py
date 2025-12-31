@@ -39,19 +39,19 @@ def define_movie():
         with movie.for_camera("FrontCam") as cam:
             # 0-4s: Focus on Runner1 with auto-zoom
             cam.frame_subject("Runner1", coverage=0.7)
-            cam.look_at("Runner1", height_pct=0.7)
+            cam.look_at("Runner1", height_pct=0.7, interp_speed=5.0)
             cam.focus_on("Runner1", height_pct=0.7)
             cam.wait(4.0)
             
             # 4-8s: Switch to Runner2 with auto-zoom
             cam.frame_subject("Runner2", coverage=0.7)
-            cam.look_at("Runner2", height_pct=0.7)
+            cam.look_at("Runner2", height_pct=0.7, interp_speed=5.0)
             cam.focus_on("Runner2", height_pct=0.7)
             cam.wait(4.0)
             
             # 8-10s: Switch back to Runner1 with auto-zoom
             cam.frame_subject("Runner1", coverage=0.7)
-            cam.look_at("Runner1", height_pct=0.7)
+            cam.look_at("Runner1", height_pct=0.7, interp_speed=5.0)
             cam.focus_on("Runner1", height_pct=0.7)
             cam.wait(2.0)
 

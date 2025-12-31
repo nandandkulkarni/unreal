@@ -14128,15 +14128,18 @@
         "look_at_target": [
           {
             "frame": 0,
-            "value": "Runner1"
+            "value": "Runner1",
+            "interp_speed": 5.0
           },
           {
             "frame": 240,
-            "value": "Runner2"
+            "value": "Runner2",
+            "interp_speed": 5.0
           },
           {
             "frame": 480,
-            "value": "Runner1"
+            "value": "Runner1",
+            "interp_speed": 5.0
           }
         ]
       },
@@ -14145,19 +14148,22 @@
           "start_time": 0.0,
           "end_time": 4.0,
           "subject": "Runner1",
-          "height_pct": 0.7
+          "height_pct": 0.7,
+          "interp_speed": 5.0
         },
         {
           "start_time": 4.0,
           "end_time": 8.0,
           "subject": "Runner2",
-          "height_pct": 0.7
+          "height_pct": 0.7,
+          "interp_speed": 5.0
         },
         {
           "start_time": 8.0,
           "end_time": 10.0,
           "subject": "Runner1",
-          "height_pct": 0.7
+          "height_pct": 0.7,
+          "interp_speed": 5.0
         }
       ],
       "focus_timeline": [

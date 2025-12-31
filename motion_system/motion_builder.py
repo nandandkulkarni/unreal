@@ -840,15 +840,18 @@ class CameraCommandBuilder(ActorBuilder):
         super().__init__(movie_builder, actor_name)
         self.current_look_at = None
         self.current_look_at_height_pct = 0.7
+        self.current_look_at_interp_speed = 0.0 # Store persistence
         self.current_focus = None
         self.current_focus_height_pct = 0.7
         self.current_height_pct = None
         self.current_frame_subject = None
         self.current_coverage = 0.7
 
-    def look_at(self, actor_name: str, height_pct: float = 0.7):
+    def look_at(self, actor_name: str, height_pct: float = 0.7, interp_speed: float = 0.0):
         self.current_look_at = actor_name
         self.current_look_at_height_pct = height_pct
+        self.current_look_at_interp_speed = interp_speed
+        
         if height_pct is not None:
              self.current_height_pct = height_pct
         
@@ -856,7 +859,8 @@ class CameraCommandBuilder(ActorBuilder):
         cmd = {
             "command": "camera_settings",
             "actor": self.actor_name,
-            "look_at_actor": actor_name
+            "look_at_actor": actor_name,
+            "interp_speed": interp_speed
         }
         if height_pct is not None:
              cmd["height_pct"] = height_pct
@@ -895,6 +899,7 @@ class CameraCommandBuilder(ActorBuilder):
         if self.current_look_at:
             cmd["look_at_actor"] = self.current_look_at
             cmd["look_at_height_pct"] = self.current_look_at_height_pct
+            cmd["interp_speed"] = self.current_look_at_interp_speed # Pass it through
         
         # Inject current focus state if set
         if self.current_focus:

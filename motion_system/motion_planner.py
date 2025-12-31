@@ -988,7 +988,8 @@ def process_camera_wait(cmd, actor_states, fps):
             "start_time": state["current_time"],
             "end_time": state["current_time"] + seconds,
             "subject": cmd["look_at_actor"],
-            "height_pct": cmd.get("look_at_height_pct", 0.7)
+            "height_pct": cmd.get("height_pct", 0.7),
+            "interp_speed": cmd.get("interp_speed", 0.0) 
         })
         log(f"  > Look-at: {cmd['look_at_actor']} from {state['current_time']:.1f}s to {state['current_time'] + seconds:.1f}s")
     
@@ -1530,12 +1531,14 @@ def generate_look_at_rotation(actors_info, actor_states, fps):
             
             # Keyframe the new target at the start of the segment
             # Note: In Unreal Sequencer, Object property keys hold a reference to the actor
-            target_keys.append({
+            key = {
                 "frame": start_frame,
-                "value": subject 
-            })
+                "value": subject,
+                "interp_speed": segment.get("interp_speed", 0.0) 
+            }
+            target_keys.append(key)
             
-            log(f"  Target Switch: Frame {start_frame} ({start_time}s) -> {subject}")
+            log(f"  Target Switch: Frame {start_frame} ({start_time}s) -> {subject} (Speed: {key['interp_speed']})")
             
         state["keyframes"]["look_at_target"] = target_keys
         log(f"  ✓ Generated {len(target_keys)} Look-At target keys for '{camera_name}'")

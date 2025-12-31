@@ -211,9 +211,18 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
             # Enable LookAt Tracking globally on the actor first
             tracking_settings = actor.get_editor_property("lookat_tracking_settings")
             tracking_settings.set_editor_property("enable_look_at_tracking", True)
+            
+            # Apply interpolation speed if present in first key (heuristic)
+            if look_at_keys:
+                interp_speed = look_at_keys[0].get("interp_speed", 0.0)
+                if interp_speed > 0:
+                    tracking_settings.set_editor_property("look_at_tracking_interp_speed", interp_speed)
+                    log(f"  > Set Look-At Interp Speed: {interp_speed}")
+            
             # Set default to first target to ensure it works immediately
             if look_at_keys and look_at_keys[0]["value"] in actor_map:
                 tracking_settings.set_editor_property("actor_to_track", actor_map[look_at_keys[0]["value"]])
+                
             actor.set_editor_property("lookat_tracking_settings", tracking_settings)
             
             # Create Object Property Track

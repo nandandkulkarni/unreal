@@ -77,6 +77,7 @@
             "command": "camera_settings",
             "actor": "FrontCam",
             "look_at_actor": "Runner1",
+            "interp_speed": 5.0,
             "height_pct": 0.7
         },
         {
@@ -91,6 +92,7 @@
             "seconds": 4.0,
             "look_at_actor": "Runner1",
             "look_at_height_pct": 0.7,
+            "interp_speed": 5.0,
             "focus_actor": "Runner1",
             "focus_height_pct": 0.7,
             "frame_subject": "Runner1",
@@ -100,6 +102,7 @@
             "command": "camera_settings",
             "actor": "FrontCam",
             "look_at_actor": "Runner2",
+            "interp_speed": 5.0,
             "height_pct": 0.7
         },
         {
@@ -114,6 +117,7 @@
             "seconds": 4.0,
             "look_at_actor": "Runner2",
             "look_at_height_pct": 0.7,
+            "interp_speed": 5.0,
             "focus_actor": "Runner2",
             "focus_height_pct": 0.7,
             "frame_subject": "Runner2",
@@ -123,6 +127,7 @@
             "command": "camera_settings",
             "actor": "FrontCam",
             "look_at_actor": "Runner1",
+            "interp_speed": 5.0,
             "height_pct": 0.7
         },
         {
@@ -137,6 +142,7 @@
             "seconds": 2.0,
             "look_at_actor": "Runner1",
             "look_at_height_pct": 0.7,
+            "interp_speed": 5.0,
             "focus_actor": "Runner1",
             "focus_height_pct": 0.7,
             "frame_subject": "Runner1",
