@@ -154,19 +154,31 @@ def run_scene(json_path):
         logger.log("✓ Sequence playing from frame 0")
     except Exception as e:
         logger.log(f"⚠ Warning: Could not play sequence: {e}")
-            
-    except Exception as e:
-        import traceback
-        error_msg = f"✗ CRITICAL ERROR in run_scene: {e}\n{traceback.format_exc()}"
-        logger.log(error_msg)
-        print(error_msg)
-        # Also write to a local log file for easy access
+    
+    # Capture verification frames if specified
+    verification_frames = scene_data.get("verification_frames", [])
+    if verification_frames:
         try:
-            with open(os.path.join(script_dir, "unreal_error.log"), "w") as f:
-                f.write(error_msg)
-        except:
-            pass
-        return False
+            from motion_includes import frame_capture
+            
+            # Create output directory
+            output_dir = os.path.join(script_dir, "dist", "frames")
+            movie_name = scene_data.get("name", "unknown")
+            
+            # Capture frames
+            frame_capture.capture_verification_frames(
+                sequence, 
+                verification_frames, 
+                output_dir, 
+                movie_name
+            )
+        except Exception as e:
+            logger.log(f"⚠ Warning: Could not capture verification frames: {e}")
+            import traceback
+            logger.log(traceback.format_exc())
+    
+    logger.log_header("SCENE GENERATION COMPLETE")
+    return True
         
     logger.log_header("SCENE GENERATION COMPLETE")
     return True

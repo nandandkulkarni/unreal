@@ -33,6 +33,7 @@ class MovieBuilder:
         self.dependencies = {}  # Track dependencies: actor -> [depends_on_actors]
         self.auto_waypoint_counters = {}  # Auto-waypoint naming: actor -> counter
         self.debug_waypoints = False  # Global waypoint visualization flag
+        self.verification_frames = []  # Frames to capture for verification
 
     def __enter__(self):
         return self
@@ -48,6 +49,20 @@ class MovieBuilder:
         with open(filepath, "w") as f:
             json.dump(self.movie_data, f, indent=4)
         print(f"Movie plan saved to: {filepath}")
+        return self
+    
+    def verify_at_frames(self, frames: list):
+        """
+        Specify frames to capture for visual verification.
+        
+        Args:
+            frames: List of frame numbers to capture (e.g., [0, 300, 600])
+        
+        Returns:
+            self for chaining
+        """
+        self.verification_frames = frames
+        self.movie_data["verification_frames"] = frames
         return self
 
     def run(self, to_unreal: bool = False):
@@ -643,6 +658,20 @@ class CameraBuilder:
         self.cmd["focus_actor"] = actor_name
         if offset:
             self.cmd["offset"] = list(offset)
+        return self
+    
+    def frame_subject(self, actor_name: str, coverage: float = 0.7):
+        """
+        Auto-calculate focal length to frame subject at desired coverage.
+        
+        Args:
+            actor_name: Name of actor to frame
+            coverage: 0.0-1.0, how much of frame height subject should fill (default 0.7 = 70%)
+        """
+        self.cmd["auto_frame"] = {
+            "subject": actor_name,
+            "coverage": coverage
+        }
         return self
         
     def fov(self, degrees: float):

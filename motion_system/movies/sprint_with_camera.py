@@ -38,7 +38,7 @@ def define_movie():
         movie.add_camera("FrontCam", location=(11000, 244, 200))\
              .look_at("Runner1")\
              .focus_on("Runner1")\
-             .fov(90)\
+             .frame_subject("Runner1", coverage=0.7)\
              .add()
 
         # Cut plan
@@ -48,6 +48,16 @@ def define_movie():
     
     movie.run(to_unreal=True)
     return movie.build()
+
+# QA Metadata (optional, declarative)
+QA = {
+    "frames": [0, 300, 600],
+    "description": "Verify auto-framing: start (telephoto), middle (medium), end (wide)",
+    "expectations": {
+        "subject": "Runner1",
+        "coverage": 0.7
+    }
+}
 
 MOVIE = define_movie()
 

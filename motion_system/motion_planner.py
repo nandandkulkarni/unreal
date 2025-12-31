@@ -16,6 +16,43 @@ from motion_includes import sequence_setup
 from motion_includes import light_setup
 
 
+def calculate_focal_length(camera_pos, subject_pos, subject_height=1.8, coverage=0.7, sensor_height=24.0):
+    """
+    Calculate required focal length to frame subject at desired coverage.
+    
+    Args:
+        camera_pos: (x, y, z) camera location in cm
+        subject_pos: (x, y, z) subject location in cm
+        subject_height: Height of subject in meters (default 1.8m for human)
+        coverage: 0.0-1.0, how much of frame height subject should fill
+        sensor_height: Camera sensor height in mm (default 24mm full frame)
+    
+    Returns:
+        focal_length in mm
+    """
+    # Calculate distance in meters
+    dx = (subject_pos[0] - camera_pos[0]) / 100.0
+    dy = (subject_pos[1] - camera_pos[1]) / 100.0
+    dz = (subject_pos[2] - camera_pos[2]) / 100.0
+    distance = math.sqrt(dx*dx + dy*dy + dz*dz)
+    
+    # Avoid division by zero
+    if distance < 0.1:
+        distance = 0.1
+    
+    # Calculate required frame height
+    frame_height = subject_height / coverage if coverage > 0 else subject_height
+    
+    # Calculate FOV in radians
+    fov_radians = 2 * math.atan(frame_height / (2 * distance))
+    
+    # Calculate focal length from FOV
+    # focal_length = sensor_height / (2 * tan(fov/2))
+    focal_length = sensor_height / (2 * math.tan(fov_radians / 2))
+    
+    return focal_length
+
+
 def plan_motion(motion_plan, actors_info, fps, sequence=None):
     """
     Convert motion commands to keyframe data
@@ -151,6 +188,78 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None):
             final_frame = int(state["current_time"] * fps)
             state["current_animation"]["end_frame"] = final_frame
             log(f"  ✓ Finalized animation '{state['current_animation']['name']}' to frame {final_frame}")
+    
+    # Generate focal length keyframes for cameras with auto_frame
+    for camera_name, camera_info in actors_info.items():
+        if "auto_frame" in camera_info and camera_name in actor_states:
+            subject_name = camera_info["auto_frame"]["subject"]
+            coverage = camera_info["auto_frame"]["coverage"]
+            
+            if subject_name not in actor_states:
+                log(f"  ⚠ Cannot generate focal length for '{camera_name}': subject '{subject_name}' not found")
+                continue
+            
+            # Get camera and subject states
+            camera_state = actor_states[camera_name]
+            subject_state = actor_states[subject_name]
+            
+            # Get camera position (static for now)
+            camera_pos = camera_state["current_pos"]
+            camera_location = (camera_pos["x"], camera_pos["y"], camera_pos["z"])
+            
+            # Sample subject position at intervals
+            subject_location_keys = subject_state["keyframes"]["location"]
+            if not subject_location_keys:
+                continue
+            
+            # Adaptive sampling: sample every 2 seconds, add keyframe if change >10%
+            sample_interval = 2.0  # seconds
+            change_threshold = 0.10  # 10%
+            
+            focal_keyframes = []
+            last_focal_length = None
+            
+            # Always add keyframe at start
+            first_key = subject_location_keys[0]
+            subject_pos = (first_key["x"], first_key["y"], first_key["z"])
+            focal_length = calculate_focal_length(camera_location, subject_pos, coverage=coverage)
+            focal_keyframes.append({"frame": first_key["frame"], "value": focal_length})
+            last_focal_length = focal_length
+            
+            # Sample at intervals
+            max_time = subject_state["current_time"]
+            current_time = sample_interval
+            
+            while current_time <= max_time:
+                frame = int(current_time * fps)
+                
+                # Find subject position at this time
+                subject_pos = None
+                for i, key in enumerate(subject_location_keys):
+                    if key["frame"] >= frame:
+                        subject_pos = (key["x"], key["y"], key["z"])
+                        break
+                
+                if subject_pos:
+                    focal_length = calculate_focal_length(camera_location, subject_pos, coverage=coverage)
+                    
+                    # Only add keyframe if change exceeds threshold
+                    if abs(focal_length - last_focal_length) / last_focal_length > change_threshold:
+                        focal_keyframes.append({"frame": frame, "value": focal_length})
+                        last_focal_length = focal_length
+                
+                current_time += sample_interval
+            
+            # Always add keyframe at end
+            last_key = subject_location_keys[-1]
+            subject_pos = (last_key["x"], last_key["y"], last_key["z"])
+            focal_length = calculate_focal_length(camera_location, subject_pos, coverage=coverage)
+            if focal_keyframes[-1]["frame"] != last_key["frame"]:
+                focal_keyframes.append({"frame": last_key["frame"], "value": focal_length})
+            
+            # Add to camera keyframes
+            camera_state["keyframes"]["current_focal_length"] = focal_keyframes
+            log(f"  ✓ Generated {len(focal_keyframes)} focal length keyframes for '{camera_name}'")
     
     # Convert to output format
     result = {}
@@ -865,6 +974,21 @@ def process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_gr
     # Handle focus_actor if specified (can be used with or without look_at)
     if "focus_actor" in cmd:
         process_camera_focus(cmd, actors_info)
+    
+    # Handle auto_frame if specified (adaptive focal length calculation)
+    if "auto_frame" in cmd:
+        subject_name = cmd["auto_frame"]["subject"]
+        coverage = cmd["auto_frame"]["coverage"]
+        
+        if subject_name not in actors_info:
+            log(f"  ⚠ Cannot frame '{subject_name}': actor not found")
+        else:
+            # Store auto_frame info for keyframe generation
+            actors_info[camera_name]["auto_frame"] = {
+                "subject": subject_name,
+                "coverage": coverage
+            }
+            log(f"  ℹ Auto-framing enabled: {subject_name} at {coverage*100:.0f}% coverage")
 
 
 
