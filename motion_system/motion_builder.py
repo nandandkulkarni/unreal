@@ -116,8 +116,17 @@ class MovieBuilder:
         })
 
     # --- Actor Management ---
-    def add_actor(self, name: str, location: Tuple[float, float, float], yaw_offset: float = 0.0, radius: float = 0.35, mesh_path: str = None):
-        """Add actor with a persistent radius (default 0.35m for Unreal)"""
+    def add_actor(self, name: str, location: Tuple[float, float, float], yaw_offset: float = 0.0, radius: float = 0.35, height: float = 1.8, mesh_path: str = None):
+        """Add actor with physical properties
+        
+        Args:
+            name: Unique actor ID
+            location: (x, y, z) start position
+            yaw_offset: Rotation offset
+            radius: Collision/spacing radius
+            height: Total height of actor in meters (used for look_at targeting)
+            mesh_path: Optional path to skeletal mesh
+        """
         # Initialize Virtual State
         self.actors[name] = VirtualState(x=location[0], y=location[1], z=location[2], yaw=yaw_offset, time=self.current_time, radius=radius)
         
@@ -126,7 +135,8 @@ class MovieBuilder:
             "actor": name,
             "location": list(location),
             "yaw_offset": yaw_offset,
-            "radius": radius
+            "radius": radius,
+            "height": height
         }
         if mesh_path:
             cmd["mesh_path"] = mesh_path
@@ -640,24 +650,42 @@ class CameraBuilder:
         self.mb.actors[self.name].yaw = rot[1]
         return self
         
-    def look_at(self, actor_name: str, offset: Tuple[float, float, float] = None, interp_speed: float = 0.0):
-        """Lock camera to track an actor (Rotation + Focus)"""
+    def look_at(self, actor_name: str, offset: Tuple[float, float, float] = None, height_pct: float = None, interp_speed: float = 0.0):
+        """Lock camera to track an actor (Rotation + Focus)
+        
+        Args:
+            actor_name: Name of actor to track
+            offset: (x, y, z) offset in cm (optional)
+            height_pct: Look at this percentage of actor's height (0.0=feet, 1.0=head, 0.5=center). Overrides z-offset.
+            interp_speed: Smoothness of tracking
+        """
         if "rotation" in self.cmd:
             raise ValueError("Cannot set look_at_actor when rotation is explicitly set. These are mutually exclusive.")
             
         self.cmd["look_at_actor"] = actor_name
         if offset:
             self.cmd["offset"] = list(offset)
+        if height_pct is not None:
+            self.cmd["height_pct"] = height_pct
+            
         if interp_speed > 0:
             self.cmd["interp_speed"] = interp_speed
         return self
 
-    def focus_on(self, actor_name: str, offset: Tuple[float, float, float] = None):
-        """Enable Auto-Focus on an actor (Compatible with manual rotation)"""
+    def focus_on(self, actor_name: str, offset: Tuple[float, float, float] = None, height_pct: float = None):
+        """Enable Auto-Focus on an actor (Compatible with manual rotation)
+        
+        Args:
+            actor_name: Name of actor to focus on
+            offset: (x, y, z) offset (optional)
+            height_pct: Focus on percentage of actor's height (0.0=feet, 1.0=head)
+        """
         # Note: If look_at() is called, it overrides this (as it does both)
         self.cmd["focus_actor"] = actor_name
         if offset:
             self.cmd["offset"] = list(offset)
+        if height_pct is not None:
+            self.cmd["height_pct"] = height_pct
         return self
     
     def frame_subject(self, actor_name: str, coverage: float = 0.7):

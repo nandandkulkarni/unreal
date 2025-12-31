@@ -790,6 +790,20 @@ def process_camera_look_at(cmd, actors_info):
         o = cmd["offset"]
         offset = unreal.Vector(o[0], o[1], o[2])
         
+    # If height_pct is specified, calculate offset based on actor height
+    if "height_pct" in cmd and target_name in actors_info:
+        actor_height = actors_info[target_name].get("height", 1.8)  # Default 1.8m
+        height_pct = cmd["height_pct"]
+        z_offset_cm = actor_height * height_pct * 100.0  # Convert m to cm
+        
+        # Merge with existing offset if any (preserve X/Y, override Z)
+        if offset:
+            offset.z = z_offset_cm
+        else:
+            offset = unreal.Vector(0, 0, z_offset_cm)
+            
+        log(f"  ℹ LookAt height_pct={height_pct:.2f} -> Z-offset={z_offset_cm:.1f}cm (Actor height: {actor_height}m)")
+        
     interp_speed = cmd.get("interp_speed", 0.0)
     
     # Enable Rotation Tracking only
@@ -816,6 +830,20 @@ def process_camera_focus(cmd, actors_info):
     if "offset" in cmd:
         o = cmd["offset"]
         offset = unreal.Vector(o[0], o[1], o[2])
+
+    # If height_pct is specified, calculate offset based on actor height
+    if "height_pct" in cmd and target_name in actors_info:
+        # Use same height logic as look_at
+        actor_height = actors_info[target_name].get("height", 1.8)
+        height_pct = cmd["height_pct"]
+        z_offset_cm = actor_height * height_pct * 100.0
+        
+        if offset:
+            offset.z = z_offset_cm
+        else:
+            offset = unreal.Vector(0, 0, z_offset_cm)
+            
+        log(f"  ℹ Focus height_pct={height_pct:.2f} -> Z-offset={z_offset_cm:.1f}cm")
         
     camera_setup.enable_focus_tracking(camera_actor, target_actor, offset)
 
@@ -889,6 +917,7 @@ def process_add_actor(cmd, actors_info, actor_states, sequence, fps):
         "rotation": rotation_rot,
         "yaw_offset": yaw_offset,
         "radius": cmd.get("radius", 0.35),
+        "height": cmd.get("height", 1.8),  # Store height for later use
         "actor": actor,
         "binding": binding
     }

@@ -17,27 +17,27 @@ def define_movie():
         #movie.add_floor("Track", location=(0, 0, -0.5), scale=2000)
         
         # Add runners
-        movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=-90, radius=0.5)
-        movie.add_actor("Runner2", location=(0, 183, 0), yaw_offset=-90, radius=0.5)
+        movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=-90, radius=0.5, height=1.8)
+        # movie.add_actor("Runner2", location=(0, 183, 0), yaw_offset=-90, radius=0.5)
         
         # Runner 1 (Standard Sprint)
         with movie.for_actor("Runner1") as r:
             r.animation("Jog_Fwd")
             r.move().by_distance(100.0).speed(10.0).in_corridor(2.44, 3.66)
 
-        # Runner 2 (Standard Sprint)
-        with movie.for_actor("Runner2") as r:
-            r.animation("Jog_Fwd")
-            r.move().by_distance(100.0).speed(10.5).in_corridor(1.22, 2.44)
+        # Runner 2 (Standard Sprint) - COMMENTED OUT
+        # with movie.for_actor("Runner2") as r:
+        #     r.animation("Jog_Fwd")
+        #     r.move().by_distance(100.0).speed(10.5).in_corridor(1.22, 2.44)
             
         # --- Camera Setup ---
         
         # Front/Finish Camera (Tracking Runner1)
         # Positioned past the finish line (110m)
-        # Using look_at for automatic rotation + focus tracking
+        # Using look_at with height_pct=0.7 to target chest/neck area instead of feet
         movie.add_camera("FrontCam", location=(11000, 244, 200))\
-             .look_at("Runner1")\
-             .focus_on("Runner1")\
+             .look_at("Runner1", height_pct=0.7)\
+             .focus_on("Runner1", height_pct=0.7)\
              .frame_subject("Runner1", coverage=0.7)\
              .add()
 
