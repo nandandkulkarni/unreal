@@ -1,19 +1,37 @@
-# Motion System Builder Design
+# Fluent Motion API & Corridor Development
 
-- [ ] Design Fluent Builder Interface <!-- id: 1 -->
-    - [x] Define helper enums (Direction, Speed, etc.) <!-- id: 2 -->
-    - [x] Create `MovieBuilder` class structure (Already exists) <!-- id: 3 -->
-    - [x] Implement `move_*` methods (Already exists) <!-- id: 4 -->
-    - [x] Implement `turn_*` methods (Already exists) <!-- id: 5 -->
-    - [x] Implement `animate` and `wait` methods (Already exists) <!-- id: 6 -->
-- [ ] Implement State Awareness <!-- id: 7 -->
-    - [ ] Track current position/rotation in builder <!-- id: 8 -->
-    - [ ] Implement validation logic (e.g. check bounds) <!-- id: 9 -->
-- [ ] Refactor Underlying System <!-- id: 10 -->
-    - [ ] Update `motion_planner.py` to accept Builder objects <!-- id: 11 -->
-    - [ ] Verify backward compatibility or migration path <!-- id: 12 -->
-- [ ] Verification <!-- id: 13 -->
-    - [x] Create test script `tests/test_builder_json.py` <!-- id: 14 -->
-    - [x] Create `unreal_builder_test.py` (In-engine logic) <!-- id: 15 -->
-    - [x] Create `run_builder_test_remote.py` (Local runner) <!-- id: 16 -->
-    - [x] Run integrated test in Unreal <!-- id: 17 -->
+## Phase 4: API Refactoring
+- [x] Refactor `motion_builder.py` for Chained Syntax
+- [x] Add `MovementChain` helper class to handle `.move().move()`
+- [x] Implement `.velocity()` and `.accelerate()` mutual exclusivity
+
+## Phase 5: Corridor Engine Logic
+- [x] Implement Perpendicular Vector math in `motion_planner.py`
+- [x] Add boundary clamping logic (Radius-aware)
+- [x] Add Velocity Ramping (Linear interpolation of speed)
+
+## Phase 6: Fluent Movies
+- [x] Create `sprint_fluent.py` 100m demonstration
+- [x] Verify multi-segment momentum handoff
+- [x] Verify 100m Sprint in Unreal (SCENE GENERATION COMPLETE)
+
+## Phase 7: Advanced Camera Integration
+- [x] Create `sprint_with_camera.py` with tracking shots
+- [x] Implement `look_at_actor` supported in new fluent API
+- [x] Implement explicit `focus_on` support for auto-focus with manual rotation
+- [x] Verify smoothly interpolated camera cuts
+
+## Phase 8: Auto-Framing Implementation
+- [x] Add `frame_subject()` method to CameraBuilder
+- [x] Implement focal length calculation utility
+- [x] Add adaptive sampling logic in motion_planner
+- [x] Create focal length keyframe track in keyframe_applier
+- [x] Test with sprint_with_camera.py
+
+## Phase 9: Frame Capture & QA Workflow
+- [x] Create frame_capture.py utility
+- [x] Implement hybrid QA metadata pattern
+- [x] Create qa_tool.py for QA workflow
+- [x] Verify frame capture works (1/3 frames captured)
+- [ ] Debug frame capture timing for all frames
+- [ ] Create image analysis script for verification
