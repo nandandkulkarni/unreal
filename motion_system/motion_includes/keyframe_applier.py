@@ -20,13 +20,33 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
         fps: Frames per second
         duration_frames: Total sequence duration in frames
     """
+    # Setup file logging
+    import os
+    log_file_path = os.path.join(r"C:\UnrealProjects\Coding\unreal\motion_system\dist", "motion_application.log")
+    
+    def file_log(message):
+        try:
+            with open(log_file_path, "a", encoding="utf-8") as f:
+                f.write(f"{message}\n")
+        except:
+            pass
+            
+    # Clear log on first call for a scene (heuristic)
+    # Actually just append, we can check timestamps or just new entries
+    file_log(f"\n=== Keyframe Application Start ===")
+    
+
+    
     log(f"\n{'='*60}")
     log(f"APPLYING KEYFRAMES: {actor_name}")
     log(f"{'='*60}")
+    file_log(f"Processing actor: {actor_name}") # Added this line based on the spirit of the request
     
     keyframes = keyframe_data["keyframes"]
     loc_keys = keyframes.get("location", [])
     rot_keys = keyframes.get("rotation", [])
+    
+    file_log(f"  Location keys: {len(loc_keys)}, Rotation keys: {len(rot_keys)}") # Added this line
     
     # Only click create transform track if we have keys to apply
     # Otherwise, an empty track might reset the actor to 0,0,0
@@ -115,7 +135,172 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
                  key_obj.set_interpolation(unreal.MovieSceneKeyInterpolation.CUBIC)
         
         log(f"  ✓ Focal Length track applied to {actor_name}'s CameraComponent")
+
+    # Focus Distance Track (Manual Focus)
+    focus_keys = keyframes.get("current_focus_distance", [])
+    if focus_keys and isinstance(actor, unreal.CineCameraActor) and sequence:
+        file_log(f"  Focus Distance keys: {len(focus_keys)}")
+        log(f"  Applying {len(focus_keys)} Focus Distance keyframes...")
+        
+        try:
+            component = actor.get_cine_camera_component()
+            
+            # Ensure Manual Focus Method is set
+            focus_settings = component.get_editor_property("focus_settings")
+            focus_settings.set_editor_property("focus_method", unreal.CameraFocusMethod.MANUAL)
+            component.set_editor_property("focus_settings", focus_settings)
+            
+            # Add component binding if not already exists (reuse comp_binding idea)
+            comp_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, component)
+            if comp_binding:
+                comp_binding.set_parent(binding)
+                
+                track_class = unreal.MovieSceneFloatTrack
+                if hasattr(unreal, "MovieSceneFloatPropertyTrack"):
+                    track_class = unreal.MovieSceneFloatPropertyTrack
+                
+                fd_track = unreal.MovieSceneBindingExtensions.add_track(comp_binding, track_class)
+                
+                if fd_track:
+                    # The property path for Manual Focus Distance is nested in the struct
+                    # FocusSettings.ManualFocusDistance
+                    fd_track.set_property_name_and_path("ManualFocusDistance", "FocusSettings.ManualFocusDistance")
+                    
+                    section = unreal.MovieSceneTrackExtensions.add_section(fd_track)
+                    unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
+                    
+                    channels = section.get_all_channels()
+                    if channels:
+                        fd_channel = channels[0]
+                        for key in focus_keys:
+                            frame = unreal.FrameNumber(key["frame"])
+                            # Add keyframe
+                            key_obj = fd_channel.add_key(frame, float(key["value"]))
+                            
+                            # Use cubic interpolation for smooth focus pulls
+                            if hasattr(key_obj, 'set_interpolation'):
+                                try:
+                                    key_obj.set_interpolation(unreal.MovieSceneKeyInterpolation.CUBIC)
+                                except:
+                                    pass
+                        
+                        log(f"  ✓ Applied {len(focus_keys)} keyframes to Manual Focus Distance")
+                        file_log(f"  ✓ Applied {len(focus_keys)} Focus keys")
+                    else:
+                        log(f"  ⚠ Focus Track section has no channels")
+                else:
+                    log(f"  ✗ Failed to create Focus Distance track")
+        except Exception as e:
+            log(f"  ⚠ Failed to apply Focus Distance track: {e}")
+            import traceback
+            log(traceback.format_exc())
     
+    # Build Actor Map for resolving references (only once)
+    actor_map = {}
+    if "look_at_target" in keyframes or "focus_target" in keyframes:
+        all_actors = unreal.EditorLevelLibrary.get_all_level_actors()
+        for a in all_actors:
+            actor_map[a.get_actor_label()] = a
+            
+    # Look-At Target Track (Auto Tracking)
+    look_at_keys = keyframes.get("look_at_target", [])
+    if look_at_keys and isinstance(actor, unreal.CineCameraActor):
+        log(f"  Applying {len(look_at_keys)} Look-At Target keyframes...")
+        
+        try:
+            # Enable LookAt Tracking globally on the actor first
+            tracking_settings = actor.get_editor_property("lookat_tracking_settings")
+            tracking_settings.set_editor_property("enable_look_at_tracking", True)
+            # Set default to first target to ensure it works immediately
+            if look_at_keys and look_at_keys[0]["value"] in actor_map:
+                tracking_settings.set_editor_property("actor_to_track", actor_map[look_at_keys[0]["value"]])
+            actor.set_editor_property("lookat_tracking_settings", tracking_settings)
+            
+            # Create Object Property Track
+            track_class = unreal.MovieSceneObjectPropertyTrack
+            la_track = unreal.MovieSceneBindingExtensions.add_track(binding, track_class)
+            
+            if la_track:
+                # Property path on CineCameraActor
+                la_track.set_property_name_and_path("ActorToTrack", "LookAtTrackingSettings.ActorToTrack")
+                
+                section = unreal.MovieSceneTrackExtensions.add_section(la_track)
+                unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
+                
+                channels = section.get_all_channels()
+                if channels:
+                    la_channel = channels[0] # Object channels
+                    
+                    for key in look_at_keys:
+                        frame = unreal.FrameNumber(key["frame"])
+                        target_name = key["value"]
+                        target_actor = actor_map.get(target_name)
+                        
+                        if target_actor:
+                            # Note: Object channel add_key takes (frame, object)
+                            key_obj = la_channel.add_key(frame, target_actor)
+                        else:
+                            log(f"    ⚠ Could not find actor '{target_name}' for LookAt key")
+                    
+                    log(f"  ✓ Applied {len(look_at_keys)} Look-At Target keys")
+                    file_log(f"  ✓ Applied {len(look_at_keys)} Look-At keys")
+                else:
+                    log(f"  ⚠ LookAt Track section has no channels")
+        except Exception as e:
+            log(f"  ⚠ Failed to apply Look-At keys: {e}")
+            import traceback
+            log(traceback.format_exc())
+
+    # Focus Target Track (Auto Focus)
+    focus_target_keys = keyframes.get("focus_target", [])
+    if focus_target_keys and isinstance(actor, unreal.CineCameraActor) and sequence:
+        log(f"  Applying {len(focus_target_keys)} Focus Target keyframes...")
+        
+        try:
+            component = actor.get_cine_camera_component()
+            
+            # Ensure Tracking Focus Method is set
+            focus_settings = component.get_editor_property("focus_settings")
+            focus_settings.set_editor_property("focus_method", unreal.CameraFocusMethod.TRACKING)
+            component.set_editor_property("focus_settings", focus_settings)
+            
+            # Add component binding
+            comp_binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, component)
+            if comp_binding:
+                comp_binding.set_parent(binding)
+                
+                track_class = unreal.MovieSceneObjectPropertyTrack
+                ft_track = unreal.MovieSceneBindingExtensions.add_track(comp_binding, track_class)
+                
+                if ft_track:
+                    # Nested property path
+                    ft_track.set_property_name_and_path("ActorToTrack", "FocusSettings.TrackingFocusSettings.ActorToTrack")
+                    
+                    section = unreal.MovieSceneTrackExtensions.add_section(ft_track)
+                    unreal.MovieSceneSectionExtensions.set_range(section, 0, duration_frames)
+                    
+                    channels = section.get_all_channels()
+                    if channels:
+                        ft_channel = channels[0]
+                        for key in focus_target_keys:
+                            frame = unreal.FrameNumber(key["frame"])
+                            target_name = key["value"]
+                            target_actor = actor_map.get(target_name)
+                            
+                            if target_actor:
+                                ft_channel.add_key(frame, target_actor)
+                            else:
+                                log(f"    ⚠ Could not find actor '{target_name}' for Focus key")
+                        
+                        log(f"  ✓ Applied {len(focus_target_keys)} Focus Target keys")
+                        file_log(f"  ✓ Applied {len(focus_target_keys)} Focus keys")
+                    else:
+                        log(f"  ⚠ Focus Target Track section has no channels")
+        except Exception as e:
+            log(f"  ⚠ Failed to apply Focus Target keys: {e}")
+            import traceback
+            log(traceback.format_exc())
+
     # Apply animation keyframes (only for skeletal mesh actors)
     if hasattr(actor, 'skeletal_mesh_component') or isinstance(actor, unreal.SkeletalMeshActor):
         apply_animation_keyframes(binding, keyframes, duration_frames, actor_name)

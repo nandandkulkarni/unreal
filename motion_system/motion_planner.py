@@ -1502,220 +1502,80 @@ def process_delete_all_floors(cmd):
 
 
 def generate_look_at_rotation(actors_info, actor_states, fps):
-    """PASS 3: Generate rotation keyframes to look at active subject based on look_at_timeline"""
-    import math
+    """
+    PASS 3: Generate Look-At Target Keyframes (Constraint-based)
+    Populates keyframes["look_at_target"] with {frame, value=actor_name}
+    """
+    log("\n" + "="*60)
+    log("PASS 3: Look-At Targets (Auto-Tracking)")
+    log("="*60)
     
-    log("\n" + "-"*40)
-    log("PASS 3: LOOK-AT ROTATION GENERATION")
-    
-    for camera_name, camera_state in actor_states.items():
-        # Check if this camera has a look_at timeline
-        if "look_at_timeline" not in camera_state:
+    for camera_name, state in actor_states.items():
+        if "look_at_timeline" not in state:
             continue
             
-        timeline = camera_state["look_at_timeline"]
+        timeline = state["look_at_timeline"]
         if not timeline:
             continue
             
-        log(f"  Processing {camera_name} with {len(timeline)} look-at segment(s)...")
+        target_keys = []
         
-        rotation_keyframes = []
-        last_rotation = None
-        
-        # Find max frame from timeline
-        max_time = max(seg["end_time"] for seg in timeline)
-        max_frame = int(max_time * fps)
-        
-        # Process each timeline segment
         for segment in timeline:
-            subject_name = segment["subject"]
-            height_pct = segment.get("height_pct", 0.7)
-            start_time = segment["start_time"]
-            end_time = segment["end_time"]
-            start_frame = int(start_time * fps)
-            end_frame = int(end_time * fps)
-            
-            if subject_name not in actor_states:
-                log(f"    ⚠ Subject '{subject_name}' not found, skipping segment")
+            if "subject" not in segment:
                 continue
                 
-            subject_state = actor_states[subject_name]
-            subject_height = actors_info.get(subject_name, {}).get("height", 1.8)
+            subject = segment["subject"]
+            start_time = segment.get("start_time", 0.0)
+            start_frame = int(start_time * fps)
             
-            log(f"    {start_time:.1f}s-{end_time:.1f}s: Looking at {subject_name}")
-            
-            # Always keyframe at segment start (subject switch point)
-            camera_pos = get_actor_location_at_frame(camera_state, start_frame)
-            subject_pos = get_actor_location_at_frame(subject_state, start_frame)
-            z_offset = subject_height * height_pct * 100.0  # Convert to cm
-            target_pos = (subject_pos["x"], subject_pos["y"], subject_pos["z"] + z_offset)
-            camera_loc = (camera_pos["x"], camera_pos["y"], camera_pos["z"])
-            
-            pitch, yaw, roll = calculate_look_at_rotation(camera_loc, target_pos)
-            rotation_keyframes.append({
+            # Keyframe the new target at the start of the segment
+            # Note: In Unreal Sequencer, Object property keys hold a reference to the actor
+            target_keys.append({
                 "frame": start_frame,
-                "pitch": pitch,
-                "yaw": yaw,
-                "roll": roll
+                "value": subject 
             })
-            last_rotation = (pitch, yaw, roll)
             
-            # Sample within segment (every 2 seconds, adaptive)
-            sample_interval_frames = int(2.0 * fps)
-            change_threshold = 1.0  # degrees
+            log(f"  Target Switch: Frame {start_frame} ({start_time}s) -> {subject}")
             
-            for frame in range(start_frame + sample_interval_frames, end_frame, sample_interval_frames):
-                camera_pos = get_actor_location_at_frame(camera_state, frame)
-                subject_pos = get_actor_location_at_frame(subject_state, frame)
-                target_pos = (subject_pos["x"], subject_pos["y"], subject_pos["z"] + z_offset)
-                camera_loc = (camera_pos["x"], camera_pos["y"], camera_pos["z"])
-                
-                pitch, yaw, roll = calculate_look_at_rotation(camera_loc, target_pos)
-                
-                # Only add if changed significantly
-                if last_rotation:
-                    angle_change = max(abs(pitch - last_rotation[0]), abs(yaw - last_rotation[1]))
-                    if angle_change > change_threshold:
-                        rotation_keyframes.append({
-                            "frame": frame,
-                            "pitch": pitch,
-                            "yaw": yaw,
-                            "roll": roll
-                        })
-                        last_rotation = (pitch, yaw, roll)
-            
-            # Always keyframe at segment end
-            camera_pos = get_actor_location_at_frame(camera_state, end_frame)
-            subject_pos = get_actor_location_at_frame(subject_state, end_frame)
-            target_pos = (subject_pos["x"], subject_pos["y"], subject_pos["z"] + z_offset)
-            camera_loc = (camera_pos["x"], camera_pos["y"], camera_pos["z"])
-            pitch, yaw, roll = calculate_look_at_rotation(camera_loc, target_pos)
-            rotation_keyframes.append({
-                "frame": end_frame,
-                "pitch": pitch,
-                "yaw": yaw,
-                "roll": roll
-            })
-            last_rotation = (pitch, yaw, roll)
-        
-        # Store keyframes
-        camera_state["keyframes"]["rotation"] = rotation_keyframes
-        log(f"  ✓ Generated {len(rotation_keyframes)} rotation keyframes for '{camera_name}'")
-    
-    log("-"*40)
-
-
-def calculate_look_at_rotation(camera_pos, target_pos):
-    """Calculate pitch, yaw, roll to look from camera_pos to target_pos"""
-    import math
-    
-    # Vector from camera to target
-    dx = target_pos[0] - camera_pos[0]
-    dy = target_pos[1] - camera_pos[1]
-    dz = target_pos[2] - camera_pos[2]
-    
-    # Calculate yaw (rotation around Z axis)
-    yaw = math.degrees(math.atan2(dy, dx))
-    
-    # Calculate pitch (rotation around Y axis)
-    horizontal_distance = math.sqrt(dx*dx + dy*dy)
-    pitch = math.degrees(math.atan2(dz, horizontal_distance))
-    
-    # Roll is typically 0 for look-at
-    roll = 0.0
-    
-    return pitch, yaw, roll
+        state["keyframes"]["look_at_target"] = target_keys
+        log(f"  ✓ Generated {len(target_keys)} Look-At target keys for '{camera_name}'")
 
 
 def generate_focus_distance(actors_info, actor_states, fps):
-    """PASS 4: Generate focus distance keyframes based on focus_timeline"""
-    import math
+    """
+    PASS 4: Generate Focus Target Keyframes (Auto-Focus)
+    Populates keyframes["focus_target"] with {frame, value=actor_name}
+    """
+    log("\n" + "="*60)
+    log("PASS 4: Focus Targets (Auto-Focus)")
+    log("="*60)
     
-    log("\n" + "-"*40)
-    log("PASS 4: FOCUS DISTANCE GENERATION")
-    
-    for camera_name, camera_state in actor_states.items():
-        # Check if this camera has a focus timeline
-        if "focus_timeline" not in camera_state:
+    for camera_name, state in actor_states.items():
+        if "focus_timeline" not in state:
             continue
             
-        timeline = camera_state["focus_timeline"]
+        timeline = state["focus_timeline"]
         if not timeline:
             continue
             
-        log(f"  Processing {camera_name} with {len(timeline)} focus segment(s)...")
+        target_keys = []
         
-        focus_keyframes = []
-        last_distance = None
-        
-        # Process each timeline segment
         for segment in timeline:
-            subject_name = segment["subject"]
-            height_pct = segment.get("height_pct", 0.7)
-            start_time = segment["start_time"]
-            end_time = segment["end_time"]
-            start_frame = int(start_time * fps)
-            end_frame = int(end_time * fps)
-            
-            if subject_name not in actor_states:
-                log(f"    ⚠ Subject '{subject_name}' not found, skipping segment")
+            if "subject" not in segment:
                 continue
                 
-            subject_state = actor_states[subject_name]
-            subject_height = actors_info.get(subject_name, {}).get("height", 1.8)
+            subject = segment["subject"]
+            start_time = segment.get("start_time", 0.0)
+            start_frame = int(start_time * fps)
             
-            log(f"    {start_time:.1f}s-{end_time:.1f}s: Focusing on {subject_name}")
-            
-            # Always keyframe at segment start (subject switch point)
-            camera_pos = get_actor_location_at_frame(camera_state, start_frame)
-            subject_pos = get_actor_location_at_frame(subject_state, start_frame)
-            z_offset = subject_height * height_pct * 100.0  # Convert to cm
-            
-            # Calculate 3D distance to focus point
-            distance = math.sqrt(
-                (camera_pos["x"] - subject_pos["x"])**2 +
-                (camera_pos["y"] - subject_pos["y"])**2 +
-                (camera_pos["z"] - (subject_pos["z"] + z_offset))**2
-            )
-            
-            focus_keyframes.append({"frame": start_frame, "value": distance})
-            last_distance = distance
-            
-            # Sample within segment (every 2 seconds, adaptive)
-            sample_interval_frames = int(2.0 * fps)
-            change_threshold = 0.10  # 10% change
-            
-            for frame in range(start_frame + sample_interval_frames, end_frame, sample_interval_frames):
-                camera_pos = get_actor_location_at_frame(camera_state, frame)
-                subject_pos = get_actor_location_at_frame(subject_state, frame)
-                
-                distance = math.sqrt(
-                    (camera_pos["x"] - subject_pos["x"])**2 +
-                    (camera_pos["y"] - subject_pos["y"])**2 +
-                    (camera_pos["z"] - (subject_pos["z"] + z_offset))**2
-                )
-                
-                # Only add if changed significantly
-                if last_distance and abs(distance - last_distance) / last_distance > change_threshold:
-                    focus_keyframes.append({"frame": frame, "value": distance})
-                    last_distance = distance
-            
-            # Always keyframe at segment end
-            camera_pos = get_actor_location_at_frame(camera_state, end_frame)
-            subject_pos = get_actor_location_at_frame(subject_state, end_frame)
-            distance = math.sqrt(
-                (camera_pos["x"] - subject_pos["x"])**2 +
-                (camera_pos["y"] - subject_pos["y"])**2 +
-                (camera_pos["z"] - (subject_pos["z"] + z_offset))**2
-            )
-            focus_keyframes.append({"frame": end_frame, "value": distance})
-            last_distance = distance
+            target_keys.append({
+                "frame": start_frame,
+                "value": subject
+            })
         
-        # Store keyframes
-        camera_state["keyframes"]["current_focus_distance"] = focus_keyframes
-        log(f"  ✓ Generated {len(focus_keyframes)} focus distance keyframes for '{camera_name}'")
-    
-    log("-"*40)
+        state["keyframes"]["focus_target"] = target_keys
+        log(f"  ✓ Generated {len(target_keys)} Focus target keys for '{camera_name}'")
+
 
 
 def generate_focal_length(actors_info, actor_states, fps):

@@ -14123,73 +14123,34 @@
             "z": 200.0
           }
         ],
-        "rotation": [
+        "rotation": [],
+        "animations": [],
+        "look_at_target": [
           {
             "frame": 0,
-            "pitch": -0.3854325942823608,
-            "yaw": 179.68227211596673,
-            "roll": 0.0
+            "value": "Runner1"
           },
           {
             "frame": 240,
-            "pitch": -0.41566053779449413,
-            "yaw": 179.65735285447505,
-            "roll": 0.0
-          },
-          {
-            "frame": 240,
-            "pitch": -0.41908381829915337,
-            "yaw": -179.65453076045674,
-            "roll": 0.0
+            "value": "Runner2"
           },
           {
             "frame": 480,
-            "pitch": -0.5678018734509755,
-            "yaw": -179.5319265750052,
-            "roll": 0.0
-          },
-          {
-            "frame": 480,
-            "pitch": -0.5435424161375086,
-            "yaw": 179.5519267563904,
-            "roll": 0.0
-          },
-          {
-            "frame": 600,
-            "pitch": -0.7065756093554131,
-            "yaw": 179.41751297656586,
-            "roll": 0.0
+            "value": "Runner1"
           }
         ],
-        "animations": [],
-        "current_focus_distance": [
+        "focus_target": [
           {
             "frame": 0,
-            "value": 11000.41803751112
+            "value": "Runner1"
           },
           {
             "frame": 240,
-            "value": 10200.450823370504
-          },
-          {
-            "frame": 240,
-            "value": 10117.130046479084
-          },
-          {
-            "frame": 360,
-            "value": 9013.03011801901
+            "value": "Runner2"
           },
           {
             "frame": 480,
-            "value": 7467.317882762045
-          },
-          {
-            "frame": 480,
-            "value": 7800.589529003561
-          },
-          {
-            "frame": 600,
-            "value": 6000.766367723376
+            "value": "Runner1"
           }
         ],
         "current_focal_length": [
