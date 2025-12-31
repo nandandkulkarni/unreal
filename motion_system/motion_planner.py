@@ -40,15 +40,30 @@ def calculate_focal_length(camera_pos, subject_pos, subject_height=1.8, coverage
     if distance < 0.1:
         distance = 0.1
     
-    # Calculate required frame height
-    frame_height = subject_height / coverage if coverage > 0 else subject_height
+    # Subject dimensions (human proportions)
+    # Width is approximately 1/3 of height for a person
+    subject_width = subject_height / 3.0
     
-    # Calculate FOV in radians
-    fov_radians = 2 * math.atan(frame_height / (2 * distance))
+    # Calculate required frame dimensions for desired coverage
+    # We want the subject to occupy 'coverage' of the frame
+    frame_height_needed = subject_height / coverage if coverage > 0 else subject_height
     
-    # Calculate focal length from FOV
-    # focal_length = sensor_height / (2 * tan(fov/2))
-    focal_length = sensor_height / (2 * math.tan(fov_radians / 2))
+    # For width, we need to account for aspect ratio (16:9 typical)
+    # Frame width = frame height * (16/9) for landscape orientation
+    sensor_width = sensor_height * (16.0 / 9.0)  # ~42.67mm for 24mm sensor
+    frame_width_needed = subject_width / coverage if coverage > 0 else subject_width
+    
+    # Calculate FOV needed for both dimensions
+    fov_height_radians = 2 * math.atan(frame_height_needed / (2 * distance))
+    fov_width_radians = 2 * math.atan(frame_width_needed / (2 * distance))
+    
+    # Calculate focal length for both dimensions
+    # focal_length = sensor_size / (2 * tan(fov/2))
+    focal_length_height = sensor_height / (2 * math.tan(fov_height_radians / 2))
+    focal_length_width = sensor_width / (2 * math.tan(fov_width_radians / 2))
+    
+    # Use the LARGER focal length (more zoomed in) to ensure subject fits in both dimensions
+    focal_length = max(focal_length_height, focal_length_width)
     
     return focal_length
 
