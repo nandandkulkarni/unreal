@@ -179,9 +179,6 @@ def run_scene(json_path):
     
     logger.log_header("SCENE GENERATION COMPLETE")
     return True
-        
-    logger.log_header("SCENE GENERATION COMPLETE")
-    return True
 
     # Validate Settings (User Request)
     try:
