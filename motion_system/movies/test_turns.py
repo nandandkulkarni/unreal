@@ -22,28 +22,28 @@ def define_movie():
         
         with movie.for_actor("TestActor") as a:
             # Phase 1: 4 turns (0-8s) - Spins in place
-            a.face("East", duration=2.0)
-            a.face("South", duration=2.0)
-            a.face("West", duration=2.0)
-            a.face("North", duration=2.0)
+            a.face("East", duration=2.0, anim="Jog_Fwd")
+            a.face("South", duration=2.0, anim="Jog_Fwd")
+            a.face("West", duration=2.0, anim="Jog_Fwd")
+            a.face("North", duration=2.0, anim="Jog_Fwd")
             
             # Phase 2: 4 path segments (8-24s)
             # We must face the direction FIRST, then move forward.
             
             # Segment 1: Move North (Already facing North from Phase 1)
-            a.move_straight().anim("Jog_Fwd").distance_in_time(10.0, 2.0)
+            a.move_straight().direction("North").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Segment 2: Turn East then Move East
             a.face("East", duration=2.0)
-            a.move_straight().anim("Jog_Fwd").distance_in_time(10.0, 2.0)
+            a.move_straight().direction("East").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Segment 3: Turn South then Move South
             a.face("South", duration=2.0)
-            a.move_straight().anim("Jog_Fwd").distance_in_time(10.0, 2.0)
+            a.move_straight().direction("South").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Segment 4: Turn West then Move West
             a.face("West", duration=2.0)
-            a.move_straight().anim("Jog_Fwd").distance_in_time(10.0, 2.0)
+            a.move_straight().direction("West").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Terminal State: Stay until the end of the shot
             a.stay().anim("Idle").till_end()

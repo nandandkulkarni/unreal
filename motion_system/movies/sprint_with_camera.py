@@ -36,7 +36,7 @@ def define_movie():
                 # Turn to face North and continue moving North
                 r.face("North", duration=0.1)
                 r.move_straight().direction("North").anim("Jog_Fwd").distance_in_time(79.0, 8.0)
-                r.stay().anim("Idle").till_end()
+                r.stay().till_end().anim("Idle")
             
         # --- Camera Setup ---
         

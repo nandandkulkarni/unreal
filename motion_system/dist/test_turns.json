@@ -16,9 +16,21 @@
             "height": 1.8
         },
         {
+            "command": "animation",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0,
+            "actor": "TestActor"
+        },
+        {
             "command": "face",
             "direction": "East",
             "duration": 2.0,
+            "actor": "TestActor"
+        },
+        {
+            "command": "animation",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0,
             "actor": "TestActor"
         },
         {
@@ -28,9 +40,21 @@
             "actor": "TestActor"
         },
         {
+            "command": "animation",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0,
+            "actor": "TestActor"
+        },
+        {
             "command": "face",
             "direction": "West",
             "duration": 2.0,
+            "actor": "TestActor"
+        },
+        {
+            "command": "animation",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0,
             "actor": "TestActor"
         },
         {
@@ -48,11 +72,13 @@
         {
             "command": "move",
             "actor": "TestActor",
-            "direction": "forward",
             "start_speed": 0.0,
             "radius": 0.5,
+            "direction": "North",
             "meters": 10.0,
-            "seconds": 2.0
+            "seconds": 5.0,
+            "speed_mtps": 2.0,
+            "target_speed": 2.0
         },
         {
             "command": "face",
@@ -69,11 +95,13 @@
         {
             "command": "move",
             "actor": "TestActor",
-            "direction": "forward",
             "start_speed": 0.0,
             "radius": 0.5,
+            "direction": "East",
             "meters": 10.0,
-            "seconds": 2.0
+            "seconds": 5.0,
+            "speed_mtps": 2.0,
+            "target_speed": 2.0
         },
         {
             "command": "face",
@@ -90,11 +118,13 @@
         {
             "command": "move",
             "actor": "TestActor",
-            "direction": "forward",
             "start_speed": 0.0,
             "radius": 0.5,
+            "direction": "South",
             "meters": 10.0,
-            "seconds": 2.0
+            "seconds": 5.0,
+            "speed_mtps": 2.0,
+            "target_speed": 2.0
         },
         {
             "command": "face",
@@ -111,11 +141,13 @@
         {
             "command": "move",
             "actor": "TestActor",
-            "direction": "forward",
             "start_speed": 0.0,
             "radius": 0.5,
+            "direction": "West",
             "meters": 10.0,
-            "seconds": 2.0
+            "seconds": 5.0,
+            "speed_mtps": 2.0,
+            "target_speed": 2.0
         },
         {
             "command": "animation",

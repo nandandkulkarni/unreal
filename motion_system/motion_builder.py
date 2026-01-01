@@ -320,7 +320,12 @@ class ActorBuilder:
             return self.wait(delta)
         return self
 
-    def face(self, direction: str, duration: float = 1.0):
+    def face(self, direction: str, duration: float = 1.0, anim: str = None):
+        # Emit animation command first if specified
+        if anim:
+            self.state.is_managed = True
+            self._add({"command": "animation", "name": anim, "speed_multiplier": 1.0})
+        
         # Update State
         target_yaw = motion_math.get_cardinal_angle(direction)
         if target_yaw is None: # Check for variable directions
@@ -614,14 +619,15 @@ class MotionCommandBuilder:
         self.cmd = {
             "command": "move",
             "actor": self.ab.actor_name,
-            "direction": "forward",
             "start_speed": self.ab.state.current_speed,
             "radius": self.ab.state.radius
         }
+        self._direction_set = False  # Track if direction was explicitly set
     
     def direction(self, dir_str: str) -> 'MotionCommandBuilder':
         """Set absolute movement direction (North, South, East, West, etc.)"""
         self.cmd["direction"] = dir_str
+        self._direction_set = True
         return self
     
     def for_time(self, t: Union[TimeSpan, float]) -> 'MotionCommandBuilder':
@@ -704,6 +710,8 @@ class MotionCommandBuilder:
 
     def distance_in_time(self, meters: float, seconds: float) -> 'ActorBuilder':
         """Travel a specific distance in a specific time (calculates speed). Terminal method."""
+        if not self._direction_set:
+            raise ValueError("Must call .direction() before using a terminal constraint method")
         self.cmd["meters"] = meters
         self.cmd["seconds"] = seconds
         # Speed will be calculated by motion planner: speed = distance / time
@@ -712,6 +720,8 @@ class MotionCommandBuilder:
 
     def distance_at_speed(self, meters: float, speed_mps: float) -> 'ActorBuilder':
         """Travel a specific distance at a specific speed (calculates time). Terminal method."""
+        if not self._direction_set:
+            raise ValueError("Must call .direction() before using a terminal constraint method")
         self.cmd["meters"] = meters
         self.cmd["speed_mtps"] = speed_mps
         self.cmd["target_speed"] = speed_mps
@@ -721,6 +731,8 @@ class MotionCommandBuilder:
 
     def time_at_speed(self, seconds: float, speed_mps: float) -> 'ActorBuilder':
         """Travel for a specific time at a specific speed (calculates distance). Terminal method."""
+        if not self._direction_set:
+            raise ValueError("Must call .direction() before using a terminal constraint method")
         self.cmd["seconds"] = seconds
         self.cmd["speed_mtps"] = speed_mps
         self.cmd["target_speed"] = speed_mps
@@ -751,7 +763,16 @@ class MotionCommandBuilder:
             elif secs > 0 and dist == 0:
                 dist = secs * v_avg
         else:
-            speed = self.cmd.get("speed_mtps", 1.0)
+            speed = self.cmd.get("speed_mtps")
+            if speed is None:
+                # Calculate speed from distance and time if both are provided
+                if dist > 0 and secs > 0:
+                    speed = dist / secs
+                    self.cmd["speed_mtps"] = speed
+                    self.cmd["target_speed"] = speed
+                else:
+                    speed = 1.0  # Default fallback
+            
             if dist > 0 and secs == 0:
                 secs = dist / speed
             elif secs > 0 and dist == 0:
