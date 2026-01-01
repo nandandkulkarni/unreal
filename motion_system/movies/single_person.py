@@ -18,8 +18,11 @@ def define_movie():
         
         # Runner 1 (Standard Sprint)
         with movie.for_actor("Runner1") as r:
-            r.move().anim("Jog_Fwd").by_distance(100.0).speed(10.0).in_corridor(2.44, 3.66)
-
+            r.move_straight().anim("Jog_Fwd").by_distance(50.0).speed(10.0).in_corridor(2.44, 3.66)
+            r.face("South")
+            r.move_straight().anim("Jog_Fwd").by_distance(25.0).speed(10.0).in_corridor(2.44, 3.66)
+            r.face("North")
+            r.move_straight().anim("Jog_Fwd").by_distance(75.0).speed(10.0).in_corridor(2.44, 3.66)
         # --- Camera Setup ---
         
         # Front/Finish Camera

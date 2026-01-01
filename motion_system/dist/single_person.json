@@ -22,17 +22,67 @@
             "speed_multiplier": 1.0
         },
         {
+            "command": "face",
+            "direction": "South",
+            "duration": 1.0,
+            "actor": "Runner1"
+        },
+        {
             "command": "move",
             "actor": "Runner1",
             "direction": "forward",
             "start_speed": 0.0,
             "radius": 0.5,
-            "meters": 100.0,
+            "meters": 50.0,
             "speed_mtps": 10.0,
             "target_speed": 10.0,
             "left_boundary": 2.44,
             "right_boundary": 3.66,
-            "seconds": 10.0
+            "seconds": 5.0
+        },
+        {
+            "command": "animation",
+            "actor": "Runner1",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "face",
+            "direction": "North",
+            "duration": 1.0,
+            "actor": "Runner1"
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "direction": "forward",
+            "start_speed": 10.0,
+            "radius": 0.5,
+            "meters": 25.0,
+            "speed_mtps": 10.0,
+            "target_speed": 10.0,
+            "left_boundary": 2.44,
+            "right_boundary": 3.66,
+            "seconds": 2.5
+        },
+        {
+            "command": "animation",
+            "actor": "Runner1",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "direction": "forward",
+            "start_speed": 10.0,
+            "radius": 0.5,
+            "meters": 75.0,
+            "speed_mtps": 10.0,
+            "target_speed": 10.0,
+            "left_boundary": 2.44,
+            "right_boundary": 3.66,
+            "seconds": 7.5
         },
         {
             "command": "add_camera",

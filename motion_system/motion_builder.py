@@ -206,7 +206,7 @@ class ActorBuilder:
     def get_state(self) -> VirtualState:
         return self.state
 
-    def move(self) -> 'MotionCommandBuilder':
+    def move_straight(self) -> 'MotionCommandBuilder':
         """Start a fluent movement command chain"""
         if hasattr(self, '_active_move') and self._active_move:
             self._active_move._commit()
@@ -531,7 +531,7 @@ class MotionCommandBuilder:
             "radius": self.ab.state.radius
         }
     
-    def move(self) -> 'MotionCommandBuilder':
+    def move_straight(self) -> 'MotionCommandBuilder':
         """Commit current move and start a new one (chaining)"""
         self._commit()
         new_builder = MotionCommandBuilder(self.ab)
@@ -933,8 +933,8 @@ class CameraCommandBuilder(ActorBuilder):
     def shot(self):
         return CameraShotBuilder(self)
 
-    # Override move to return CameraMovingBuilder
-    def move(self) -> 'CameraMotionCommandBuilder':
+    # Override move_straight to return CameraMovingBuilder
+    def move_straight(self) -> 'CameraMotionCommandBuilder':
         if hasattr(self, '_active_move') and self._active_move:
             self._active_move._commit() # Assuming _commit exists
         

@@ -43,3 +43,19 @@ unreal.execute_python_file("path/to/my_scene.py")
 - **[test_builder_json.py](file:///c:/UnrealProjects/coding/unreal/tests/test_builder_json.py)**: Verification script for JSON output.
 - **[unreal_builder_test.py](file:///c:/UnrealProjects/coding/unreal/motion_system/unreal_builder_test.py)**: The in-engine test script.
 - **[run_builder_test_remote.py](file:///c:/UnrealProjects/coding/unreal/motion_system/run_builder_test_remote.py)**: The remote runner utility.
+
+### API Clarity: `move_straight` Refactor
+
+Renamed the core movement method to be more explicit about its behavior:
+
+- **Refactor**: Renamed `.move()` to `.move_straight()` across all builders (`ActorBuilder`, `MotionCommandBuilder`, `CameraCommandBuilder`).
+- **Robustness**: Updated `motion_math.py` to handle cardinal directions case-insensitively (e.g., "South" now works as well as "south").
+- **Validation**: Verified that both `single_person.py` and `sprint_with_camera.py` build and run correctly with the new API.
+
+```python
+# Before
+r.move().by_distance(50)
+
+# After
+r.move_straight().by_distance(50)
+```

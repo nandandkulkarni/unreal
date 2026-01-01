@@ -2,6 +2,10 @@ import math
 
 def get_cardinal_angle(direction: str, offset: float = None) -> float:
     """Get absolute world angle for a cardinal direction string"""
+    if not direction:
+        return None
+        
+    direction = direction.lower()
     if offset is None:
         # If no offset is given, compound directions (north_east) default to perfect diagonal (45)
         offset = 45 if "_" in direction else 0
