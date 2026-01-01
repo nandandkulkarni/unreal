@@ -619,6 +619,11 @@ class MotionCommandBuilder:
             "radius": self.ab.state.radius
         }
     
+    def direction(self, dir_str: str) -> 'MotionCommandBuilder':
+        """Set absolute movement direction (North, South, East, West, etc.)"""
+        self.cmd["direction"] = dir_str
+        return self
+    
     def for_time(self, t: Union[TimeSpan, float]) -> 'MotionCommandBuilder':
         """Set duration for this movement segment"""
         sec = t.seconds if isinstance(t, TimeSpan) else t
@@ -693,6 +698,35 @@ class MotionCommandBuilder:
     def with_radius(self, r: float):
         self.cmd["radius"] = r
         return self
+
+    # --- Terminal Constraint Methods ---
+    # These methods commit the move and return ActorBuilder to prevent chaining multiple constraints
+
+    def distance_in_time(self, meters: float, seconds: float) -> 'ActorBuilder':
+        """Travel a specific distance in a specific time (calculates speed). Terminal method."""
+        self.cmd["meters"] = meters
+        self.cmd["seconds"] = seconds
+        # Speed will be calculated by motion planner: speed = distance / time
+        self._commit()
+        return self.ab
+
+    def distance_at_speed(self, meters: float, speed_mps: float) -> 'ActorBuilder':
+        """Travel a specific distance at a specific speed (calculates time). Terminal method."""
+        self.cmd["meters"] = meters
+        self.cmd["speed_mtps"] = speed_mps
+        self.cmd["target_speed"] = speed_mps
+        # Time will be calculated by motion planner: time = distance / speed
+        self._commit()
+        return self.ab
+
+    def time_at_speed(self, seconds: float, speed_mps: float) -> 'ActorBuilder':
+        """Travel for a specific time at a specific speed (calculates distance). Terminal method."""
+        self.cmd["seconds"] = seconds
+        self.cmd["speed_mtps"] = speed_mps
+        self.cmd["target_speed"] = speed_mps
+        # Distance will be calculated by motion planner: distance = speed * time
+        self._commit()
+        return self.ab
 
     def _commit(self):
         """Internal: Finalize current command and update virtual state"""
