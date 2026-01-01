@@ -12,7 +12,8 @@
                 0
             ],
             "yaw_offset": -90,
-            "radius": 0.5
+            "radius": 0.5,
+            "height": 1.8
         },
         {
             "command": "add_actor",
@@ -23,11 +24,13 @@
                 0
             ],
             "yaw_offset": -90,
-            "radius": 0.5
+            "radius": 0.5,
+            "height": 1.8
         },
         {
             "command": "animation",
             "name": "Jog_Fwd",
+            "speed_multiplier": 1.0,
             "actor": "Runner1"
         },
         {
@@ -70,8 +73,14 @@
             "meters": 15.0
         },
         {
+            "command": "wait",
+            "actor": "Runner1",
+            "seconds": 0.0
+        },
+        {
             "command": "animation",
             "name": "Jog_Fwd",
+            "speed_multiplier": 1.0,
             "actor": "Runner2"
         },
         {
@@ -112,6 +121,11 @@
             "left_boundary": 1.22,
             "right_boundary": 2.44,
             "meters": 15.75
+        },
+        {
+            "command": "wait",
+            "actor": "Runner2",
+            "seconds": 0.0
         },
         {
             "command": "add_camera",

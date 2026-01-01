@@ -11,7 +11,7 @@
                 0,
                 0
             ],
-            "yaw_offset": 0,
+            "yaw_offset": -90,
             "radius": 0.5,
             "height": 1.8
         },
@@ -40,6 +40,12 @@
             "actor": "TestActor"
         },
         {
+            "command": "animation",
+            "actor": "TestActor",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
             "command": "move",
             "actor": "TestActor",
             "direction": "forward",
@@ -55,6 +61,12 @@
             "direction": "East",
             "duration": 2.0,
             "actor": "TestActor"
+        },
+        {
+            "command": "animation",
+            "actor": "TestActor",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
         },
         {
             "command": "move",
@@ -74,6 +86,12 @@
             "actor": "TestActor"
         },
         {
+            "command": "animation",
+            "actor": "TestActor",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
             "command": "move",
             "actor": "TestActor",
             "direction": "forward",
@@ -91,6 +109,12 @@
             "actor": "TestActor"
         },
         {
+            "command": "animation",
+            "actor": "TestActor",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
             "command": "move",
             "actor": "TestActor",
             "direction": "forward",
@@ -100,6 +124,17 @@
             "speed_mtps": 5.0,
             "target_speed": 5.0,
             "seconds": 2.0
+        },
+        {
+            "command": "animation",
+            "actor": "TestActor",
+            "name": "Idle",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "wait",
+            "actor": "TestActor",
+            "seconds": 34.0
         },
         {
             "command": "add_camera",
@@ -152,7 +187,7 @@
         {
             "command": "camera_wait",
             "actor": "TrackingCam",
-            "seconds": 24.0,
+            "seconds": 26.0,
             "look_at_actor": "TestActor",
             "look_at_height_pct": 0.7,
             "interp_speed": 0.0,

@@ -15,6 +15,8 @@ def define_movie():
     """Define rotation and movement test sequence"""
     
     with MovieBuilder("Rotation Test", fps=60) as movie:
+        from motion_builder import TimeSpan
+        
         # Add actor (Facing North/0 by default)
         movie.add_actor("TestActor", location=(0, 0, 0), yaw_offset=-90, radius=0.5, height=1.8)
         
@@ -29,19 +31,22 @@ def define_movie():
             # We must face the direction FIRST, then move forward.
             
             # Segment 1: Move North (Already facing North from Phase 1)
-            a.move_straight().by_distance(10.0).speed(5.0).seconds(2.0)
+            a.move_straight().anim("Jog_Fwd").by_distance(10.0).speed(5.0).for_time(TimeSpan.from_seconds(2.0))
             
             # Segment 2: Turn East then Move East
             a.face("East", duration=2.0)
-            a.move_straight().by_distance(10.0).speed(5.0).seconds(2.0)
+            a.move_straight().anim("Jog_Fwd").by_distance(10.0).speed(5.0).for_time(TimeSpan.from_seconds(2.0))
             
             # Segment 3: Turn South then Move South
             a.face("South", duration=2.0)
-            a.move_straight().by_distance(10.0).speed(5.0).seconds(2.0)
+            a.move_straight().anim("Jog_Fwd").by_distance(10.0).speed(5.0).for_time(TimeSpan.from_seconds(2.0))
             
             # Segment 4: Turn West then Move West
             a.face("West", duration=2.0)
-            a.move_straight().by_distance(10.0).speed(5.0).seconds(2.0)
+            a.move_straight().anim("Jog_Fwd").by_distance(10.0).speed(5.0).for_time(TimeSpan.from_seconds(2.0))
+            
+            # Terminal State: Stay until the end of the shot
+            a.stay().anim("Idle").till_end()
 
         # --- Camera Setup ---
         
@@ -56,14 +61,13 @@ def define_movie():
         with movie.for_camera("TrackingCam") as cam:
             cam.look_at("TestActor", height_pct=0.7)
             cam.focus_on("TestActor", height_pct=0.7)
-            cam.wait(24.0) 
+            cam.wait(TimeSpan.from_seconds(26.0)) # Extend camera slightly to test till_end
 
         # Camera Cuts
         movie.at_time(0.0).camera_cut("OverheadCam")
         movie.at_time(8.0).camera_cut("TrackingCam")
         
-        movie.save_to_json("dist/test_turns.json")
-    
+    movie.save_to_json("dist/test_turns.json")
     movie.run(to_unreal=True)
     return movie.build()
 

@@ -1,6 +1,30 @@
 from typing import List, Dict, Any, Optional, Union, Tuple
 import math
 import motion_math
+class MotionTimelineError(Exception):
+    """Exception raised when an actor's timeline has a gap in managed mode"""
+    pass
+
+class TimeSpan:
+    """Utility for handling durations in different units"""
+    def __init__(self, seconds: float):
+        self._seconds = seconds
+
+    @property
+    def seconds(self) -> float:
+        return self._seconds
+
+    @classmethod
+    def from_seconds(cls, s: float) -> 'TimeSpan':
+        return cls(s)
+
+    @classmethod
+    def from_frames(cls, f: int, fps: int = 60) -> 'TimeSpan':
+        return cls(f / fps)
+
+    def __repr__(self):
+        return f"TimeSpan({self._seconds}s)"
+
 
 class VirtualState:
     def __init__(self, x=0.0, y=0.0, z=0.0, yaw=0.0, time=0.0, current_speed=0.0, radius=0.0):
@@ -11,13 +35,20 @@ class VirtualState:
         self.time = time
         self.current_speed = current_speed
         self.radius = radius
+        self.is_managed = False  # Set to True if any command is given
+        self.is_finalized_till_end = False # Set to True if .till_end() was used
+        self.pending_till_end_cmd = None # Reference to the command dict that needs resolution
         
     @property
     def location(self):
         return (self.x, self.y, self.z)
 
     def copy(self):
-        return VirtualState(self.x, self.y, self.z, self.yaw, self.time, self.current_speed, self.radius)
+        new_state = VirtualState(self.x, self.y, self.z, self.yaw, self.time, self.current_speed, self.radius)
+        new_state.is_managed = self.is_managed
+        new_state.is_finalized_till_end = self.is_finalized_till_end
+        new_state.pending_till_end_cmd = self.pending_till_end_cmd
+        return new_state
 
 class MovieBuilder:
     def __init__(self, name: str, create_new_level: bool = True, fps: int = 30):
@@ -29,6 +60,7 @@ class MovieBuilder:
         }
         self.actors: Dict[str, VirtualState] = {}
         self.current_time = 0.0
+        self.fps = fps
         self.waypoints = {}  # Global waypoint registry: name -> waypoint_data
         self.dependencies = {}  # Track dependencies: actor -> [depends_on_actors]
         self.auto_waypoint_counters = {}  # Auto-waypoint naming: actor -> counter
@@ -39,7 +71,36 @@ class MovieBuilder:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass # Nothing special to do on exit for now
+        if exc_type:
+            return False
+
+        # --- Resolve till_end and Gap Detection ---
+        
+        # 1. Determine Global Movie Duration
+        # Avoid empty plans or circular logic
+        all_times = [s.time for s in self.actors.values()] + [self.current_time]
+        movie_duration = max(all_times) if all_times else 0.0
+        
+        for name, state in self.actors.items():
+            if not state.is_managed:
+                continue # "Prop" actor, skip strictness
+                
+            # 2. Resolve till_end
+            if state.is_finalized_till_end and state.pending_till_end_cmd:
+                gap = movie_duration - state.time
+                if gap > 0:
+                    state.pending_till_end_cmd["seconds"] += gap
+                    state.time = movie_duration
+                    
+            # 3. Final Gap Detection
+            # Note: We allow a small tolerance for floating point errors (1/2 frame)
+            if state.time < (movie_duration - (0.5 / self.fps)):
+                raise MotionTimelineError(
+                    f"Actor '{name}' has a timeline gap! "
+                    f"Script ends at {state.time:.3f}s, but movie ends at {movie_duration:.3f}s. "
+                    "Use .stay().till_end() or account for the time explicitly."
+                )
+        return True
 
     def build(self):
         return self.movie_data
@@ -213,9 +274,17 @@ class ActorBuilder:
             self._active_move = None
 
     def move_straight(self) -> 'MotionCommandBuilder':
-        """Start a fluent movement command chain"""
+        """Start a movement context. Returns a MotionCommandBuilder."""
         self._commit_active_move()
+        self.state.is_managed = True # Mark as "talent"
         self._active_move = MotionCommandBuilder(self)
+        return self._active_move
+
+    def stay(self) -> 'StayCommandBuilder':
+        """Start a stationary context. Returns a StayCommandBuilder."""
+        self._commit_active_move()
+        self.state.is_managed = True # Mark as "talent"
+        self._active_move = StayCommandBuilder(self)
         return self._active_move
 
     def _add(self, cmd: Dict[str, Any]):
@@ -223,6 +292,19 @@ class ActorBuilder:
         cmd["actor"] = self.actor_name
         self.mb.add_command(cmd)
         return self
+
+    def anim(self, name: str, speed_multiplier: float = 1.0):
+        """Immediately trigger an animation state"""
+        self.state.is_managed = True
+        return self._add({
+            "command": "animation",
+            "name": name,
+            "speed_multiplier": speed_multiplier
+        })
+
+    def animation(self, name: str, speed_multiplier: float = 1.0):
+        """Alias for anim() for backward compatibility"""
+        return self.anim(name, speed_multiplier)
 
 
     # --- Actions ---
@@ -249,6 +331,7 @@ class ActorBuilder:
         else:
              self.state.yaw = motion_math.get_shortest_path_yaw(self.state.yaw, target_yaw)
         
+        self.state.is_managed = True
         self.state.time += duration
         return self._add({"command": "face", "direction": direction, "duration": duration})
     
@@ -524,7 +607,7 @@ class TimelineBuilder:
         return self
 
 class MotionCommandBuilder:
-    """Helper for fluent movement chaining move().xxx.move().yyy"""
+    """Helper for movement state. Returned by move_straight()"""
     
     def __init__(self, actor_builder: 'ActorBuilder'):
         self.ab = actor_builder
@@ -536,20 +619,25 @@ class MotionCommandBuilder:
             "radius": self.ab.state.radius
         }
     
+    def for_time(self, t: Union[TimeSpan, float]) -> 'MotionCommandBuilder':
+        """Set duration for this movement segment"""
+        sec = t.seconds if isinstance(t, TimeSpan) else t
+        self.cmd["seconds"] = sec
+        return self
+
     def move_straight(self) -> 'MotionCommandBuilder':
         """Commit current move and start a new one (chaining)"""
         self._commit()
         new_builder = MotionCommandBuilder(self.ab)
-        self.ab._active_move = new_builder # Ensure ActorBuilder knows about the NEXT link
+        self.ab._active_move = new_builder
         return new_builder
 
     def for_seconds(self, s: float):
-        self.cmd["seconds"] = s
-        return self
+        return self.for_time(s)
         
     def seconds(self, s: float):
         """Alias for for_seconds"""
-        return self.for_seconds(s)
+        return self.for_time(s)
 
     def by_distance(self, m: float):
         self.cmd["meters"] = m
@@ -644,6 +732,56 @@ class MotionCommandBuilder:
         self.ab.state.current_speed = v_target
         
         # Add to global plan
+        self.ab.mb.add_command(self.cmd)
+
+    def __enter__(self): return self
+    def __exit__(self, *args):
+        self._commit()
+
+class StayCommandBuilder:
+    """Helper for stationary state. Returned by stay()"""
+    def __init__(self, actor_builder: 'ActorBuilder'):
+        self.ab = actor_builder
+        self.cmd = {
+            "command": "wait",
+            "actor": self.ab.actor_name,
+            "seconds": 0.0
+        }
+        self.till_end_requested = False
+
+    def for_time(self, t: Union[TimeSpan, float]) -> 'StayCommandBuilder':
+        sec = t.seconds if isinstance(t, TimeSpan) else t
+        self.cmd["seconds"] = sec
+        return self
+
+    def till_end(self) -> 'StayCommandBuilder':
+        """Request this stay to fill the remaining movie time"""
+        self.till_end_requested = True
+        return self
+
+    def anim(self, name: str, speed_multiplier: float = 1.0) -> 'StayCommandBuilder':
+        cmd = {
+            "command": "animation",
+            "actor": self.ab.actor_name,
+            "name": name,
+            "speed_multiplier": speed_multiplier
+        }
+        self.ab.mb.add_command(cmd)
+        return self
+
+    def _commit(self):
+        if getattr(self, '_finalized', False):
+            return
+        self._finalized = True
+        
+        # Track if this was a terminal command
+        if self.till_end_requested:
+            self.ab.state.is_finalized_till_end = True
+            self.ab.state.pending_till_end_cmd = self.cmd
+            
+        # Update state time
+        self.ab.state.time += self.cmd.get("seconds", 0.0)
+            
         self.ab.mb.add_command(self.cmd)
 
     def __enter__(self): return self
@@ -800,8 +938,8 @@ class CameraShotBuilder:
         self.zoom_val = None
         self.focus_val = None
         
-    def duration(self, seconds: float):
-        self.duration_val = seconds
+    def duration(self, t: Union[TimeSpan, float]):
+        self.duration_val = t.seconds if isinstance(t, TimeSpan) else t
         return self
         
     def zoom(self, focal_length: float):
@@ -900,8 +1038,9 @@ class CameraCommandBuilder(ActorBuilder):
         self.current_coverage = coverage
         return self
     
-    def wait(self, seconds: float):
+    def wait(self, t: Union[TimeSpan, float]):
         """Override wait to capture camera state for timeline building"""
+        seconds = t.seconds if isinstance(t, TimeSpan) else t
         cmd = {
             "command": "camera_wait",
             "actor": self.actor_name,
