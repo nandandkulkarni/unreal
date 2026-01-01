@@ -83,7 +83,7 @@
         {
             "command": "face",
             "direction": "North",
-            "duration": 0.1,
+            "duration": 2.0,
             "actor": "Runner2"
         },
         {

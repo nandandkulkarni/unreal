@@ -38,6 +38,24 @@ class Direction(Enum):
     EAST = "East"
     WEST = "West"
 
+class DistanceUnit(Enum):
+    Meters = 1.0
+    Centimeters = 0.01
+    Kilometers = 1000.0
+    Feet = 0.3048
+    Miles = 1609.34
+
+class TimeUnit(Enum):
+    Seconds = 1.0
+    Minutes = 60.0
+    Hours = 3600.0
+
+class SpeedUnit(Enum):
+    MetersPerSecond = 1.0
+    KilometersPerHour = 0.277778
+    MilesPerHour = 0.44704
+    FeetPerSecond = 0.3048
+
 class VirtualState:
     def __init__(self, x=0.0, y=0.0, z=0.0, yaw=0.0, time=0.0, current_speed=0.0, radius=0.0):
         self.x = x
@@ -741,34 +759,67 @@ class MotionCommandBuilder:
     # --- Terminal Constraint Methods ---
     # These methods commit the move and return ActorBuilder to prevent chaining multiple constraints
 
-    def distance_in_time(self, meters: float, seconds: float) -> 'ActorBuilder':
+    def distance_in_time(self, meters: Union[float, tuple], seconds: Union[float, tuple]) -> 'ActorBuilder':
         """Travel a specific distance in a specific time (calculates speed). Terminal method."""
         if not self._direction_set:
             raise ValueError("Must call .direction() before using a terminal constraint method")
-        self.cmd["meters"] = meters
-        self.cmd["seconds"] = seconds
+            
+        # Handle Units
+        m_val = meters
+        if isinstance(meters, tuple):
+            # (DistanceUnit, float) -> Convert to Meters
+            m_val = meters[1] * meters[0].value
+            
+        s_val = seconds
+        if isinstance(seconds, tuple):
+             # (TimeUnit, float) -> Convert to Seconds
+             s_val = seconds[1] * seconds[0].value
+
+        self.cmd["meters"] = m_val
+        self.cmd["seconds"] = s_val
         # Speed will be calculated by motion planner: speed = distance / time
         self._commit()
         return self.ab
 
-    def distance_at_speed(self, meters: float, speed_mps: float) -> 'ActorBuilder':
+    def distance_at_speed(self, meters: Union[float, tuple], speed_mps: Union[float, tuple]) -> 'ActorBuilder':
         """Travel a specific distance at a specific speed (calculates time). Terminal method."""
         if not self._direction_set:
             raise ValueError("Must call .direction() before using a terminal constraint method")
-        self.cmd["meters"] = meters
-        self.cmd["speed_mtps"] = speed_mps
-        self.cmd["target_speed"] = speed_mps
+            
+        # Handle Units
+        m_val = meters
+        if isinstance(meters, tuple):
+            m_val = meters[1] * meters[0].value
+            
+        sp_val = speed_mps
+        if isinstance(speed_mps, tuple):
+            # (SpeedUnit, float) -> Convert to MPS
+            sp_val = speed_mps[1] * speed_mps[0].value
+
+        self.cmd["meters"] = m_val
+        self.cmd["speed_mtps"] = sp_val
+        self.cmd["target_speed"] = sp_val
         # Time will be calculated by motion planner: time = distance / speed
         self._commit()
         return self.ab
 
-    def time_at_speed(self, seconds: float, speed_mps: float) -> 'ActorBuilder':
+    def time_at_speed(self, seconds: Union[float, tuple], speed_mps: Union[float, tuple]) -> 'ActorBuilder':
         """Travel for a specific time at a specific speed (calculates distance). Terminal method."""
         if not self._direction_set:
             raise ValueError("Must call .direction() before using a terminal constraint method")
-        self.cmd["seconds"] = seconds
-        self.cmd["speed_mtps"] = speed_mps
-        self.cmd["target_speed"] = speed_mps
+            
+        # Handle Units
+        s_val = seconds
+        if isinstance(seconds, tuple):
+             s_val = seconds[1] * seconds[0].value
+             
+        sp_val = speed_mps
+        if isinstance(speed_mps, tuple):
+             sp_val = speed_mps[1] * speed_mps[0].value
+
+        self.cmd["seconds"] = s_val
+        self.cmd["speed_mtps"] = sp_val
+        self.cmd["target_speed"] = sp_val
         # Distance will be calculated by motion planner: distance = speed * time
         self._commit()
         return self.ab
