@@ -6,47 +6,53 @@ from datetime import datetime
 from logger import log, log_header
 
 
-def get_next_sequence_number():
-    """Find existing Test* sequences to determine next number"""
-    sequences_path = "/Game/Sequences"
-    next_num = 1
+import json
+import os
 
-    if unreal.EditorAssetLibrary.does_directory_exist(sequences_path):
-        assets = unreal.EditorAssetLibrary.list_assets(sequences_path, recursive=False)
-        existing_nums = []
-        for asset_path in assets:
-            asset_name = asset_path.split('/')[-1].split('.')[0]
-            if asset_name.startswith("TestSequence_"):
-                # Extract number from name like TestSequence_25_12_18_02_20_42_001
-                parts = asset_name.split('_')
-                if len(parts) >= 8:  # Has timestamp and number
-                    try:
-                        num = int(parts[-1])
-                        existing_nums.append(num)
-                    except Exception:
-                        pass
-
-        if existing_nums:
-            next_num = max(existing_nums) + 1
-
+def get_next_local_number(base_name):
+    """Get next sequence number from local file"""
+    counter_path = r"C:\UnrealProjects\coding\unreal\motion_system\dist\sequence_counter.json"
+    data = {}
+    
+    if os.path.exists(counter_path):
+        try:
+            with open(counter_path, 'r') as f:
+                data = json.load(f)
+        except:
+            pass
+            
+    current = data.get(base_name, 0)
+    next_num = current + 1
+    
+    # Save back
+    data[base_name] = next_num
+    try:
+        with open(counter_path, 'w') as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        log(f"Warning: Could not save sequence counter: {e}")
+        
     return next_num
-
 
 def create_sequence(fps=30, duration_seconds=60, test_name=None):
     """Create a new level sequence with timestamp and optional test name"""
     log_header("STEP 2: Creating new sequence")
+    log(f"  Test Name input: {test_name}")
 
-    # Get timestamp and find next sequence number
+    # Get timestamp for backup
     timestamp = datetime.now().strftime("%y_%m_%d_%H_%M_%S")
-    next_num = get_next_sequence_number()
-
-    # Format sequence name with test name if provided
+    
     if test_name:
         # Sanitize test name for use in asset name
-        sequence_name = test_name.replace(" ", "_").replace("-", "_")
+        base_name = test_name.replace(" ", "_").replace("-", "_")
+        next_num = get_next_local_number(base_name)
+        sequence_name = f"{base_name}_{next_num:03d}"
     else:
+        # Fallback to timestamp based
+        base_name = "TestSequence"
+        next_num = get_next_local_number(base_name)
         sequence_name = f"TestSequence_{timestamp}_{next_num:03d}"
-    
+
     log(f"\nCreating scene #{next_num}")
     log(f"  Sequence: {sequence_name}")
 

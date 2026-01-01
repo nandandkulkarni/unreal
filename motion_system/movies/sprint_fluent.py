@@ -47,7 +47,7 @@ def define_movie():
                 r.stay().till_end()
             
         movie.add_camera("SideView", location=(5000, -1000, 200)).rotation((0, 90, 0)).add()
-        movie.add_audio(asset_path="/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality.wav", start_time=0.0)
+        movie.add_audio(asset_path="/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality", start_time=0.0)
         movie.at_time(0).camera_cut("SideView")
         
         # Standardize export path

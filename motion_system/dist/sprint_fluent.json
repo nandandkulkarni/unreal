@@ -138,7 +138,7 @@
         },
         {
             "command": "add_audio",
-            "asset_path": "/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality.wav",
+            "asset_path": "/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality",
             "start_time": 0.0,
             "volume": 1.0
         },

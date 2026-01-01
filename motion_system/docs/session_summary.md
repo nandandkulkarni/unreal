@@ -189,8 +189,18 @@ movie.add_audio(
   Duration: 10.0s
 ```
 
-## Next Steps
 
-1. **Fix Frame Capture Timing** - Debug why frames 0 and 300 weren't captured
-2. **Image Analysis** - Create script to verify subject coverage in captured frames
-3. **Documentation** - Update handoff.md with new features
+## Audio Integration
+- **Feature:** Added `add_audio` to `MovieBuilder` for simple sound track addition.
+- **Auto-Sizing:** Audio tracks automatically span to the end of the sequence if no duration is specified.
+- **Naming:** Audio tracks in Sequencer are named after the audio asset file.
+- **Numeric Tracking:** Sequence assets are now named `Name_XXX` (e.g., `Fluent_Sprint_004`) to preserve history between runs.
+
+**Example Code:**
+```python
+movie.add_audio(
+    asset_path="/Game/Audio/BackgroundMusic", 
+    start_time=0.0
+    # Duration auto-calculated
+)
+```

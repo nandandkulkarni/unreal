@@ -144,16 +144,24 @@ def run_scene(json_path):
             )
     
     # 3. Apply Camera Cuts
+    print(f"DEBUG: Camera Cuts count: {len(camera_cuts)}")
     sequence_setup.apply_camera_cuts(sequence, camera_cuts, actors_info, fps)
     
     # 4. Apply Audio Tracks
+    print(f"DEBUG: Audio Tracks count: {len(audio_tracks)}")
     logger.log(f"DEBUG: audio_tracks = {audio_tracks}")
     
     if audio_tracks:
         logger.log(f"Applying {len(audio_tracks)} audio track(s)")
+        print(f"DEBUG: Calling apply_audio_tracks with {len(audio_tracks)} tracks")
         sequence_setup.apply_audio_tracks(sequence, audio_tracks, fps)
     else:
         logger.log("No audio tracks to apply")
+        print("DEBUG: No audio tracks to apply")
+
+    # Save sequence changes
+    unreal.EditorAssetLibrary.save_loaded_asset(sequence)
+    print("DEBUG: Sequence saved")
     
     # Lock viewport to camera cuts and play
     try:
@@ -197,7 +205,11 @@ def run_scene(json_path):
             import traceback
             logger.log(traceback.format_exc())
     
-    logger.log_header("SCENE GENERATION COMPLETE")
+    # 5. Final Refresh
+    unreal.LevelSequenceEditorBlueprintLibrary.refresh_current_level_sequence()
+    logger.log("✓ Sequence refreshed")
+
+    logger.log_header("SCENE EXECUTION COMPLETE")
     return True
 
     # Validate Settings (User Request)
