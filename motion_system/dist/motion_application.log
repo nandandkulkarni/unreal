@@ -1893,3 +1893,129 @@ Processing actor: FrontCam
   ✓ Applied 3 Look-At keys
   ✓ Applied 3 Focus keys
   Skipping animation for FrontCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TestActor
+  Location keys: 484, Rotation keys: 492
+  Detected Skeletal Mesh actor: TestActor (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for TestActor
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: OverheadCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  Skipping animation for OverheadCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TrackingCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  ✓ Applied 1 Focus keys
+  Skipping animation for TrackingCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TestActor
+  Location keys: 484, Rotation keys: 492
+  Detected Skeletal Mesh actor: TestActor (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for TestActor
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: OverheadCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  Skipping animation for OverheadCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TrackingCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  ✓ Applied 1 Focus keys
+  Skipping animation for TrackingCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TestActor
+  Location keys: 484, Rotation keys: 498
+  Detected Skeletal Mesh actor: TestActor (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for TestActor
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: OverheadCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  Skipping animation for OverheadCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TrackingCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  ✓ Applied 1 Focus keys
+  Skipping animation for TrackingCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TestActor
+  Location keys: 484, Rotation keys: 498
+  Detected Skeletal Mesh actor: TestActor (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for TestActor
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: OverheadCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  Skipping animation for OverheadCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TrackingCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  ✓ Applied 1 Focus keys
+  Skipping animation for TrackingCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TestActor
+  Location keys: 484, Rotation keys: 498
+  Detected Skeletal Mesh actor: TestActor (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for TestActor
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: OverheadCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  Skipping animation for OverheadCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TrackingCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  ✓ Applied 1 Focus keys
+  Skipping animation for TrackingCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TestActor
+  Location keys: 484, Rotation keys: 498
+  Detected Skeletal Mesh actor: TestActor (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for TestActor
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: OverheadCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  Skipping animation for OverheadCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: TrackingCam
+  Location keys: 1, Rotation keys: 0
+  ✓ Applied 1 Look-At keys
+  ✓ Applied 1 Focus keys
+  Skipping animation for TrackingCam (Not a SkeletalMeshActor/Character)

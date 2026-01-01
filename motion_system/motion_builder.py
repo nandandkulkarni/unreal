@@ -206,15 +206,20 @@ class ActorBuilder:
     def get_state(self) -> VirtualState:
         return self.state
 
-    def move_straight(self) -> 'MotionCommandBuilder':
-        """Start a fluent movement command chain"""
+    def _commit_active_move(self):
+        """Finalize any pending fluent move to ensure command order"""
         if hasattr(self, '_active_move') and self._active_move:
             self._active_move._commit()
-            
+            self._active_move = None
+
+    def move_straight(self) -> 'MotionCommandBuilder':
+        """Start a fluent movement command chain"""
+        self._commit_active_move()
         self._active_move = MotionCommandBuilder(self)
         return self._active_move
 
     def _add(self, cmd: Dict[str, Any]):
+        self._commit_active_move()
         cmd["actor"] = self.actor_name
         self.mb.add_command(cmd)
         return self
@@ -591,13 +596,6 @@ class MotionCommandBuilder:
     def at_kph(self, kph: float):
         """Set speed in kilometers per hour"""
         return self.speed(kph * 0.277778)  # Convert km/h to m/s
-
-    def direction(self, d: str, offset: float = None):
-        """Set direction (e.g. 'north', 'forward') with optional degree offset"""
-        self.cmd["direction"] = d
-        if offset is not None:
-            self.cmd["offset"] = offset
-        return self
 
     def in_corridor(self, left: float, right: float):
         self.cmd["left_boundary"] = left

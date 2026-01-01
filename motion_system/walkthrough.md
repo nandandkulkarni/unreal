@@ -49,10 +49,10 @@ unreal.execute_python_file("path/to/my_scene.py")
 
 Renamed the core movement method and fixed a critical rotation bug:
 
-- **Refactor**: Renamed `.move()` to `.move_straight()` across all builders.
-- **Bug Fix**: Resolved a silent failure where actor rotations (`face()` command) were not applying. The issue was caused by shadowed/duplicate math functions in `motion_planner.py` that didn't support capitalized directions.
-- **Robustness**: The planner now strictly uses the centralized `motion_math.py` library, ensuring consistent case-insensitive handling for "South", "East", etc.
-- **Verification**: Validated with `movies/test_turns.py`, confirming rotation keyframes (0, 90, 180, 270, 360) are correctly generated.
+- **Refactor**: Renamed `.move()` to `.move_straight()` across all builders and removed `.direction()` from the movement chain to enforce forward-only movement.
+- **Bug Fix**: Resolved a command ordering issue where immediate actions (like `face()`) were recorded before preceding fluent movements were committed.
+- **Robustness**: The planner now strictly uses the centralized `motion_math.py` library, and the builder ensures strict sequential command generation.
+- **Verification**: Validated with `movies/test_turns.py`, confirming a perfectly ordered sequence of turns followed by forward moves.
 
 ```python
 # Before
