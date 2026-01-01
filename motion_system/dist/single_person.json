@@ -1,0 +1,78 @@
+{
+    "name": "Single Person",
+    "create_new_level": true,
+    "fps": 60,
+    "plan": [
+        {
+            "command": "add_actor",
+            "actor": "Runner1",
+            "location": [
+                0,
+                305,
+                0
+            ],
+            "yaw_offset": -90,
+            "radius": 0.5,
+            "height": 1.8
+        },
+        {
+            "command": "animation",
+            "actor": "Runner1",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "direction": "forward",
+            "start_speed": 0.0,
+            "radius": 0.5,
+            "meters": 100.0,
+            "speed_mtps": 10.0,
+            "target_speed": 10.0,
+            "left_boundary": 2.44,
+            "right_boundary": 3.66,
+            "seconds": 10.0
+        },
+        {
+            "command": "add_camera",
+            "actor": "FrontCam",
+            "location": [
+                11000,
+                244,
+                200
+            ],
+            "fov": 90.0
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
+            "look_at_actor": "Runner1",
+            "interp_speed": 5.0,
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_settings",
+            "actor": "FrontCam",
+            "focus_actor": "Runner1",
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_wait",
+            "actor": "FrontCam",
+            "seconds": 10.0,
+            "look_at_actor": "Runner1",
+            "look_at_height_pct": 0.7,
+            "interp_speed": 5.0,
+            "focus_actor": "Runner1",
+            "focus_height_pct": 0.7,
+            "frame_subject": "Runner1",
+            "coverage": 0.7
+        },
+        {
+            "command": "camera_cut",
+            "camera": "FrontCam",
+            "at_time": 0.0
+        }
+    ]
+}
