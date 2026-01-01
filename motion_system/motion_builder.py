@@ -37,6 +37,10 @@ class Direction(Enum):
     SOUTH = "South"
     EAST = "East"
     WEST = "West"
+    NORTH_EAST = "North_East"
+    NORTH_WEST = "North_West"
+    SOUTH_EAST = "South_East"
+    SOUTH_WEST = "South_West"
 
 class DistanceUnit(Enum):
     Meters = 1.0

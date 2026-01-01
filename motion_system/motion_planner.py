@@ -14,6 +14,10 @@ from motion_includes import mannequin_setup
 from motion_includes import camera_setup
 from motion_includes import sequence_setup
 from motion_includes import light_setup
+from motion_includes import light_setup
+import motion_math
+import importlib
+importlib.reload(motion_math)
 from motion_math import get_cardinal_angle, get_shortest_path_yaw, calculate_direction_vector
 
 
@@ -522,9 +526,9 @@ def process_move(cmd, state, fps):
     accel = (v1 - v0) / secs if secs > 0 else 0
     
     # Determine local forward/right vectors
-    yaw_rad = math.radians(state["current_rotation"]["yaw"])
-    fwd = {"x": math.cos(yaw_rad), "y": math.sin(yaw_rad)}
-    right_vec = {"x": fwd["y"], "y": -fwd["x"]} # 90 deg right
+    fwd = calculate_direction_vector(direction, state["current_rotation"]["yaw"])
+    # Right vector is 90 deg clockwise from forward
+    right_vec = {"x": fwd["y"], "y": -fwd["x"]} 
     
     # Starting Lateral Position (Assume X-aligned for now, but we can generalized)
     # y0 = pos["y"] if we are strafing from current
