@@ -20,29 +20,39 @@ def define_movie():
         movie.add_actor("Runner1", location=(0, -150, 0), yaw_offset=-90)
         movie.add_actor("Runner2", location=(0, 150, 0), yaw_offset=-90)
 
-        # Overhead Camera (Front-High)
-        # Runners run towards +X (North).
-        # Camera is positioned far North (+X) and High (+Z), looking back.
-        # We start looking at Runner1.
+        # Camera 1: Overhead Front (Tracking Runner 1)
         movie.add_camera("OverheadFrontCam", location=(4000, 0, 1500)) \
              .look_at("Runner1") \
              .add()
 
+        # Camera 2: Static Overhead (50m North, 10m High)
+        movie.add_camera("StaticOverheadCam", location=(5000, 0, 1000)) \
+             .rotation((0, 0, 90)) \
+             .add()
+
         movie.at_time(0).camera_cut("OverheadFrontCam")
+        movie.at_time(6).camera_cut("StaticOverheadCam")
 
         with movie.simultaneous():
             with movie.for_actor("Runner1") as r1:
-                # Runner 1 (West side) runs NORTH_EAST
-                r1.move_straight().direction(Direction.NORTH_EAST).anim("Jog_Fwd") \
-                  .distance_at_speed((DistanceUnit.Meters, 100), (SpeedUnit.MetersPerSecond, 6))
+                # Runner 1: Weave NE -> NW -> NE
+                r1.face(Direction.NORTH_EAST, 0.2).move_straight().direction(Direction.NORTH_EAST).anim("Jog_Fwd") \
+                  .distance_at_speed((DistanceUnit.Meters, 30), (SpeedUnit.MetersPerSecond, 6))
+                r1.face(Direction.NORTH_WEST, 0.2).move_straight().direction(Direction.NORTH_WEST).anim("Jog_Fwd") \
+                  .distance_at_speed((DistanceUnit.Meters, 30), (SpeedUnit.MetersPerSecond, 6))
+                r1.face(Direction.NORTH_EAST, 0.2).move_straight().direction(Direction.NORTH_EAST).anim("Jog_Fwd") \
+                  .distance_at_speed((DistanceUnit.Meters, 30), (SpeedUnit.MetersPerSecond, 6))
                 r1.stay().till_end().anim("Idle")
 
             with movie.for_actor("Runner2") as r2:
-                # Runner 2 (East side) runs NORTH_WEST
-                # Start delay allows them to cross paths without collision
+                # Runner 2: Weave NW -> NE -> NW
                 r2.stay().for_time(2.0).anim("Idle")
-                r2.move_straight().direction(Direction.NORTH_WEST).anim("Jog_Fwd") \
-                  .distance_at_speed((DistanceUnit.Meters, 100), (SpeedUnit.MetersPerSecond, 6))
+                r2.face(Direction.NORTH_WEST, 0.2).move_straight().direction(Direction.NORTH_WEST).anim("Jog_Fwd") \
+                  .distance_at_speed((DistanceUnit.Meters, 30), (SpeedUnit.MetersPerSecond, 6))
+                r2.face(Direction.NORTH_EAST, 0.2).move_straight().direction(Direction.NORTH_EAST).anim("Jog_Fwd") \
+                  .distance_at_speed((DistanceUnit.Meters, 30), (SpeedUnit.MetersPerSecond, 6))
+                r2.face(Direction.NORTH_WEST, 0.2).move_straight().direction(Direction.NORTH_WEST).anim("Jog_Fwd") \
+                  .distance_at_speed((DistanceUnit.Meters, 30), (SpeedUnit.MetersPerSecond, 6))
                 r2.stay().till_end().anim("Idle")
 
         movie.save_to_json("dist/runners_overhead.json")

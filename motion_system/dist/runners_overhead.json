@@ -39,9 +39,35 @@
             "look_at_actor": "Runner1"
         },
         {
+            "command": "add_camera",
+            "actor": "StaticOverheadCam",
+            "location": [
+                5000,
+                0,
+                1000
+            ],
+            "fov": 90.0,
+            "rotation": [
+                0,
+                0,
+                90
+            ]
+        },
+        {
             "command": "camera_cut",
             "camera": "OverheadFrontCam",
             "at_time": 0
+        },
+        {
+            "command": "camera_cut",
+            "camera": "StaticOverheadCam",
+            "at_time": 6
+        },
+        {
+            "command": "face",
+            "direction": "North_East",
+            "duration": 0.2,
+            "actor": "Runner1"
         },
         {
             "command": "animation",
@@ -55,10 +81,56 @@
             "start_speed": 0.0,
             "radius": 0.35,
             "direction": "North_East",
-            "meters": 100.0,
+            "meters": 30.0,
             "speed_mtps": 6.0,
             "target_speed": 6.0,
-            "seconds": 16.666666666666668
+            "seconds": 5.0
+        },
+        {
+            "command": "face",
+            "direction": "North_West",
+            "duration": 0.2,
+            "actor": "Runner1"
+        },
+        {
+            "command": "animation",
+            "actor": "Runner1",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "start_speed": 6.0,
+            "radius": 0.35,
+            "direction": "North_West",
+            "meters": 30.0,
+            "speed_mtps": 6.0,
+            "target_speed": 6.0,
+            "seconds": 5.0
+        },
+        {
+            "command": "face",
+            "direction": "North_East",
+            "duration": 0.2,
+            "actor": "Runner1"
+        },
+        {
+            "command": "animation",
+            "actor": "Runner1",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner1",
+            "start_speed": 6.0,
+            "radius": 0.35,
+            "direction": "North_East",
+            "meters": 30.0,
+            "speed_mtps": 6.0,
+            "target_speed": 6.0,
+            "seconds": 5.0
         },
         {
             "command": "animation",
@@ -83,6 +155,12 @@
             "seconds": 2.0
         },
         {
+            "command": "face",
+            "direction": "North_West",
+            "duration": 0.2,
+            "actor": "Runner2"
+        },
+        {
             "command": "animation",
             "actor": "Runner2",
             "name": "Jog_Fwd",
@@ -94,10 +172,56 @@
             "start_speed": 0.0,
             "radius": 0.35,
             "direction": "North_West",
-            "meters": 100.0,
+            "meters": 30.0,
             "speed_mtps": 6.0,
             "target_speed": 6.0,
-            "seconds": 16.666666666666668
+            "seconds": 5.0
+        },
+        {
+            "command": "face",
+            "direction": "North_East",
+            "duration": 0.2,
+            "actor": "Runner2"
+        },
+        {
+            "command": "animation",
+            "actor": "Runner2",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner2",
+            "start_speed": 6.0,
+            "radius": 0.35,
+            "direction": "North_East",
+            "meters": 30.0,
+            "speed_mtps": 6.0,
+            "target_speed": 6.0,
+            "seconds": 5.0
+        },
+        {
+            "command": "face",
+            "direction": "North_West",
+            "duration": 0.2,
+            "actor": "Runner2"
+        },
+        {
+            "command": "animation",
+            "actor": "Runner2",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner2",
+            "start_speed": 6.0,
+            "radius": 0.35,
+            "direction": "North_West",
+            "meters": 30.0,
+            "speed_mtps": 6.0,
+            "target_speed": 6.0,
+            "seconds": 5.0
         },
         {
             "command": "animation",
