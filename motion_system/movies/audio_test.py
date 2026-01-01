@@ -15,12 +15,12 @@ def define_movie():
             # Just stay in place for the whole duration
             a.stay().anim("Idle").till_end()
         
-        # Add audio track
+        # Add a test audio track
+        # Using the requested specific track
         movie.add_audio(
-            asset_path="/Game/Free_Sounds_Pack/wav/Wood_Move_2-1",
-            start_time=0.0,
-            duration=10.0,
-            volume=1.0
+            asset_path="/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality", 
+            start_time=0.0
+            # duration is omitted to test auto-calculation
         )
         
         # Add a simple camera

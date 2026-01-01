@@ -43,8 +43,7 @@ def create_sequence(fps=30, duration_seconds=60, test_name=None):
     # Format sequence name with test name if provided
     if test_name:
         # Sanitize test name for use in asset name
-        safe_name = test_name.replace(" ", "_").replace("-", "_")
-        sequence_name = f"TestSequence_{safe_name}_{timestamp}_{next_num:03d}"
+        sequence_name = test_name.replace(" ", "_").replace("-", "_")
     else:
         sequence_name = f"TestSequence_{timestamp}_{next_num:03d}"
     
@@ -52,6 +51,12 @@ def create_sequence(fps=30, duration_seconds=60, test_name=None):
     log(f"  Sequence: {sequence_name}")
 
     sequence_path = f"/Game/Sequences/{sequence_name}"
+    
+    # Delete existing sequence if it exists (to ensure clean slate)
+    if unreal.EditorAssetLibrary.does_asset_exist(sequence_path):
+        log(f"  Overwriting existing sequence: {sequence_path}")
+        unreal.EditorAssetLibrary.delete_asset(sequence_path)
+        
     factory = unreal.LevelSequenceFactoryNew()
     sequence = unreal.AssetToolsHelpers.get_asset_tools().create_asset(
         sequence_name,
@@ -182,11 +187,15 @@ def apply_audio_tracks(sequence, audio_tracks, fps):
                 log(f"  ❌ Failed to load audio asset: {asset_path}")
                 continue
             
-            # Create audio track using add_track (add_master_track is for legacy or different sequence types)
+            # Create audio track using add_track
             audio_track = sequence.add_track(unreal.MovieSceneAudioTrack)
             if not audio_track:
                 log(f"  ❌ Failed to create audio track")
                 continue
+                
+            # Set track name to match audio asset (e.g. "Sopranos")
+            track_name = asset_path.split("/")[-1].split(".")[0]
+            audio_track.set_display_name(track_name)
             
             # Add audio section
             audio_section = audio_track.add_section()
@@ -199,6 +208,12 @@ def apply_audio_tracks(sequence, audio_tracks, fps):
             if duration:
                 end_frame = int((start_time + duration) * fps)
                 audio_section.set_end_frame_bounded(end_frame)
+            else:
+                # If no duration specified, set to end of sequence
+                # (or ideally, length of audio asset, but sequence end ensures it plays)
+                end_frame = sequence.get_playback_end()
+                audio_section.set_end_frame_bounded(end_frame)
+                log(f"  Duration not specified, set to sequence end (frame {end_frame})")
             
             # Set volume (if supported)
             try:
