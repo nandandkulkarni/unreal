@@ -143,6 +143,9 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None, scene_name="movie"
     file_log(f"Starting motion planning for: {scene_name}")
     file_log(f"Initial actors_info keys: {list(actors_info.keys())}")
     
+    # Initialize audio tracks list
+    audio_tracks = []
+    
     # Initialize state for each actor
     actor_states = {}
     for actor_name, info in actors_info.items():
@@ -177,9 +180,12 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None, scene_name="movie"
     camera_cuts = []
     pending_groups = {}  # "Group_Name" -> ["Actor1", "Actor2"]
     
+    log(f"\nProcessing {len(motion_plan)} commands...")
+    
     # Process each command sequentially
     for i, cmd in enumerate(motion_plan):
         command_type = cmd["command"]
+        log(f"[{i}] Processing command: {command_type}")
         
         # Handle creation commands (don't require existing state)
         if command_type == "add_actor":
@@ -217,6 +223,11 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None, scene_name="movie"
             continue
         elif command_type == "camera_settings":
             process_camera_settings(cmd, actors_info)
+            continue
+        elif command_type == "add_audio":
+            # Store audio commands for sequence setup
+            audio_tracks.append(cmd)
+            log(f"✓ Audio command added: {cmd.get('asset_path')}")
             continue
 
         actor_name = cmd.get("actor")
@@ -384,7 +395,9 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None, scene_name="movie"
     # Legacy: Generate Auto-FOV for cameras (single-subject, non-timeline based)
     generate_auto_zoom_keyframes(actors_info, actor_states, fps)
 
-    return result, camera_cuts
+    log(f"\\n=== MOTION PLANNER COMPLETE ===")
+    log(f"Returning {len(audio_tracks)} audio track(s)")
+    return result, camera_cuts, audio_tracks
 
 
 def process_camera_cut(cmd, camera_cuts):

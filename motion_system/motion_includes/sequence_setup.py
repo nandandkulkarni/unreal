@@ -148,3 +148,74 @@ def apply_camera_cuts(sequence, camera_cuts, actors_info, fps):
         log(f"  ✓ Cut {i+1}: {camera_name} from {start_time}s (frame {start_frame}) to frame {end_frame}")
     
     log(f"✓ Applied {len(sorted_cuts)} camera cut(s)")
+
+
+def apply_audio_tracks(sequence, audio_tracks, fps):
+    """
+    Add audio tracks to the sequence
+    
+    Args:
+        sequence: The level sequence
+        audio_tracks: List of audio track commands with asset_path, start_time, duration, volume
+        fps: Frames per second
+    """
+    log(f"\\n{'='*60}")
+    log(f"Adding {len(audio_tracks)} audio track(s)")
+    log(f"{'='*60}")
+    
+    for i, audio_cmd in enumerate(audio_tracks):
+        asset_path = audio_cmd.get("asset_path")
+        start_time = audio_cmd.get("start_time", 0.0)
+        duration = audio_cmd.get("duration")
+        volume = audio_cmd.get("volume", 1.0)
+        
+        log(f"\\nAudio Track {i+1}:")
+        log(f"  Asset: {asset_path}")
+        log(f"  Start: {start_time}s")
+        log(f"  Duration: {duration}s" if duration else "  Duration: Full length")
+        log(f"  Volume: {volume}")
+        
+        try:
+            # Load the audio asset
+            audio_asset = unreal.EditorAssetLibrary.load_asset(asset_path)
+            if not audio_asset:
+                log(f"  ❌ Failed to load audio asset: {asset_path}")
+                continue
+            
+            # Create audio track using add_track (add_master_track is for legacy or different sequence types)
+            audio_track = sequence.add_track(unreal.MovieSceneAudioTrack)
+            if not audio_track:
+                log(f"  ❌ Failed to create audio track")
+                continue
+            
+            # Add audio section
+            audio_section = audio_track.add_section()
+            audio_section.set_sound(audio_asset)
+            
+            # Set timing
+            start_frame = int(start_time * fps)
+            audio_section.set_start_frame_bounded(start_frame)
+            
+            if duration:
+                end_frame = int((start_time + duration) * fps)
+                audio_section.set_end_frame_bounded(end_frame)
+            
+            # Set volume (if supported)
+            try:
+                audio_section.set_volume(volume)
+            except Exception as e:
+                log(f"  ⚠ Note: Could not set volume: {e}")
+                
+            log(f"  ✓ Audio track {i+1} added successfully")
+            
+        except Exception as e:
+            log(f"  ❌ Error applying audio track {i+1}: {e}")
+            import traceback
+            log(traceback.format_exc())
+            
+            log(f"  ✓ Audio track created successfully")
+            
+        except Exception as e:
+            log(f"  ❌ Error creating audio track: {e}")
+            import traceback
+            log(traceback.format_exc())

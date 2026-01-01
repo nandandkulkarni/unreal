@@ -227,6 +227,13 @@
             "command": "camera_cut",
             "camera": "TrackingCam",
             "at_time": 8.0
+        },
+        {
+            "command": "add_audio",
+            "asset_path": "/Game/Free_Sounds_Pack/wav/Wood_Move_2-1",
+            "start_time": 8.0,
+            "volume": 1.0,
+            "duration": 16.0
         }
     ]
 }

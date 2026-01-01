@@ -213,6 +213,18 @@ class MovieBuilder:
         """Start a fluent camera configuration"""
         return CameraBuilder(self, name, location, fov)
 
+    def add_audio(self, asset_path: str, start_time: float = 0.0, duration: float = None, volume: float = 1.0):
+        """Add an audio track to the sequence"""
+        cmd = {
+            "command": "add_audio",
+            "asset_path": asset_path,
+            "start_time": start_time,
+            "volume": volume
+        }
+        if duration is not None:
+            cmd["duration"] = duration
+        return self.add_command(cmd)
+
     def get_actor_state(self, name: str) -> VirtualState:
         if name not in self.actors:
             raise ValueError(f"Actor '{name}' not found in MovieBuilder state")

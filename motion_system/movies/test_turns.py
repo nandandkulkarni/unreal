@@ -67,6 +67,13 @@ def define_movie():
         movie.at_time(0.0).camera_cut("OverheadCam")
         movie.at_time(8.0).camera_cut("TrackingCam")
         
+        # Add footstep audio (looping during movement phase)
+        movie.add_audio(
+            asset_path="/Game/Free_Sounds_Pack/wav/Wood_Move_2-1",
+            start_time=8.0,  # Start when movement begins
+            duration=16.0     # Cover the 4 movement segments
+        )
+        
     movie.save_to_json("dist/test_turns.json")
     movie.run(to_unreal=True)
     return movie.build()

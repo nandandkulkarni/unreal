@@ -31,7 +31,7 @@ def run_scene(json_path):
     
     modules_to_reload = [
         "logger", "cleanup", "sequence_setup", "camera_setup", 
-        "mannequin_setup", "level_setup", "motion_planner", "keyframe_applier", "debug_db", "light_setup",
+        "mannequin_setup", "level_setup", "motion_planner", "keyframe_applier", "debug_db", "light_setup", "motion_validator",
         "motion_includes.camera_setup",
         "motion_includes.light_setup",
         "motion_includes.mannequin_setup",
@@ -39,13 +39,21 @@ def run_scene(json_path):
         "motion_includes.cleanup",
         "motion_includes.level_setup",
         "motion_includes.keyframe_applier",
+        "motion_includes.axis_markers",
+        "motion_includes.frame_capture",
+        "motion_includes.hud_setup",
+        "motion_includes.visual_aids",
         "motion_system.motion_includes.camera_setup",
         "motion_system.motion_includes.light_setup",
         "motion_system.motion_includes.mannequin_setup",
         "motion_system.motion_includes.sequence_setup",
         "motion_system.motion_includes.cleanup",
         "motion_system.motion_includes.level_setup",
-        "motion_system.motion_includes.keyframe_applier"
+        "motion_system.motion_includes.keyframe_applier",
+        "motion_system.motion_includes.axis_markers",
+        "motion_system.motion_includes.frame_capture",
+        "motion_system.motion_includes.hud_setup",
+        "motion_system.motion_includes.visual_aids"
     ]
     
     for mod_name in modules_to_reload:
@@ -103,7 +111,8 @@ def run_scene(json_path):
     actors_info = {}
     
     # 1. Plan Motion (Generate Keyframes)
-    keyframe_data_all, camera_cuts = motion_planner.plan_motion(plan, actors_info, fps, sequence=sequence, scene_name=scene_name)
+    keyframe_data_all, camera_cuts, audio_tracks = motion_planner.plan_motion(plan, actors_info, fps, sequence=sequence, scene_name=scene_name)
+    
     
     # 2. Apply Keyframes to Sequencer
     binding_map = {name: info["binding"] for name, info in actors_info.items() if "binding" in info}
@@ -136,6 +145,15 @@ def run_scene(json_path):
     
     # 3. Apply Camera Cuts
     sequence_setup.apply_camera_cuts(sequence, camera_cuts, actors_info, fps)
+    
+    # 4. Apply Audio Tracks
+    logger.log(f"DEBUG: audio_tracks = {audio_tracks}")
+    
+    if audio_tracks:
+        logger.log(f"Applying {len(audio_tracks)} audio track(s)")
+        sequence_setup.apply_audio_tracks(sequence, audio_tracks, fps)
+    else:
+        logger.log("No audio tracks to apply")
     
     # Lock viewport to camera cuts and play
     try:

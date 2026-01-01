@@ -1,0 +1,79 @@
+{
+  "pass": "1_base_command_processing",
+  "actors": {
+    "TestActor": {
+      "keyframes": {
+        "location": [
+          {
+            "frame": 0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          {
+            "frame": 600,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        ],
+        "rotation": [
+          {
+            "frame": 0,
+            "pitch": 0.0,
+            "yaw": -90.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 600,
+            "pitch": 0.0,
+            "yaw": -90.0,
+            "roll": 0.0
+          }
+        ],
+        "animations": [
+          {
+            "name": "Idle",
+            "start_frame": 0,
+            "end_frame": 600,
+            "speed_multiplier": 1.0
+          }
+        ]
+      },
+      "look_at_timeline": [],
+      "focus_timeline": [],
+      "frame_subject_timeline": []
+    },
+    "MainCam": {
+      "keyframes": {
+        "location": [
+          {
+            "frame": 0,
+            "x": 0.0,
+            "y": -500.0,
+            "z": 200.0
+          }
+        ],
+        "rotation": [],
+        "animations": []
+      },
+      "look_at_timeline": [
+        {
+          "start_time": 0.0,
+          "end_time": 10.0,
+          "subject": "TestActor",
+          "height_pct": 0.7,
+          "interp_speed": 0.0
+        }
+      ],
+      "focus_timeline": [],
+      "frame_subject_timeline": []
+    }
+  },
+  "camera_cuts": [
+    {
+      "camera": "MainCam",
+      "time": 0.0
+    }
+  ]
+}

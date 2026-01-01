@@ -1,0 +1,67 @@
+{
+    "name": "Audio Test",
+    "create_new_level": true,
+    "fps": 60,
+    "plan": [
+        {
+            "command": "add_actor",
+            "actor": "TestActor",
+            "location": [
+                0,
+                0,
+                0
+            ],
+            "yaw_offset": -90,
+            "radius": 0.35,
+            "height": 1.8
+        },
+        {
+            "command": "animation",
+            "actor": "TestActor",
+            "name": "Idle",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "wait",
+            "actor": "TestActor",
+            "seconds": 10.0
+        },
+        {
+            "command": "add_audio",
+            "asset_path": "/Game/Free_Sounds_Pack/wav/Wood_Move_2-1",
+            "start_time": 0.0,
+            "volume": 1.0,
+            "duration": 10.0
+        },
+        {
+            "command": "add_camera",
+            "actor": "MainCam",
+            "location": [
+                0,
+                -500,
+                200
+            ],
+            "fov": 90.0
+        },
+        {
+            "command": "camera_settings",
+            "actor": "MainCam",
+            "look_at_actor": "TestActor",
+            "interp_speed": 0.0,
+            "height_pct": 0.7
+        },
+        {
+            "command": "camera_wait",
+            "actor": "MainCam",
+            "seconds": 10.0,
+            "look_at_actor": "TestActor",
+            "look_at_height_pct": 0.7,
+            "interp_speed": 0.0
+        },
+        {
+            "command": "camera_cut",
+            "camera": "MainCam",
+            "at_time": 0.0
+        }
+    ]
+}
