@@ -26,6 +26,18 @@ class TimeSpan:
         return f"TimeSpan({self._seconds}s)"
 
 
+from enum import Enum, auto
+
+class Direction(Enum):
+    FORWARD = "Forward"
+    BACKWARD = "Backward"
+    LEFT = "Left"
+    RIGHT = "Right"
+    NORTH = "North"
+    SOUTH = "South"
+    EAST = "East"
+    WEST = "West"
+
 class VirtualState:
     def __init__(self, x=0.0, y=0.0, z=0.0, yaw=0.0, time=0.0, current_speed=0.0, radius=0.0):
         self.x = x
@@ -332,14 +344,17 @@ class ActorBuilder:
             return self.wait(delta)
         return self
 
-    def face(self, direction: str, duration: float = 1.0, anim: str = None):
+    def face(self, direction: Direction, duration: float = 1.0, anim: str = None):
+        if not isinstance(direction, Direction):
+             raise ValueError(f"Direction must be a Direction Enum (e.g. Direction.FORWARD). Got: {direction}")
+             
         # Emit animation command first if specified
         if anim:
             self.state.is_managed = True
             self._add({"command": "animation", "name": anim, "speed_multiplier": 1.0})
         
         # Update State
-        target_yaw = motion_math.get_cardinal_angle(direction)
+        target_yaw = motion_math.get_cardinal_angle(direction.value)
         if target_yaw is None: # Check for variable directions
              # For dynamic facing (face another actor), we can't easily predict 'yaw' without more info.
              # Ideally we resolve 'direction' if it's an actor name.
@@ -350,7 +365,7 @@ class ActorBuilder:
         
         self.state.is_managed = True
         self.state.time += duration
-        return self._add({"command": "face", "direction": direction, "duration": duration})
+        return self._add({"command": "face", "direction": direction.value, "duration": duration})
     
     def face_actor(self, target_actor_name: str, duration: float = 1.0):
         # Calculate target yaw to face another actor
@@ -367,48 +382,51 @@ class ActorBuilder:
         # The underlying system supports 'degrees' in face command
         return self._add({"command": "face", "degrees": angle_deg, "duration": duration})
 
-    def move_for_seconds(self, seconds: float, direction: str = "forward", speed_mtps: float = None, speed_mph: float = None, speed_mps: float = None, acceleration: float = None):
-        # Calculate speed
-        speed_cm_s = 100.0 # Default
-        if speed_mtps is not None:
-             speed_cm_s = speed_mtps * 100
-        elif speed_mph is not None:
-             speed_cm_s = speed_mph * 44.704
-        elif speed_mps is not None:
-             speed_cm_s = speed_mps * 100
-             
-        # Update State
-        # If acceleration is provided, calculate distance with acceleration
-        if acceleration is not None:
-            # d = v0*t + 0.5*a*t²
-            # Assume starting from current speed (or 0 if not specified)
-            initial_speed_cm_s = 0  # TODO: Track current speed in state
-            distance_cm = initial_speed_cm_s * seconds + 0.5 * (acceleration * 100) * (seconds ** 2)
-        else:
-            distance_cm = seconds * speed_cm_s
-        
-        new_pos = motion_math.calculate_new_position(
-            start_pos={"x": self.state.x, "y": self.state.y, "z": self.state.z},
-            start_yaw=self.state.yaw,
-            direction=direction,
-            distance_cm=distance_cm
-        )
-        self.state.x = new_pos["x"]
-        self.state.y = new_pos["y"]
-        self.state.z = new_pos["z"]
-        self.state.time += seconds
-        
-        cmd = {
-            "command": "move_for_seconds",
-            "seconds": seconds,
-            "direction": direction,
-        }
-        if speed_mtps is not None: cmd["speed_mtps"] = speed_mtps
-        if speed_mph is not None: cmd["speed_mph"] = speed_mph
-        if speed_mps is not None: cmd["speed_mps"] = speed_mps
-        if acceleration is not None: cmd["acceleration"] = acceleration
-        
-        return self._add(cmd)
+    # def move_for_seconds(self, seconds: float, direction: Direction = Direction.FORWARD, speed_mtps: float = None, speed_mph: float = None, speed_mps: float = None, acceleration: float = None):
+    #     if not isinstance(direction, Direction):
+    #          raise ValueError(f"Direction must be a Direction Enum (e.g. Direction.FORWARD). Got: {direction}")
+    #          
+    #     # Calculate speed
+    #     speed_cm_s = 100.0 # Default
+    #     if speed_mtps is not None:
+    #          speed_cm_s = speed_mtps * 100
+    #     elif speed_mph is not None:
+    #          speed_cm_s = speed_mph * 44.704
+    #     elif speed_mps is not None:
+    #          speed_cm_s = speed_mps * 100
+    #          
+    #     # Update State
+    #     # If acceleration is provided, calculate distance with acceleration
+    #     if acceleration is not None:
+    #         # d = v0*t + 0.5*a*t²
+    #         # Assume starting from current speed (or 0 if not specified)
+    #         initial_speed_cm_s = 0  # TODO: Track current speed in state
+    #         distance_cm = initial_speed_cm_s * seconds + 0.5 * (acceleration * 100) * (seconds ** 2)
+    #     else:
+    #         distance_cm = seconds * speed_cm_s
+    #     
+    #     new_pos = motion_math.calculate_new_position(
+    #         start_pos={"x": self.state.x, "y": self.state.y, "z": self.state.z},
+    #         start_yaw=self.state.yaw,
+    #         direction=direction.value,
+    #         distance_cm=distance_cm
+    #     )
+    #     self.state.x = new_pos["x"]
+    #     self.state.y = new_pos["y"]
+    #     self.state.z = new_pos["z"]
+    #     self.state.time += seconds
+    #     
+    #     cmd = {
+    #         "command": "move_for_seconds",
+    #         "seconds": seconds,
+    #         "direction": direction,
+    #     }
+    #     if speed_mtps is not None: cmd["speed_mtps"] = speed_mtps
+    #     if speed_mph is not None: cmd["speed_mph"] = speed_mph
+    #     if speed_mps is not None: cmd["speed_mps"] = speed_mps
+    #     if acceleration is not None: cmd["acceleration"] = acceleration
+    #     
+    #     return self._add(cmd)
 
     def move_by_distance(self, meters: float, direction: str = "forward", speed_mph: float = None, speed_mps: float = None, waypoint_name: str = None):
         # Calculate speed in cm/s
@@ -636,9 +654,12 @@ class MotionCommandBuilder:
         }
         self._direction_set = False  # Track if direction was explicitly set
     
-    def direction(self, dir_str: str) -> 'MotionCommandBuilder':
+    def direction(self, dir_enum: Direction) -> 'MotionCommandBuilder':
         """Set absolute movement direction (North, South, East, West, etc.)"""
-        self.cmd["direction"] = dir_str
+        if not isinstance(dir_enum, Direction):
+             raise ValueError(f"Direction must be a Direction Enum (e.g. Direction.FORWARD). Got: {dir_enum}")
+             
+        self.cmd["direction"] = dir_enum.value
         self._direction_set = True
         return self
     

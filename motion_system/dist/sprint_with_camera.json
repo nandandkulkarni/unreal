@@ -36,9 +36,9 @@
         {
             "command": "move",
             "actor": "Runner1",
-            "direction": "forward",
             "start_speed": 0.0,
             "radius": 0.5,
+            "direction": "Forward",
             "left_boundary": 2.44,
             "right_boundary": 3.66,
             "meters": 100.0,
@@ -72,11 +72,13 @@
         {
             "command": "move",
             "actor": "Runner2",
-            "direction": "South",
             "start_speed": 0.0,
             "radius": 0.5,
+            "direction": "South",
             "meters": 21.0,
-            "seconds": 7.0
+            "seconds": 7.0,
+            "speed_mtps": 3.0,
+            "target_speed": 3.0
         },
         {
             "command": "face",
@@ -93,11 +95,13 @@
         {
             "command": "move",
             "actor": "Runner2",
-            "direction": "North",
             "start_speed": 0.0,
             "radius": 0.5,
+            "direction": "North",
             "meters": 79.0,
-            "seconds": 8.0
+            "seconds": 8.0,
+            "speed_mtps": 9.875,
+            "target_speed": 9.875
         },
         {
             "command": "animation",
@@ -187,6 +191,12 @@
             "command": "wait",
             "actor": "FrontCam",
             "seconds": 0.0
+        },
+        {
+            "command": "add_audio",
+            "asset_path": "/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality",
+            "start_time": 0.0,
+            "volume": 1.0
         },
         {
             "command": "camera_cut",

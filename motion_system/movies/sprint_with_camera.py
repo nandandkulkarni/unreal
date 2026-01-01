@@ -8,7 +8,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from motion_builder import MovieBuilder
+from motion_builder import MovieBuilder, Direction
 
 def define_movie():
     """Define 100m sprint with tracking camera"""
@@ -24,18 +24,18 @@ def define_movie():
         with movie.simultaneous():
             # Runner 1 (Standard Sprint)
             with movie.for_actor("Runner1") as r:
-                r.move_straight().in_corridor(2.44, 3.66).anim("Jog_Fwd").distance_at_speed(100.0, 10.0)
+                r.move_straight().direction(Direction.FORWARD).in_corridor(2.44, 3.66).anim("Jog_Fwd").distance_at_speed(100.0, 10.0)
                 r.stay().anim("Idle").till_end()
 
             # Runner 2 (Walk then Run)
             with movie.for_actor("Runner2") as r:
                 # Face South and move South (running forward while facing South)
-                r.face("South", duration=0.1)
-                r.move_straight().direction("South").anim("Jog_Fwd").distance_in_time(21.0, 7.0)
+                r.face(Direction.SOUTH, duration=0.1)
+                r.move_straight().direction(Direction.SOUTH).anim("Jog_Fwd").distance_in_time(21.0, 7.0)
                 
                 # Turn to face North and continue moving North
-                r.face("North", duration=0.1)
-                r.move_straight().direction("North").anim("Jog_Fwd").distance_in_time(79.0, 8.0)
+                r.face(Direction.NORTH, duration=0.1)
+                r.move_straight().direction(Direction.NORTH).anim("Jog_Fwd").distance_in_time(79.0, 8.0)
                 r.stay().till_end().anim("Idle")
             
         # --- Camera Setup ---
@@ -64,6 +64,7 @@ def define_movie():
             cam.stay().till_end()
 
         # Cut plan
+        movie.add_audio(asset_path="/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality", start_time=0.0)
         movie.at_time(0.0).camera_cut("FrontCam")
         
         movie.save_to_json("dist/sprint_with_camera.json")

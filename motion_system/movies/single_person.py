@@ -7,21 +7,23 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from motion_builder import MovieBuilder
+from motion_builder import MovieBuilder, Direction
 
 def define_movie():
     """Define single person sequence"""
     
-    with MovieBuilder("Single Person", fps=60) as movie:
+    with MovieBuilder("Single Person Test", fps=60) as movie:
         # Add actor
-        movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=-90, radius=0.5, height=1.8)
+        movie.add_actor("Runner1", location=(0, 0, 0), yaw_offset=-90)
         
         # Runner 1 (Standard Sprint)
         with movie.for_actor("Runner1") as r:
-            r.move_straight().anim("Jog_Fwd").by_distance(50.0).speed(10.0).in_corridor(2.44, 3.66)
-            r.face("South")
-            r.move_straight().anim("Jog_Fwd").by_distance(25.0).speed(10.0).in_corridor(2.44, 3.66)
-            r.face("North")
+            # Face South
+            r.face(Direction.SOUTH)
+            r.move_straight().direction(Direction.SOUTH).distance_in_time(2.0, 1.0)
+            r.face(Direction.NORTH)
+            r.move_straight().direction(Direction.NORTH).distance_in_time(2.0, 1.0)
+            r.face(Direction.NORTH)
             r.move_straight().anim("Jog_Fwd").by_distance(75.0).speed(10.0).in_corridor(2.44, 3.66)
         # --- Camera Setup ---
         

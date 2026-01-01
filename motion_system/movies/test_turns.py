@@ -9,7 +9,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from motion_builder import MovieBuilder
+from motion_builder import MovieBuilder, Direction
 
 def define_movie():
     """Define rotation and movement test sequence"""
@@ -22,28 +22,28 @@ def define_movie():
         
         with movie.for_actor("TestActor") as a:
             # Phase 1: 4 turns (0-8s) - Spins in place
-            a.face("East", duration=2.0, anim="Jog_Fwd")
-            a.face("South", duration=2.0, anim="Jog_Fwd")
-            a.face("West", duration=2.0, anim="Jog_Fwd")
-            a.face("North", duration=2.0, anim="Jog_Fwd")
+            a.face(Direction.EAST, duration=2.0, anim="Jog_Fwd")
+            a.face(Direction.SOUTH, duration=2.0, anim="Jog_Fwd")
+            a.face(Direction.WEST, duration=2.0, anim="Jog_Fwd")
+            a.face(Direction.NORTH, duration=2.0, anim="Jog_Fwd")
             
             # Phase 2: 4 path segments (8-24s)
             # We must face the direction FIRST, then move forward.
             
             # Segment 1: Move North (Already facing North from Phase 1)
-            a.move_straight().direction("North").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
+            a.move_straight().direction(Direction.NORTH).anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Segment 2: Turn East then Move East
-            a.face("East", duration=2.0)
-            a.move_straight().direction("East").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
+            a.face(Direction.EAST, duration=2.0)
+            a.move_straight().direction(Direction.EAST).anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Segment 3: Turn South then Move South
-            a.face("South", duration=2.0)
-            a.move_straight().direction("South").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
+            a.face(Direction.SOUTH, duration=2.0)
+            a.move_straight().direction(Direction.SOUTH).anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Segment 4: Turn West then Move West
-            a.face("West", duration=2.0)
-            a.move_straight().direction("West").anim("Jog_Fwd").distance_in_time(10.0, 5.0)
+            a.face(Direction.WEST, duration=2.0)
+            a.move_straight().direction(Direction.WEST).anim("Jog_Fwd").distance_in_time(10.0, 5.0)
             
             # Terminal State: Stay until the end of the shot
             a.stay().anim("Idle").till_end()
