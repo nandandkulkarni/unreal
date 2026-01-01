@@ -748,6 +748,8 @@ def process_turn_right(cmd, state, fps):
 def process_animation(cmd, state, fps):
     """Change animation"""
     anim_name = cmd.get("name")
+    speed_mult = cmd.get("speed_multiplier", 1.0)
+    
     if not anim_name:
         log("  ⚠ No animation name specified")
         return
@@ -762,12 +764,13 @@ def process_animation(cmd, state, fps):
     new_anim = {
         "name": anim_name,
         "start_frame": current_frame,
-        "end_frame": None  # Will be set when next animation starts or at end
+        "end_frame": None,  # Will be set when next animation starts or at end
+        "speed_multiplier": speed_mult
     }
     state["keyframes"]["animations"].append(new_anim)
     state["current_animation"] = new_anim
     
-    log(f"  Animation: {anim_name} from frame {current_frame}")
+    log(f"  Animation: {anim_name} (x{speed_mult}) from frame {current_frame}")
 
 
 def process_face(cmd, state, fps):

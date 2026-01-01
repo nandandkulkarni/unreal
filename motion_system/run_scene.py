@@ -57,6 +57,8 @@ def run_scene(json_path):
                 except Exception as e:
                     print(f"Warning: Could not reload {full_name}: {e}")
 
+
+
     logger.log_header(f"RUNNING SCENE: {os.path.basename(json_path)}")
     
     if not os.path.exists(json_path):

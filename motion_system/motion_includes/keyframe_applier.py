@@ -310,9 +310,106 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
             import traceback
             log(traceback.format_exc())
 
-    # Apply animation keyframes (only for skeletal mesh actors)
-    if hasattr(actor, 'skeletal_mesh_component') or isinstance(actor, unreal.SkeletalMeshActor):
-        apply_animation_keyframes(binding, keyframes, duration_frames, actor_name)
+    # Apply animation keyframes (Robust Check)
+    # Check for SkeletalMeshActor, Character, or anything with a skeletal mesh component
+    is_skeletal = False
+    if isinstance(actor, unreal.SkeletalMeshActor) or isinstance(actor, unreal.Character):
+        is_skeletal = True
+    elif hasattr(actor, "get_component_by_class") and actor.get_component_by_class(unreal.SkeletalMeshComponent):
+        is_skeletal = True
+        
+    if is_skeletal:
+        file_log(f"  Detected Skeletal Mesh actor: {actor_name} (Type: {type(actor)})") # DEBUG
+        apply_animation_keyframes(binding, keyframes, duration_frames, actor_name, file_log)
+    else:
+        file_log(f"  Skipping animation for {actor_name} (Not a SkeletalMeshActor/Character)") # DEBUG
+        
+def apply_animation_keyframes(binding, keyframes, duration_frames, actor_name, logger_func=log):
+    """Apply animation sections to skeletal mesh"""
+    try:
+        logger_func("  [DEBUG] Entering apply_animation_keyframes")
+        anim_list = keyframes.get("animations", [])
+        logger_func(f"  [DEBUG] Found {len(anim_list)} animations for {actor_name}")
+        
+        if not anim_list:
+            logger_func("  [DEBUG] No animations to apply, returning")
+            return
+        
+        # Add skeletal animation track
+        logger_func("  [DEBUG] About to add track...")
+        try:
+            track_class = unreal.MovieSceneSkeletalAnimationTrack
+            logger_func(f"  [DEBUG] Track class: {track_class}")
+            
+            # Use binding.add_track
+            logger_func(f"  [DEBUG] Calling binding.add_track on {binding}")
+            anim_track = binding.add_track(track_class)
+            logger_func(f"  [DEBUG] Success! Track created: {anim_track}")
+        except Exception as e:
+             logger_func(f"  ⚠ CRASH during track creation: {e}")
+             import traceback
+             logger_func(traceback.format_exc())
+             return
+        
+        if not anim_track:
+            logger_func(f"  ⚠ Could not create animation track for {actor_name} (returned None)")
+            return
+        
+        for i, anim_data in enumerate(anim_list):
+            anim_name = anim_data["name"]
+            start_frame = anim_data["start_frame"]
+            end_frame = anim_data.get("end_frame", duration_frames)
+            logger_func(f"  [DEBUG] Processing Anim {i}: {anim_name} ({start_frame}-{end_frame})")
+            
+            # Create animation section
+            try:
+                anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
+                logger_func(f"  [DEBUG] Section added: {anim_section}")
+                unreal.MovieSceneSectionExtensions.set_range(anim_section, start_frame, end_frame)
+                logger_func(f"  [DEBUG] Range set for {anim_name}")
+            except Exception as e:
+                logger_func(f"  ⚠ CRASH during section setup for {anim_name}: {e}")
+                continue
+            
+            # Load animation
+            anim_path = f"/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/{anim_name}.{anim_name}"
+            logger_func(f"  [DEBUG] Loading asset: {anim_path}")
+            try:
+                anim = unreal.load_object(None, anim_path)
+            except Exception as e:
+                logger_func(f"  ⚠ CRASH during load_object for {anim_name}: {e}")
+                anim = None
+            
+            if anim:
+                logger_func(f"  [DEBUG] Asset loaded: {anim}")
+                
+                # Apply animation
+                params = anim_section.params
+                params.animation = anim
+                
+                # Try applying speed multiplier (PlayRate)
+                play_rate = anim_data.get("speed_multiplier", 1.0)
+                try:
+                    # In newer Unreal (5.4+), play_rate is a MovieSceneTimeWarpVariant struct
+                    # It has a specific method to set float values
+                    if hasattr(params.play_rate, 'set_fixed_play_rate'):
+                        params.play_rate.set_fixed_play_rate(float(play_rate))
+                    else:
+                        # Fallback for older versions
+                        params.play_rate = float(play_rate)
+                except Exception as e:
+                    logger_func(f"  ⚠ Could not set play_rate for {anim_name}: {e}")
+                
+                anim_section.params = params
+                logger_func(f"  ✓ Anim {i}: '{anim_name}' [{start_frame}-{end_frame}] (PlayRate: {play_rate}) applied")
+            else:
+                logger_func(f"  ⚠ Animation '{anim_name}' not found at {anim_path}")
+        
+        logger_func(f"  ✓ Added {len(anim_list)} animation sections total")
+    except Exception as e:
+        import traceback
+        logger_func(f"  ⚠ TOP-LEVEL CRASH in apply_animation_keyframes: {e}")
+        logger_func(traceback.format_exc())
 
 
 def apply_transform_keyframes(section, keyframes, actor_name):
@@ -350,42 +447,4 @@ def apply_transform_keyframes(section, keyframes, actor_name):
     log(f"  ✓ Added {len(rot_keys)} rotation keyframes (Smooth/Cubic)")
 
 
-def apply_animation_keyframes(binding, keyframes, duration_frames, actor_name):
-    """Apply animation sections to skeletal mesh"""
-    anim_list = keyframes.get("animations", [])
-    if not anim_list:
-        return
-    
-    # Add skeletal animation track
-    anim_track = unreal.MovieSceneBindingExtensions.add_track(
-        binding,
-        unreal.MovieSceneSkeletalAnimationTrack
-    )
-    
-    if not anim_track:
-        log(f"  ⚠ Could not create animation track for {actor_name}")
-        return
-    
-    for anim_data in anim_list:
-        anim_name = anim_data["name"]
-        start_frame = anim_data["start_frame"]
-        end_frame = anim_data.get("end_frame", duration_frames)
-        
-        # Create animation section
-        anim_section = unreal.MovieSceneTrackExtensions.add_section(anim_track)
-        unreal.MovieSceneSectionExtensions.set_range(anim_section, start_frame, end_frame)
-        
-        # Load animation
-        # anim_path = f"/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/{anim_name}.{anim_name}"
-        # TEMPORARY: Force Jog_Fwd as requested
-        anim_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd"
-        anim = unreal.load_object(None, anim_path)
-        
-        if anim:
-            params = anim_section.params
-            params.animation = anim
-            log(f"  ✓ Animation '{anim_name}' [{start_frame}-{end_frame}]")
-        else:
-            log(f"  ⚠ Animation '{anim_name}' not found at {anim_path}")
-    
-    log(f"  ✓ Added {len(anim_list)} animation sections")
+

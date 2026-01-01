@@ -221,10 +221,7 @@ class ActorBuilder:
 
 
     # --- Actions ---
-    def animation(self, name: str):
-        # Animations don't inherently advance time unless we know their duration (which we don't here)
-        # So we just add the command. User must use .wait() or .move() for time.
-        return self._add({"command": "animation", "name": name})
+
 
     def wait(self, seconds: float):
         self.state.time += seconds
@@ -544,6 +541,10 @@ class MotionCommandBuilder:
     def for_seconds(self, s: float):
         self.cmd["seconds"] = s
         return self
+        
+    def seconds(self, s: float):
+        """Alias for for_seconds"""
+        return self.for_seconds(s)
 
     def by_distance(self, m: float):
         self.cmd["meters"] = m
@@ -572,6 +573,20 @@ class MotionCommandBuilder:
     def at_mps(self, mps: float):
         """Set speed in meters per second (alias for speed())"""
         return self.speed(mps)
+    
+    def anim(self, name: str, speed_multiplier: float = 1.0):
+        """
+        Set animation for this movement segment.
+        Executed immediately (BEFORE the move command is finalized).
+        """
+        cmd = {
+            "command": "animation",
+            "actor": self.ab.actor_name,
+            "name": name,
+            "speed_multiplier": speed_multiplier
+        }
+        self.ab.mb.add_command(cmd)
+        return self
     
     def at_kph(self, kph: float):
         """Set speed in kilometers per hour"""

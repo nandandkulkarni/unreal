@@ -29,8 +29,9 @@
         },
         {
             "command": "animation",
+            "actor": "Runner1",
             "name": "Jog_Fwd",
-            "actor": "Runner1"
+            "speed_multiplier": 1.0
         },
         {
             "command": "move",
@@ -47,8 +48,9 @@
         },
         {
             "command": "animation",
-            "name": "Jog_Fwd",
-            "actor": "Runner2"
+            "actor": "Runner2",
+            "name": "Jog_Bwd",
+            "speed_multiplier": 1.0
         },
         {
             "command": "move",
@@ -56,12 +58,27 @@
             "direction": "forward",
             "start_speed": 0.0,
             "radius": 0.5,
-            "meters": 100.0,
+            "meters": 21.0,
+            "speed_mtps": 3.0,
+            "target_speed": 3.0,
+            "seconds": 7.0
+        },
+        {
+            "command": "animation",
+            "actor": "Runner2",
+            "name": "Jog_Fwd",
+            "speed_multiplier": 1.0
+        },
+        {
+            "command": "move",
+            "actor": "Runner2",
+            "direction": "forward",
+            "start_speed": 3.0,
+            "radius": 0.5,
+            "meters": 79.0,
             "speed_mtps": 10.5,
             "target_speed": 10.5,
-            "left_boundary": 1.22,
-            "right_boundary": 2.44,
-            "seconds": 9.523809523809524
+            "seconds": 8.0
         },
         {
             "command": "add_camera",

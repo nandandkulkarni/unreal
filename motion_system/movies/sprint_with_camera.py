@@ -22,13 +22,13 @@ def define_movie():
         
         # Runner 1 (Standard Sprint)
         with movie.for_actor("Runner1") as r:
-            r.animation("Jog_Fwd")
-            r.move().by_distance(100.0).speed(10.0).in_corridor(2.44, 3.66)
+            r.move().anim("Jog_Fwd").by_distance(100.0).speed(10.0).in_corridor(2.44, 3.66)
 
-        # Runner 2 (Slightly faster)
+        # Runner 2 (Walk then Run)
         with movie.for_actor("Runner2") as r:
-            r.animation("Jog_Fwd")
-            r.move().by_distance(100.0).speed(10.5).in_corridor(1.22, 2.44)
+            # Walk then run (Move-First syntax)
+            r.move().anim("Jog_Bwd").by_distance(21.0).speed(3.0).seconds(7.0)
+            r.move().anim("Jog_Fwd").by_distance(79.0).speed(10.5).seconds(8.0)
             
         # --- Camera Setup ---
         
