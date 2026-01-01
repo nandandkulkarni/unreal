@@ -44,13 +44,15 @@ unreal.execute_python_file("path/to/my_scene.py")
 - **[unreal_builder_test.py](file:///c:/UnrealProjects/coding/unreal/motion_system/unreal_builder_test.py)**: The in-engine test script.
 - **[run_builder_test_remote.py](file:///c:/UnrealProjects/coding/unreal/motion_system/run_builder_test_remote.py)**: The remote runner utility.
 
-### API Clarity: `move_straight` Refactor
 
-Renamed the core movement method to be more explicit about its behavior:
+### API Clarity: `move_straight` Refactor & Rotation Fix
 
-- **Refactor**: Renamed `.move()` to `.move_straight()` across all builders (`ActorBuilder`, `MotionCommandBuilder`, `CameraCommandBuilder`).
-- **Robustness**: Updated `motion_math.py` to handle cardinal directions case-insensitively (e.g., "South" now works as well as "south").
-- **Validation**: Verified that both `single_person.py` and `sprint_with_camera.py` build and run correctly with the new API.
+Renamed the core movement method and fixed a critical rotation bug:
+
+- **Refactor**: Renamed `.move()` to `.move_straight()` across all builders.
+- **Bug Fix**: Resolved a silent failure where actor rotations (`face()` command) were not applying. The issue was caused by shadowed/duplicate math functions in `motion_planner.py` that didn't support capitalized directions.
+- **Robustness**: The planner now strictly uses the centralized `motion_math.py` library, ensuring consistent case-insensitive handling for "South", "East", etc.
+- **Verification**: Validated with `movies/test_turns.py`, confirming rotation keyframes (0, 90, 180, 270, 360) are correctly generated.
 
 ```python
 # Before

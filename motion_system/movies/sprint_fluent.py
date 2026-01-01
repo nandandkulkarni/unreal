@@ -1,7 +1,7 @@
 """
 100m Sprint - Fluent API Demonstration
 
-Uses chained .move() commands, velocity ramping, and corridor constraints.
+Uses chained .move_straight() commands, velocity ramping, and corridor constraints.
 """
 
 import sys
@@ -25,21 +25,21 @@ def define_movie():
         # Runner 1 Choreography
         with movie.for_actor("Runner1") as r:
             r.animation("Jog_Fwd")
-            r.move() \
+            r.move_straight() \
                 .by_distance(20.0).velocity(to=10.0, start_from=0.0).in_corridor(2.44, 3.66) \
-                .move() \
+                .move_straight() \
                 .by_distance(80.0).speed(10.0).in_corridor(2.44, 3.66) \
-                .move() \
+                .move_straight() \
                 .for_seconds(3.0).velocity(to=0.0).in_corridor(2.44, 3.66)
 
         # Runner 2 Choreography (Lane 2: 1.22m - 2.44m)
         with movie.for_actor("Runner2") as r:
             r.animation("Jog_Fwd")
-            r.move() \
+            r.move_straight() \
                 .by_distance(22.0).velocity(to=10.5, start_from=0.0).in_corridor(1.22, 2.44) \
-                .move() \
+                .move_straight() \
                 .by_distance(78.0).speed(10.5).in_corridor(1.22, 2.44) \
-                .move() \
+                .move_straight() \
                 .for_seconds(3.0).velocity(to=0.0).in_corridor(1.22, 2.44)
             
         movie.add_camera("SideView", location=(5000, -1000, 200)).rotation((0, 90, 0)).add()

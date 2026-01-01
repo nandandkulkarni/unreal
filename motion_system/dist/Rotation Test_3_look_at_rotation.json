@@ -1,0 +1,102 @@
+{
+  "pass": "3_look_at_rotation",
+  "actors": {
+    "TestActor": {
+      "keyframes": {
+        "location": [],
+        "rotation": [
+          {
+            "frame": 0,
+            "pitch": 0.0,
+            "yaw": 0.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 120,
+            "pitch": 0.0,
+            "yaw": 90.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 120,
+            "pitch": 0.0,
+            "yaw": 90.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 240,
+            "pitch": 0.0,
+            "yaw": 180.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 240,
+            "pitch": 0.0,
+            "yaw": 180.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 360,
+            "pitch": 0.0,
+            "yaw": 270.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 360,
+            "pitch": 0.0,
+            "yaw": 270.0,
+            "roll": 0.0
+          },
+          {
+            "frame": 480,
+            "pitch": 0.0,
+            "yaw": 360.0,
+            "roll": 0.0
+          }
+        ],
+        "animations": []
+      },
+      "look_at_timeline": [],
+      "focus_timeline": [],
+      "frame_subject_timeline": []
+    },
+    "Observer": {
+      "keyframes": {
+        "location": [
+          {
+            "frame": 0,
+            "x": -300.0,
+            "y": 0.0,
+            "z": 150.0
+          }
+        ],
+        "rotation": [],
+        "animations": [],
+        "look_at_target": [
+          {
+            "frame": 0,
+            "value": "TestActor",
+            "interp_speed": 0.0
+          }
+        ]
+      },
+      "look_at_timeline": [
+        {
+          "start_time": 0.0,
+          "end_time": 10.0,
+          "subject": "TestActor",
+          "height_pct": 0.7,
+          "interp_speed": 0.0
+        }
+      ],
+      "focus_timeline": [],
+      "frame_subject_timeline": []
+    }
+  },
+  "camera_cuts": [
+    {
+      "camera": "Observer",
+      "time": 0.0
+    }
+  ]
+}

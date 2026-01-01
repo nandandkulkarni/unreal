@@ -14,6 +14,8 @@ from motion_includes import mannequin_setup
 from motion_includes import camera_setup
 from motion_includes import sequence_setup
 from motion_includes import light_setup
+from motion_math import get_cardinal_angle, get_shortest_path_yaw, calculate_direction_vector
+
 
 
 def save_planning_debug(pass_name, actor_states, camera_cuts, scene_name="movie"):
@@ -401,38 +403,8 @@ def process_camera_cut(cmd, camera_cuts):
     log(f"  ✓ Camera cut to '{camera_name}' at {at_time}s")
 
 
-def get_cardinal_angle(direction, offset=None):
-    """Get absolute world angle for a cardinal direction string"""
-    if offset is None:
-        # If no offset is given, compound directions (north_east) default to perfect diagonal (45)
-        offset = 45 if "_" in direction else 0
-        
-    # Absolute Cardinal Mappings (Degrees in Unreal: North=0, East=90, South=180, West=-90)
-    cardinal_angles = {
-        "north": 0,
-        "east": 90,
-        "south": 180,
-        "west": -90,
-        "north_east": 0 + offset,   # Offset from North (0) toward East (+90)
-        "north_west": 0 - offset,   # Offset from North (0) toward West (-90)
-        "south_east": 180 - offset, # Offset from South (180) toward East (+90)
-        "south_west": 180 + offset, # Offset from South (180) toward West (-90)
-        "east_north": 90 - offset,  # Offset from East (90) toward North (0)
-        "east_south": 90 + offset,  # Offset from East (90) toward South (180)
-        "west_north": -90 + offset, # Offset from West (-90) toward North (0)
-        "west_south": -90 - offset  # Offset from West (-90) toward South (-180)
-    }
-    
-    return cardinal_angles.get(direction)
 
-
-def get_shortest_path_yaw(current_yaw, target_yaw):
-    """Calculate target yaw that minimizes rotation distance from current_yaw"""
-    delta = (target_yaw - current_yaw) % 360
-    if delta > 180:
-        delta -= 360
-    return current_yaw + delta
-
+# Math functions are now imported from motion_math
 
 def get_speed_cm_per_sec(cmd):
     """Convert speed to cm/s"""
@@ -443,33 +415,9 @@ def get_speed_cm_per_sec(cmd):
     elif "speed_mps" in cmd:  # Legacy support
         return cmd["speed_mps"] * 100  # m/s to cm/s
     else:
-        log("  ⚠ No speed specified, using default 100 cm/s")
+        # Default fallback
         return 100.0
 
-
-def calculate_direction_vector(direction, yaw_degrees, offset=None):
-    """Calculate movement vector from direction and current yaw/offset"""
-    cardinal_angle = get_cardinal_angle(direction, offset)
-    
-    if cardinal_angle is not None:
-        angle_rad = math.radians(cardinal_angle)
-        return {"x": math.cos(angle_rad), "y": math.sin(angle_rad)}
-    
-    yaw_rad = math.radians(yaw_degrees)
-    forward_x = math.cos(yaw_rad)
-    forward_y = math.sin(yaw_rad)
-    
-    if direction == "forward":
-        return {"x": forward_x, "y": forward_y}
-    elif direction == "backward":
-        return {"x": -forward_x, "y": -forward_y}
-    elif direction == "left":
-        return {"x": -forward_y, "y": forward_x}  # 90° left
-    elif direction == "right":
-        return {"x": forward_y, "y": -forward_x}  # 90° right
-    else:
-        log(f"  ⚠ Unknown direction: {direction}")
-        return {"x": forward_x, "y": forward_y}
 
 
 def add_location_keyframe(state, frame, pos):
