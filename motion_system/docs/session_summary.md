@@ -134,6 +134,61 @@ Automated screenshot capture for visual verification.
 
 ---
 
+### 6. Audio Support ✅
+Enable synchronizing sound effects and music with motion.
+
+**API:**
+```python
+movie.add_audio(
+    asset_path="/Game/Audio/Footsteps",
+    start_time=2.0,
+    duration=5.0,
+    volume=0.8
+)
+```
+
+**Implementation:**
+- `add_audio` command in `MovieBuilder`
+- Processing in `motion_planner.py`
+- Application in `sequence_setup.py` using `add_track(unreal.MovieSceneAudioTrack)` (Fixed potential crash)
+- Module reloading strategy updated in `run_scene.py`
+
+**Verified:** ✅ `movies/audio_test.py` verified successfully (ReturnValue: True).
+
+---
+
+## Files Modified
+
+### Core System
+- `motion_builder.py` - Added `frame_subject()`, speed unit methods, **`add_audio()`**
+- `motion_planner.py` - Added focal length calculation and **audio command processing**
+- `camera_setup.py` - Split into `enable_lookat_tracking()` and `enable_focus_tracking()`
+- `sequence_setup.py` - **Added `apply_audio_tracks()` and fixed track creation**
+- `run_scene.py` - Added frame capture trigger and **updated module reloading**
+
+### New Files
+- `motion_includes/frame_capture.py` - Frame capture utility
+- `qa_tool.py` - QA workflow tool
+- `movies/speed_units_demo.py` - Speed units demonstration
+- **`movies/audio_test.py` - Audio verification**
+- **`motion_validator.py` - JSON command validator**
+
+### Updated Scripts
+- `movies/sprint_with_camera.py` - Uses auto-framing and QA metadata
+
+---
+
+## Verification Results
+
+### Audio
+```
+✓ Audio command processed: /Game/Free_Sounds_Pack/wav/Wood_Move_2-1
+✓ Audio track 1 added successfully:
+  Asset: /Game/Free_Sounds_Pack/wav/Wood_Move_2-1
+  Start: 0.0s
+  Duration: 10.0s
+```
+
 ## Next Steps
 
 1. **Fix Frame Capture Timing** - Debug why frames 0 and 300 weren't captured

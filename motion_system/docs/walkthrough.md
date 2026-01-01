@@ -12,17 +12,47 @@ I have refactored the animation system to ensure robust transitions and precise 
 
 ## How to Use
 
-### Define your sequence
-Create a python script using the fluent `MovieBuilder` API. Animations must be part of a `move()` chain:
+### Movement with Terminal Constraint Methods
+`move_straight()` requires an explicit cardinal direction and uses terminal constraint methods to prevent overconstrained physics:
 
 ```python
-with builder.for_actor("Belica") as belica:
-    # Animate while moving (with optional speed multiplier)
-    belica.move().anim("Jog_Fwd", speed_multiplier=1.2).by_distance(10).speed(5.0)
-    
-    # Standard wait
-    belica.wait(2.0)
+# Three constraint patterns (pick ONE):
+a.move_straight().direction("North").anim("Jog_Fwd").distance_in_time(21.0, 7.0)  # Calculates speed
+a.move_straight().direction("East").anim("Jog_Fwd").distance_at_speed(100.0, 10.0)  # Calculates time
+a.move_straight().direction("South").anim("Run").time_at_speed(5.0, 8.0)  # Calculates distance
 ```
+
+**Key Rules:**
+- `.direction()` is **mandatory** - must specify cardinal direction (North, South, East, West, etc.)
+- Terminal methods (`distance_in_time`, `distance_at_speed`, `time_at_speed`) commit the move and return `ActorBuilder`
+- Cannot chain multiple constraint methods - they're mutually exclusive by design
+
+### Rotations with Animations
+The `face()` method now supports optional animations during turns:
+
+```python
+a.face("East", duration=2.0, anim="Turn_Right")
+```
+
+### Stationary Actions: the `stay()` Verb
+The `stay()` verb is the primary way to manage stationary actors, allowing for chained animations and explicit timeline termination.
+
+```python
+a.stay().for_time(2.0).anim("Idle")
+a.stay().till_end() # Fills remaining movie time
+```
+
+### TimeSpan Utility
+Explicit duration handling using `TimeSpan` prevents ambiguity between frames and seconds.
+
+```python
+from motion_builder import TimeSpan
+a.move_straight().for_time(TimeSpan.from_seconds(5.0))
+a.stay().for_time(TimeSpan.from_frames(120, fps=60))
+```
+
+### "Strict Director" Gap Detection
+The `MovieBuilder` now enforces timeline accountability for all "managed" actors. If a gap is detected between an actor's last command and the end of the movie, a `MotionTimelineError` is raised. Use `.stay().till_end()` to resolve these gaps.
 
 ## Verification Artifacts
 - **[motion_builder.py](file:///c:/UnrealProjects/coding/unreal/motion_system/motion_builder.py)**: The core class.
