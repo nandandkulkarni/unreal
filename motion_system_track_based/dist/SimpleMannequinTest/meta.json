@@ -1,0 +1,10 @@
+{
+  "name": "SimpleMannequinTest",
+  "fps": 60,
+  "create_new_level": true,
+  "duration": 0,
+  "actors": [
+    "Mannequin",
+    "Camera"
+  ]
+}

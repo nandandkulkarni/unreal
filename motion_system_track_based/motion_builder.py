@@ -65,6 +65,32 @@ class DistanceUnit(Enum):
     Feet = 0.3048
 
 
+class LightType(Enum):
+    POINT = "Point"
+    DIRECTIONAL = "Directional"
+    SPOT = "Spot"
+    RECT = "Rect"
+    SKY = "Sky"
+
+class LightColor(Enum):
+    # Standard Temps
+    WHITE = (1.0, 1.0, 1.0)
+    WARM_WHITE = (1.0, 0.9, 0.7)
+    COOL_WHITE = (0.7, 0.8, 1.0)
+    # Basic Colors
+    RED = (1.0, 0.0, 0.0)
+    GREEN = (0.0, 1.0, 0.0)
+    BLUE = (0.0, 0.0, 1.0)
+    # Nature
+    SUNLIGHT = (1.0, 0.95, 0.9)
+    MOONLIGHT = (0.6, 0.7, 0.9)
+
+class LightUnit(Enum):
+    UNITLESS = 0
+    LUMENS = 1
+    CANDELAS = 2
+
+
 class TimeUnit(Enum):
     """Time units with conversion factor to seconds."""
     Seconds = 1.0
@@ -299,6 +325,107 @@ class ActorTrackSet:
 
 
 # =============================================================================
+# BUILDER CLASSES
+# =============================================================================
+
+class LightBuilder:
+    """
+    Fluent API for configuring a light source.
+    """
+    def __init__(self, movie_builder: 'MovieBuilder', name: str, light_type: LightType, location: Tuple[float, float, float]):
+        self._movie_builder = movie_builder
+        self._light_data = {
+            "command": "add_light",
+            "actor": name,
+            "type": light_type.value,
+            "location": list(location),
+            "intensity": 5000.0, # Default intensity
+            "color": LightColor.WHITE.value,
+            "rotation": [0, 0, 0], # Default rotation [roll, pitch, yaw]
+            "attenuation_radius": 1000.0, # Default for point/spot
+            "source_radius": 0.0, # Default for rect/spot
+            "source_length": 0.0, # Default for rect/spot
+            "barn_door_angle": 90.0, # Default for rect
+            "barn_door_length": 50.0, # Default for rect
+            "inner_cone_angle": 0.0, # Default for spot
+            "outer_cone_angle": 44.0, # Default for spot
+            "cast_shadows": True,
+            "use_as_atmospheric_sun": False # Only for directional
+        }
+        if not hasattr(self._movie_builder, '_scene_commands'):
+            self._movie_builder._scene_commands = []
+        self._movie_builder._scene_commands.append(self._light_data)
+
+    def intensity(self, value: float, unit: LightUnit = LightUnit.LUMENS) -> 'LightBuilder':
+        """Set the light's intensity."""
+        self._light_data["intensity"] = value
+        self._light_data["intensity_unit"] = unit.name # Store unit name for backend
+        return self
+
+    def color(self, color: Union[LightColor, Tuple[float, float, float]]) -> 'LightBuilder':
+        """Set the light's color."""
+        if isinstance(color, LightColor):
+            self._light_data["color"] = color.value
+        else:
+            self._light_data["color"] = list(color)
+        return self
+
+    def rotation(self, roll: float = 0.0, pitch: float = 0.0, yaw: float = 0.0) -> 'LightBuilder':
+        """Set the light's rotation (degrees)."""
+        self._light_data["rotation"] = [roll, pitch, yaw]
+        return self
+
+    def attenuation_radius(self, radius: float) -> 'LightBuilder':
+        """Set the light's attenuation radius (cm). Relevant for Point/Spot."""
+        self._light_data["attenuation_radius"] = radius
+        return self
+    
+    def cast_shadows(self, enable: bool) -> 'LightBuilder':
+        """Enable or disable shadow casting for the light."""
+        self._light_data["cast_shadows"] = enable
+        return self
+
+    # Specific properties for different light types
+    def source_radius(self, radius: float) -> 'LightBuilder':
+        """Set the source radius (cm). Relevant for Rect/Spot."""
+        self._light_data["source_radius"] = radius
+        return self
+
+    def source_length(self, length: float) -> 'LightBuilder':
+        """Set the source length (cm). Relevant for Rect."""
+        self._light_data["source_length"] = length
+        return self
+    
+    def barn_door_angle(self, angle: float) -> 'LightBuilder':
+        """Set the barn door angle (degrees). Relevant for Rect."""
+        self._light_data["barn_door_angle"] = angle
+        return self
+    
+    def barn_door_length(self, length: float) -> 'LightBuilder':
+        """Set the barn door length (cm). Relevant for Rect."""
+        self._light_data["barn_door_length"] = length
+        return self_
+
+    def inner_cone_angle(self, angle: float) -> 'LightBuilder':
+        """Set the inner cone angle (degrees). Relevant for Spot."""
+        self._light_data["inner_cone_angle"] = angle
+        return self
+
+    def outer_cone_angle(self, angle: float) -> 'LightBuilder':
+        """Set the outer cone angle (degrees). Relevant for Spot."""
+        self._light_data["outer_cone_angle"] = angle
+        return self
+    
+    def use_as_atmospheric_sun(self, enable: bool) -> 'LightBuilder':
+        """Set whether this directional light acts as the atmospheric sun."""
+        if self._light_data["type"] == LightType.DIRECTIONAL.value:
+            self._light_data["use_as_atmospheric_sun"] = enable
+        else:
+            print(f"Warning: 'use_as_atmospheric_sun' is only applicable to Directional lights. Ignoring for {self._light_data['type']} light.")
+        return self
+
+
+# =============================================================================
 # MOVIE BUILDER (Main API)
 # =============================================================================
 
@@ -336,6 +463,7 @@ class MovieBuilder:
         self.actors: Dict[str, ActorTrackSet] = {}
         self.current_time = 0.0
         self._output_folder = None
+        self._scene_commands: List[Dict[str, Any]] = [] # For floor, lights, etc.
     
     def __enter__(self):
         return self
@@ -952,29 +1080,60 @@ class StayCommandBuilder:
         actor.stay().till_end().anim("Idle")
     """
     
+class StayCommandBuilder:
+    """
+    Builder for stationary commands.
+    
+    Fluent API:
+        actor.stay().for_time(2.0).anim("Idle")
+        actor.stay().till_end().anim("Idle")
+    """
+    
     def __init__(self, actor_builder: ActorBuilder):
         self.ab = actor_builder
+        self.start_time = self.ab._current_time
     
     def for_time(self, duration: float) -> 'StayCommandBuilder':
         """Stay for specified duration."""
         self._duration = duration
+        
+        # Apply the stay (add end keyframe)
+        # We keep the SAME location and rotation
+        end_time = self.start_time + duration
+        end_frame = int(end_time * self.ab.mb.fps)
+        
+        # Ensure we have the current state captured at end frame
+        loc = self.ab.track_set.initial_state["location"]
+        rot = self.ab.track_set.initial_state["rotation"]
+        
+        self.ab.track_set.transform.add_keyframe(
+            end_frame, 
+            loc[0], loc[1], loc[2], 
+            rot[0], rot[1], rot[2]
+        )
+        
+        # Advance actor time
+        self.ab._current_time = end_time
+        
         return self
     
     def till_end(self) -> 'StayCommandBuilder':
         """Stay until movie ends (resolved at finalization)."""
         # For now, just use a large duration
         # TODO: Implement proper till_end resolution
-        self._duration = 999999
-        return self
+        duration = 100.0 # Default fallback
+        if self.ab.mb.duration > 0:
+            duration = max(0, self.ab.mb.duration - self.start_time)
+            
+        return self.for_time(duration)
     
     def anim(self, name: str, speed_multiplier: float = 1.0) -> 'StayCommandBuilder':
         """Set idle animation during stay."""
         # Generate animation segment for stay duration
         if hasattr(self, '_duration') and self.ab.track_set.animation:
-            start_frame = int(self.ab._current_time * self.ab.mb.fps)
-            end_frame = int((self.ab._current_time + self._duration) * self.ab.mb.fps)
+            start_frame = int(self.start_time * self.ab.mb.fps)
+            end_frame = int((self.start_time + self._duration) * self.ab.mb.fps)
             self.ab.track_set.animation.add_segment(start_frame, end_frame, name, speed_multiplier)
-            self.ab._current_time += self._duration
         return self
 
 

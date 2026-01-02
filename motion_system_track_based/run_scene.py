@@ -75,7 +75,7 @@ def run_scene(movie_folder: str):
     reload_modules()
     
     import motion_planner
-    from motion_includes import cleanup, sequence_setup, camera_setup, mannequin_setup, keyframe_applier
+    from motion_includes import cleanup, sequence_setup, camera_setup, mannequin_setup, keyframe_applier, light_setup
     
     log(f"")
     log(f"{'='*60}")
@@ -128,6 +128,9 @@ def run_scene(movie_folder: str):
         
         # Load initial state from transform track
         transform_path = os.path.join(actor_folder, "transform.json")
+        location = unreal.Vector(0, 0, 0)
+        rotation = unreal.Rotator(0, 0, 0)
+        
         if os.path.exists(transform_path):
             with open(transform_path, 'r', encoding='utf-8') as f:
                 transform_data = json.load(f)
@@ -144,40 +147,73 @@ def run_scene(movie_folder: str):
                 # Track max frames
                 for kf in transform_data:
                     total_frames = max(total_frames, kf.get("frame", 0))
-        else:
-            location = unreal.Vector(0, 0, 0)
-            rotation = unreal.Rotator(0, 0, 0)
-        
-        # Determine if actor or camera
+
+        # Check for settings to determine type
         settings_path = os.path.join(actor_folder, "settings.json")
-        is_camera = os.path.exists(settings_path)
+        actor_type = "mannequin" # default
+        settings = {}
         
-        if is_camera:
+        if os.path.exists(settings_path):
+            try:
+                with open(settings_path, 'r', encoding='utf-8') as f:
+                    settings = json.load(f)
+                    actor_type = settings.get("actor_type", "camera") # Assume camera if settings exists but no type
+            except Exception as e:
+                log(f"  ⚠ Failed to load settings for {actor_name}: {e}")
+        
+        actor_obj = None
+        binding = None
+        
+        if actor_type == "camera":
             # Create camera
             log(f"  Creating camera: {actor_name}")
-            camera = camera_setup.create_camera(actor_name, location=location, rotation=rotation)
+            actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation)
             
-            if camera:
-                binding = sequence_setup.add_actor_to_sequence(sequence, camera, actor_name)
-                actors_info[actor_name] = {
-                    "actor": camera,
-                    "binding": binding,
-                    "location": location,
-                    "rotation": rotation
-                }
-        else:
+        elif actor_type == "light":
+            # Create light
+            # Light properties are in 'properties' key of settings usually? 
+            # ActorTrackSet puts type in top level or properties?
+            # Let's check LightBuilder again. 
+            # track_set.initial_state["properties"] has the details.
+            # But settings.json usually contains the 'properties' dict.
+            # Wait, ActorTrackSet.to_dict(): 'settings.json' = self.initial_state["properties"]
+            # But 'actor_type' is passed to ActorTrackSet init. 
+            # ActorTrackSet.to_dict puts actor_type in meta.json? No, meta just lists names.
+            # ActorTrackSet writes type WHERE?
+            # Im motion_builder.py, ActorTrackSet doesn't seem to write type explicitly to settings unless in properties!
+            # LightBuilder puts 'light_type' in properties.
+            # So settings.json will have "light_type".
+            # But how do we distinguish from Camera (which has "fov")?
+            
+            # Update: I will check 'light_type' key in settings.
+            if "light_type" in settings:
+                log(f"  Creating Light: {actor_name}")
+                actor_obj = light_setup.create_light(actor_name, location, rotation, settings)
+            else:
+                # Fallback logic
+                pass
+                
+        elif actor_type == "mannequin":
             # Create mannequin actor
             log(f"  Creating actor: {actor_name}")
-            actor = mannequin_setup.create_mannequin(actor_name, location, rotation)
-            
-            if actor:
-                binding = sequence_setup.add_actor_to_sequence(sequence, actor, actor_name)
-                actors_info[actor_name] = {
-                    "actor": actor,
-                    "binding": binding,
-                    "location": location,
-                    "rotation": rotation
-                }
+            actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
+
+        # Logic for dispatching based on properties
+        if "light_type" in settings:
+             actor_obj = light_setup.create_light(actor_name, location, rotation, settings)
+        elif "fov" in settings or actor_type=="camera":
+             actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation)
+        else:
+             actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
+
+        if actor_obj:
+            binding = sequence_setup.add_actor_to_sequence(sequence, actor_obj, actor_name)
+            actors_info[actor_name] = {
+                "actor": actor_obj,
+                "binding": binding,
+                "location": location,
+                "rotation": rotation
+            }
     
     # Add buffer frames
     total_frames += 60
