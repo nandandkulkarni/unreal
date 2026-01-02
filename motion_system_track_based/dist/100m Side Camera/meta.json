@@ -1,0 +1,10 @@
+{
+  "name": "100m Side Camera",
+  "fps": 60,
+  "create_new_level": true,
+  "duration": 11.0,
+  "actors": [
+    "Person",
+    "SideCam"
+  ]
+}

@@ -369,8 +369,16 @@ class ActorTrackSet:
         self.transform.save(actor_folder)
         if self.animation:
             self.animation.save(actor_folder)
-        if self.settings:
+        
+        # For cameras and lights, write properties to settings.json
+        # This enables run_scene.py to detect actor type via "fov" or "light_type"
+        if self.actor_type in ("camera", "light") and self.initial_state.get("properties"):
+            settings_path = os.path.join(actor_folder, "settings.json")
+            with open(settings_path, 'w', encoding='utf-8') as f:
+                json.dump(self.initial_state["properties"], f, indent=2)
+        elif self.settings:
             self.settings.save(actor_folder)
+            
         # Save attach track if it has sections
         if self.attach.sections:
             self.attach.save(actor_folder)
