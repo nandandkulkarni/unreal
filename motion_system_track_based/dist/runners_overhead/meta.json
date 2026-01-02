@@ -1,0 +1,12 @@
+{
+  "name": "runners_overhead",
+  "fps": 60,
+  "create_new_level": true,
+  "duration": 17.6,
+  "actors": [
+    "Runner1",
+    "Runner2",
+    "OverheadFrontCam",
+    "StaticOverheadCam"
+  ]
+}

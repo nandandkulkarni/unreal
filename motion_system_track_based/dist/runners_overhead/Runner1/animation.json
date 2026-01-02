@@ -1,0 +1,26 @@
+[
+  {
+    "start_frame": 12,
+    "end_frame": 312,
+    "name": "Jog_Fwd",
+    "speed_multiplier": 1.0
+  },
+  {
+    "start_frame": 324,
+    "end_frame": 624,
+    "name": "Jog_Fwd",
+    "speed_multiplier": 1.0
+  },
+  {
+    "start_frame": 636,
+    "end_frame": 936,
+    "name": "Jog_Fwd",
+    "speed_multiplier": 1.0
+  },
+  {
+    "start_frame": 936,
+    "end_frame": 60000876,
+    "name": "Idle",
+    "speed_multiplier": 1.0
+  }
+]
