@@ -280,6 +280,54 @@ class CameraSettingsTrack(Track):
         return self
 
 
+class AttachTrack(Track):
+    """
+    Track for actor attachment.
+    
+    1:1 mapping with Unreal's MovieScene3DAttachTrack.
+    Output: attach.json
+    """
+    def __init__(self):
+        super().__init__("attach")
+        self.sections: List[Dict[str, Any]] = []
+    
+    def add_section(self, 
+                    parent_actor: str,
+                    socket_name: str = "",
+                    start_frame: int = 0,
+                    end_frame: int = None,
+                    location_rule: str = "KEEP_RELATIVE",
+                    rotation_rule: str = "KEEP_RELATIVE",
+                    scale_rule: str = "KEEP_RELATIVE") -> 'AttachTrack':
+        """
+        Add an attachment section.
+        
+        Args:
+            parent_actor: Name of parent actor to attach to
+            socket_name: Optional socket on parent's skeletal mesh
+            start_frame: Frame when attachment begins
+            end_frame: Frame when attachment ends (None = until end)
+            location_rule: KEEP_RELATIVE, KEEP_WORLD, or SNAP_TO_TARGET
+            rotation_rule: KEEP_RELATIVE, KEEP_WORLD, or SNAP_TO_TARGET
+            scale_rule: KEEP_RELATIVE, KEEP_WORLD, or SNAP_TO_TARGET
+        """
+        section = {
+            "parent_actor": parent_actor,
+            "socket_name": socket_name,
+            "start_frame": start_frame,
+            "end_frame": end_frame,
+            "location_rule": location_rule,
+            "rotation_rule": rotation_rule,
+            "scale_rule": scale_rule
+        }
+        self.sections.append(section)
+        return self
+    
+    def to_dict(self) -> List[Dict[str, Any]]:
+        """Return sections list."""
+        return self.sections
+
+
 # =============================================================================
 # ACTOR TRACK SET
 # =============================================================================
@@ -302,6 +350,7 @@ class ActorTrackSet:
         self.transform = TransformTrack()
         self.animation = AnimationTrack() if actor_type == "actor" else None
         self.settings = CameraSettingsTrack() if actor_type == "camera" else None
+        self.attach = AttachTrack()  # All actor types can be attached
         self.initial_state = {
             "location": [0, 0, 0],
             "rotation": [0, 0, 0],  # [roll, pitch, yaw]
@@ -322,6 +371,9 @@ class ActorTrackSet:
             self.animation.save(actor_folder)
         if self.settings:
             self.settings.save(actor_folder)
+        # Save attach track if it has sections
+        if self.attach.sections:
+            self.attach.save(actor_folder)
 
 
 # =============================================================================
@@ -374,6 +426,16 @@ class LightBuilder:
                 "use_as_atmospheric_sun": self._use_atmospheric_sun
             }
         }
+        
+        # Add attachment if specified
+        if hasattr(self, '_attach_parent'):
+            track_set.attach.add_section(
+                parent_actor=self._attach_parent,
+                socket_name=getattr(self, '_attach_socket', ""),
+                start_frame=0,
+                end_frame=None  # Until end of sequence
+            )
+        
         self.mb.actors[self.name] = track_set
 
     def intensity(self, value: float, unit: LightUnit = LightUnit.UNITLESS) -> 'LightBuilder':
@@ -443,6 +505,22 @@ class LightBuilder:
         """
         self._inner_cone = inner
         self._outer_cone = outer
+        self._finalize()
+        return self
+    
+    def attach_to(self, parent_actor: str, socket: str = "") -> 'LightBuilder':
+        """
+        Attach light to another actor.
+        
+        Args:
+            parent_actor: Name of actor to attach to
+            socket: Optional socket name on parent's skeletal mesh
+        
+        Returns:
+            Self for chaining
+        """
+        self._attach_parent = parent_actor
+        self._attach_socket = socket
         self._finalize()
         return self
 
@@ -1257,6 +1335,21 @@ class CameraBuilder:
         self._look_at_height_pct = height_pct
         return self
     
+    def attach_to(self, parent_actor: str, socket: str = "") -> 'CameraBuilder':
+        """
+        Attach camera to another actor.
+        
+        Args:
+            parent_actor: Name of actor to attach to
+            socket: Optional socket name on parent's skeletal mesh
+        
+        Returns:
+            Self for chaining
+        """
+        self._attach_parent = parent_actor
+        self._attach_socket = socket
+        return self
+    
     def add(self) -> MovieBuilder:
         """Finalize and add camera to movie."""
         # Create camera track set
@@ -1270,6 +1363,16 @@ class CameraBuilder:
                 "look_at_height_pct": getattr(self, '_look_at_height_pct', 0.7)
             }
         }
+        
+        # Add attachment if specified
+        if hasattr(self, '_attach_parent'):
+            track_set.attach.add_section(
+                parent_actor=self._attach_parent,
+                socket_name=getattr(self, '_attach_socket', ""),
+                start_frame=0,
+                end_frame=None  # Until end of sequence
+            )
+        
         self.mb.actors[self.name] = track_set
         return self.mb
 

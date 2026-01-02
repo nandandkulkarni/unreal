@@ -46,6 +46,8 @@ def reload_modules():
         "motion_includes.camera_setup",
         "motion_includes.mannequin_setup",
         "motion_includes.keyframe_applier",
+        "motion_includes.light_setup",
+        "motion_includes.attach_setup",
     ]
     
     for mod_name in modules_to_reload:
@@ -75,7 +77,7 @@ def run_scene(movie_folder: str):
     reload_modules()
     
     import motion_planner
-    from motion_includes import cleanup, sequence_setup, camera_setup, mannequin_setup, keyframe_applier, light_setup
+    from motion_includes import cleanup, sequence_setup, camera_setup, mannequin_setup, keyframe_applier, light_setup, attach_setup
     
     log(f"")
     log(f"{'='*60}")
@@ -208,16 +210,35 @@ def run_scene(movie_folder: str):
 
         if actor_obj:
             binding = sequence_setup.add_actor_to_sequence(sequence, actor_obj, actor_name)
+            
+            # Load attach.json if it exists
+            attach_path = os.path.join(actor_folder, "attach.json")
+            attachment_data = None
+            if os.path.exists(attach_path):
+                try:
+                    with open(attach_path, 'r', encoding='utf-8') as f:
+                        attach_sections = json.load(f)
+                    if attach_sections:  # Non-empty list
+                        attachment_data = attach_sections[0]  # First section
+                        log(f"    → Attachment to: {attachment_data.get('parent_actor')}")
+                except Exception as e:
+                    log(f"    ⚠ Failed to load attach.json: {e}")
+            
             actors_info[actor_name] = {
                 "actor": actor_obj,
                 "binding": binding,
                 "location": location,
-                "rotation": rotation
+                "rotation": rotation,
+                "attachment": attachment_data
             }
-    
     # Add buffer frames
     total_frames += 60
     sequence.set_playback_end(total_frames)
+    
+    # Process attachments AFTER all actors are spawned
+    log(f"")
+    log(f"Processing attachments...")
+    attach_setup.process_attachments(sequence, actors_info, fps)
     
     # 6. Apply keyframes to each actor
     for actor_name, data in keyframe_data_all.get("actors", {}).items():
