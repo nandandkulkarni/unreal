@@ -10764,3 +10764,51 @@ Processing actor: Cam
   [DEBUG] Entering apply_animation_keyframes
   [DEBUG] Found 0 animations for Cam
   [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: Runner
+  Location keys: 4, Rotation keys: 4
+  Detected Skeletal Mesh actor: Runner (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 2 animations for Runner
+  [DEBUG] About to add track...
+  [DEBUG] Track class: <class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Calling binding.add_track on <Struct 'MovieSceneBindingProxy' (0x00000150AC9BCE80) {binding_id: {}, sequence: "/Script/LevelSequence.LevelSequence'/Game/Sequences/Test_Attached_Camera_001.Test_Attached_Camera_001'"}>
+  [DEBUG] Success! Track created: <Object '/Game/Sequences/Test_Attached_Camera_001.Test_Attached_Camera_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1' (0x00000150B651A000) Class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Processing Anim 0: Jog_Fwd (60-460)
+  [DEBUG] Section added: <Object '/Game/Sequences/Test_Attached_Camera_001.Test_Attached_Camera_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1.MovieSceneSkeletalAnimationSection_0' (0x0000014F73A35F00) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Jog_Fwd
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd' (0x0000015037C61C00) Class 'AnimSequence'>
+  ✓ Anim 0: 'Jog_Fwd' [60-460] (PlayRate: 1.0) applied
+  [DEBUG] Processing Anim 1: Idle (460-580)
+  [DEBUG] Section added: <Object '/Game/Sequences/Test_Attached_Camera_001.Test_Attached_Camera_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1.MovieSceneSkeletalAnimationSection_1' (0x0000014F73A30500) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 1: 'Idle' [460-580] (PlayRate: 1.0) applied
+  ✓ Added 2 animation sections total
+
+=== Keyframe Application Start ===
+Processing actor: HeadCam
+  Location keys: 0, Rotation keys: 0
+  Detected Skeletal Mesh actor: HeadCam (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for HeadCam
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: HandLight
+  Location keys: 0, Rotation keys: 0
+  Detected Skeletal Mesh actor: HandLight (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for HandLight
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: Overview
+  Location keys: 0, Rotation keys: 0
+  Detected Skeletal Mesh actor: Overview (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for Overview
+  [DEBUG] No animations to apply, returning
