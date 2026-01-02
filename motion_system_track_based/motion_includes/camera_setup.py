@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """
 Camera creation and configuration
 """
 import unreal
-import logger
-from logger import log, log_header
+# import logger
+# from logger import log, log_header
 
 
 def create_camera_marker(location, color_name="red", owner_name="Camera"):
@@ -263,3 +277,4 @@ def position_camera_behind_mannequin(camera, mannequin, follow_distance=300.0, f
 
     except Exception as e:
         log(f"⚠ Warning: Could not position camera behind mannequin: {e}")
+

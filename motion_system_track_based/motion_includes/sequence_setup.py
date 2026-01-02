@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """ 
 Sequence creation and configuration
 """
 import unreal
 from datetime import datetime
-from logger import log, log_header
+# from logger import log, log_header
 
 
 import json
@@ -92,11 +106,11 @@ def create_sequence(fps=30, duration_seconds=60, test_name=None):
 
 def add_actor_to_sequence(sequence, actor, actor_name="Actor"):
     """Add actor to sequence as possessable and return binding"""
-    import logger
+    # import logger
     
-    logger.log(f"Adding {actor_name} to sequence...")
+    log(f"Adding {actor_name} to sequence...")
     binding = unreal.MovieSceneSequenceExtensions.add_possessable(sequence, actor)
-    logger.log(f"✓ {actor_name} added to sequence")
+    log(f"✓ {actor_name} added to sequence")
     
     return binding
 
@@ -110,7 +124,7 @@ def apply_camera_cuts(sequence, camera_cuts, actors_info, fps):
         actors_info: Dictionary of actor information including bindings
         fps: Frames per second
     """
-    from logger import log
+    # from logger import log
     
     if not camera_cuts:
         log("  No camera cuts to apply")
@@ -121,18 +135,17 @@ def apply_camera_cuts(sequence, camera_cuts, actors_info, fps):
     # Get or create camera cuts track using the same API as motion_commands.py
     camera_cut_track = sequence.add_track(unreal.MovieSceneCameraCutTrack)
     
-    # Sort cuts by time
-    sorted_cuts = sorted(camera_cuts, key=lambda x: x["time"])
+    # Sort cuts by frame
+    sorted_cuts = sorted(camera_cuts, key=lambda x: x.get("frame", int(x.get("time", 0) * fps)))
     
     # Add camera cut sections
     for i, cut in enumerate(sorted_cuts):
         camera_name = cut["camera"]
-        start_time = cut["time"]
-        start_frame = int(start_time * fps)
+        start_frame = cut.get("frame", int(cut.get("time", 0) * fps))
         
         # Determine end frame (next cut or sequence end)
         if i + 1 < len(sorted_cuts):
-            end_frame = int(sorted_cuts[i + 1]["time"] * fps)
+            end_frame = sorted_cuts[i + 1].get("frame", int(sorted_cuts[i + 1].get("time", 0) * fps))
         else:
             # Last cut goes to end of sequence
             end_frame = sequence.get_playback_end()
@@ -156,7 +169,7 @@ def apply_camera_cuts(sequence, camera_cuts, actors_info, fps):
         binding_id.set_editor_property("guid", camera_binding.get_id())
         section.set_camera_binding_id(binding_id)
         
-        log(f"  ✓ Cut {i+1}: {camera_name} from {start_time}s (frame {start_frame}) to frame {end_frame}")
+        log(f"  ✓ Cut {i+1}: {camera_name} from frame {start_frame} to frame {end_frame}")
     
     log(f"✓ Applied {len(sorted_cuts)} camera cut(s)")
 
@@ -240,3 +253,4 @@ def apply_audio_tracks(sequence, audio_tracks, fps):
             log(f"  ❌ Error creating audio track: {e}")
             import traceback
             log(traceback.format_exc())
+

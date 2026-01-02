@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """
 Directional light creation and configuration
 """
 import unreal
-import logger
-from logger import log, log_header
+# import logger
+# from logger import log, log_header
 
 
 # Cardinal direction to yaw mapping
@@ -195,3 +209,4 @@ def create_rect_light(name, location, rotation, intensity="bright",
     
     log(f"✓ Rect light '{name}' created")
     return light_actor
+

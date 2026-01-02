@@ -55,7 +55,7 @@ def define_movie():
                   .distance_at_speed((DistanceUnit.Meters, 30), (SpeedUnit.MetersPerSecond, 6))
                 r2.stay().till_end().anim("Idle")
 
-        movie.save_to_json("dist/runners_overhead.json")
+        movie.save_to_tracks("dist/")
 
     movie.run(to_unreal=True)
 

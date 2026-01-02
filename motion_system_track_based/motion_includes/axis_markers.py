@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """
 Axis Markers - Create visual reference markers at world origin
 """
 import unreal
-import logger
-from logger import log
+# import logger
+# from logger import log
 
 
 def create_axis_markers():
@@ -106,3 +120,4 @@ def create_axis_markers():
     )
 
     log("✓ Axis markers created (Red: +X, Yellow: -X, Blue: +Y, Purple: -Y)")
+

@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """
 Visual aids - origin markers, axis indicators, debug cubes
 """
 import unreal
-import logger
-from logger import log
+# import logger
+# from logger import log
 
 
 def create_plus_sign_at_origin():
@@ -118,3 +132,4 @@ def create_plus_sign_at_origin():
             log("⚠ Warning: Could not load cube mesh for plus sign")
     except Exception as e:
         log(f"⚠ Warning: Could not create plus sign: {e}")
+

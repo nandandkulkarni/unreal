@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """ 
 Level creation and management logic.
 """
 import unreal
-import logger
-from logger import log, log_header
+# import logger
+# from logger import log, log_header
 
 def create_basic_level():
     """Create a new level based on the Basic (Template_Default) template."""
@@ -45,3 +59,4 @@ def save_current_level(level_path):
     else:
         log(f"✗ Failed to save level to: {level_path}")
     return success
+

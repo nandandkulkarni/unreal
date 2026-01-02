@@ -1,11 +1,25 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """
 Keyframe Applier - Pass 2: Apply keyframe data to Unreal
 
 Takes structured keyframe data and creates actual Unreal sequencer keyframes.
 """
 import unreal
-import logger
-from logger import log
+# import logger
+# from logger import log
 
 
 def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, duration_frames, sequence=None):
@@ -445,6 +459,7 @@ def apply_transform_keyframes(section, keyframes, actor_name):
         add_smooth_key(rotation_channels[2], frame, key["yaw"])
     
     log(f"  ✓ Added {len(rot_keys)} rotation keyframes (Smooth/Cubic)")
+
 
 
 

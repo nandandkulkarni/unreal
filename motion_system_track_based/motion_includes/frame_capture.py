@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """
 Frame Capture Utility - Capture frames from sequences for visual verification
 Uses tick callbacks to ensure proper rendering before capture
 """
 import unreal
-from logger import log
+# from logger import log
 import os
 
 
@@ -184,3 +198,4 @@ def capture_verification_frames(sequence, frames, output_dir, movie_name):
     # Note: This returns immediately - capture happens asynchronously via ticks
     # The callback will unregister itself when done
     return state.captured_paths
+

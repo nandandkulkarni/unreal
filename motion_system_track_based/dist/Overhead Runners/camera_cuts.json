@@ -1,0 +1,10 @@
+[
+  {
+    "time": 0,
+    "camera": "OverheadFrontCam"
+  },
+  {
+    "time": 6,
+    "camera": "StaticOverheadCam"
+  }
+]

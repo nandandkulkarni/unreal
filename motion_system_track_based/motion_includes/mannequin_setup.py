@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """
 Mannequin/character creation and configuration
 """
 import unreal
-import logger
-from logger import log, log_header
+# import logger
+# from logger import log, log_header
 
 
 def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=None, mesh_rotation=None):
@@ -136,3 +150,4 @@ def add_axis_origin(location=None):
     spawn_thick_line("Y_Axis_Thick_Green", location, end_y, 50.0, "Green")
     
     log("✓ Added Thick Axis Visual Markers (50cm width: X-North-Red, Y-East-Green)")
+

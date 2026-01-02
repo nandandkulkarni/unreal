@@ -1,9 +1,23 @@
+# Simple inline logger functions for motion_includes
+# This avoids import conflicts with other logger modules in the Python path
+
+def log(message, log_file=None):
+    """Print message"""
+    print(message)
+
+def log_header(title):
+    """Print header"""
+    print("=" * 60)
+    print(title)
+    print("=" * 60)
+
+
 """ 
 Cleanup utilities - Delete old test assets and actors
 """
 import unreal
-import logger
-from logger import log, log_header
+# import logger
+# from logger import log, log_header
 
 
 def close_open_sequences():
@@ -94,3 +108,4 @@ def cleanup_old_assets(keep_sequence=False):
     else:
         log("\nSkipping sequence deletion (keep_sequence=True)")
     delete_old_actors()
+
