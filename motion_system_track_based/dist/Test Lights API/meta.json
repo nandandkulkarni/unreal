@@ -1,0 +1,13 @@
+{
+  "name": "Test Lights API",
+  "fps": 60,
+  "create_new_level": true,
+  "duration": 5.0,
+  "actors": [
+    "Moon",
+    "Lamp",
+    "Spot",
+    "Mannequin",
+    "Cam"
+  ]
+}

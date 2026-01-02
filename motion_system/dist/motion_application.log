@@ -10714,3 +10714,53 @@ Processing actor: MyMannequin_01
 Processing actor: Camera
   Location keys: 0, Rotation keys: 0
   Skipping animation for Camera (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: Moon
+  Location keys: 0, Rotation keys: 0
+  Detected Skeletal Mesh actor: Moon (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for Moon
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: Lamp
+  Location keys: 0, Rotation keys: 0
+  Detected Skeletal Mesh actor: Lamp (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for Lamp
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: Spot
+  Location keys: 0, Rotation keys: 0
+  Detected Skeletal Mesh actor: Spot (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for Spot
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: Mannequin
+  Location keys: 1, Rotation keys: 1
+  Detected Skeletal Mesh actor: Mannequin (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 1 animations for Mannequin
+  [DEBUG] About to add track...
+  [DEBUG] Track class: <class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Calling binding.add_track on <Struct 'MovieSceneBindingProxy' (0x0000014FDCFFA460) {binding_id: {}, sequence: "/Script/LevelSequence.LevelSequence'/Game/Sequences/Test_Lights_API_001.Test_Lights_API_001'"}>
+  [DEBUG] Success! Track created: <Object '/Game/Sequences/Test_Lights_API_001.Test_Lights_API_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1' (0x000001509CD68E80) Class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Processing Anim 0: Idle (0-300)
+  [DEBUG] Section added: <Object '/Game/Sequences/Test_Lights_API_001.Test_Lights_API_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1.MovieSceneSkeletalAnimationSection_0' (0x0000014FDEF13200) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 0: 'Idle' [0-300] (PlayRate: 1.0) applied
+  ✓ Added 1 animation sections total
+
+=== Keyframe Application Start ===
+Processing actor: Cam
+  Location keys: 0, Rotation keys: 0
+  Detected Skeletal Mesh actor: Cam (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for Cam
+  [DEBUG] No animations to apply, returning

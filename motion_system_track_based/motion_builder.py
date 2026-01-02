@@ -331,97 +331,119 @@ class ActorTrackSet:
 class LightBuilder:
     """
     Fluent API for configuring a light source.
+    Auto-adds to movie when chain completes (no explicit .add() needed).
     """
     def __init__(self, movie_builder: 'MovieBuilder', name: str, light_type: LightType, location: Tuple[float, float, float]):
-        self._movie_builder = movie_builder
-        self._light_data = {
-            "command": "add_light",
-            "actor": name,
-            "type": light_type.value,
-            "location": list(location),
-            "intensity": 5000.0, # Default intensity
-            "color": LightColor.WHITE.value,
-            "rotation": [0, 0, 0], # Default rotation [roll, pitch, yaw]
-            "attenuation_radius": 1000.0, # Default for point/spot
-            "source_radius": 0.0, # Default for rect/spot
-            "source_length": 0.0, # Default for rect/spot
-            "barn_door_angle": 90.0, # Default for rect
-            "barn_door_length": 50.0, # Default for rect
-            "inner_cone_angle": 0.0, # Default for spot
-            "outer_cone_angle": 44.0, # Default for spot
-            "cast_shadows": True,
-            "use_as_atmospheric_sun": False # Only for directional
-        }
-        if not hasattr(self._movie_builder, '_scene_commands'):
-            self._movie_builder._scene_commands = []
-        self._movie_builder._scene_commands.append(self._light_data)
+        self.mb = movie_builder
+        self.name = name
+        self.light_type = light_type
+        self.location = location
+        
+        # Default properties
+        self._rotation = (0, 0, 0)
+        self._intensity = 5000.0
+        self._intensity_unit = LightUnit.UNITLESS
+        self._color = LightColor.WHITE
+        self._attenuation_radius = 1000.0
+        self._inner_cone = 0.0
+        self._outer_cone = 44.0
+        self._cast_shadows = True
+        self._use_atmospheric_sun = False
+        
+        # Auto-add on creation (lights don't need explicit .add() call)
+        self._finalize()
 
-    def intensity(self, value: float, unit: LightUnit = LightUnit.LUMENS) -> 'LightBuilder':
+    def _finalize(self):
+        """Internal: Add light to movie's actor list."""
+        # Convert color to tuple if Enum
+        rgb = self._color.value if isinstance(self._color, LightColor) else self._color
+        
+        track_set = ActorTrackSet(self.name, actor_type="light")
+        track_set.initial_state = {
+            "location": list(self.location),
+            "rotation": list(self._rotation),
+            "properties": {
+                "light_type": self.light_type.value,
+                "intensity": self._intensity,
+                "intensity_unit": self._intensity_unit.name,
+                "color": list(rgb),
+                "attenuation_radius": self._attenuation_radius,
+                "inner_cone_angle": self._inner_cone,
+                "outer_cone_angle": self._outer_cone,
+                "cast_shadows": self._cast_shadows,
+                "use_as_atmospheric_sun": self._use_atmospheric_sun
+            }
+        }
+        self.mb.actors[self.name] = track_set
+
+    def intensity(self, value: float, unit: LightUnit = LightUnit.UNITLESS) -> 'LightBuilder':
         """Set the light's intensity."""
-        self._light_data["intensity"] = value
-        self._light_data["intensity_unit"] = unit.name # Store unit name for backend
+        self._intensity = value
+        self._intensity_unit = unit
+        self._finalize()  # Re-finalize with updated values
         return self
 
     def color(self, color: Union[LightColor, Tuple[float, float, float]]) -> 'LightBuilder':
         """Set the light's color."""
-        if isinstance(color, LightColor):
-            self._light_data["color"] = color.value
-        else:
-            self._light_data["color"] = list(color)
+        self._color = color
+        self._finalize()
         return self
 
     def rotation(self, roll: float = 0.0, pitch: float = 0.0, yaw: float = 0.0) -> 'LightBuilder':
         """Set the light's rotation (degrees)."""
-        self._light_data["rotation"] = [roll, pitch, yaw]
+        self._rotation = (roll, pitch, yaw)
+        self._finalize()
         return self
 
     def attenuation_radius(self, radius: float) -> 'LightBuilder':
         """Set the light's attenuation radius (cm). Relevant for Point/Spot."""
-        self._light_data["attenuation_radius"] = radius
+        self._attenuation_radius = radius
+        self._finalize()
         return self
     
     def cast_shadows(self, enable: bool) -> 'LightBuilder':
         """Enable or disable shadow casting for the light."""
-        self._light_data["cast_shadows"] = enable
+        self._cast_shadows = enable
+        self._finalize()
         return self
-
-    # Specific properties for different light types
-    def source_radius(self, radius: float) -> 'LightBuilder':
-        """Set the source radius (cm). Relevant for Rect/Spot."""
-        self._light_data["source_radius"] = radius
-        return self
-
-    def source_length(self, length: float) -> 'LightBuilder':
-        """Set the source length (cm). Relevant for Rect."""
-        self._light_data["source_length"] = length
-        return self
-    
-    def barn_door_angle(self, angle: float) -> 'LightBuilder':
-        """Set the barn door angle (degrees). Relevant for Rect."""
-        self._light_data["barn_door_angle"] = angle
-        return self
-    
-    def barn_door_length(self, length: float) -> 'LightBuilder':
-        """Set the barn door length (cm). Relevant for Rect."""
-        self._light_data["barn_door_length"] = length
-        return self_
 
     def inner_cone_angle(self, angle: float) -> 'LightBuilder':
         """Set the inner cone angle (degrees). Relevant for Spot."""
-        self._light_data["inner_cone_angle"] = angle
+        self._inner_cone = angle
+        self._finalize()
         return self
 
     def outer_cone_angle(self, angle: float) -> 'LightBuilder':
         """Set the outer cone angle (degrees). Relevant for Spot."""
-        self._light_data["outer_cone_angle"] = angle
+        self._outer_cone = angle
+        self._finalize()
         return self
     
     def use_as_atmospheric_sun(self, enable: bool) -> 'LightBuilder':
         """Set whether this directional light acts as the atmospheric sun."""
-        if self._light_data["type"] == LightType.DIRECTIONAL.value:
-            self._light_data["use_as_atmospheric_sun"] = enable
+        if self.light_type == LightType.DIRECTIONAL:
+            self._use_atmospheric_sun = enable
+            self._finalize()
         else:
-            print(f"Warning: 'use_as_atmospheric_sun' is only applicable to Directional lights. Ignoring for {self._light_data['type']} light.")
+            print(f"Warning: 'use_as_atmospheric_sun' is only applicable to Directional lights.")
+        return self
+    
+    # Convenience methods
+    def radius(self, value: float) -> 'LightBuilder':
+        """Convenience alias for attenuation_radius()."""
+        return self.attenuation_radius(value)
+    
+    def cone(self, inner: float, outer: float) -> 'LightBuilder':
+        """
+        Convenience method to set both cone angles at once.
+        
+        Args:
+            inner: Inner cone angle in degrees
+            outer: Outer cone angle in degrees
+        """
+        self._inner_cone = inner
+        self._outer_cone = outer
+        self._finalize()
         return self
 
 
@@ -583,39 +605,72 @@ class MovieBuilder:
         })
         return self
     
-    def add_directional_light(self, actor_name: str,
-                              direction_from: str = "west",
-                              angle: str = "low",
-                              intensity: str = "bright",
-                              color: str = "golden",
-                              atmosphere_sun: bool = True) -> 'MovieBuilder':
+    # --- Light Methods (Enum-based) ---
+    
+    def add_light_point(self, name: str, location: Tuple[float, float, float]) -> 'LightBuilder':
         """
-        Add a directional light (sun).
+        Add a Point Light (bulb, fire, etc.).
         
         Args:
-            actor_name: Unique light name
-            direction_from: "north", "south", "east", "west"
-            angle: "low", "medium", "high"
-            intensity: "dim", "normal", "bright"
-            color: "white", "golden", "blue"
-            atmosphere_sun: Whether to use as atmospheric sun
+            name: Unique light identifier
+            location: Position (x, y, z) in centimeters
         
         Returns:
-            Self for chaining
+            LightBuilder for fluent configuration
         """
-        if not hasattr(self, '_scene_commands'):
-            self._scene_commands = []
+        return LightBuilder(self, name, LightType.POINT, location)
         
-        self._scene_commands.append({
-            "command": "add_directional_light",
-            "actor": actor_name,
-            "direction_from": direction_from,
-            "angle": angle,
-            "intensity": intensity,
-            "color": color,
-            "atmosphere_sun": atmosphere_sun
-        })
-        return self
+    def add_light_directional(self, name: str) -> 'LightBuilder':
+        """
+        Add a Directional Light (sun, moon).
+        Location is ignored for directional lights.
+        
+        Args:
+            name: Unique light identifier
+        
+        Returns:
+            LightBuilder for fluent configuration
+        """
+        return LightBuilder(self, name, LightType.DIRECTIONAL, (0, 0, 0))
+        
+    def add_light_spot(self, name: str, location: Tuple[float, float, float]) -> 'LightBuilder':
+        """
+        Add a Spot Light (flashlight, stage light).
+        
+        Args:
+            name: Unique light identifier
+            location: Position (x, y, z) in centimeters
+        
+        Returns:
+            LightBuilder for fluent configuration
+        """
+        return LightBuilder(self, name, LightType.SPOT, location)
+        
+    def add_light_rect(self, name: str, location: Tuple[float, float, float]) -> 'LightBuilder':
+        """
+        Add a Rect Light (TV screen, softbox, window).
+        
+        Args:
+            name: Unique light identifier
+            location: Position (x, y, z) in centimeters
+        
+        Returns:
+            LightBuilder for fluent configuration
+        """
+        return LightBuilder(self, name, LightType.RECT, location)
+        
+    def add_light_sky(self, name: str) -> 'LightBuilder':
+        """
+        Add a Sky Light (ambient environment lighting).
+        Location is ignored for sky lights.
+        
+        Args:
+            name: Unique light identifier
+        
+        Returns:
+            LightBuilder for fluent configuration
+        """
+        return LightBuilder(self, name, LightType.SKY, (0, 0, 0))
     
     def for_camera(self, camera_name: str) -> 'CameraCommandBuilder':
         """
