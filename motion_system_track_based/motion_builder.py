@@ -405,6 +405,109 @@ class MovieBuilder:
         """
         return CameraBuilder(self, name, location, fov)
     
+    def add_audio(self, asset_path: str, start_time: float = 0.0,
+                  duration: float = None, volume: float = 1.0) -> 'MovieBuilder':
+        """
+        Add an audio track to the sequence.
+        
+        Args:
+            asset_path: Unreal asset path (e.g., "/Game/Audio/MySound.MySound")
+            start_time: Start time in seconds
+            duration: Duration in seconds (None = full length)
+            volume: Volume multiplier (1.0 = 100%)
+        
+        Returns:
+            Self for chaining
+        """
+        if not hasattr(self, '_audio_tracks'):
+            self._audio_tracks = []
+        
+        self._audio_tracks.append({
+            "asset_path": asset_path,
+            "start_time": start_time,
+            "duration": duration,
+            "volume": volume
+        })
+        return self
+    
+    def add_floor(self, actor_name: str,
+                  location: Tuple[float, float, float] = (0, 0, -0.5),
+                  scale: float = 1000.0) -> 'MovieBuilder':
+        """
+        Add a floor plane.
+        
+        Args:
+            actor_name: Unique floor name
+            location: Floor position (x, y, z)
+            scale: Floor size scaling
+        
+        Returns:
+            Self for chaining
+        """
+        if not hasattr(self, '_scene_commands'):
+            self._scene_commands = []
+        
+        self._scene_commands.append({
+            "command": "add_floor",
+            "actor": actor_name,
+            "location": list(location),
+            "scale": scale
+        })
+        return self
+    
+    def add_directional_light(self, actor_name: str,
+                              direction_from: str = "west",
+                              angle: str = "low",
+                              intensity: str = "bright",
+                              color: str = "golden",
+                              atmosphere_sun: bool = True) -> 'MovieBuilder':
+        """
+        Add a directional light (sun).
+        
+        Args:
+            actor_name: Unique light name
+            direction_from: "north", "south", "east", "west"
+            angle: "low", "medium", "high"
+            intensity: "dim", "normal", "bright"
+            color: "white", "golden", "blue"
+            atmosphere_sun: Whether to use as atmospheric sun
+        
+        Returns:
+            Self for chaining
+        """
+        if not hasattr(self, '_scene_commands'):
+            self._scene_commands = []
+        
+        self._scene_commands.append({
+            "command": "add_directional_light",
+            "actor": actor_name,
+            "direction_from": direction_from,
+            "angle": angle,
+            "intensity": intensity,
+            "color": color,
+            "atmosphere_sun": atmosphere_sun
+        })
+        return self
+    
+    def for_camera(self, camera_name: str) -> 'CameraCommandBuilder':
+        """
+        Get a command builder for an existing camera.
+        
+        Usage:
+            with movie.for_camera("Camera1") as cam:
+                cam.look_at("Runner1")
+                cam.wait(5.0)
+        
+        Args:
+            camera_name: Name of previously added camera
+        
+        Returns:
+            CameraCommandBuilder context manager
+        """
+        if camera_name not in self.actors:
+            raise ValueError(f"Camera '{camera_name}' not found. Add it first with add_camera()")
+        return CameraCommandBuilder(self, camera_name)
+    
     # -------------------------------------------------------------------------
     # Context Managers
     # -------------------------------------------------------------------------
@@ -517,6 +620,18 @@ class MovieBuilder:
             with open(cuts_path, 'w', encoding='utf-8') as f:
                 json.dump(self._camera_cuts, f, indent=2)
         
+        # Save audio tracks if any
+        if hasattr(self, '_audio_tracks') and self._audio_tracks:
+            audio_path = os.path.join(movie_folder, "audio.json")
+            with open(audio_path, 'w', encoding='utf-8') as f:
+                json.dump(self._audio_tracks, f, indent=2)
+        
+        # Save scene commands if any (floors, lights, etc.)
+        if hasattr(self, '_scene_commands') and self._scene_commands:
+            scene_path = os.path.join(movie_folder, "scene.json")
+            with open(scene_path, 'w', encoding='utf-8') as f:
+                json.dump(self._scene_commands, f, indent=2)
+        
         self._output_folder = movie_folder
         print(f"Movie tracks saved to: {movie_folder}")
         return self
@@ -623,6 +738,73 @@ class ActorBuilder:
         self.track_set.transform.add_keyframe(end_frame, loc[0], loc[1], loc[2], 0, 0, final_yaw)
         
         # Update state
+        self.track_set.initial_state["rotation"][1] = final_yaw
+        self._current_time += duration
+        
+        return self
+    
+    def wait(self, seconds: float) -> 'ActorBuilder':
+        """
+        Wait without moving or animating.
+        
+        Args:
+            seconds: Duration to wait
+        
+        Returns:
+            Self for chaining
+        """
+        self._current_time += seconds
+        return self
+    
+    def wait_until(self, time_sec: float) -> 'ActorBuilder':
+        """
+        Wait until a specific time in the sequence.
+        
+        Args:
+            time_sec: Target time in seconds
+        
+        Returns:
+            Self for chaining
+        """
+        if time_sec > self._current_time:
+            self._current_time = time_sec
+        return self
+    
+    def face_actor(self, target_actor_name: str, duration: float = 1.0) -> 'ActorBuilder':
+        """
+        Rotate actor to face another actor.
+        
+        Args:
+            target_actor_name: Name of target actor to face
+            duration: Time to complete rotation
+        
+        Returns:
+            Self for chaining
+        """
+        if target_actor_name not in self.mb.actors:
+            raise ValueError(f"Target actor '{target_actor_name}' not found")
+        
+        target_state = self.mb.actors[target_actor_name].initial_state
+        target_loc = target_state["location"]
+        
+        current_loc = self.track_set.initial_state["location"]
+        
+        # Calculate angle to target
+        dx = target_loc[0] - current_loc[0]
+        dy = target_loc[1] - current_loc[1]
+        target_yaw = math.degrees(math.atan2(dy, dx))
+        
+        current_yaw = self.track_set.initial_state["rotation"][1]
+        final_yaw = motion_math.get_shortest_path_yaw(current_yaw, target_yaw)
+        
+        # Add rotation keyframes
+        start_frame = int(self._current_time * self.mb.fps)
+        end_frame = int((self._current_time + duration) * self.mb.fps)
+        
+        loc = current_loc
+        self.track_set.transform.add_keyframe(start_frame, loc[0], loc[1], loc[2], 0, 0, current_yaw)
+        self.track_set.transform.add_keyframe(end_frame, loc[0], loc[1], loc[2], 0, 0, final_yaw)
+        
         self.track_set.initial_state["rotation"][1] = final_yaw
         self._current_time += duration
         
