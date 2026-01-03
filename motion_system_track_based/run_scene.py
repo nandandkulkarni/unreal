@@ -445,6 +445,14 @@ def run_scene(movie_folder: str):
                     binding = actors_info[actor_name]["binding"]
                     camera_component = camera_obj.get_cine_camera_component()
                     
+                    # CRITICAL: Adjust lens limits to prevent clamping of telephoto shots
+                    max_kf_focal = max(kf["value"] for kf in focal_keyframes)
+                    if max_kf_focal > 200.0: # Default max is often 120-200mm
+                        log(f"    → Adjusting lens limits (Max Focal Length: {max_kf_focal:.1f}mm)")
+                        lens_settings = camera_component.lens_settings
+                        lens_settings.max_focal_length = max_kf_focal + 100.0
+                        camera_component.lens_settings = lens_settings
+                    
                     # Create component binding (add component to sequence)
                     comp_binding = sequence.add_possessable(camera_component)
                     comp_binding.set_parent(binding)
