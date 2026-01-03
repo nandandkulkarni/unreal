@@ -43,21 +43,11 @@ def calculate_direction_vector(direction: str, yaw_degrees: float, offset: float
         angle_rad = math.radians(cardinal_angle)
         return {"x": math.cos(angle_rad), "y": math.sin(angle_rad)}
     
-    yaw_rad = math.radians(yaw_degrees)
-    forward_x = math.cos(yaw_rad)
-    forward_y = math.sin(yaw_rad)
+    if cardinal_angle is not None:
+        angle_rad = math.radians(cardinal_angle)
+        return {"x": math.cos(angle_rad), "y": math.sin(angle_rad)}
     
-    if direction == "forward":
-        return {"x": forward_x, "y": forward_y}
-    elif direction == "backward":
-        return {"x": -forward_x, "y": -forward_y}
-    elif direction == "left":
-        return {"x": -forward_y, "y": forward_x}  # 90° left
-    elif direction == "right":
-        return {"x": forward_y, "y": -forward_x}  # 90° right
-    else:
-        # Default to forward if unknown
-        return {"x": forward_x, "y": forward_y}
+    raise ValueError(f"Unsupported direction: '{direction}'. Only cardinal directions (North, South, East, West) are supported.")
 
 def calculate_new_position(start_pos: dict, start_yaw: float, direction: str, distance_cm: float, offset: float = None) -> dict:
     """Calculate new position based on motion parameters"""

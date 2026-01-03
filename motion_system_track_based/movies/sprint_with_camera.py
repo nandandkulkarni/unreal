@@ -20,10 +20,10 @@ def define_movie():
     belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
     
     # Runner 1 - Lane 3 (Y=305cm from center)
-    movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=-90, mesh_path=belica_path)
+    movie.add_actor("Runner1", location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path)
     
     # Runner 2 - Lane 2 (Y=183cm from center)
-    movie.add_actor("Runner2", location=(0, 183, 0), yaw_offset=-90, mesh_path=belica_path)
+    movie.add_actor("Runner2", location=(0, -100, 0), yaw_offset=-90, mesh_path=belica_path)
     
     # Run runners in parallel
     with movie.simultaneous():
@@ -31,7 +31,7 @@ def define_movie():
         with movie.for_actor("Runner1") as r1:
             r1.face(Direction.NORTH)
             r1.move_straight() \
-                .direction(Direction.FORWARD) \
+                .direction(Direction.NORTH) \
                 .anim("Jog_Fwd") \
                 .distance_at_speed((DistanceUnit.Meters, 100), (SpeedUnit.MetersPerSecond, 10))
             r1.stay().till_end().anim("Idle")
@@ -41,7 +41,7 @@ def define_movie():
             # Face South and move South
             r2.face(Direction.SOUTH)
             r2.move_straight() \
-                .direction(Direction.FORWARD) \
+                .direction(Direction.SOUTH) \
                 .anim("Jog_Fwd") \
                 .distance_in_time(21, 7)  # 21m in 7 seconds
             
@@ -50,7 +50,7 @@ def define_movie():
             
             # Move North
             r2.move_straight() \
-                .direction(Direction.FORWARD) \
+                .direction(Direction.NORTH) \
                 .anim("Jog_Fwd") \
                 .distance_in_time(79, 8)  # 79m in 8 seconds
             
@@ -58,7 +58,7 @@ def define_movie():
     
     # Front/Finish Camera - positioned past finish line, centered between lanes
     # 11000cm = 110m, 244cm = midpoint between lanes
-    movie.add_camera("FrontCam", location=(11000, 244, 200)) \
+    movie.add_camera("FrontCam", location=(11000, -50, 200)) \
          .look_at("Runner1", height_pct=0.7) \
          .add()
     

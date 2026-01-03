@@ -138,7 +138,8 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
                               look_at_timeline: List[Tuple], 
                               frame_subject_timeline: List[Tuple],
                               focus_timeline: List[Tuple],
-                              fps: int = 60) -> Dict[str, List]:
+                              fps: int = 60,
+                              camera_location: Tuple[float, float, float] = None) -> Dict[str, List]:
     """
     Generate all camera keyframes from timelines.
     
@@ -149,6 +150,7 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
         frame_subject_timeline: [(start_time, end_time, actor_name, coverage)]
         focus_timeline: [(start_time, end_time, actor_name, height_pct)]
         fps: Frames per second
+        camera_location: Optional explicit camera location (x, y, z)
     
     Returns:
         {
@@ -161,38 +163,51 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
     focal_length_keyframes = []
     focus_distance_keyframes = []
     
-    # Load camera's static position (from settings or initial transform)
-    camera_transform = load_actor_transform(movie_folder, camera_name)
-    if camera_transform:
-        camera_pos = (camera_transform[0]["x"], camera_transform[0]["y"], camera_transform[0]["z"])
-    else:
-        camera_pos = (0, 0, 0)  # Default
+    # Load camera's static position
+    camera_pos = camera_location
+    if not camera_pos:
+        camera_transform = load_actor_transform(movie_folder, camera_name)
+        if camera_transform:
+            camera_pos = (camera_transform[0]["x"], camera_transform[0]["y"], camera_transform[0]["z"])
+        else:
+            camera_pos = (0, 0, 0)  # Default
     
     # Process look_at timeline for rotation keyframes
-    for segment in look_at_timeline:
+    # We only generate ONE initial keyframe for the transform track
+    # to ensure the camera starts with the correct orientation.
+    # The rest is handled by Unreal's LookAt tracking.
+    if look_at_timeline:
+        segment = look_at_timeline[0]
         start_time, end_time, actor_name, height_pct, interp_speed = segment
-        start_frame = int(start_time * fps)
-        end_frame = int(end_time * fps) if end_time else 99999
         
-        # Load subject's transform
-        subject_keyframes = load_actor_transform(movie_folder, actor_name)
-        if not subject_keyframes:
-            continue
-        
-        # Generate rotation keyframes (sample every frame for smooth tracking)
-        for frame in range(start_frame, min(end_frame + 1, 10000), 1):
-            subject_pos = get_position_at_frame(subject_keyframes, frame)
-            # Adjust for height_pct (add to Z)
-            subject_height = 180.0  # cm, default human height
-            subject_pos = (subject_pos[0], subject_pos[1], subject_pos[2] + subject_height * height_pct)
-            
-            roll, pitch, yaw = calculate_look_at_rotation(camera_pos, subject_pos)
-            rotation_keyframes.append({
-                "frame": frame,
-                "roll": roll,
-                "pitch": pitch,
-                "yaw": yaw
-            })
+        if start_time <= 0:
+             # Load subject's transform at frame 0
+            subject_keyframes = load_actor_transform(movie_folder, actor_name)
+            if subject_keyframes:
+                # Find frame 0
+                target_pos = None
+                for kf in subject_keyframes:
+                    if kf["frame"] == 0:
+                        target_pos = (kf["x"], kf["y"], kf["z"])
+                        break
+                
+                if target_pos:
+                    # Adjust for height
+                    target_pos_adj = (target_pos[0], target_pos[1], target_pos[2] + (180 * height_pct))
+                    
+                    # Calculate rotation
+                    roll, pitch, yaw = calculate_look_at_rotation(camera_pos, target_pos_adj)
+                    
+                    # Add single keyframe at frame 0
+                    rotation_keyframes.append({
+                        "frame": 0,
+                        "x": camera_pos[0],
+                        "y": camera_pos[1],
+                        "z": camera_pos[2],
+                        "roll": roll,
+                        "pitch": pitch,
+                        "yaw": yaw
+                    })
     
     # Process frame_subject timeline for focal length keyframes
     for segment in frame_subject_timeline:

@@ -36,10 +36,6 @@ import motion_math
 
 class Direction(Enum):
     """Cardinal and diagonal directions for movement and facing."""
-    FORWARD = "Forward"
-    BACKWARD = "Backward"
-    LEFT = "Left"
-    RIGHT = "Right"
     NORTH = "North"
     SOUTH = "South"
     EAST = "East"
@@ -978,11 +974,19 @@ class MovieBuilder:
                         track_set.camera_timelines["look_at"],
                         track_set.camera_timelines["frame_subject"],
                         track_set.camera_timelines["focus_on"],
-                        self.fps
+                        self.fps,
+                        camera_location=tuple(track_set.initial_state["location"])
                     )
                     
-                    # NOTE: rotation keyframes NOT saved - LookAt tracking handled in run_scene.py
-                    # using Unreal's built-in ActorToTrack property
+                    # Save Initial Rotation/Location keyframe (transform.json)
+                    # This only contains 1 keyframe to set initial state correctly
+                    # (Rest is handled by Unreal's LookAt tracking)
+                    if keyframes["rotation"]:
+                        camera_folder = os.path.join(movie_folder, camera_name)
+                        transform_path = os.path.join(camera_folder, "transform.json")
+                        with open(transform_path, 'w', encoding='utf-8') as f:
+                            json.dump(keyframes["rotation"], f, indent=2)
+                    
                     # NOTE: focus_distance keyframes NOT saved - Tracking Focus handled in run_scene.py
                     # using Unreal's built-in FocusSettings.TrackingFocusSettings.ActorToTrack
                     
@@ -1203,7 +1207,7 @@ class MotionCommandBuilder:
     
     def __init__(self, actor_builder: ActorBuilder):
         self.ab = actor_builder
-        self._direction = Direction.FORWARD
+        self._direction = None  # Explicit direction required
         self._anim_name = None
         self._anim_speed = 1.0
     
@@ -1249,19 +1253,23 @@ class MotionCommandBuilder:
     
     def distance_in_time(self, meters: Union[float, Tuple],
                          seconds: Union[float, Tuple]) -> ActorBuilder:
-        """Terminal: Move distance in time (calculates speed)."""
+        """
+        Terminal: Move distance in time (calculates speed).
+        
+        Args:
+            meters: Distance to move
+            seconds: Duration of move
+        """
         # Handle unit tuples
         m_val = meters
         if isinstance(meters, tuple):
             m_val = meters[1] * meters[0].value
-        
+            
         s_val = seconds
         if isinstance(seconds, tuple):
             s_val = seconds[1] * seconds[0].value
-        
-        # Generate keyframes
+            
         self._generate_movement_keyframes(m_val, s_val)
-        
         return self.ab
     
     def time_at_speed(self, seconds: Union[float, Tuple],
@@ -1286,6 +1294,9 @@ class MotionCommandBuilder:
     
     def _generate_movement_keyframes(self, distance_m: float, duration_s: float):
         """Helper to generate transform and animation keyframes."""
+        if self._direction is None:
+            raise ValueError("Direction must be set explicitly (e.g. .direction(Direction.NORTH)). Relative 'Forward' is not supported.")
+            
         # Get current state
         start_loc = self.ab.track_set.initial_state["location"]
         current_yaw = self.ab.track_set.initial_state["rotation"][1]

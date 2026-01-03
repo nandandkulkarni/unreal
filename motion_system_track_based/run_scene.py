@@ -238,6 +238,23 @@ def run_scene(movie_folder: str):
              # Enable LookAt tracking if look_at timeline is present
              if actor_obj and "look_at_timeline" in settings:
                  try:
+                     # 1. Snap rotation to first target immediately (avoid interpolation lag)
+                     timeline = settings.get("look_at_timeline", [])
+                     if timeline:
+                         first_segment = timeline[0]
+                         if first_segment.get("start_time", 0) <= 0:
+                             target_name = first_segment.get("actor")
+                             if target_name in actors_info:
+                                 target_actor = actors_info[target_name]["actor"]
+                                 cam_loc = actor_obj.get_actor_location()
+                                 target_loc = target_actor.get_actor_location()
+                                 
+                                 # Calculate LookAt rotation
+                                 look_at_rot = unreal.MathLibrary.find_look_at_rotation(cam_loc, target_loc)
+                                 actor_obj.set_actor_rotation(look_at_rot, False)
+                                 log(f"    ✓ Snapped initial rotation to {target_name} ({look_at_rot})")
+                     
+                     # 2. Enable Tracking
                      tracking_settings = actor_obj.get_editor_property("lookat_tracking_settings")
                      tracking_settings.set_editor_property("enable_look_at_tracking", True)
                      
