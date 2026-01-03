@@ -412,10 +412,34 @@ class ActorTrackSet:
         
         # For cameras and lights, write properties to settings.json
         # This enables run_scene.py to detect actor type via "fov" or "light_type"
-        if self.actor_type in ("camera", "light") and self.initial_state.get("properties"):
-            settings_path = os.path.join(actor_folder, "settings.json")
-            with open(settings_path, 'w', encoding='utf-8') as f:
-                json.dump(self.initial_state["properties"], f, indent=2)
+        if self.actor_type in ["camera", "light"]:
+            if self.initial_state["properties"]:
+                settings_data = self.initial_state["properties"].copy()
+                
+                # Add camera timeline data if present
+                if self.actor_type == "camera" and self.camera_timelines:
+                    # Add look_at timeline if present
+                    if self.camera_timelines["look_at"]:
+                        settings_data["look_at_timeline"] = []
+                        for segment in self.camera_timelines["look_at"]:
+                            start_time, end_time, actor, height_pct, interp_speed = segment
+                            settings_data["look_at_timeline"].append({
+                                "start_time": start_time,
+                                "end_time": end_time,
+                                "actor": actor,
+                                "height_pct": height_pct,
+                                "interp_speed": interp_speed
+                            })
+                        # Also set initial values
+                        if self.camera_timelines["look_at"]:
+                            first_segment = self.camera_timelines["look_at"][0]
+                            settings_data["look_at_actor"] = first_segment[2]  # actor
+                            settings_data["look_at_height_pct"] = first_segment[3]  # height_pct
+                            settings_data["look_at_interp_speed"] = first_segment[4]  # interp_speed
+                
+                settings_path = os.path.join(actor_folder, "settings.json")
+                with open(settings_path, 'w', encoding='utf-8') as f:
+                    json.dump(settings_data, f, indent=2)
         elif self.settings:
             self.settings.save(actor_folder)
             
@@ -935,7 +959,7 @@ class MovieBuilder:
                 has_focus = bool(track_set.camera_timelines["focus_on"])
                 
                 if has_look_at or has_frame_subject or has_focus:
-                    # Generate keyframes
+                    # Generate keyframes (focal length and focus only - look_at handled in Unreal)
                     keyframes = motion_planner.generate_camera_keyframes(
                         movie_folder,
                         camera_name,
@@ -945,12 +969,8 @@ class MovieBuilder:
                         self.fps
                     )
                     
-                    # Save rotation keyframes to transform.json
-                    if keyframes["rotation"]:
-                        camera_folder = os.path.join(movie_folder, camera_name)
-                        transform_path = os.path.join(camera_folder, "transform.json")
-                        with open(transform_path, 'w', encoding='utf-8') as f:
-                            json.dump(keyframes["rotation"], f, indent=2)
+                    # NOTE: rotation keyframes NOT saved - LookAt tracking handled in run_scene.py
+                    # using Unreal's built-in ActorToTrack property
                     
                     # Save focal length keyframes
                     if keyframes["focal_length"]:

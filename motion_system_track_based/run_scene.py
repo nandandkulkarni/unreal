@@ -26,10 +26,37 @@ if script_dir in sys.path:
 sys.path.insert(0, script_dir)
 
 
+import datetime
+
+# Create timestamped log file
+log_timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+log_file_path = None
+
 def log(message):
-    """Log to both console and Unreal"""
+    """Log to console, Unreal, and local timestamped file"""
+    global log_file_path
+    
+    # Initialize log file on first call
+    if log_file_path is None:
+        try:
+            log_dir = os.path.join(script_dir, "logs")
+            os.makedirs(log_dir, exist_ok=True)
+            log_file_path = os.path.join(log_dir, f"run_scene_{log_timestamp}.log")
+        except Exception as e:
+            print(f"Warning: Could not create log file: {e}")
+            log_file_path = ""  # Disable file logging
+    
+    # Print to console and Unreal
     print(message)
     unreal.log(message)
+    
+    # Write to local log file
+    if log_file_path:
+        try:
+            with open(log_file_path, 'a', encoding='utf-8') as f:
+                f.write(message + '\n')
+        except Exception as e:
+            print(f"Warning: Could not write to log file: {e}")
 
 
 def reload_modules():
@@ -207,6 +234,21 @@ def run_scene(movie_folder: str):
              fov = settings.get("fov", 90.0)
              debug_visible = settings.get("debug_visible", False)
              actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation, fov=fov, debug_visible=debug_visible)
+             
+             # Enable LookAt tracking if look_at timeline is present
+             if actor_obj and "look_at_timeline" in settings:
+                 try:
+                     tracking_settings = actor_obj.get_editor_property("lookat_tracking_settings")
+                     tracking_settings.set_editor_property("enable_look_at_tracking", True)
+                     
+                     # Set interp speed
+                     interp_speed = settings.get("look_at_interp_speed", 5.0)
+                     tracking_settings.set_editor_property("look_at_tracking_interp_speed", interp_speed)
+                     
+                     actor_obj.set_editor_property("lookat_tracking_settings", tracking_settings)
+                     log(f"    ✓ LookAt tracking enabled (interp_speed: {interp_speed})")
+                 except Exception as e:
+                     log(f"    ⚠ Failed to enable LookAt tracking: {e}")
         else:
              actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
 
@@ -255,6 +297,128 @@ def run_scene(movie_folder: str):
                 total_frames,
                 sequence=sequence
             )
+    
+    # 7. Apply camera-specific keyframes (focal length, focus distance)
+    for actor_name in actors_info:
+        actor_folder = os.path.join(movie_folder, actor_name)
+        
+        # Check for focal_length.json
+        focal_path = os.path.join(actor_folder, "focal_length.json")
+        if os.path.exists(focal_path):
+            try:
+                with open(focal_path, 'r', encoding='utf-8') as f:
+                    focal_keyframes = json.load(f)
+                if focal_keyframes:
+                    log(f"  Applying focal length keyframes to: {actor_name}")
+                    camera_obj = actors_info[actor_name]["actor"]
+                    binding = actors_info[actor_name]["binding"]
+                    camera_component = camera_obj.get_cine_camera_component()
+                    
+                    # Create component binding (add component to sequence)
+                    comp_binding = sequence.add_possessable(camera_component)
+                    comp_binding.set_parent(binding)
+                    
+                    # Add focal length track to COMPONENT binding
+                    focal_track = comp_binding.add_track(unreal.MovieSceneFloatTrack)
+                    focal_track.set_property_name_and_path("CurrentFocalLength", "CurrentFocalLength")
+                    focal_section = focal_track.add_section()
+                    focal_section.set_range(0, total_frames)
+                    
+                    # Get channels and add keyframes
+                    channels = focal_section.get_all_channels()
+                    if channels:
+                        focal_channel = channels[0]
+                        for kf in focal_keyframes:
+                            frame_number = unreal.FrameNumber(value=kf["frame"])
+                            focal_channel.add_key(frame_number, kf["value"])
+                        log(f"    ✓ Applied {len(focal_keyframes)} focal length keyframes")
+                    else:
+                        log(f"    ⚠ Focal length track has no channels")
+            except Exception as e:
+                log(f"    ⚠ Failed to apply focal length: {e}")
+        
+        # Check for focus_distance.json
+        focus_path = os.path.join(actor_folder, "focus_distance.json")
+        if os.path.exists(focus_path):
+            try:
+                with open(focus_path, 'r', encoding='utf-8') as f:
+                    focus_keyframes = json.load(f)
+                if focus_keyframes:
+                    log(f"  Applying focus distance keyframes to: {actor_name}")
+                    camera_obj = actors_info[actor_name]["actor"]
+                    binding = actors_info[actor_name]["binding"]
+                    camera_component = camera_obj.get_cine_camera_component()
+                    
+                    # Enable manual focus
+                    focus_settings = camera_component.focus_settings
+                    focus_settings.focus_method = unreal.CameraFocusMethod.MANUAL
+                    camera_component.focus_settings = focus_settings
+                    
+                    # Create component binding (add component to sequence)
+                    comp_binding = sequence.add_possessable(camera_component)
+                    comp_binding.set_parent(binding)
+                    
+                    # Add focus distance track to COMPONENT binding
+                    focus_track = comp_binding.add_track(unreal.MovieSceneFloatTrack)
+                    focus_track.set_property_name_and_path("ManualFocusDistance", "FocusSettings.ManualFocusDistance")
+                    focus_section = focus_track.add_section()
+                    focus_section.set_range(0, total_frames)
+                    
+                    # Get channels and add keyframes (convert meters to cm)
+                    channels = focus_section.get_all_channels()
+                    if channels:
+                        focus_channel = channels[0]
+                        for kf in focus_keyframes:
+                            frame_number = unreal.FrameNumber(value=kf["frame"])
+                            focus_channel.add_key(frame_number, kf["value"] * 100.0)  # m to cm
+                        log(f"    ✓ Applied {len(focus_keyframes)} focus distance keyframes")
+                    else:
+                        log(f"    ⚠ Focus distance track has no channels")
+            except Exception as e:
+                log(f"    ⚠ Failed to apply focus distance: {e}")
+    
+    # 8. Apply LookAt tracking timelines
+    for actor_name in actors_info:
+        actor_folder = os.path.join(movie_folder, actor_name)
+        settings_path = os.path.join(actor_folder, "settings.json")
+        
+        if os.path.exists(settings_path):
+            try:
+                with open(settings_path, 'r', encoding='utf-8') as f:
+                    settings = json.load(f)
+                
+                if "look_at_timeline" in settings:
+                    log(f"  Applying LookAt tracking to: {actor_name}")
+                    camera_obj = actors_info[actor_name]["actor"]
+                    binding = actors_info[actor_name]["binding"]
+                    
+                    # Create Object Property Track for ActorToTrack
+                    la_track = binding.add_track(unreal.MovieSceneObjectPropertyTrack)
+                    la_track.set_property_name_and_path("ActorToTrack", "LookAtTrackingSettings.ActorToTrack")
+                    la_section = la_track.add_section()
+                    la_section.set_range(0, total_frames)
+                    
+                    # Get channel and add keyframes
+                    channels = la_section.get_all_channels()
+                    if channels:
+                        la_channel = channels[0]
+                        
+                        # Add keyframe for each timeline segment
+                        for segment in settings["look_at_timeline"]:
+                            start_time = segment["start_time"]
+                            target_actor_name = segment["actor"]
+                            
+                            if target_actor_name in actors_info:
+                                frame_number = unreal.FrameNumber(value=int(start_time * fps))
+                                target_actor = actors_info[target_actor_name]["actor"]
+                                la_channel.add_key(frame_number, target_actor)
+                        
+                        log(f"    ✓ Applied {len(settings['look_at_timeline'])} LookAt target keyframes")
+                    else:
+                        log(f"    ⚠ LookAt track has no channels")
+            except Exception as e:
+                log(f"    ⚠ Failed to apply LookAt tracking: {e}")
+    
     
     # 7. Apply camera cuts
     camera_cuts = keyframe_data_all.get("camera_cuts", [])

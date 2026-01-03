@@ -206,7 +206,7 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
         
         # Generate focal length keyframes (sample with threshold to reduce keyframes)
         last_focal_length = None
-        change_threshold = 0.05  # 5% change
+        change_threshold = 0.10  # 10% change (reduced from 5% to minimize keyframes)
         
         for frame in range(start_frame, min(end_frame + 1, 10000), 1):
             subject_pos = get_position_at_frame(subject_keyframes, frame)
@@ -232,7 +232,7 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
         
         # Generate focus distance keyframes
         last_focus_dist = None
-        change_threshold = 0.05
+        change_threshold = 0.10  # 10% change (reduced from 5% to minimize keyframes)
         
         for frame in range(start_frame, min(end_frame + 1, 10000), 1):
             subject_pos = get_position_at_frame(subject_keyframes, frame)
