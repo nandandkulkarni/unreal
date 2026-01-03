@@ -23,8 +23,8 @@ def define_movie():
     movie = MovieBuilder("Sprint With Camera Track", fps=60)
     
     # Configuration
-    race_distance = 200
-    target_duration = 20.0 # seconds (Finish time)
+    race_distance = 300  # Increased for longer duration
+    target_duration = 30.0 # seconds (Finish time)
     r2_delay = 5.0         # seconds
     
     # Calculate speeds for synchronized finish
@@ -71,19 +71,47 @@ def define_movie():
          .shape("Cylinder") \
          .interval(500)
     
-    movie.add_camera(FRONT_CAM, location=(23000, -50, 200)) \
-         .look_at_subject(RUNNER_2, height_pct=0.85) \
+    movie.add_camera(FRONT_CAM, location=(30000, -50, 200)) \
+         .look_at_subject(RUNNER_1, height_pct=0.85) \
          .debug_visible(True) \
          .add()
     
     # Camera cuts
     movie.at_time(0).camera_cut(FRONT_CAM)
     
-    # Camera commands (track FocusTarget)
+    # Helper for pan sequence
+    def pan_runner(cam, runner_name, duration=5.0):
+        """Pan up and down on a runner"""
+        # Head -> Feet (2.5s)
+        cam.focus_zoom_track(runner_name, focus_pct=0.85, zoom_pct=0.85, track_pct=0.85)
+        cam.wait(duration/2)
+        # Feet -> Head (2.5s)
+        cam.focus_zoom_track(runner_name, focus_pct=0.15, zoom_pct=0.85, track_pct=0.15)
+        cam.wait(duration/2)
+
+    # Camera commands (Choreographed Sequence)
+    # Total duration: 25s (5s x 5 stages)
     with movie.for_camera(FRONT_CAM) as cam:
-        cam.auto_zoom_subject(RUNNER_2, coverage=0.85)
-        cam.auto_focus_subject(RUNNER_2, height_pct=0.85)
-        cam.wait(target_duration)
+        # 1. Track Runner 1 (5s)
+        cam.focus_zoom_track(RUNNER_1, focus_pct=0.85, zoom_pct=0.85, track_pct=0.85)
+        cam.wait(5.0)
+        
+        # 2. Track Runner 2 (5s)
+        cam.focus_zoom_track(RUNNER_2, focus_pct=0.85, zoom_pct=0.85, track_pct=0.85)
+        cam.wait(5.0)
+        
+        # 3. Pan Runner 1 (5s)
+        pan_runner(cam, RUNNER_1, duration=5.0)
+        
+        # 4. Pan Runner 2 (5s)
+        pan_runner(cam, RUNNER_2, duration=5.0)
+        
+        # 5. Track Both (FocusTarget) (5s)
+        cam.focus_zoom_track(FOCUS_TARGET, focus_pct=0.0, zoom_pct=0.9, track_pct=0.0) # Height irrelevant for marker
+        cam.wait(5.0)
+        
+        # Hold remaining time
+        cam.wait(max(0, target_duration - 25.0))
     
     return movie
 

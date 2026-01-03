@@ -1,0 +1,11 @@
+{
+  "color": "Blue",
+  "shape": "Cylinder",
+  "actor_type": "marker",
+  "mesh_path": "/Engine/BasicShapes/Cylinder",
+  "mesh_scale": [
+    0.1,
+    0.1,
+    1.0
+  ]
+}

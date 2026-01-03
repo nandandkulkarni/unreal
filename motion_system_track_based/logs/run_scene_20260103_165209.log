@@ -1,0 +1,56 @@
+
+============================================================
+RUNNING TRACK-BASED SCENE: Sprint With Camera Track
+============================================================
+Scene: Sprint With Camera Track
+FPS: 60
+Actors: ['Runner1', 'Runner2', 'FocusTarget', 'FrontCam']
+
+============================================================
+CLEANUP PHASE
+============================================================
+✓ Cleanup: close_open_sequences() completed
+✓ Cleanup: delete_old_actors() completed
+  Creating actor: Runner1
+  Creating actor: Runner2
+  Creating marker: FocusTarget
+    ✓ Marker created with /Engine/BasicShapes/Cylinder
+  Creating camera: FrontCam
+    → Camera rotation calculated to look at 'Runner2': <Struct 'Rotator' (0x0000014E87E1F120) {pitch: -0.498212, yaw: 180.000000, roll: 0.000000}>
+    → Enabling LookAt tracking (post-binding)...
+    ✓ Snapped initial rotation to Runner2 (<Struct 'Rotator' (0x0000014E87E1F6C0) {pitch: -0.498212, yaw: 180.000000, roll: 0.000000}>)
+    ✓ LookAt tracking enabled (interp_speed: 5.0)
+
+============================================================
+POST-CREATION VALIDATION
+============================================================
+  ✓ Camera 'FrontCam': LookAt tracking ENABLED (target: None)
+  ⚠ Camera 'FrontCam': Focus method is <CameraFocusMethod.MANUAL: 1> (expected TRACKING)
+============================================================
+
+
+Processing attachments...
+  Applying keyframes to: Runner1
+  Applying keyframes to: Runner2
+  Applying keyframes to: FocusTarget
+  Applying keyframes to: FrontCam
+  Applying Focus Tracking to: Runner1
+    ⚠ Failed to apply Focus Tracking: 'SkeletalMeshActor' object has no attribute 'get_cine_camera_component'
+  Applying Focus Tracking to: Runner2
+    ⚠ Failed to apply Focus Tracking: 'SkeletalMeshActor' object has no attribute 'get_cine_camera_component'
+  Applying Focus Tracking to: FocusTarget
+    ⚠ Failed to apply Focus Tracking: 'StaticMeshActor' object has no attribute 'get_cine_camera_component'
+  Applying focal length keyframes to: FrontCam
+    ✓ Applied 16 focal length keyframes
+  Applying Focus Tracking to: FrontCam
+    ✓ Applied 1 Focus Tracking keyframes
+    ✓ Applied 1 Focus Offset keyframes
+  Applying LookAt tracking to: FrontCam
+    ✓ Applied 1 LookAt target keyframes
+    ✓ Applied 1 LookAt Offset keyframes
+  Applying 1 camera cut(s)
+✓ Viewport locked to camera cuts
+✓ Sequence playing from frame 0
+============================================================
+SCENE EXECUTION COMPLETE
+============================================================

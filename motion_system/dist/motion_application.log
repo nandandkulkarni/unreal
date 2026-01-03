@@ -1,0 +1,128 @@
+
+=== Keyframe Application Start ===
+Processing actor: Runner1
+  Location keys: 4, Rotation keys: 4
+  Detected Skeletal Mesh actor: Runner1 (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 2 animations for Runner1
+  [DEBUG] About to add track...
+  [DEBUG] Track class: <class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Calling binding.add_track on <Struct 'MovieSceneBindingProxy' (0x00000152C2B58640) {binding_id: {}, sequence: "/Script/LevelSequence.LevelSequence'/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001'"}>
+  [DEBUG] Success! Track created: <Object '/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1' (0x000001533658B680) Class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Processing Anim 0: Jog_Fwd (60-1260)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1.MovieSceneSkeletalAnimationSection_0' (0x00000152320D1900) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Jog_Fwd
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd' (0x0000015037C61C00) Class 'AnimSequence'>
+  ✓ Anim 0: 'Jog_Fwd' [60-1260] (PlayRate: 1.0) applied
+  [DEBUG] Processing Anim 1: Idle (1260-61200)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_1.MovieSceneSkeletalAnimationSection_1' (0x00000152320D5500) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 1: 'Idle' [1260-61200] (PlayRate: 1.0) applied
+  ✓ Added 2 animation sections total
+
+=== Keyframe Application Start ===
+Processing actor: Runner2
+  Location keys: 4, Rotation keys: 4
+  Detected Skeletal Mesh actor: Runner2 (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 3 animations for Runner2
+  [DEBUG] About to add track...
+  [DEBUG] Track class: <class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Calling binding.add_track on <Struct 'MovieSceneBindingProxy' (0x00000152C2B568A0) {binding_id: {}, sequence: "/Script/LevelSequence.LevelSequence'/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001'"}>
+  [DEBUG] Success! Track created: <Object '/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_3' (0x0000015336583C00) Class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Processing Anim 0: Idle (0-300)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_3.MovieSceneSkeletalAnimationSection_0' (0x00000152320D6400) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 0: 'Idle' [0-300] (PlayRate: 1.0) applied
+  [DEBUG] Processing Anim 1: Jog_Fwd (360-1260)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_3.MovieSceneSkeletalAnimationSection_1' (0x00000152320DA500) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Jog_Fwd
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd' (0x0000015037C61C00) Class 'AnimSequence'>
+  ✓ Anim 1: 'Jog_Fwd' [360-1260] (PlayRate: 1.0) applied
+  [DEBUG] Processing Anim 2: Idle (1260-61200)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_001.Sprint_With_Camera_Track_001:MovieScene_0.MovieSceneSkeletalAnimationTrack_3.MovieSceneSkeletalAnimationSection_2' (0x00000152320D5000) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 2: 'Idle' [1260-61200] (PlayRate: 1.0) applied
+  ✓ Added 3 animation sections total
+
+=== Keyframe Application Start ===
+Processing actor: FocusTarget
+  Location keys: 2042, Rotation keys: 2042
+  Skipping animation for FocusTarget (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: FrontCam
+  Location keys: 1, Rotation keys: 1
+  Skipping animation for FrontCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: Runner1
+  Location keys: 4, Rotation keys: 4
+  Detected Skeletal Mesh actor: Runner1 (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 2 animations for Runner1
+  [DEBUG] About to add track...
+  [DEBUG] Track class: <class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Calling binding.add_track on <Struct 'MovieSceneBindingProxy' (0x00000152ECDF0900) {binding_id: {}, sequence: "/Script/LevelSequence.LevelSequence'/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002'"}>
+  [DEBUG] Success! Track created: <Object '/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002:MovieScene_0.MovieSceneSkeletalAnimationTrack_1' (0x00000152F98A7A80) Class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Processing Anim 0: Jog_Fwd (60-1860)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002:MovieScene_0.MovieSceneSkeletalAnimationTrack_1.MovieSceneSkeletalAnimationSection_0' (0x0000015338344B00) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Jog_Fwd
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd' (0x0000015037C61C00) Class 'AnimSequence'>
+  ✓ Anim 0: 'Jog_Fwd' [60-1860] (PlayRate: 1.0) applied
+  [DEBUG] Processing Anim 1: Idle (1860-61800)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002:MovieScene_0.MovieSceneSkeletalAnimationTrack_1.MovieSceneSkeletalAnimationSection_1' (0x0000015338340500) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 1: 'Idle' [1860-61800] (PlayRate: 1.0) applied
+  ✓ Added 2 animation sections total
+
+=== Keyframe Application Start ===
+Processing actor: Runner2
+  Location keys: 4, Rotation keys: 4
+  Detected Skeletal Mesh actor: Runner2 (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 3 animations for Runner2
+  [DEBUG] About to add track...
+  [DEBUG] Track class: <class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Calling binding.add_track on <Struct 'MovieSceneBindingProxy' (0x00000152ECDF2740) {binding_id: {}, sequence: "/Script/LevelSequence.LevelSequence'/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002'"}>
+  [DEBUG] Success! Track created: <Object '/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002:MovieScene_0.MovieSceneSkeletalAnimationTrack_3' (0x00000152F98A7580) Class 'MovieSceneSkeletalAnimationTrack'>
+  [DEBUG] Processing Anim 0: Idle (0-300)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002:MovieScene_0.MovieSceneSkeletalAnimationTrack_3.MovieSceneSkeletalAnimationSection_0' (0x0000015338345A00) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 0: 'Idle' [0-300] (PlayRate: 1.0) applied
+  [DEBUG] Processing Anim 1: Jog_Fwd (360-1860)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002:MovieScene_0.MovieSceneSkeletalAnimationTrack_3.MovieSceneSkeletalAnimationSection_1' (0x0000015338340000) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Jog_Fwd
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd' (0x0000015037C61C00) Class 'AnimSequence'>
+  ✓ Anim 1: 'Jog_Fwd' [360-1860] (PlayRate: 1.0) applied
+  [DEBUG] Processing Anim 2: Idle (1860-61800)
+  [DEBUG] Section added: <Object '/Game/Sequences/Sprint_With_Camera_Track_002.Sprint_With_Camera_Track_002:MovieScene_0.MovieSceneSkeletalAnimationTrack_3.MovieSceneSkeletalAnimationSection_2' (0x000001533834EB00) Class 'MovieSceneSkeletalAnimationSection'>
+  [DEBUG] Range set for Idle
+  [DEBUG] Loading asset: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle
+  [DEBUG] Asset loaded: <Object '/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle' (0x0000014F9AFEAF00) Class 'AnimSequence'>
+  ✓ Anim 2: 'Idle' [1860-61800] (PlayRate: 1.0) applied
+  ✓ Added 3 animation sections total
+
+=== Keyframe Application Start ===
+Processing actor: FocusTarget
+  Location keys: 2062, Rotation keys: 2062
+  Skipping animation for FocusTarget (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: FrontCam
+  Location keys: 1, Rotation keys: 1
+  Skipping animation for FrontCam (Not a SkeletalMeshActor/Character)

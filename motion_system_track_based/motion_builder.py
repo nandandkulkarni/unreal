@@ -1802,6 +1802,21 @@ class CameraCommandBuilder:
                     height_pct
                 ))
         return self
+        
+    def focus_zoom_track(self, actor_name: str, focus_pct: float = 0.7, zoom_pct: float = 0.7, track_pct: float = 0.7) -> 'CameraCommandBuilder':
+        """
+        Convenience method to set focus, zoom, and look-at tracking all at once.
+        
+        Args:
+            actor_name: Name of actor to track
+            focus_pct: Height percentage for focus (0-1)
+            zoom_pct: Screen coverage percentage for zoom (0-1)
+            track_pct: Height percentage for look-at tracking (0-1)
+        """
+        self.look_at_subject(actor_name, height_pct=track_pct)
+        self.auto_zoom_subject(actor_name, coverage=zoom_pct)
+        self.auto_focus_subject(actor_name, height_pct=focus_pct)
+        return self
     
     def wait(self, duration: float) -> 'CameraCommandBuilder':
         """Hold current settings for duration."""
