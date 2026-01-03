@@ -436,6 +436,18 @@ class ActorTrackSet:
                             settings_data["look_at_actor"] = first_segment[2]  # actor
                             settings_data["look_at_height_pct"] = first_segment[3]  # height_pct
                             settings_data["look_at_interp_speed"] = first_segment[4]  # interp_speed
+                    
+                    # Add focus_on timeline if present
+                    if self.camera_timelines["focus_on"]:
+                        settings_data["focus_on_timeline"] = []
+                        for segment in self.camera_timelines["focus_on"]:
+                            start_time, end_time, actor, height_pct = segment
+                            settings_data["focus_on_timeline"].append({
+                                "start_time": start_time,
+                                "end_time": end_time,
+                                "actor": actor,
+                                "height_pct": height_pct
+                            })
                 
                 settings_path = os.path.join(actor_folder, "settings.json")
                 with open(settings_path, 'w', encoding='utf-8') as f:
@@ -971,6 +983,8 @@ class MovieBuilder:
                     
                     # NOTE: rotation keyframes NOT saved - LookAt tracking handled in run_scene.py
                     # using Unreal's built-in ActorToTrack property
+                    # NOTE: focus_distance keyframes NOT saved - Tracking Focus handled in run_scene.py
+                    # using Unreal's built-in FocusSettings.TrackingFocusSettings.ActorToTrack
                     
                     # Save focal length keyframes
                     if keyframes["focal_length"]:
@@ -978,13 +992,6 @@ class MovieBuilder:
                         focal_path = os.path.join(camera_folder, "focal_length.json")
                         with open(focal_path, 'w', encoding='utf-8') as f:
                             json.dump(keyframes["focal_length"], f, indent=2)
-                    
-                    # Save focus distance keyframes
-                    if keyframes["focus_distance"]:
-                        camera_folder = os.path.join(movie_folder, camera_name)
-                        focus_path = os.path.join(camera_folder, "focus_distance.json")
-                        with open(focus_path, 'w', encoding='utf-8') as f:
-                            json.dump(keyframes["focus_distance"], f, indent=2)
         
         # Save camera cuts if any
         if hasattr(self, '_camera_cuts') and self._camera_cuts:

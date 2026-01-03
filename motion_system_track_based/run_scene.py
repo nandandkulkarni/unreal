@@ -337,45 +337,54 @@ def run_scene(movie_folder: str):
             except Exception as e:
                 log(f"    ⚠ Failed to apply focal length: {e}")
         
-        # Check for focus_distance.json
-        focus_path = os.path.join(actor_folder, "focus_distance.json")
-        if os.path.exists(focus_path):
+        # Check for focus_on timeline (use Tracking Focus mode, not manual distance)
+        if os.path.exists(settings_path):
             try:
-                with open(focus_path, 'r', encoding='utf-8') as f:
-                    focus_keyframes = json.load(f)
-                if focus_keyframes:
-                    log(f"  Applying focus distance keyframes to: {actor_name}")
+                with open(settings_path, 'r', encoding='utf-8') as f:
+                    settings = json.load(f)
+                
+                # Check if focus_on timeline exists (stored in settings.json like look_at)
+                if "focus_on_timeline" in settings:
+                    log(f"  Applying Focus Tracking to: {actor_name}")
                     camera_obj = actors_info[actor_name]["actor"]
                     binding = actors_info[actor_name]["binding"]
                     camera_component = camera_obj.get_cine_camera_component()
                     
-                    # Enable manual focus
+                    # Enable TRACKING focus mode (not MANUAL)
                     focus_settings = camera_component.focus_settings
-                    focus_settings.focus_method = unreal.CameraFocusMethod.MANUAL
+                    focus_settings.focus_method = unreal.CameraFocusMethod.TRACKING
                     camera_component.focus_settings = focus_settings
                     
-                    # Create component binding (add component to sequence)
+                    # Create component binding
                     comp_binding = sequence.add_possessable(camera_component)
                     comp_binding.set_parent(binding)
                     
-                    # Add focus distance track to COMPONENT binding
-                    focus_track = comp_binding.add_track(unreal.MovieSceneFloatTrack)
-                    focus_track.set_property_name_and_path("ManualFocusDistance", "FocusSettings.ManualFocusDistance")
+                    # Create Object Property Track for ActorToTrack
+                    focus_track = comp_binding.add_track(unreal.MovieSceneObjectPropertyTrack)
+                    focus_track.set_property_name_and_path("ActorToTrack", "FocusSettings.TrackingFocusSettings.ActorToTrack")
                     focus_section = focus_track.add_section()
                     focus_section.set_range(0, total_frames)
                     
-                    # Get channels and add keyframes (convert meters to cm)
+                    # Get channel and add keyframes
                     channels = focus_section.get_all_channels()
                     if channels:
                         focus_channel = channels[0]
-                        for kf in focus_keyframes:
-                            frame_number = unreal.FrameNumber(value=kf["frame"])
-                            focus_channel.add_key(frame_number, kf["value"] * 100.0)  # m to cm
-                        log(f"    ✓ Applied {len(focus_keyframes)} focus distance keyframes")
+                        
+                        # Add keyframe for each timeline segment
+                        for segment in settings["focus_on_timeline"]:
+                            start_time = segment["start_time"]
+                            target_actor_name = segment["actor"]
+                            
+                            if target_actor_name in actors_info:
+                                frame_number = unreal.FrameNumber(value=int(start_time * fps))
+                                target_actor = actors_info[target_actor_name]["actor"]
+                                focus_channel.add_key(frame_number, target_actor)
+                        
+                        log(f"    ✓ Applied {len(settings['focus_on_timeline'])} Focus Tracking keyframes")
                     else:
-                        log(f"    ⚠ Focus distance track has no channels")
+                        log(f"    ⚠ Focus Tracking track has no channels")
             except Exception as e:
-                log(f"    ⚠ Failed to apply focus distance: {e}")
+                log(f"    ⚠ Failed to apply Focus Tracking: {e}")
     
     # 8. Apply LookAt tracking timelines
     for actor_name in actors_info:
