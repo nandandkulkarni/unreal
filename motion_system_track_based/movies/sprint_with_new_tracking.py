@@ -16,6 +16,18 @@ def define_movie():
     
     movie = MovieBuilder("Sprint With Camera Track", fps=60)
     
+    # Configuration
+    race_distance = 200
+    target_duration = 20.0 # seconds (Finish time)
+    r2_delay = 5.0         # seconds
+    
+    # Calculate speeds for synchronized finish
+    r1_speed = race_distance / target_duration
+    r2_run_duration = target_duration - r2_delay
+    
+    if r2_run_duration <= 0:
+        raise ValueError("Runner 2 cannot catch up! Delay is too long relative to target duration.")
+
     # Add runners with explicit mesh path
     belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
     
@@ -27,22 +39,21 @@ def define_movie():
         r1.move_straight() \
             .direction(Direction.NORTH) \
             .anim("Jog_Fwd") \
-            .distance_at_speed((DistanceUnit.Meters, 200), (SpeedUnit.MetersPerSecond, 20))
+            .distance_at_speed((DistanceUnit.Meters, race_distance), (SpeedUnit.MetersPerSecond, r1_speed))
         r1.stay().till_end().anim("Idle")
         
     movie.add_actor("Runner2", location=(0, -50, 0), yaw_offset=-90, mesh_path=belica_path)
-
     
     with movie.for_actor("Runner2") as r2:
-        # Idle for 5 seconds
-        r2.stay().for_time(5.0).anim("Idle")
+        # Idle for delay
+        r2.stay().for_time(r2_delay).anim("Idle")
 
         r2.face(Direction.NORTH)
 
-        # Start running (Sprint)
+        # Start running (Sprint) to finish at same time
         r2.move_straight().direction(Direction.NORTH) \
             .anim("Jog_Fwd") \
-            .distance_at_speed((DistanceUnit.Meters, 200), (SpeedUnit.MetersPerSecond, 15))
+            .distance_in_time((DistanceUnit.Meters, race_distance), r2_run_duration)
             
         r2.stay().till_end().anim("Idle")
     
