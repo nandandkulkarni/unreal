@@ -380,7 +380,8 @@ class ActorTrackSet:
         self.transform = TransformTrack()
         self.animation = AnimationTrack() if actor_type == "actor" else None
         self.settings = CameraSettingsTrack() if actor_type == "camera" else None
-        self.attach = AttachTrack()  # All actor types can be attached
+        self.attach = AttachTrack()
+        self.mesh_yaw_offset = 0.0  # Persistent mesh correction offset
         self.initial_state = {
             "location": [0, 0, 0],
             "rotation": [0, 0, 0],  # [roll, pitch, yaw]
@@ -685,6 +686,7 @@ class MovieBuilder:
             Self for chaining
         """
         track_set = ActorTrackSet(name, actor_type="actor")
+        track_set.mesh_yaw_offset = yaw_offset
         track_set.initial_state = {
             "location": list(location),
             "rotation": [0, 0, yaw_offset],  # [roll, pitch, yaw]
@@ -1097,9 +1099,12 @@ class ActorBuilder:
             raise ValueError(f"direction must be a Direction Enum. Got: {direction}")
         
         # Get target yaw from direction
-        target_yaw = motion_math.get_cardinal_angle(direction.value)
-        if target_yaw is None:
+        target_yaw_logical = motion_math.get_cardinal_angle(direction.value)
+        if target_yaw_logical is None:
             raise ValueError(f"Invalid direction: {direction}")
+            
+        # Apply persistent mesh offset
+        target_yaw = target_yaw_logical + self.track_set.mesh_yaw_offset
         
         # Get current rotation from track set
         current_yaw = self.track_set.initial_state["rotation"][1]  # [roll, pitch, yaw]

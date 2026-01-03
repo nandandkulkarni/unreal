@@ -37,24 +37,24 @@ def define_movie():
             r1.stay().till_end().anim("Idle")
         
         # Runner 2 - Walk south, then turn and run north
-        with movie.for_actor("Runner2") as r2:
-            # Face South and move South
-            r2.face(Direction.SOUTH)
-            r2.move_straight() \
-                .direction(Direction.SOUTH) \
-                .anim("Jog_Fwd") \
-                .distance_in_time(21, 7)  # 21m in 7 seconds
+        # with movie.for_actor("Runner2") as r2:
+        #     # Face South and move South
+        #     r2.face(Direction.SOUTH)
+        #     r2.move_straight() \
+        #         .direction(Direction.SOUTH) \
+        #         .anim("Jog_Fwd") \
+        #         .distance_in_time(21, 7)  # 21m in 7 seconds
             
-            # Turn to face North
-            r2.face(Direction.NORTH, duration=2.0)
+        #     # Turn to face North
+        #     r2.face(Direction.NORTH, duration=2.0)
             
-            # Move North
-            r2.move_straight() \
-                .direction(Direction.NORTH) \
-                .anim("Jog_Fwd") \
-                .distance_in_time(79, 8)  # 79m in 8 seconds
+        #     # Move North
+        #     r2.move_straight() \
+        #         .direction(Direction.NORTH) \
+        #         .anim("Jog_Fwd") \
+        #         .distance_in_time(79, 8)  # 79m in 8 seconds
             
-            r2.stay().till_end().anim("Idle")
+        #     r2.stay().till_end().anim("Idle")
     
     # Front/Finish Camera - positioned past finish line, centered between lanes
     # 11000cm = 110m, 244cm = midpoint between lanes
@@ -73,11 +73,11 @@ def define_movie():
         cam.focus_on("Runner1", height_pct=0.7)
         cam.wait(4.0)
         
-        # 4-8s: Switch to Runner2
-        cam.look_at("Runner2", height_pct=0.7)
-        cam.frame_subject("Runner2", coverage=0.7)
-        cam.focus_on("Runner2", height_pct=0.7)
-        cam.wait(4.0)
+        # # 4-8s: Switch to Runner2
+        # cam.look_at("Runner2", height_pct=0.7)
+        # cam.frame_subject("Runner2", coverage=0.7)
+        # cam.focus_on("Runner2", height_pct=0.7)
+        # cam.wait(4.0)
         
         # 8s+: Switch back to Runner1
         cam.look_at("Runner1", height_pct=0.7)
