@@ -1459,7 +1459,7 @@ class CameraBuilder:
         self._rotation = rot
         return self
     
-    def look_at(self, actor_name: str, height_pct: float = 0.7) -> 'CameraBuilder':
+    def look_at_subject(self, actor_name: str, height_pct: float = 0.7) -> 'CameraBuilder':
         """Enable look-at tracking for an actor."""
         self._look_at_actor = actor_name
         self._look_at_height_pct = height_pct
@@ -1537,7 +1537,7 @@ class CameraCommandBuilder:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
     
-    def look_at(self, actor_name: str, height_pct: float = 0.7, interp_speed: float = 5.0) -> 'CameraCommandBuilder':
+    def look_at_subject(self, actor_name: str, height_pct: float = 0.7, interp_speed: float = 5.0) -> 'CameraCommandBuilder':
         """Switch look-at target."""
         if self.camera_name in self.mb.actors:
             track_set = self.mb.actors[self.camera_name]
@@ -1552,7 +1552,7 @@ class CameraCommandBuilder:
                 ))
         return self
     
-    def frame_subject(self, actor_name: str, coverage: float = 0.7) -> 'CameraCommandBuilder':
+    def auto_zoom_subject(self, actor_name: str, coverage: float = 0.7) -> 'CameraCommandBuilder':
         """Auto-frame subject at desired coverage using focal length."""
         if self.camera_name in self.mb.actors:
             track_set = self.mb.actors[self.camera_name]
@@ -1565,7 +1565,7 @@ class CameraCommandBuilder:
                 ))
         return self
     
-    def focus_on(self, actor_name: str, height_pct: float = 0.7) -> 'CameraCommandBuilder':
+    def auto_focus_subject(self, actor_name: str, height_pct: float = 0.7) -> 'CameraCommandBuilder':
         """Set focus distance to track actor."""
         if self.camera_name in self.mb.actors:
             track_set = self.mb.actors[self.camera_name]

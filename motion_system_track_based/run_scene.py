@@ -400,6 +400,28 @@ def run_scene(movie_folder: str):
                         log(f"    ✓ Applied {len(settings['focus_on_timeline'])} Focus Tracking keyframes")
                     else:
                         log(f"    ⚠ Focus Tracking track has no channels")
+                        
+                    # Create Float Track for RelativeOffset.Z (Height Pct)
+                    offset_track = comp_binding.add_track(unreal.MovieSceneFloatTrack)
+                    offset_track.set_property_name_and_path("RelativeOffset.Z", "FocusSettings.TrackingFocusSettings.RelativeOffset.Z")
+                    offset_section = offset_track.add_section()
+                    offset_section.set_range(0, total_frames)
+                    
+                    channels = offset_section.get_all_channels()
+                    if channels:
+                        offset_channel = channels[0]
+                        # Default offset (if no segments?) - maybe 0.
+                        
+                        for segment in settings["focus_on_timeline"]:
+                            start_time = segment["start_time"]
+                            height_pct = segment.get("height_pct", 0.7)
+                            # Assuming 180cm height standard
+                            offset_z = 180.0 * height_pct
+                            
+                            frame_number = unreal.FrameNumber(value=int(start_time * fps))
+                            offset_channel.add_key(frame_number, offset_z)
+                        
+                        log(f"    ✓ Applied {len(settings['focus_on_timeline'])} Focus Offset keyframes")
             except Exception as e:
                 log(f"    ⚠ Failed to apply Focus Tracking: {e}")
     
@@ -442,6 +464,31 @@ def run_scene(movie_folder: str):
                         log(f"    ✓ Applied {len(settings['look_at_timeline'])} LookAt target keyframes")
                     else:
                         log(f"    ⚠ LookAt track has no channels")
+                        
+                    # Create Float Track for RelativeOffset.Z (Height Pct)
+                    # LookAt settings are on the Camera Component, but previous code used 'binding' (Actor).
+                    # 'LookAtTrackingSettings' is likely exposed on Actor or we should use Component.
+                    # To be safe, let's try 'binding' as before, but note it might need Component binding if Actor proxy fails.
+                    # Actually, 'binding' corresponds to CineCameraActor. 
+                    
+                    offset_track = binding.add_track(unreal.MovieSceneFloatTrack)
+                    offset_track.set_property_name_and_path("RelativeOffset.Z", "LookAtTrackingSettings.RelativeOffset.Z")
+                    offset_section = offset_track.add_section()
+                    offset_section.set_range(0, total_frames)
+                    
+                    channels = offset_section.get_all_channels()
+                    if channels:
+                        offset_channel = channels[0]
+                        
+                        for segment in settings["look_at_timeline"]:
+                            start_time = segment["start_time"]
+                            height_pct = segment.get("height_pct", 0.7)
+                            offset_z = 180.0 * height_pct
+                            
+                            frame_number = unreal.FrameNumber(value=int(start_time * fps))
+                            offset_channel.add_key(frame_number, offset_z)
+                            
+                        log(f"    ✓ Applied {len(settings['look_at_timeline'])} LookAt Offset keyframes")
             except Exception as e:
                 log(f"    ⚠ Failed to apply LookAt tracking: {e}")
     
