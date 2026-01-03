@@ -58,40 +58,26 @@ def define_movie():
         r2.stay().till_end().anim("Idle")
     
     
-        movie.add_camera("FrontCam", location=(23000, -50, 200)) \
-         .look_at_subject("Runner1", height_pct=0.7) \
+    # --- Focus Target (Midpoint Tracker) ---
+    # Using new GroupTarget API to automatically track midpoint of runners
+    movie.add_group_target("FocusTarget", members=["Runner1", "Runner2"], location=(0, -25, 0)) \
+         .color("Blue") \
+         .shape("Cylinder") \
+         .interval(500)
+    
+    movie.add_camera("FrontCam", location=(23000, -50, 200)) \
+         .look_at_subject("Runner1", height_pct=0.85) \
+         .debug_visible(True) \
          .add()
     
     # Camera cuts
     movie.at_time(0).camera_cut("FrontCam")
     
-    # Camera commands (switching focus between runners)
+    # Camera commands (track FocusTarget)
     with movie.for_camera("FrontCam") as cam:
-        # 0s: Start Focus on Face (0.85 = Head/Face)
-        cam.look_at_subject("Runner1", height_pct=0.90)
-        cam.auto_zoom_subject("Runner1", coverage=0.7)
+        cam.auto_zoom_subject("Runner1", coverage=0.85)
         cam.auto_focus_subject("Runner1", height_pct=0.85)
-        cam.wait(5.0)
-        
-        # 5s: Hold Face, Start Pan Down to Legs (take 5s)
-        # We RE-APPLY correct current state at t=5s to ensure a keyframe exists here
-        cam.look_at_subject("Runner1", height_pct=0.90)
-        cam.auto_focus_subject("Runner1", height_pct=0.90)
-        cam.wait(5.0)
-        
-        # 10s: Arrive at Legs (0.25 = Knees), Start Pan Up to Face (take 5s)
-        cam.look_at_subject("Runner1", height_pct=0.25)
-        cam.auto_focus_subject("Runner1", height_pct=0.25)
-        cam.wait(5.0)
-        
-        # 15s: Arrive at Face, Start Hold (take 5s)
-        cam.look_at_subject("Runner1", height_pct=0.90)
-        cam.auto_focus_subject("Runner1", height_pct=0.90)
-        cam.wait(5.0)
-        
-        # 20s: End Hold
-        cam.look_at_subject("Runner1", height_pct=0.90)
-        cam.auto_focus_subject("Runner1", height_pct=0.90)
+        cam.wait(target_duration)
     
     return movie
 

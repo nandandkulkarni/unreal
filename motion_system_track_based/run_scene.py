@@ -129,8 +129,20 @@ def run_scene(movie_folder: str):
     log(f"Actors: {actor_names}")
     
     # 2. Cleanup old state
-    cleanup.close_open_sequences()
-    cleanup.delete_old_actors()
+    log("\n" + "="*60)
+    log("CLEANUP PHASE")
+    log("="*60)
+    try:
+        cleanup.close_open_sequences()
+        log("✓ Cleanup: close_open_sequences() completed")
+    except Exception as e:
+        log(f"✗ Cleanup: close_open_sequences() failed: {e}")
+    
+    try:
+        cleanup.delete_old_actors()
+        log("✓ Cleanup: delete_old_actors() completed")
+    except Exception as e:
+        log(f"✗ Cleanup: delete_old_actors() failed: {e}")
     
     # 3. Create level sequence
     result = sequence_setup.create_sequence(fps=fps, duration_seconds=30, test_name=scene_name)
@@ -233,44 +245,61 @@ def run_scene(movie_folder: str):
         elif "fov" in settings or actor_type=="camera":
              fov = settings.get("fov", 90.0)
              debug_visible = settings.get("debug_visible", False)
+             
+             # Calculate initial rotation to look at target if specified
+             look_at_actor_name = settings.get("look_at_actor")
+             if look_at_actor_name and look_at_actor_name in actors_info:
+                 target_actor = actors_info[look_at_actor_name]["actor"]
+                 target_loc = target_actor.get_actor_location()
+                 # Calculate rotation to look at target
+                 rotation = unreal.MathLibrary.find_look_at_rotation(location, target_loc)
+                 log(f"    → Camera rotation calculated to look at '{look_at_actor_name}': {rotation}")
+             elif look_at_actor_name:
+                 log(f"    ⚠ Camera '{actor_name}' configured to look_at '{look_at_actor_name}', but target not found yet. Using default rotation.")
+             
              actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation, fov=fov, debug_visible=debug_visible)
              
-             # Enable LookAt tracking if look_at timeline is present
-             if actor_obj and "look_at_timeline" in settings:
-                 try:
-                     # 1. Snap rotation to first target immediately (avoid interpolation lag)
-                     timeline = settings.get("look_at_timeline", [])
-                     if timeline:
-                         first_segment = timeline[0]
-                         if first_segment.get("start_time", 0) <= 0:
-                             target_name = first_segment.get("actor")
-                             if target_name in actors_info:
-                                 target_actor = actors_info[target_name]["actor"]
-                                 cam_loc = actor_obj.get_actor_location()
-                                 target_loc = target_actor.get_actor_location()
-                                 
-                                 # Calculate LookAt rotation
-                                 look_at_rot = unreal.MathLibrary.find_look_at_rotation(cam_loc, target_loc)
-                                 actor_obj.set_actor_rotation(look_at_rot, False)
-                                 log(f"    ✓ Snapped initial rotation to {target_name} ({look_at_rot})")
-                     
-                     # 2. Enable Tracking
-                     tracking_settings = actor_obj.get_editor_property("lookat_tracking_settings")
-                     tracking_settings.set_editor_property("enable_look_at_tracking", True)
-                     
-                     # Set interp speed
-                     interp_speed = settings.get("look_at_interp_speed", 5.0)
-                     tracking_settings.set_editor_property("look_at_tracking_interp_speed", interp_speed)
-                     
-                     actor_obj.set_editor_property("lookat_tracking_settings", tracking_settings)
-                     log(f"    ✓ LookAt tracking enabled (interp_speed: {interp_speed})")
-                 except Exception as e:
-                     log(f"    ⚠ Failed to enable LookAt tracking: {e}")
+             # NOTE: LookAt tracking will be enabled AFTER binding to sequence (see below)
         else:
              actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
 
         if actor_obj:
             binding = sequence_setup.add_actor_to_sequence(sequence, actor_obj, actor_name)
+            
+            # CRITICAL: Enable LookAt tracking AFTER binding to sequence
+            if "fov" in settings and ("look_at_timeline" in settings or "look_at_actor" in settings):
+                log(f"    → Enabling LookAt tracking (post-binding)...")
+                try:
+                    timeline = settings.get("look_at_timeline", [])
+                    if timeline:
+                        first_segment = timeline[0]
+                        if first_segment.get("start_time", 0) <= 0:
+                            target_name = first_segment.get("actor")
+                            if target_name in actors_info:
+                                target_actor = actors_info[target_name]["actor"]
+                                cam_loc = actor_obj.get_actor_location()
+                                target_loc = target_actor.get_actor_location()
+                                
+                                # Calculate and set LookAt rotation
+                                look_at_rot = unreal.MathLibrary.find_look_at_rotation(cam_loc, target_loc)
+                                actor_obj.set_actor_rotation(look_at_rot, False)
+                                log(f"    ✓ Snapped initial rotation to {target_name} ({look_at_rot})")
+                    
+                    # Enable Tracking
+                    tracking_settings = actor_obj.get_editor_property("lookat_tracking_settings")
+                    tracking_settings.set_editor_property("enable_look_at_tracking", True)
+                    
+                    # Set interp speed
+                    interp_speed = settings.get("look_at_interp_speed", 5.0)
+                    tracking_settings.set_editor_property("look_at_tracking_interp_speed", interp_speed)
+                    
+                    actor_obj.set_editor_property("lookat_tracking_settings", tracking_settings)
+                    log(f"    ✓ LookAt tracking enabled (interp_speed: {interp_speed})")
+                except Exception as e:
+                    log(f"    ⚠ Failed to enable LookAt tracking: {e}")
+                    import traceback
+                    log(traceback.format_exc())
+            
             
             # Load attach.json if it exists
             attach_path = os.path.join(actor_folder, "attach.json")
@@ -295,6 +324,59 @@ def run_scene(movie_folder: str):
     # Add buffer frames
     total_frames += 60
     sequence.set_playback_end(total_frames)
+    
+    # POST-CREATION VALIDATION: Verify auto-tracking is enabled in Unreal sequence
+    log(f"")
+    log(f"{'='*60}")
+    log(f"POST-CREATION VALIDATION")
+    log(f"{'='*60}")
+    for actor_name in actors_info:
+        actor_folder = os.path.join(movie_folder, actor_name)
+        settings_path = os.path.join(actor_folder, "settings.json")
+        
+        if os.path.exists(settings_path):
+            try:
+                with open(settings_path, 'r', encoding='utf-8') as f:
+                    settings = json.load(f)
+                
+                # Check if this is a camera with auto-tracking
+                if "fov" in settings:
+                    camera_obj = actors_info[actor_name]["actor"]
+                    
+                    # Validate LookAt tracking
+                    if "look_at_timeline" in settings or "look_at_actor" in settings:
+                        try:
+                            tracking_settings = camera_obj.get_editor_property("lookat_tracking_settings")
+                            is_enabled = tracking_settings.get_editor_property("enable_look_at_tracking")
+                            
+                            if is_enabled:
+                                target = tracking_settings.get_editor_property("actor_to_track")
+                                target_name = target.get_actor_label() if target else "None"
+                                log(f"  ✓ Camera '{actor_name}': LookAt tracking ENABLED (target: {target_name})")
+                            else:
+                                log(f"  ❌ Camera '{actor_name}': LookAt tracking DISABLED (expected ENABLED)")
+                                log(f"     WARNING: Auto-tracking may not work correctly!")
+                        except Exception as e:
+                            log(f"  ⚠ Camera '{actor_name}': Could not verify LookAt tracking: {e}")
+                    
+                    # Validate Focus tracking
+                    if "focus_on_timeline" in settings:
+                        try:
+                            camera_component = camera_obj.get_cine_camera_component()
+                            focus_settings = camera_component.focus_settings
+                            focus_method = focus_settings.focus_method
+                            
+                            if focus_method == unreal.CameraFocusMethod.TRACKING:
+                                log(f"  ✓ Camera '{actor_name}': Focus tracking ENABLED (method: TRACKING)")
+                            else:
+                                log(f"  ⚠ Camera '{actor_name}': Focus method is {focus_method} (expected TRACKING)")
+                        except Exception as e:
+                            log(f"  ⚠ Camera '{actor_name}': Could not verify Focus tracking: {e}")
+            except Exception as e:
+                log(f"  ⚠ Failed to validate {actor_name}: {e}")
+    
+    log(f"{'='*60}")
+    log(f"")
     
     # Process attachments AFTER all actors are spawned
     log(f"")

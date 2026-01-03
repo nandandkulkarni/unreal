@@ -74,7 +74,11 @@ def delete_old_actors():
         is_motion_actor = "MotionSystemActor" in actor.tags
         is_debug_actor = "MotionSystemDebug" in actor.tags
         
-        if (label_lower.startswith("test") or 
+        # SIMPLIFIED: Delete ALL MotionSystemActor tagged actors (this includes Runner1, Runner2, FocusTarget, FrontCam)
+        # Also delete test-prefixed actors and debug actors
+        if (is_motion_actor or 
+            is_debug_actor or
+            label_lower.startswith("test") or 
             label_lower.startswith("spawned") or
             label_lower.startswith("marker_") or
             label_lower.startswith("cameramarker_") or
@@ -82,8 +86,6 @@ def delete_old_actors():
             label_lower.startswith("side") or
             label_lower.startswith("wide") or
             label_lower == "hero" or
-            is_motion_actor or
-            is_debug_actor or
             actor.get_class().get_name() == "TextRenderActor"):
             unreal.EditorLevelLibrary.destroy_actor(actor)
             log(f"  Deleted actor: {actor_label}")

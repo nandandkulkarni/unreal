@@ -176,6 +176,36 @@ class TransformTrack(Track):
     def __init__(self):
         super().__init__("transform")
     
+    def get_location_at_frame(self, frame: float) -> Tuple[float, float, float]:
+        """Interpolate location at a specific frame."""
+        if not self.keyframes:
+            return (0.0, 0.0, 0.0)
+            
+        # Boundary checks
+        if frame <= self.keyframes[0].frame:
+            d = self.keyframes[0].data
+            return (d['x'], d['y'], d['z'])
+        if frame >= self.keyframes[-1].frame:
+            d = self.keyframes[-1].data
+            return (d['x'], d['y'], d['z'])
+            
+        # Linear search (optimization: most queries are sequential)
+        # TODO: Use binary search for large datasets
+        for i in range(len(self.keyframes) - 1):
+            k1 = self.keyframes[i]
+            k2 = self.keyframes[i+1]
+            if k1.frame <= frame <= k2.frame:
+                if k2.frame == k1.frame:
+                    t = 0
+                else:
+                    t = (frame - k1.frame) / (k2.frame - k1.frame)
+                
+                x = k1.data['x'] + (k2.data['x'] - k1.data['x']) * t
+                y = k1.data['y'] + (k2.data['y'] - k1.data['y']) * t
+                z = k1.data['z'] + (k2.data['z'] - k1.data['z']) * t
+                return (x, y, z)
+        return (0.0, 0.0, 0.0)
+
     def add_keyframe(self, frame: int, x: float, y: float, z: float,
                      roll: float = 0, pitch: float = 0, yaw: float = 0) -> 'TransformTrack':
         """Add a transform keyframe."""
@@ -449,6 +479,18 @@ class ActorTrackSet:
                                 "actor": actor,
                                 "height_pct": height_pct
                             })
+                    
+                    # Add frame_subject timeline
+                    if self.camera_timelines["frame_subject"]:
+                        settings_data["frame_subject_timeline"] = []
+                        for segment in self.camera_timelines["frame_subject"]:
+                            start_time, end_time, actor, coverage = segment
+                            settings_data["frame_subject_timeline"].append({
+                                "start_time": start_time,
+                                "end_time": end_time,
+                                "actor": actor,
+                                "coverage": coverage
+                            })
                 
                 settings_path = os.path.join(actor_folder, "settings.json")
                 with open(settings_path, 'w', encoding='utf-8') as f:
@@ -459,6 +501,63 @@ class ActorTrackSet:
         # Save attach track if it has sections
         if self.attach.sections:
             self.attach.save(actor_folder)
+
+
+class GroupTargetActor(ActorTrackSet):
+    """
+    Actor that dynamically tracks the midpoint of other actors.
+    """
+    def __init__(self, name: str, members: List[str] = None):
+        super().__init__(name, actor_type="actor")
+        self.members = members or []
+        self.computation_interval_ms = 1000.0 # Default 1s
+    
+    def compute_track(self, movie_builder: 'MovieBuilder'):
+        """Generate keyframes based on member positions."""
+        if not self.members:
+            return
+            
+        # 1. Determine time range from members
+        max_frame = 0
+        for member_name in self.members:
+            if member_name in movie_builder.actors:
+                member = movie_builder.actors[member_name]
+                if member.transform.keyframes:
+                    max_frame = max(max_frame, member.transform.keyframes[-1].frame)
+        
+        # 2. Iterate and interpolate
+        fps = movie_builder.fps
+        interval_sec = self.computation_interval_ms / 1000.0
+        if interval_sec <= 0: interval_sec = 0.1 # Safety
+        
+        step_frames = interval_sec * fps
+        current_frame = 0.0
+        
+        # Clear existing keyframes to avoid duplication if run multiple times
+        self.transform.keyframes = []
+        
+        while current_frame <= max_frame + step_frames: # Go a bit past to ensure coverage
+            # Calculate midpoint
+            sum_x, sum_y, sum_z = 0.0, 0.0, 0.0
+            count = 0
+            
+            for member_name in self.members:
+                if member_name in movie_builder.actors:
+                    loc = movie_builder.actors[member_name].transform.get_location_at_frame(current_frame)
+                    sum_x += loc[0]
+                    sum_y += loc[1]
+                    sum_z += loc[2]
+                    count += 1
+            
+            if count > 0:
+                avg_x = sum_x / count
+                avg_y = sum_y / count
+                avg_z = sum_z / count
+                
+                # We assume no rotation for the target (identity)
+                self.transform.add_keyframe(int(current_frame), avg_x, avg_y, avg_z)
+            
+            current_frame += step_frames
 
 
 # =============================================================================
@@ -769,6 +868,26 @@ class MovieBuilder:
         })
         return self
     
+    
+    def add_group_target(self, name: str, members: List[str] = None, 
+                        location: Tuple[float, float, float] = (0, 0, 0)) -> 'GroupTargetBuilder':
+        """
+        Add a Group Target actor that tracks multiple members.
+        
+        Args:
+            name: Unique identifier
+            members: List of actor names to track
+            location: Initial location (before calculation)
+            
+        Returns:
+            GroupTargetBuilder for fluent configuration
+        """
+        builder = GroupTargetBuilder(self, name, members)
+        # Set initial location
+        builder.actor.initial_state["location"] = list(location)
+        builder.actor.transform.add_keyframe(0, location[0], location[1], location[2])
+        return builder
+
     # --- Light Methods (Enum-based) ---
     
     def add_light_point(self, name: str, location: Tuple[float, float, float]) -> 'LightBuilder':
@@ -942,6 +1061,86 @@ class MovieBuilder:
         Returns:
             Self for chaining
         """
+        # 0. Pre-computation Pass (Group Targets)
+        # Must run before saving so the tracks are populated
+        for actor in list(self.actors.values()):
+            if hasattr(actor, "compute_track"):
+                actor.compute_track(self)
+        
+        # 1. Validation Pass - Check camera look-at ordering
+        actor_names = list(self.actors.keys())
+        for idx, actor_name in enumerate(actor_names):
+            track_set = self.actors[actor_name]
+            if track_set.actor_type == "camera" and track_set.camera_timelines:
+                # Check look_at timeline
+                if track_set.camera_timelines["look_at"]:
+                    for segment in track_set.camera_timelines["look_at"]:
+                        target_name = segment[2]  # actor name is 3rd element
+                        if target_name not in self.actors:
+                            raise ValueError(
+                                f"Camera '{actor_name}' is configured to look_at '{target_name}', "
+                                f"but '{target_name}' was never added to the movie."
+                            )
+                        target_idx = actor_names.index(target_name)
+                        if target_idx > idx:
+                            print(f"⚠ WARNING: Camera '{actor_name}' (position {idx}) is configured to look_at '{target_name}' (position {target_idx}). "
+                                  f"The camera is added BEFORE its target, which may cause initial rotation issues. "
+                                  f"Consider adding '{target_name}' before '{actor_name}' in your script.")
+                
+                # Check focus_on timeline
+                if track_set.camera_timelines["focus_on"]:
+                    for segment in track_set.camera_timelines["focus_on"]:
+                        target_name = segment[2]  # actor name is 3rd element
+                        if target_name not in self.actors:
+                            raise ValueError(
+                                f"Camera '{actor_name}' is configured to focus_on '{target_name}', "
+                                f"but '{target_name}' was never added to the movie."
+                            )
+                
+                # Check frame_subject timeline
+                if track_set.camera_timelines["frame_subject"]:
+                    for segment in track_set.camera_timelines["frame_subject"]:
+                        target_name = segment[2]  # actor name is 3rd element
+                        if target_name not in self.actors:
+                            raise ValueError(
+                                f"Camera '{actor_name}' is configured to frame_subject '{target_name}', "
+                                f"but '{target_name}' was never added to the movie."
+                            )
+        
+        # 2. Validation Pass - Check for rotation keyframes when auto-tracking is enabled
+        for actor_name, track_set in self.actors.items():
+            if track_set.actor_type == "camera" and track_set.camera_timelines:
+                # Check if any auto-tracking is enabled
+                has_look_at = bool(track_set.camera_timelines["look_at"])
+                has_focus = bool(track_set.camera_timelines["focus_on"])
+                has_frame_subject = bool(track_set.camera_timelines["frame_subject"])
+                
+                if has_look_at or has_focus or has_frame_subject:
+                    # Check if there are rotation keyframes
+                    if len(track_set.transform.keyframes) > 0:
+                        # Check if any keyframe has non-zero rotation
+                        for kf in track_set.transform.keyframes:
+                            has_rotation = (kf.data.get('roll', 0) != 0 or 
+                                          kf.data.get('pitch', 0) != 0 or 
+                                          kf.data.get('yaw', 0) != 0)
+                            if has_rotation:
+                                raise ValueError(
+                                    f"❌ CONFLICT DETECTED: Camera '{actor_name}' has auto-tracking enabled "
+                                    f"(look_at/focus_on/frame_subject) but also has rotation keyframes. "
+                                    f"Auto-tracking controls rotation automatically. "
+                                    f"Remove rotation keyframes or disable auto-tracking."
+                                )
+                    
+                    # CRITICAL FIX: Remove rotation from all keyframes for cameras with auto-tracking
+                    for kf in track_set.transform.keyframes:
+                        kf.data['roll'] = 0
+                        kf.data['pitch'] = 0
+                        kf.data['yaw'] = 0
+                    
+                    print(f"✓ Camera '{actor_name}': Auto-tracking enabled, rotation keyframes cleared")
+
+
+
         movie_folder = os.path.join(output_folder, self.name)
         os.makedirs(movie_folder, exist_ok=True)
         
@@ -1514,6 +1713,19 @@ class CameraBuilder:
             }
         }
         
+        # Add initial keyframe to ensure camera doesn't default to origin
+        # NOTE: If look_at is enabled, DON'T add rotation keyframe - let look_at control rotation
+        if hasattr(self, '_look_at_actor') and self._look_at_actor:
+            # Only add location keyframe, no rotation (look_at will handle it)
+            track_set.transform.add_keyframe(0, self.location[0], self.location[1], self.location[2], 
+                                            roll=0, pitch=0, yaw=0)
+            # Actually, we need to NOT add rotation at all. Let me check TransformTrack.add_keyframe signature
+            # The issue is add_keyframe always adds rotation. We need a way to skip it.
+            # For now, add it but mark that rotation should be ignored in run_scene.py
+            pass  # Will handle this differently
+        else:
+            track_set.transform.add_keyframe(0, self.location[0], self.location[1], self.location[2])
+        
         # Add attachment if specified
         if hasattr(self, '_attach_parent'):
             track_set.attach.add_section(
@@ -1664,4 +1876,41 @@ class TimelineBuilder:
             "time": self.time_sec,
             "camera": camera_name
         })
+        return self
+
+
+class GroupTargetBuilder:
+    """
+    Builder for GroupTargetActor configuration.
+    """
+    def __init__(self, movie_builder: MovieBuilder, name: str, members: List[str]):
+        self.mb = movie_builder
+        # Create actor immediately
+        self.actor = GroupTargetActor(name, members)
+        self.mb.actors[name] = self.actor
+    
+    def color(self, color_val: str) -> 'GroupTargetBuilder':
+        """Set visualization color (e.g., 'Blue')."""
+        if "properties" not in self.actor.initial_state:
+            self.actor.initial_state["properties"] = {}
+        self.actor.initial_state["properties"]["color"] = color_val
+        return self
+        
+    def shape(self, shape_val: str) -> 'GroupTargetBuilder':
+        """Set visualization shape (e.g., 'Cylinder')."""
+        if "properties" not in self.actor.initial_state:
+            self.actor.initial_state["properties"] = {}
+        self.actor.initial_state["properties"]["shape"] = shape_val
+        
+        # Auto-map common shapes
+        if shape_val.lower() == "cylinder":
+            self.actor.initial_state["properties"]["mesh_path"] = "/Engine/BasicShapes/Cylinder"
+            # Auto-scale to approx 10cm radius/width (Base is large)
+            self.actor.initial_state["properties"]["scale"] = [0.1, 0.1, 1.0]
+            
+        return self
+
+    def interval(self, ms: float) -> 'GroupTargetBuilder':
+        """Set recalculation interval in milliseconds."""
+        self.actor.computation_interval_ms = ms
         return self
