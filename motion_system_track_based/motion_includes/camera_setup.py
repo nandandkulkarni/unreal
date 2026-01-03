@@ -98,7 +98,7 @@ def create_camera_marker(location, color_name="red", owner_name="Camera"):
     log(f"  + Marker ({owner_name}) created at {location}")
 
 
-def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None, show_marker=None):
+def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None, show_marker=None, debug_visible=False):
     """Create a cine camera actor
     
     Args:
@@ -108,6 +108,7 @@ def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None
         fov: Field of view in degrees (default: 90.0)
         tint: Optional color tint [R, G, B] values 0-1
         show_marker: Optional color string ('red', 'blue') to show a debug marker at location
+        debug_visible: If True, show camera frustum and icon for debugging
     """
     log_header("STEP 3: Creating camera")
 
@@ -138,6 +139,16 @@ def create_camera(camera_name, location=None, rotation=None, fov=90.0, tint=None
         camera_component.set_editor_property("current_focal_length", 50.0)
         camera_component.set_editor_property("current_aperture", 2.8)
         camera_component.set_editor_property("field_of_view", fov)
+        
+        # Enable debug visualization (frustum) if requested
+        if debug_visible:
+            try:
+                # Set bDrawFrustumAllowed and always draw frustum
+                camera_component.set_editor_property("draw_frustum_allowed", True)
+                camera.set_editor_property("is_temporarily_hidden_in_editor", False)
+                log(f"  Debug: Frustum visualization enabled")
+            except Exception as e:
+                log(f"  ⚠ Warning: Could not enable frustum: {e}")
         
         # Apply tint if specified
         if tint:

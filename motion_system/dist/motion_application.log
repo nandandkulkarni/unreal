@@ -10854,3 +10854,16 @@ Processing actor: Person
 Processing actor: SideCam
   Location keys: 0, Rotation keys: 0
   Skipping animation for SideCam (Not a SkeletalMeshActor/Character)
+
+=== Keyframe Application Start ===
+Processing actor: Person
+  Location keys: 3, Rotation keys: 3
+  Detected Skeletal Mesh actor: Person (Type: <class 'SkeletalMeshActor'>)
+  [DEBUG] Entering apply_animation_keyframes
+  [DEBUG] Found 0 animations for Person
+  [DEBUG] No animations to apply, returning
+
+=== Keyframe Application Start ===
+Processing actor: SideCam
+  Location keys: 0, Rotation keys: 0
+  Skipping animation for SideCam (Not a SkeletalMeshActor/Character)

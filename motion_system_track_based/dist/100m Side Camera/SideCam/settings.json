@@ -1,5 +1,6 @@
 {
   "fov": 90.0,
   "look_at_actor": null,
-  "look_at_height_pct": 0.7
+  "look_at_height_pct": 0.7,
+  "debug_visible": true
 }

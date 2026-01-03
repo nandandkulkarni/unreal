@@ -204,7 +204,9 @@ def run_scene(movie_folder: str):
         if "light_type" in settings:
              actor_obj = light_setup.create_light(actor_name, location, rotation, settings)
         elif "fov" in settings or actor_type=="camera":
-             actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation)
+             fov = settings.get("fov", 90.0)
+             debug_visible = settings.get("debug_visible", False)
+             actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation, fov=fov, debug_visible=debug_visible)
         else:
              actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
 

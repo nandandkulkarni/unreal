@@ -21,6 +21,7 @@ def define_movie():
     movie.add_camera("SideCam", location=(0, 100, 160)) \
          .attach_to("Person") \
          .rotation((0, 0, -90)) \
+         .debug_visible(True) \
          .add()
     
     # Camera cut to side cam

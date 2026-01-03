@@ -1358,6 +1358,19 @@ class CameraBuilder:
         self._attach_socket = socket
         return self
     
+    def debug_visible(self, enabled: bool = True) -> 'CameraBuilder':
+        """
+        Show camera frustum and icon in editor for debugging.
+        
+        Args:
+            enabled: Whether to show debug visualization
+        
+        Returns:
+            Self for chaining
+        """
+        self._debug_visible = enabled
+        return self
+    
     def add(self) -> MovieBuilder:
         """Finalize and add camera to movie."""
         # Create camera track set
@@ -1368,7 +1381,8 @@ class CameraBuilder:
             "properties": {
                 "fov": self.fov,
                 "look_at_actor": getattr(self, '_look_at_actor', None),
-                "look_at_height_pct": getattr(self, '_look_at_height_pct', 0.7)
+                "look_at_height_pct": getattr(self, '_look_at_height_pct', 0.7),
+                "debug_visible": getattr(self, '_debug_visible', False)
             }
         }
         
