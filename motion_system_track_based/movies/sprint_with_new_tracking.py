@@ -22,22 +22,32 @@ def define_movie():
     # Runner 1 - Lane 3 (Y=305cm from center)
     movie.add_actor("Runner1", location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path)
 
-    # Run runners in parallel
-    with movie.simultaneous():
-        # Runner 1 - Standard sprint north
-        with movie.for_actor("Runner1") as r1:
-            r1.face(Direction.NORTH)
-            r1.move_straight() \
-                .direction(Direction.NORTH) \
-                .anim("Jog_Fwd") \
-                .distance_at_speed((DistanceUnit.Meters, 200), (SpeedUnit.MetersPerSecond, 10))
-            r1.stay().till_end().anim("Idle")
+    with movie.for_actor("Runner1") as r1:
+        r1.face(Direction.NORTH)
+        r1.move_straight() \
+            .direction(Direction.NORTH) \
+            .anim("Jog_Fwd") \
+            .distance_at_speed((DistanceUnit.Meters, 200), (SpeedUnit.MetersPerSecond, 20))
+        r1.stay().till_end().anim("Idle")
         
-       
+    movie.add_actor("Runner2", location=(0, -50, 0), yaw_offset=-90, mesh_path=belica_path)
+
     
-    # Front/Finish Camera - positioned past finish line, centered between lanes
-    # 11000cm = 110m, 244cm = midpoint between lanes
-    movie.add_camera("FrontCam", location=(22500, -50, 200)) \
+    with movie.for_actor("Runner2") as r2:
+        # Idle for 5 seconds
+        r2.stay().for_time(5.0).anim("Idle")
+
+        r2.face(Direction.NORTH)
+
+        # Start running (Sprint)
+        r2.move_straight().direction(Direction.NORTH) \
+            .anim("Jog_Fwd") \
+            .distance_at_speed((DistanceUnit.Meters, 200), (SpeedUnit.MetersPerSecond, 15))
+            
+        r2.stay().till_end().anim("Idle")
+    
+    
+        movie.add_camera("FrontCam", location=(23000, -50, 200)) \
          .look_at_subject("Runner1", height_pct=0.7) \
          .add()
     

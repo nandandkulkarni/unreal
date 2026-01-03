@@ -388,11 +388,15 @@ class ActorTrackSet:
             "properties": {}       # radius, height, mesh_path, etc.
         }
         # Camera timelines for dynamic keyframe generation
+
         self.camera_timelines = {
             "look_at": [],      # [(start_time, end_time, actor, height_pct, interp_speed)]
             "frame_subject": [], # [(start_time, end_time, actor, coverage)]
             "focus_on": []       # [(start_time, end_time, actor, height_pct)]
         } if actor_type == "camera" else None
+        
+        # Local Time Cursor (tracks where this actor left off)
+        self.current_time: float = 0.0
     
     def save(self, base_folder: str):
         """
@@ -858,34 +862,32 @@ class MovieBuilder:
     def for_actor(self, actor_name: str) -> 'ActorBuilder':
         """
         Get a builder context for an actor.
+        Uses Actor's Local Time (resumes where they left off).
         
         Usage:
             with movie.for_actor("Runner1") as r1:
                 r1.move_straight()...
-        
-        Args:
-            actor_name: Name of previously added actor
-        
-        Returns:
-            ActorBuilder context manager
         """
         if actor_name not in self.actors:
             raise ValueError(f"Actor '{actor_name}' not found. Call add_actor() first.")
-        return ActorBuilder(self, actor_name)
+        
+        track_set = self.actors[actor_name]
+        start_time = track_set.current_time
+        
+        return ActorBuilder(self, actor_name, start_time=start_time)
     
     def for_camera(self, camera_name: str) -> 'CameraCommandBuilder':
         """
         Get a builder context for a camera.
-        
-        Args:
-            camera_name: Name of previously added camera
-        
-        Returns:
-            CameraCommandBuilder context manager
+        Uses Camera's Local Time.
         """
         if camera_name not in self.actors:
             raise ValueError(f"Camera '{camera_name}' not found. Call add_camera() first.")
-        return CameraCommandBuilder(self, camera_name)
+        
+        track_set = self.actors[camera_name]
+        start_time = track_set.current_time
+        
+        return CameraCommandBuilder(self, camera_name, start_time=start_time)
     
     def simultaneous(self) -> 'SimultaneousContext':
         """
@@ -1052,17 +1054,21 @@ class ActorBuilder:
     generate keyframes on the actor's tracks.
     """
     
-    def __init__(self, movie_builder: MovieBuilder, actor_name: str):
+    def __init__(self, movie_builder: MovieBuilder, actor_name: str, start_time: float = 0.0):
         self.mb = movie_builder
         self.actor_name = actor_name
         self.track_set = movie_builder.actors.get(actor_name)
-        self._current_time = 0.0  # Local timeline cursor
+        self._current_time = start_time  # Local timeline cursor
     
     def __enter__(self):
         return self
     
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Update global time to this actor's end time."""
+        """Update actor's local time and global time."""
+        # Update Actor's Local Time
+        self.track_set.current_time = self._current_time
+        
+        # Update Global Time (to max extended)
         if self._current_time > self.mb.current_time:
             self.mb.current_time = self._current_time
     
@@ -1526,16 +1532,23 @@ class CameraCommandBuilder:
     Builder for camera commands during movie (zoom, pan, focus changes).
     """
     
-    def __init__(self, movie_builder: MovieBuilder, camera_name: str):
+    def __init__(self, movie_builder: MovieBuilder, camera_name: str, start_time: float = 0.0):
         self.mb = movie_builder
         self.camera_name = camera_name
-        self.start_time = self.mb.current_time
+        self.start_time = start_time
     
     def __enter__(self):
         return self
     
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        """Update camera's local time and global time."""
+        # Update Camera's Local Time
+        if self.camera_name in self.mb.actors:
+            self.mb.actors[self.camera_name].current_time = self.start_time
+            
+        # Update Global Time
+        if self.start_time > self.mb.current_time:
+            self.mb.current_time = self.start_time
     
     def look_at_subject(self, actor_name: str, height_pct: float = 0.7, interp_speed: float = 5.0) -> 'CameraCommandBuilder':
         """Switch look-at target."""
