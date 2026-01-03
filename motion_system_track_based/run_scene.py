@@ -260,6 +260,38 @@ def run_scene(movie_folder: str):
              actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation, fov=fov, debug_visible=debug_visible)
              
              # NOTE: LookAt tracking will be enabled AFTER binding to sequence (see below)
+        elif actor_type == "marker":
+             # Create marker actor (simple static mesh)
+             log(f"  Creating marker: {actor_name}")
+             # Get mesh path and scale from settings
+             mesh_path = settings.get("mesh_path", "/Engine/BasicShapes/Cylinder.Cylinder")
+             mesh_scale = settings.get("mesh_scale", (0.1, 0.1, 0.1))  # Default 10cm cylinder
+             
+             # Spawn static mesh actor
+             actor_obj = unreal.EditorLevelLibrary.spawn_actor_from_class(
+                 unreal.StaticMeshActor,
+                 location,
+                 rotation
+             )
+             
+             if actor_obj:
+                 actor_obj.set_actor_label(actor_name)
+                 actor_obj.tags.append("MotionSystemActor")
+                 
+                 # Set mesh
+                 mesh_asset = unreal.load_object(None, mesh_path)
+                 if mesh_asset:
+                     actor_obj.static_mesh_component.set_static_mesh(mesh_asset)
+                     actor_obj.set_actor_scale3d(unreal.Vector(*mesh_scale))
+                     
+                     # Apply color if specified
+                     color_name = settings.get("color", "Blue")
+                     mat_path = f"/Game/MyMaterial/My{color_name}"
+                     mat = unreal.load_object(None, mat_path)
+                     if mat:
+                         actor_obj.static_mesh_component.set_material(0, mat)
+                     
+                     log(f"    ✓ Marker created with {mesh_path}")
         else:
              actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
 

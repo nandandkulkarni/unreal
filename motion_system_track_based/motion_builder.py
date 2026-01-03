@@ -441,9 +441,9 @@ class ActorTrackSet:
         if self.animation:
             self.animation.save(actor_folder)
         
-        # For cameras and lights, write properties to settings.json
-        # This enables run_scene.py to detect actor type via "fov" or "light_type"
-        if self.actor_type in ["camera", "light"]:
+        # For cameras, lights, and markers, write properties to settings.json
+        # This enables run_scene.py to detect actor type via "fov", "light_type", or "actor_type"
+        if self.actor_type in ["camera", "light", "marker"]:
             if self.initial_state["properties"]:
                 settings_data = self.initial_state["properties"].copy()
                 
@@ -508,7 +508,7 @@ class GroupTargetActor(ActorTrackSet):
     Actor that dynamically tracks the midpoint of other actors.
     """
     def __init__(self, name: str, members: List[str] = None):
-        super().__init__(name, actor_type="actor")
+        super().__init__(name, actor_type="marker")  # Use marker type, not mannequin
         self.members = members or []
         self.computation_interval_ms = 1000.0 # Default 1s
     
@@ -1901,12 +1901,13 @@ class GroupTargetBuilder:
         if "properties" not in self.actor.initial_state:
             self.actor.initial_state["properties"] = {}
         self.actor.initial_state["properties"]["shape"] = shape_val
+        self.actor.initial_state["properties"]["actor_type"] = "marker"  # Ensure actor_type is set
         
         # Auto-map common shapes
         if shape_val.lower() == "cylinder":
             self.actor.initial_state["properties"]["mesh_path"] = "/Engine/BasicShapes/Cylinder"
             # Auto-scale to approx 10cm radius/width (Base is large)
-            self.actor.initial_state["properties"]["scale"] = [0.1, 0.1, 1.0]
+            self.actor.initial_state["properties"]["mesh_scale"] = [0.1, 0.1, 1.0]  # Changed from "scale" to "mesh_scale"
             
         return self
 

@@ -58,7 +58,7 @@ def define_movie():
         r2.stay().till_end().anim("Idle")
     
     
-    # --- Focus Target (Midpoint Tracker) ---
+    # Focus Target (Midpoint Tracker)
     # Using new GroupTarget API to automatically track midpoint of runners
     movie.add_group_target("FocusTarget", members=["Runner1", "Runner2"], location=(0, -25, 0)) \
          .color("Blue") \
@@ -66,7 +66,7 @@ def define_movie():
          .interval(500)
     
     movie.add_camera("FrontCam", location=(23000, -50, 200)) \
-         .look_at_subject("Runner1", height_pct=0.85) \
+         .look_at_subject("Runner2", height_pct=0.85) \
          .debug_visible(True) \
          .add()
     
@@ -75,8 +75,8 @@ def define_movie():
     
     # Camera commands (track FocusTarget)
     with movie.for_camera("FrontCam") as cam:
-        cam.auto_zoom_subject("Runner1", coverage=0.85)
-        cam.auto_focus_subject("Runner1", height_pct=0.85)
+        cam.auto_zoom_subject("Runner2", coverage=0.85)
+        cam.auto_focus_subject("Runner2", height_pct=0.85)
         cam.wait(target_duration)
     
     return movie
