@@ -11,6 +11,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from motion_builder import MovieBuilder, Direction, DistanceUnit, SpeedUnit
 
+# Character/Actor Name Constants
+RUNNER_1 = "Runner1"
+RUNNER_2 = "Runner2"
+FOCUS_TARGET = "FocusTarget"
+FRONT_CAM = "FrontCam"
+
 def define_movie():
     """Define 100m sprint with tracking camera"""
     
@@ -32,9 +38,9 @@ def define_movie():
     belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
     
     # Runner 1 - Lane 3 (Y=305cm from center)
-    movie.add_actor("Runner1", location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path)
+    movie.add_actor(RUNNER_1, location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path)
 
-    with movie.for_actor("Runner1") as r1:
+    with movie.for_actor(RUNNER_1) as r1:
         r1.face(Direction.NORTH)
         r1.move_straight() \
             .direction(Direction.NORTH) \
@@ -42,9 +48,9 @@ def define_movie():
             .distance_at_speed((DistanceUnit.Meters, race_distance), (SpeedUnit.MetersPerSecond, r1_speed))
         r1.stay().till_end().anim("Idle")
         
-    movie.add_actor("Runner2", location=(0, -50, 0), yaw_offset=-90, mesh_path=belica_path)
+    movie.add_actor(RUNNER_2, location=(0, -50, 0), yaw_offset=-90, mesh_path=belica_path)
     
-    with movie.for_actor("Runner2") as r2:
+    with movie.for_actor(RUNNER_2) as r2:
         # Idle for delay
         r2.stay().for_time(r2_delay).anim("Idle")
 
@@ -60,23 +66,23 @@ def define_movie():
     
     # Focus Target (Midpoint Tracker)
     # Using new GroupTarget API to automatically track midpoint of runners
-    movie.add_group_target("FocusTarget", members=["Runner1", "Runner2"], location=(0, -25, 0)) \
+    movie.add_group_target(FOCUS_TARGET, members=[RUNNER_1, RUNNER_2], location=(0, -25, 0)) \
          .color("Blue") \
          .shape("Cylinder") \
          .interval(500)
     
-    movie.add_camera("FrontCam", location=(23000, -50, 200)) \
-         .look_at_subject("Runner2", height_pct=0.85) \
+    movie.add_camera(FRONT_CAM, location=(23000, -50, 200)) \
+         .look_at_subject(RUNNER_2, height_pct=0.85) \
          .debug_visible(True) \
          .add()
     
     # Camera cuts
-    movie.at_time(0).camera_cut("FrontCam")
+    movie.at_time(0).camera_cut(FRONT_CAM)
     
     # Camera commands (track FocusTarget)
-    with movie.for_camera("FrontCam") as cam:
-        cam.auto_zoom_subject("Runner2", coverage=0.85)
-        cam.auto_focus_subject("Runner2", height_pct=0.85)
+    with movie.for_camera(FRONT_CAM) as cam:
+        cam.auto_zoom_subject(RUNNER_2, coverage=0.85)
+        cam.auto_focus_subject(RUNNER_2, height_pct=0.85)
         cam.wait(target_duration)
     
     return movie
