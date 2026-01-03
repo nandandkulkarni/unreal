@@ -16,9 +16,9 @@ CLEANUP PHASE
   Creating marker: FocusTarget
     ✓ Marker created with /Engine/BasicShapes/Cylinder
   Creating camera: FrontCam
-    → Camera rotation calculated to look at 'Runner1': <Struct 'Rotator' (0x0000014E87E1FBC0) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>
+    → Camera rotation calculated to look at 'Runner1': <Struct 'Rotator' (0x0000014E87DA52D0) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>
     → Enabling LookAt tracking (post-binding)...
-    ✓ Snapped initial rotation to Runner1 (<Struct 'Rotator' (0x0000014E87E1DC30) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>)
+    ✓ Snapped initial rotation to Runner1 (<Struct 'Rotator' (0x0000014E87DA5AF0) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>)
     ✓ LookAt tracking enabled (interp_speed: 5.0)
 
 ============================================================
@@ -42,13 +42,13 @@ Processing attachments...
     ⚠ Failed to apply Focus Tracking: 'StaticMeshActor' object has no attribute 'get_cine_camera_component'
   Applying focal length keyframes to: FrontCam
     → Adjusting lens limits (Max Focal Length: 3400.1mm)
-    ✓ Applied 18 focal length keyframes
+    ✓ Applied 12 focal length keyframes
   Applying Focus Tracking to: FrontCam
-    ✓ Applied 7 Focus Tracking keyframes
-    ✓ Applied 7 Focus Offset keyframes
+    ✓ Applied 6 Focus Tracking keyframes
+    ✓ Applied 6 Focus Offset keyframes
   Applying LookAt tracking to: FrontCam
-    ✓ Applied 7 LookAt target keyframes
-    ✓ Applied 7 LookAt Offset keyframes
+    ✓ Applied 6 LookAt target keyframes
+    ✓ Applied 6 LookAt Offset keyframes
   Applying 1 camera cut(s)
 ✓ Viewport locked to camera cuts
 ✓ Sequence playing from frame 0

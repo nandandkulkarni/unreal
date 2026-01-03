@@ -100,6 +100,12 @@ class SpeedUnit(Enum):
     KilometersPerHour = 0.277778
     MilesPerHour = 0.44704
 
+# =============================================================================
+# GLOBAL CONSTANTS
+# =============================================================================
+CHARACTER_HEIGHT = 180.0  # Standard human height in cm
+MARKER_HEIGHT = 100.0     # Standard marker/sphere/cylinder height in cm
+
 
 # =============================================================================
 # TRACK DATA STRUCTURES
@@ -1929,4 +1935,36 @@ class GroupTargetBuilder:
     def interval(self, ms: float) -> 'GroupTargetBuilder':
         """Set recalculation interval in milliseconds."""
         self.actor.computation_interval_ms = ms
+        return self
+
+    def height(self, h_cm: float) -> 'GroupTargetBuilder':
+        """Set marker height in cm."""
+        if "properties" not in self.actor.initial_state:
+            self.actor.initial_state["properties"] = {}
+        
+        # Default scale is 1.0 (100cm)
+        scale_val = h_cm / 100.0
+        
+        if "mesh_scale" not in self.actor.initial_state["properties"]:
+            self.actor.initial_state["properties"]["mesh_scale"] = [0.1, 0.1, scale_val]
+        else:
+            self.actor.initial_state["properties"]["mesh_scale"][2] = scale_val
+            
+        return self
+
+    def radius(self, r_cm: float) -> 'GroupTargetBuilder':
+        """Set marker radius in cm (sets X and Y scale)."""
+        if "properties" not in self.actor.initial_state:
+            self.actor.initial_state["properties"] = {}
+        
+        # Basis: 1.0 scale = 100cm diameter (50cm radius)
+        # So scale = (r_cm * 2) / 100.0
+        scale_val = (r_cm * 2) / 100.0
+        
+        if "mesh_scale" not in self.actor.initial_state["properties"]:
+            self.actor.initial_state["properties"]["mesh_scale"] = [scale_val, scale_val, 1.0]
+        else:
+            self.actor.initial_state["properties"]["mesh_scale"][0] = scale_val
+            self.actor.initial_state["properties"]["mesh_scale"][1] = scale_val
+            
         return self

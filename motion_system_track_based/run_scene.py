@@ -104,6 +104,7 @@ def run_scene(movie_folder: str):
     reload_modules()
     
     import motion_planner
+    from motion_builder import CHARACTER_HEIGHT
     from motion_includes import cleanup, sequence_setup, camera_setup, mannequin_setup, keyframe_applier, light_setup, attach_setup
     
     log(f"")
@@ -537,8 +538,8 @@ def run_scene(movie_folder: str):
                         for segment in settings["focus_on_timeline"]:
                             start_time = segment["start_time"]
                             height_pct = segment.get("height_pct", 0.7)
-                            # Assuming 180cm height standard
-                            offset_z = 180.0 * height_pct
+                            # Use standardized character height
+                            offset_z = CHARACTER_HEIGHT * height_pct
                             
                             frame_number = unreal.FrameNumber(value=int(start_time * fps))
                             offset_channel.add_key(frame_number, offset_z)
@@ -605,7 +606,7 @@ def run_scene(movie_folder: str):
                         for segment in settings["look_at_timeline"]:
                             start_time = segment["start_time"]
                             height_pct = segment.get("height_pct", 0.7)
-                            offset_z = 180.0 * height_pct
+                            offset_z = CHARACTER_HEIGHT * height_pct
                             
                             frame_number = unreal.FrameNumber(value=int(start_time * fps))
                             offset_channel.add_key(frame_number, offset_z)

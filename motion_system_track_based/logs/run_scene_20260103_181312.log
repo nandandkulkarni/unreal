@@ -16,9 +16,9 @@ CLEANUP PHASE
   Creating marker: FocusTarget
     ✓ Marker created with /Engine/BasicShapes/Cylinder
   Creating camera: FrontCam
-    → Camera rotation calculated to look at 'Runner1': <Struct 'Rotator' (0x0000014E87E1DAF0) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>
+    → Camera rotation calculated to look at 'Runner1': <Struct 'Rotator' (0x0000014E87E1E590) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>
     → Enabling LookAt tracking (post-binding)...
-    ✓ Snapped initial rotation to Runner1 (<Struct 'Rotator' (0x0000014E87D77A80) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>)
+    ✓ Snapped initial rotation to Runner1 (<Struct 'Rotator' (0x0000014E87D77BC0) {pitch: -0.381966, yaw: 179.904507, roll: 0.000000}>)
     ✓ LookAt tracking enabled (interp_speed: 5.0)
 
 ============================================================
@@ -41,6 +41,7 @@ Processing attachments...
   Applying Focus Tracking to: FocusTarget
     ⚠ Failed to apply Focus Tracking: 'StaticMeshActor' object has no attribute 'get_cine_camera_component'
   Applying focal length keyframes to: FrontCam
+    → Adjusting lens limits (Max Focal Length: 3400.1mm)
     ✓ Applied 18 focal length keyframes
   Applying Focus Tracking to: FrontCam
     ✓ Applied 7 Focus Tracking keyframes

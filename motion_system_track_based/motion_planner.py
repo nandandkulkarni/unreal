@@ -7,6 +7,7 @@ import json
 import math
 import os
 from typing import Dict, List, Tuple, Any
+from motion_builder import (CHARACTER_HEIGHT)
 
 
 def euclidean_distance_3d(p1: Tuple[float, float, float], p2: Tuple[float, float, float]) -> float:
@@ -19,7 +20,7 @@ def euclidean_distance_3d(p1: Tuple[float, float, float], p2: Tuple[float, float
 
 def calculate_focal_length(camera_pos: Tuple[float, float, float], 
                           subject_pos: Tuple[float, float, float],
-                          subject_height: float = 180.0,  # cm
+                          subject_height: float = CHARACTER_HEIGHT,  # cm
                           coverage: float = 0.7,
                           sensor_height: float = 24.0) -> float:
     """
@@ -28,7 +29,7 @@ def calculate_focal_length(camera_pos: Tuple[float, float, float],
     Args:
         camera_pos: (x, y, z) camera location in cm
         subject_pos: (x, y, z) subject location in cm
-        subject_height: Height of subject in cm (default 180cm for human)
+        subject_height: Height of subject in cm (default CHARACTER_HEIGHT for human)
         coverage: 0.0-1.0, how much of frame height subject should fill
         sensor_height: Camera sensor height in mm (default 24mm full frame)
     
@@ -135,11 +136,11 @@ def get_position_at_frame(keyframes: List[Dict], frame: int) -> Tuple[float, flo
 
 
 def generate_camera_keyframes(movie_folder: str, camera_name: str, 
-                              look_at_timeline: List[Tuple], 
-                              frame_subject_timeline: List[Tuple],
-                              focus_timeline: List[Tuple],
-                              fps: int = 60,
-                              camera_location: Tuple[float, float, float] = None) -> Dict[str, List]:
+                               look_at_timeline: List[Tuple], 
+                               frame_subject_timeline: List[Tuple],
+                               focus_timeline: List[Tuple],
+                               fps: int = 60,
+                               camera_location: Tuple[float, float, float] = None) -> Dict[str, List]:
     """
     Generate all camera keyframes from timelines.
     
@@ -193,7 +194,7 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
                 
                 if target_pos:
                     # Adjust for height
-                    target_pos_adj = (target_pos[0], target_pos[1], target_pos[2] + (180 * height_pct))
+                    target_pos_adj = (target_pos[0], target_pos[1], target_pos[2] + (CHARACTER_HEIGHT * height_pct))
                     
                     # Calculate rotation
                     roll, pitch, yaw = calculate_look_at_rotation(camera_pos, target_pos_adj)
@@ -251,7 +252,7 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
         
         for frame in range(start_frame, min(end_frame + 1, 10000), 1):
             subject_pos = get_position_at_frame(subject_keyframes, frame)
-            subject_pos = (subject_pos[0], subject_pos[1], subject_pos[2] + 180.0 * height_pct)
+            subject_pos = (subject_pos[0], subject_pos[1], subject_pos[2] + CHARACTER_HEIGHT * height_pct)
             focus_dist = euclidean_distance_3d(camera_pos, subject_pos) / 100.0  # Convert to meters
             
             if last_focus_dist is None or abs(focus_dist - last_focus_dist) / last_focus_dist > change_threshold:

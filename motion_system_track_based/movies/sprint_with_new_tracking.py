@@ -27,6 +27,10 @@ def define_movie():
     target_duration = 30.0 # seconds (Finish time)
     r2_delay = 5.0         # seconds
     
+    # NEW: Height Variables
+    char_height = 1.8      # meters
+    marker_height = char_height * 100    # cm
+    
     # Calculate speeds for synchronized finish
     r1_speed = race_distance / target_duration
     r2_run_duration = target_duration - r2_delay
@@ -38,7 +42,7 @@ def define_movie():
     belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
     
     # Runner 1 - Lane 3 (Y=305cm from center)
-    movie.add_actor(RUNNER_1, location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path)
+    movie.add_actor(RUNNER_1, location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path, height=char_height)
 
     with movie.for_actor(RUNNER_1) as r1:
         r1.face(Direction.NORTH)
@@ -48,7 +52,7 @@ def define_movie():
             .distance_at_speed((DistanceUnit.Meters, race_distance), (SpeedUnit.MetersPerSecond, r1_speed))
         r1.stay().till_end().anim("Idle")
         
-    movie.add_actor(RUNNER_2, location=(0, -50, 0), yaw_offset=-90, mesh_path=belica_path)
+    movie.add_actor(RUNNER_2, location=(0, -50, 0), yaw_offset=-90, mesh_path=belica_path, height=char_height)
     
     with movie.for_actor(RUNNER_2) as r2:
         # Idle for delay
@@ -69,6 +73,8 @@ def define_movie():
     movie.add_group_target(FOCUS_TARGET, members=[RUNNER_1, RUNNER_2], location=(0, -25, 0)) \
          .color("Blue") \
          .shape("Cylinder") \
+         .height(marker_height) \
+         .radius(10) \
          .interval(500)
     
     movie.add_camera(FRONT_CAM, location=(30000, -50, 200)) \
@@ -107,8 +113,8 @@ def define_movie():
         pan_runner(cam, RUNNER_2, duration=5.0)
         
         # 5. Track Both (FocusTarget) (5s)
-        cam.focus_zoom_track(FOCUS_TARGET, focus_pct=0.0, zoom_pct=0.9, track_pct=0.0) # Height irrelevant for marker
-        cam.wait(5.0)
+        # cam.focus_zoom_track(FOCUS_TARGET, focus_pct=0.0, zoom_pct=0.9, track_pct=0.0) # Height irrelevant for marker
+        # cam.wait(5.0)
         
         # Hold remaining time
         cam.wait(max(0, target_duration - 25.0))
