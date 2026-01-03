@@ -1089,7 +1089,7 @@ class MovieBuilder:
                             )
                         target_idx = actor_names.index(target_name)
                         if target_idx > idx:
-                            print(f"⚠ WARNING: Camera '{actor_name}' (position {idx}) is configured to look_at '{target_name}' (position {target_idx}). "
+                            print(f"[WARN] WARNING: Camera '{actor_name}' (position {idx}) is configured to look_at '{target_name}' (position {target_idx}). "
                                   f"The camera is added BEFORE its target, which may cause initial rotation issues. "
                                   f"Consider adding '{target_name}' before '{actor_name}' in your script.")
                 
@@ -1143,7 +1143,7 @@ class MovieBuilder:
                         kf.data['pitch'] = 0
                         kf.data['yaw'] = 0
                     
-                    print(f"✓ Camera '{actor_name}': Auto-tracking enabled, rotation keyframes cleared")
+                    print(f"[OK] Camera '{actor_name}': Auto-tracking enabled, rotation keyframes cleared")
 
 
 

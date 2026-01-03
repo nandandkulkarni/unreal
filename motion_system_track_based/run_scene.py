@@ -135,13 +135,13 @@ def run_scene(movie_folder: str):
     log("="*60)
     try:
         cleanup.close_open_sequences()
-        log("✓ Cleanup: close_open_sequences() completed")
+        log("[OK] Cleanup: close_open_sequences() completed")
     except Exception as e:
         log(f"✗ Cleanup: close_open_sequences() failed: {e}")
     
     try:
         cleanup.delete_old_actors()
-        log("✓ Cleanup: delete_old_actors() completed")
+        log("[OK] Cleanup: delete_old_actors() completed")
     except Exception as e:
         log(f"✗ Cleanup: delete_old_actors() failed: {e}")
     
@@ -165,7 +165,7 @@ def run_scene(movie_folder: str):
     for actor_name in actor_names:
         actor_folder = os.path.join(movie_folder, actor_name)
         if not os.path.exists(actor_folder):
-            log(f"  ⚠ Folder not found for {actor_name}")
+            log(f"  [WARN] Folder not found for {actor_name}")
             continue
         
         # Load initial state from transform track
@@ -201,99 +201,44 @@ def run_scene(movie_folder: str):
                     settings = json.load(f)
                     actor_type = settings.get("actor_type", "camera") # Assume camera if settings exists but no type
             except Exception as e:
-                log(f"  ⚠ Failed to load settings for {actor_name}: {e}")
+                log(f"  [WARN] Failed to load settings for {actor_name}: {e}")
         
         actor_obj = None
         binding = None
         
-        if actor_type == "camera":
-            # Create camera
-            log(f"  Creating camera: {actor_name}")
-            actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation)
-            
-        elif actor_type == "light":
-            # Create light
-            # Light properties are in 'properties' key of settings usually? 
-            # ActorTrackSet puts type in top level or properties?
-            # Let's check LightBuilder again. 
-            # track_set.initial_state["properties"] has the details.
-            # But settings.json usually contains the 'properties' dict.
-            # Wait, ActorTrackSet.to_dict(): 'settings.json' = self.initial_state["properties"]
-            # But 'actor_type' is passed to ActorTrackSet init. 
-            # ActorTrackSet.to_dict puts actor_type in meta.json? No, meta just lists names.
-            # ActorTrackSet writes type WHERE?
-            # Im motion_builder.py, ActorTrackSet doesn't seem to write type explicitly to settings unless in properties!
-            # LightBuilder puts 'light_type' in properties.
-            # So settings.json will have "light_type".
-            # But how do we distinguish from Camera (which has "fov")?
-            
-            # Update: I will check 'light_type' key in settings.
-            if "light_type" in settings:
-                log(f"  Creating Light: {actor_name}")
-                actor_obj = light_setup.create_light(actor_name, location, rotation, settings)
-            else:
-                # Fallback logic
-                pass
-                
-        elif actor_type == "mannequin":
-            # Create mannequin actor
-            log(f"  Creating actor: {actor_name}")
-            actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
-
-        # Logic for dispatching based on properties
-        if "light_type" in settings:
-             actor_obj = light_setup.create_light(actor_name, location, rotation, settings)
-        elif "fov" in settings or actor_type=="camera":
+        # Logic for dispatching based on properties and type
+        if actor_type == "camera" or "fov" in settings:
+             log(f"  Creating camera: {actor_name}")
              fov = settings.get("fov", 90.0)
              debug_visible = settings.get("debug_visible", False)
-             
-             # Calculate initial rotation to look at target if specified
-             look_at_actor_name = settings.get("look_at_actor")
-             if look_at_actor_name and look_at_actor_name in actors_info:
-                 target_actor = actors_info[look_at_actor_name]["actor"]
-                 target_loc = target_actor.get_actor_location()
-                 # Calculate rotation to look at target
-                 rotation = unreal.MathLibrary.find_look_at_rotation(location, target_loc)
-                 log(f"    → Camera rotation calculated to look at '{look_at_actor_name}': {rotation}")
-             elif look_at_actor_name:
-                 log(f"    ⚠ Camera '{actor_name}' configured to look_at '{look_at_actor_name}', but target not found yet. Using default rotation.")
-             
              actor_obj = camera_setup.create_camera(actor_name, location=location, rotation=rotation, fov=fov, debug_visible=debug_visible)
              
-             # NOTE: LookAt tracking will be enabled AFTER binding to sequence (see below)
+        elif actor_type == "light" or "light_type" in settings:
+             log(f"  Creating Light: {actor_name}")
+             actor_obj = light_setup.create_light(actor_name, location, rotation, settings)
+             
         elif actor_type == "marker":
-             # Create marker actor (simple static mesh)
              log(f"  Creating marker: {actor_name}")
-             # Get mesh path and scale from settings
              mesh_path = settings.get("mesh_path", "/Engine/BasicShapes/Cylinder.Cylinder")
-             mesh_scale = settings.get("mesh_scale", (0.1, 0.1, 0.1))  # Default 10cm cylinder
+             mesh_scale = settings.get("mesh_scale", (0.1, 0.1, 0.1))
              
-             # Spawn static mesh actor
-             actor_obj = unreal.EditorLevelLibrary.spawn_actor_from_class(
-                 unreal.StaticMeshActor,
-                 location,
-                 rotation
-             )
-             
+             actor_obj = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, location, rotation)
              if actor_obj:
                  actor_obj.set_actor_label(actor_name)
                  actor_obj.tags.append("MotionSystemActor")
-                 
-                 # Set mesh
                  mesh_asset = unreal.load_object(None, mesh_path)
                  if mesh_asset:
                      actor_obj.static_mesh_component.set_static_mesh(mesh_asset)
                      actor_obj.set_actor_scale3d(unreal.Vector(*mesh_scale))
-                     
-                     # Apply color if specified
                      color_name = settings.get("color", "Blue")
                      mat_path = f"/Game/MyMaterial/My{color_name}"
                      mat = unreal.load_object(None, mat_path)
                      if mat:
                          actor_obj.static_mesh_component.set_material(0, mat)
-                     
-                     log(f"    ✓ Marker created with {mesh_path}")
+                     log(f"    [OK] Marker created with {mesh_path}")
         else:
+             # Default to mannequin for "actor" type or others
+             log(f"  Creating actor: {actor_name}")
              actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
 
         if actor_obj:
@@ -301,7 +246,7 @@ def run_scene(movie_folder: str):
             
             # CRITICAL: Enable LookAt tracking AFTER binding to sequence
             if "fov" in settings and ("look_at_timeline" in settings or "look_at_actor" in settings):
-                log(f"    → Enabling LookAt tracking (post-binding)...")
+                log(f"    -> Enabling LookAt tracking (post-binding)...")
                 try:
                     timeline = settings.get("look_at_timeline", [])
                     if timeline:
@@ -316,7 +261,7 @@ def run_scene(movie_folder: str):
                                 # Calculate and set LookAt rotation
                                 look_at_rot = unreal.MathLibrary.find_look_at_rotation(cam_loc, target_loc)
                                 actor_obj.set_actor_rotation(look_at_rot, False)
-                                log(f"    ✓ Snapped initial rotation to {target_name} ({look_at_rot})")
+                                log(f"    [OK] Snapped initial rotation to {target_name} ({look_at_rot})")
                     
                     # Enable Tracking
                     tracking_settings = actor_obj.get_editor_property("lookat_tracking_settings")
@@ -327,9 +272,9 @@ def run_scene(movie_folder: str):
                     tracking_settings.set_editor_property("look_at_tracking_interp_speed", interp_speed)
                     
                     actor_obj.set_editor_property("lookat_tracking_settings", tracking_settings)
-                    log(f"    ✓ LookAt tracking enabled (interp_speed: {interp_speed})")
+                    log(f"    [OK] LookAt tracking enabled (interp_speed: {interp_speed})")
                 except Exception as e:
-                    log(f"    ⚠ Failed to enable LookAt tracking: {e}")
+                    log(f"    [WARN] Failed to enable LookAt tracking: {e}")
                     import traceback
                     log(traceback.format_exc())
             
@@ -343,9 +288,9 @@ def run_scene(movie_folder: str):
                         attach_sections = json.load(f)
                     if attach_sections:  # Non-empty list
                         attachment_data = attach_sections[0]  # First section
-                        log(f"    → Attachment to: {attachment_data.get('parent_actor')}")
+                        log(f"    -> Attachment to: {attachment_data.get('parent_actor')}")
                 except Exception as e:
-                    log(f"    ⚠ Failed to load attach.json: {e}")
+                    log(f"    [WARN] Failed to load attach.json: {e}")
             
             actors_info[actor_name] = {
                 "actor": actor_obj,
@@ -385,12 +330,12 @@ def run_scene(movie_folder: str):
                             if is_enabled:
                                 target = tracking_settings.get_editor_property("actor_to_track")
                                 target_name = target.get_actor_label() if target else "None"
-                                log(f"  ✓ Camera '{actor_name}': LookAt tracking ENABLED (target: {target_name})")
+                                log(f"  [OK] Camera '{actor_name}': LookAt tracking ENABLED (target: {target_name})")
                             else:
                                 log(f"  ❌ Camera '{actor_name}': LookAt tracking DISABLED (expected ENABLED)")
                                 log(f"     WARNING: Auto-tracking may not work correctly!")
                         except Exception as e:
-                            log(f"  ⚠ Camera '{actor_name}': Could not verify LookAt tracking: {e}")
+                            log(f"  [WARN] Camera '{actor_name}': Could not verify LookAt tracking: {e}")
                     
                     # Validate Focus tracking
                     if "focus_on_timeline" in settings:
@@ -400,13 +345,13 @@ def run_scene(movie_folder: str):
                             focus_method = focus_settings.focus_method
                             
                             if focus_method == unreal.CameraFocusMethod.TRACKING:
-                                log(f"  ✓ Camera '{actor_name}': Focus tracking ENABLED (method: TRACKING)")
+                                log(f"  [OK] Camera '{actor_name}': Focus tracking ENABLED (method: TRACKING)")
                             else:
-                                log(f"  ⚠ Camera '{actor_name}': Focus method is {focus_method} (expected TRACKING)")
+                                log(f"  [WARN] Camera '{actor_name}': Focus method is {focus_method} (expected TRACKING)")
                         except Exception as e:
-                            log(f"  ⚠ Camera '{actor_name}': Could not verify Focus tracking: {e}")
+                            log(f"  [WARN] Camera '{actor_name}': Could not verify Focus tracking: {e}")
             except Exception as e:
-                log(f"  ⚠ Failed to validate {actor_name}: {e}")
+                log(f"  [WARN] Failed to validate {actor_name}: {e}")
     
     log(f"{'='*60}")
     log(f"")
@@ -449,7 +394,7 @@ def run_scene(movie_folder: str):
                     # CRITICAL: Adjust lens limits to prevent clamping of telephoto shots
                     max_kf_focal = max(kf["value"] for kf in focal_keyframes)
                     if max_kf_focal > 200.0: # Default max is often 120-200mm
-                        log(f"    → Adjusting lens limits (Max Focal Length: {max_kf_focal:.1f}mm)")
+                        log(f"    -> Adjusting lens limits (Max Focal Length: {max_kf_focal:.1f}mm)")
                         lens_settings = camera_component.lens_settings
                         lens_settings.max_focal_length = max_kf_focal + 100.0
                         camera_component.lens_settings = lens_settings
@@ -471,11 +416,11 @@ def run_scene(movie_folder: str):
                         for kf in focal_keyframes:
                             frame_number = unreal.FrameNumber(value=kf["frame"])
                             focal_channel.add_key(frame_number, kf["value"])
-                        log(f"    ✓ Applied {len(focal_keyframes)} focal length keyframes")
+                        log(f"    [OK] Applied {len(focal_keyframes)} focal length keyframes")
                     else:
-                        log(f"    ⚠ Focal length track has no channels")
+                        log(f"    [WARN] Focal length track has no channels")
             except Exception as e:
-                log(f"    ⚠ Failed to apply focal length: {e}")
+                log(f"    [WARN] Failed to apply focal length: {e}")
         
         # Check for focus_on timeline (use Tracking Focus mode, not manual distance)
         if os.path.exists(settings_path):
@@ -520,9 +465,9 @@ def run_scene(movie_folder: str):
                                 target_actor = actors_info[target_actor_name]["actor"]
                                 focus_channel.add_key(frame_number, target_actor)
                         
-                        log(f"    ✓ Applied {len(settings['focus_on_timeline'])} Focus Tracking keyframes")
+                        log(f"    [OK] Applied {len(settings['focus_on_timeline'])} Focus Tracking keyframes")
                     else:
-                        log(f"    ⚠ Focus Tracking track has no channels")
+                        log(f"    [WARN] Focus Tracking track has no channels")
                         
                     # Create Float Track for RelativeOffset.Z (Height Pct)
                     offset_track = comp_binding.add_track(unreal.MovieSceneFloatTrack)
@@ -544,9 +489,9 @@ def run_scene(movie_folder: str):
                             frame_number = unreal.FrameNumber(value=int(start_time * fps))
                             offset_channel.add_key(frame_number, offset_z)
                         
-                        log(f"    ✓ Applied {len(settings['focus_on_timeline'])} Focus Offset keyframes")
+                        log(f"    [OK] Applied {len(settings['focus_on_timeline'])} Focus Offset keyframes")
             except Exception as e:
-                log(f"    ⚠ Failed to apply Focus Tracking: {e}")
+                log(f"    [WARN] Failed to apply Focus Tracking: {e}")
     
     # 8. Apply LookAt tracking timelines
     for actor_name in actors_info:
@@ -584,9 +529,9 @@ def run_scene(movie_folder: str):
                                 target_actor = actors_info[target_actor_name]["actor"]
                                 la_channel.add_key(frame_number, target_actor)
                         
-                        log(f"    ✓ Applied {len(settings['look_at_timeline'])} LookAt target keyframes")
+                        log(f"    [OK] Applied {len(settings['look_at_timeline'])} LookAt target keyframes")
                     else:
-                        log(f"    ⚠ LookAt track has no channels")
+                        log(f"    [WARN] LookAt track has no channels")
                         
                     # Create Float Track for RelativeOffset.Z (Height Pct)
                     # LookAt settings are on the Camera Component, but previous code used 'binding' (Actor).
@@ -611,9 +556,9 @@ def run_scene(movie_folder: str):
                             frame_number = unreal.FrameNumber(value=int(start_time * fps))
                             offset_channel.add_key(frame_number, offset_z)
                             
-                        log(f"    ✓ Applied {len(settings['look_at_timeline'])} LookAt Offset keyframes")
+                        log(f"    [OK] Applied {len(settings['look_at_timeline'])} LookAt Offset keyframes")
             except Exception as e:
-                log(f"    ⚠ Failed to apply LookAt tracking: {e}")
+                log(f"    [WARN] Failed to apply LookAt tracking: {e}")
     
     
     # 7. Apply camera cuts
@@ -634,9 +579,9 @@ def run_scene(movie_folder: str):
     
     try:
         unreal.LevelSequenceEditorBlueprintLibrary.set_lock_camera_cut_to_viewport(True)
-        log("✓ Viewport locked to camera cuts")
+        log("[OK] Viewport locked to camera cuts")
     except Exception as e:
-        log(f"⚠ Warning: Could not lock viewport: {e}")
+        log(f"[WARN] Warning: Could not lock viewport: {e}")
     
     import time
     time.sleep(0.5)
@@ -645,9 +590,9 @@ def run_scene(movie_folder: str):
         unreal.LevelSequenceEditorBlueprintLibrary.refresh_current_level_sequence()
         unreal.LevelSequenceEditorBlueprintLibrary.set_current_time(0)
         unreal.LevelSequenceEditorBlueprintLibrary.play()
-        log("✓ Sequence playing from frame 0")
+        log("[OK] Sequence playing from frame 0")
     except Exception as e:
-        log(f"⚠ Warning: Could not play sequence: {e}")
+        log(f"[WARN] Warning: Could not play sequence: {e}")
     
     log(f"{'='*60}")
     log(f"SCENE EXECUTION COMPLETE")
