@@ -328,6 +328,40 @@ class AttachTrack(Track):
         return self.sections
 
 
+class FocalLengthTrack(Track):
+    """
+    Track for camera focal length (zoom).
+    
+    1:1 mapping with Unreal's CineCameraComponent.CurrentFocalLength.
+    Output: focal_length.json
+    """
+    def __init__(self):
+        super().__init__("focal_length")
+    
+    def add_keyframe(self, frame: int, value: float) -> 'FocalLengthTrack':
+        """Add focal length keyframe (in mm)."""
+        kf = Keyframe(frame, value=value)
+        self.keyframes.append(kf)
+        return self
+
+
+class FocusDistanceTrack(Track):
+    """
+    Track for camera focus distance (depth of field).
+    
+    1:1 mapping with Unreal's CineCameraComponent.FocusSettings.ManualFocusDistance.
+    Output: focus_distance.json
+    """
+    def __init__(self):
+        super().__init__("focus_distance")
+    
+    def add_keyframe(self, frame: int, value: float) -> 'FocusDistanceTrack':
+        """Add focus distance keyframe (in cm)."""
+        kf = Keyframe(frame, value=value)
+        self.keyframes.append(kf)
+        return self
+
+
 # =============================================================================
 # ACTOR TRACK SET
 # =============================================================================
@@ -356,6 +390,12 @@ class ActorTrackSet:
             "rotation": [0, 0, 0],  # [roll, pitch, yaw]
             "properties": {}       # radius, height, mesh_path, etc.
         }
+        # Camera timelines for dynamic keyframe generation
+        self.camera_timelines = {
+            "look_at": [],      # [(start_time, end_time, actor, height_pct, interp_speed)]
+            "frame_subject": [], # [(start_time, end_time, actor, coverage)]
+            "focus_on": []       # [(start_time, end_time, actor, height_pct)]
+        } if actor_type == "camera" else None
     
     def save(self, base_folder: str):
         """
@@ -615,7 +655,7 @@ class MovieBuilder:
         track_set = ActorTrackSet(name, actor_type="actor")
         track_set.initial_state = {
             "location": list(location),
-            "rotation": [0, yaw_offset, 0],  # [roll, pitch, yaw]
+            "rotation": [0, 0, yaw_offset],  # [roll, pitch, yaw]
             "properties": {
                 "radius": radius,
                 "height": height,
@@ -856,7 +896,9 @@ class MovieBuilder:
             │   └── animation.json
             └── Camera1/
                 ├── transform.json
-                └── settings.json
+                ├── settings.json
+                ├── focal_length.json (if frame_subject used)
+                └── focus_distance.json (if focus_on used)
         
         Args:
             output_folder: Base output directory
@@ -882,6 +924,47 @@ class MovieBuilder:
         # Save each actor's tracks
         for actor_name, track_set in self.actors.items():
             track_set.save(movie_folder)
+        
+        # Generate camera keyframes from timelines (AFTER actor tracks are saved)
+        import motion_planner
+        for camera_name, track_set in self.actors.items():
+            if track_set.actor_type == "camera" and track_set.camera_timelines:
+                # Check if any timelines have data
+                has_look_at = bool(track_set.camera_timelines["look_at"])
+                has_frame_subject = bool(track_set.camera_timelines["frame_subject"])
+                has_focus = bool(track_set.camera_timelines["focus_on"])
+                
+                if has_look_at or has_frame_subject or has_focus:
+                    # Generate keyframes
+                    keyframes = motion_planner.generate_camera_keyframes(
+                        movie_folder,
+                        camera_name,
+                        track_set.camera_timelines["look_at"],
+                        track_set.camera_timelines["frame_subject"],
+                        track_set.camera_timelines["focus_on"],
+                        self.fps
+                    )
+                    
+                    # Save rotation keyframes to transform.json
+                    if keyframes["rotation"]:
+                        camera_folder = os.path.join(movie_folder, camera_name)
+                        transform_path = os.path.join(camera_folder, "transform.json")
+                        with open(transform_path, 'w', encoding='utf-8') as f:
+                            json.dump(keyframes["rotation"], f, indent=2)
+                    
+                    # Save focal length keyframes
+                    if keyframes["focal_length"]:
+                        camera_folder = os.path.join(movie_folder, camera_name)
+                        focal_path = os.path.join(camera_folder, "focal_length.json")
+                        with open(focal_path, 'w', encoding='utf-8') as f:
+                            json.dump(keyframes["focal_length"], f, indent=2)
+                    
+                    # Save focus distance keyframes
+                    if keyframes["focus_distance"]:
+                        camera_folder = os.path.join(movie_folder, camera_name)
+                        focus_path = os.path.join(camera_folder, "focus_distance.json")
+                        with open(focus_path, 'w', encoding='utf-8') as f:
+                            json.dump(keyframes["focus_distance"], f, indent=2)
         
         # Save camera cuts if any
         if hasattr(self, '_camera_cuts') and self._camera_cuts:
@@ -1260,12 +1343,8 @@ class StayCommandBuilder:
     
     def till_end(self) -> 'StayCommandBuilder':
         """Stay until movie ends (resolved at finalization)."""
-        # For now, just use a large duration
-        # TODO: Implement proper till_end resolution
-        duration = 100.0 # Default fallback
-        if self.ab.mb.duration > 0:
-            duration = max(0, self.ab.mb.duration - self.start_time)
-            
+        # Use a large duration - will be trimmed to sequence end by Unreal
+        duration = 999.0
         return self.for_time(duration)
     
     def anim(self, name: str, speed_multiplier: float = 1.0) -> 'StayCommandBuilder':
@@ -1407,6 +1486,7 @@ class CameraCommandBuilder:
     def __init__(self, movie_builder: MovieBuilder, camera_name: str):
         self.mb = movie_builder
         self.camera_name = camera_name
+        self.start_time = self.mb.current_time
     
     def __enter__(self):
         return self
@@ -1414,14 +1494,63 @@ class CameraCommandBuilder:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
     
-    def look_at(self, actor_name: str, height_pct: float = 0.7) -> 'CameraCommandBuilder':
+    def look_at(self, actor_name: str, height_pct: float = 0.7, interp_speed: float = 5.0) -> 'CameraCommandBuilder':
         """Switch look-at target."""
-        # TODO: Implement keyframe for look-at change
+        if self.camera_name in self.mb.actors:
+            track_set = self.mb.actors[self.camera_name]
+            if track_set.camera_timelines:
+                # Add to look_at timeline
+                track_set.camera_timelines["look_at"].append((
+                    self.start_time,
+                    None,  # End time set by next command or end
+                    actor_name,
+                    height_pct,
+                    interp_speed
+                ))
+        return self
+    
+    def frame_subject(self, actor_name: str, coverage: float = 0.7) -> 'CameraCommandBuilder':
+        """Auto-frame subject at desired coverage using focal length."""
+        if self.camera_name in self.mb.actors:
+            track_set = self.mb.actors[self.camera_name]
+            if track_set.camera_timelines:
+                track_set.camera_timelines["frame_subject"].append((
+                    self.start_time,
+                    None,
+                    actor_name,
+                    coverage
+                ))
+        return self
+    
+    def focus_on(self, actor_name: str, height_pct: float = 0.7) -> 'CameraCommandBuilder':
+        """Set focus distance to track actor."""
+        if self.camera_name in self.mb.actors:
+            track_set = self.mb.actors[self.camera_name]
+            if track_set.camera_timelines:
+                track_set.camera_timelines["focus_on"].append((
+                    self.start_time,
+                    None,
+                    actor_name,
+                    height_pct
+                ))
         return self
     
     def wait(self, duration: float) -> 'CameraCommandBuilder':
         """Hold current settings for duration."""
-        # TODO: Implement
+        self.start_time += duration
+        self.mb.current_time += duration
+        
+        # Close previous timeline segments
+        if self.camera_name in self.mb.actors:
+            track_set = self.mb.actors[self.camera_name]
+            if track_set.camera_timelines:
+                for timeline_name in ["look_at", "frame_subject", "focus_on"]:
+                    timeline = track_set.camera_timelines[timeline_name]
+                    if timeline and timeline[-1][1] is None:
+                        # Update last segment's end time
+                        segment = list(timeline[-1])
+                        segment[1] = self.start_time
+                        timeline[-1] = tuple(segment)
         return self
 
 

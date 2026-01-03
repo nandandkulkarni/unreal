@@ -1,0 +1,11 @@
+{
+  "name": "Sprint With Camera Track",
+  "fps": 60,
+  "create_new_level": true,
+  "duration": 8.0,
+  "actors": [
+    "Runner1",
+    "Runner2",
+    "FrontCam"
+  ]
+}

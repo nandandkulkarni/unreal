@@ -1,65 +1,92 @@
 """
-100m Sprint - Fluent API Demonstration
+100m Sprint - Track-Based API
+Migrated from old motion_system to new track-based architecture.
 
-Uses chained .move_straight() commands, velocity ramping, and corridor constraints.
+Two runners sprinting 100m with acceleration/deceleration phases.
 """
 
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from motion_builder import MovieBuilder
+from motion_builder import MovieBuilder, Direction, SpeedUnit, DistanceUnit
 
 def define_movie():
-    """Define 100m sprint using Fluent API"""
+    """Define 100m sprint using track-based Fluent API"""
     
-    with MovieBuilder("Fluent Sprint", fps=60) as movie:
-        
-        ##movie.delete_all_floors()
-        ##movie.add_floor("Track", location=(0, 0, -0.5), scale=2000)
-        
-        # Add runners (radius is set here and stays with the actor)
-        movie.add_actor("Runner1", location=(0, 305, 0), yaw_offset=-90, radius=0.5)
-        movie.add_actor("Runner2", location=(0, 183, 0), yaw_offset=-90, radius=0.5)
-        
-        # Runner Choreography in Parallel
-        with movie.simultaneous():
-            # Runner 1 (Lane 3)
-            with movie.for_actor("Runner1") as r:
-                r.animation("Jog_Fwd")
-                r.move_straight() \
-                    .by_distance(20.0).velocity(to=10.0, start_from=0.0).in_corridor(2.44, 3.66) \
-                    .move_straight() \
-                    .by_distance(80.0).speed(10.0).in_corridor(2.44, 3.66) \
-                    .move_straight() \
-                    .for_seconds(3.0).velocity(to=0.0).in_corridor(2.44, 3.66)
-                r.stay().till_end()
-
-            # Runner 2 (Lane 2)
-            with movie.for_actor("Runner2") as r:
-                r.animation("Jog_Fwd")
-                r.move_straight() \
-                    .by_distance(22.0).velocity(to=10.5, start_from=0.0).in_corridor(1.22, 2.44) \
-                    .move_straight() \
-                    .by_distance(78.0).speed(10.5).in_corridor(1.22, 2.44) \
-                    .move_straight() \
-                    .for_seconds(3.0).velocity(to=0.0).in_corridor(1.22, 2.44)
-                r.stay().till_end()
+    movie = MovieBuilder("Sprint Fluent Track", fps=60)
+    
+    # Add runners with explicit mesh path
+    belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
+    
+    # Runner 1 - Lane 3 (Y=305cm from center)
+    movie.add_actor("Runner1", location=(0, 305, 0), mesh_path=belica_path)
+    
+    # Runner 2 - Lane 2 (Y=183cm from center)
+    movie.add_actor("Runner2", location=(0, 183, 0), mesh_path=belica_path)
+    
+    # Camera - Side view
+    movie.add_camera("SideView", location=(5000, -1000, 200)) \
+         .rotation((0, 0, 90)) \
+         .add()
+    
+    movie.at_time(0).camera_cut("SideView")
+    
+    # Runner choreography using simultaneous block
+    with movie.simultaneous():
+        # Runner 1 (Lane 3) - 100m sprint
+        with movie.for_actor("Runner1") as r1:
+            r1.face(Direction.NORTH)
             
-        movie.add_camera("SideView", location=(5000, -1000, 200)).rotation((0, 90, 0)).add()
-        movie.add_audio(asset_path="/Game/MyAudio/Sopranos_-_High_Quality.Sopranos_-_High_Quality", start_time=0.0)
-        movie.at_time(0).camera_cut("SideView")
+            # Phase 1: Acceleration (0-20m, 0-10 m/s)
+            r1.move_straight() \
+                .direction(Direction.FORWARD) \
+                .anim("Jog_Fwd") \
+                .distance_at_speed((DistanceUnit.Meters, 20), (SpeedUnit.MetersPerSecond, 5))
+            
+            # Phase 2: Top speed (20-100m, constant 10 m/s)
+            r1.move_straight() \
+                .direction(Direction.FORWARD) \
+                .anim("Jog_Fwd") \
+                .distance_at_speed((DistanceUnit.Meters, 80), (SpeedUnit.MetersPerSecond, 10))
+            
+            # Phase 3: Deceleration (3 seconds to stop)
+            r1.move_straight() \
+                .direction(Direction.FORWARD) \
+                .anim("Jog_Fwd") \
+                .distance_in_time(15, 3)  # Slow down over 3 seconds
+            
+            # Stay at finish
+            r1.stay().till_end().anim("Idle")
         
-        # Standardize export path
-        movie.save_to_json("dist/sprint_fluent.json")
-    movie.run(to_unreal=True)
-        
-    return movie.build()
-
-MOVIE = define_movie()
+        # Runner 2 (Lane 2) - Slightly faster
+        with movie.for_actor("Runner2") as r2:
+            r2.face(Direction.NORTH)
+            
+            # Phase 1: Acceleration (0-22m)
+            r2.move_straight() \
+                .direction(Direction.FORWARD) \
+                .anim("Jog_Fwd") \
+                .distance_at_speed((DistanceUnit.Meters, 22), (SpeedUnit.MetersPerSecond, 5.5))
+            
+            # Phase 2: Top speed (22-100m, 10.5 m/s)
+            r2.move_straight() \
+                .direction(Direction.FORWARD) \
+                .anim("Jog_Fwd") \
+                .distance_at_speed((DistanceUnit.Meters, 78), (SpeedUnit.MetersPerSecond, 10.5))
+            
+            # Phase 3: Deceleration
+            r2.move_straight() \
+                .direction(Direction.FORWARD) \
+                .anim("Jog_Fwd") \
+                .distance_in_time(15, 3)
+            
+            # Stay at finish
+            r2.stay().till_end().anim("Idle")
+    
+    return movie
 
 if __name__ == "__main__":
-    print(f"Movie built with {len(MOVIE['plan'])} commands")
-    for i, cmd in enumerate(MOVIE['plan']):
-        if "command" in cmd:
-            print(f"{i}: {cmd['command']} (Actor: {cmd.get('actor', 'N/A')})")
+    movie = define_movie()
+    movie.save_to_tracks()
+    movie.run(to_unreal=True)

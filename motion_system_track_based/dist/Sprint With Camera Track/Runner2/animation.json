@@ -1,0 +1,20 @@
+[
+  {
+    "start_frame": 60,
+    "end_frame": 480,
+    "name": "Jog_Fwd",
+    "speed_multiplier": 1.0
+  },
+  {
+    "start_frame": 600,
+    "end_frame": 1080,
+    "name": "Jog_Fwd",
+    "speed_multiplier": 1.0
+  },
+  {
+    "start_frame": 1080,
+    "end_frame": 61020,
+    "name": "Idle",
+    "speed_multiplier": 1.0
+  }
+]

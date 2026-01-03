@@ -1,11 +1,13 @@
 {
-  "Fluent_Sprint": 4,
-  "Sprint_With_Camera": 10,
+  "Fluent_Sprint": 6,
+  "Sprint_With_Camera": 12,
   "Overhead_Runners": 36,
   "Simple_Mannequin_Test": 2,
   "SimpleMannequinTest": 2,
   "SimpleMannequinTest_V2": 4,
   "Test_Lights_API": 1,
   "Test_Attached_Camera": 1,
-  "100m_Side_Camera": 4
+  "100m_Side_Camera": 4,
+  "Sprint_Fluent_Track": 2,
+  "Sprint_With_Camera_Track": 4
 }
