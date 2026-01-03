@@ -21,10 +21,7 @@ def define_movie():
     
     # Runner 1 - Lane 3 (Y=305cm from center)
     movie.add_actor("Runner1", location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path)
-    
-    # Runner 2 - Lane 2 (Y=183cm from center)
-    movie.add_actor("Runner2", location=(0, -100, 0), yaw_offset=-90, mesh_path=belica_path)
-    
+
     # Run runners in parallel
     with movie.simultaneous():
         # Runner 1 - Standard sprint north
@@ -33,14 +30,14 @@ def define_movie():
             r1.move_straight() \
                 .direction(Direction.NORTH) \
                 .anim("Jog_Fwd") \
-                .distance_at_speed((DistanceUnit.Meters, 100), (SpeedUnit.MetersPerSecond, 10))
+                .distance_at_speed((DistanceUnit.Meters, 200), (SpeedUnit.MetersPerSecond, 10))
             r1.stay().till_end().anim("Idle")
         
        
     
     # Front/Finish Camera - positioned past finish line, centered between lanes
     # 11000cm = 110m, 244cm = midpoint between lanes
-    movie.add_camera("FrontCam", location=(11000, -50, 200)) \
+    movie.add_camera("FrontCam", location=(22500, -50, 200)) \
          .look_at_subject("Runner1", height_pct=0.7) \
          .add()
     
@@ -49,22 +46,31 @@ def define_movie():
     
     # Camera commands (switching focus between runners)
     with movie.for_camera("FrontCam") as cam:
-        # 0-4s: Focus on Runner1
-        cam.look_at_subject("Runner1", height_pct=0.7)
+        # 0s: Start Focus on Face (0.85 = Head/Face)
+        cam.look_at_subject("Runner1", height_pct=0.90)
         cam.auto_zoom_subject("Runner1", coverage=0.7)
-        cam.auto_focus_subject("Runner1", height_pct=0.7)
-        cam.wait(4.0)
+        cam.auto_focus_subject("Runner1", height_pct=0.85)
+        cam.wait(5.0)
         
-        # # 4-8s: Switch to Runner2
-        # cam.look_at_subject("Runner2", height_pct=0.7)
-        # cam.auto_zoom_subject("Runner2", coverage=0.7)
-        # cam.auto_focus_subject("Runner2", height_pct=0.7)
-        # cam.wait(4.0)
+        # 5s: Hold Face, Start Pan Down to Legs (take 5s)
+        # We RE-APPLY correct current state at t=5s to ensure a keyframe exists here
+        cam.look_at_subject("Runner1", height_pct=0.90)
+        cam.auto_focus_subject("Runner1", height_pct=0.90)
+        cam.wait(5.0)
         
-        # 8s+: Switch back to Runner1
-        cam.look_at_subject("Runner1", height_pct=0.7)
-        cam.auto_zoom_subject("Runner1", coverage=0.7)
-        cam.auto_focus_subject("Runner1", height_pct=0.7)
+        # 10s: Arrive at Legs (0.25 = Knees), Start Pan Up to Face (take 5s)
+        cam.look_at_subject("Runner1", height_pct=0.25)
+        cam.auto_focus_subject("Runner1", height_pct=0.25)
+        cam.wait(5.0)
+        
+        # 15s: Arrive at Face, Start Hold (take 5s)
+        cam.look_at_subject("Runner1", height_pct=0.90)
+        cam.auto_focus_subject("Runner1", height_pct=0.90)
+        cam.wait(5.0)
+        
+        # 20s: End Hold
+        cam.look_at_subject("Runner1", height_pct=0.90)
+        cam.auto_focus_subject("Runner1", height_pct=0.90)
     
     return movie
 
