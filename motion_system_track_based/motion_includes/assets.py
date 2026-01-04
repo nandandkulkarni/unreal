@@ -19,12 +19,7 @@ class Characters:
     QUINN_SIMPLE = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", 1.81)
     QUINN_THIRD_PERSON = CharacterData("/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", 1.7)
     YIN = CharacterData('/Game/ParagonYin/Characters/Heroes/Yin/Meshes/Yin.Yin', 1.82)
-    BELICA_OLD = CharacterData("/Game/Characters/Belica/Mesh/SK_Belica", 1.8) # Legacy
     
-    # Generic Unreal Mannequins
-    MANNY = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny", 1.8)
-    QUINN = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn", 1.7)
-
     @staticmethod
     def get_path(name: str):
         """Get character path by case-insensitive name."""
