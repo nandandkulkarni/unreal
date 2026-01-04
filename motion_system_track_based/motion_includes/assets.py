@@ -2,26 +2,39 @@
 Centralized asset paths for the Motion System.
 """
 
+class CharacterData:
+    """Structure for character asset properties"""
+    def __init__(self, path: str, height: float = 1.8, initial_yaw: float = -90.0):
+        self.path = path
+        self.height = height
+        self.initial_yaw = initial_yaw
+
+    def __repr__(self):
+        return f"CharacterData(path='{self.path}', height={self.height}, initial_yaw={self.initial_yaw})"
+
 class Characters:
-    BELICA = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
-    PIA = "/Game/MetaHumans/Pia/BP_Pia.BP_Pia"
-    HANA = "/Game/MetaHumans/Hana/BP_Hana.BP_Hana"
-    QUINN_SIMPLE = "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple"
-    QUINN_THIRD_PERSON = "/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple"
-    YIN = '/Game/ParagonYin/Characters/Heroes/Yin/Meshes/Yin.Yin'
-    BELICA_OLD = "/Game/Characters/Belica/Mesh/SK_Belica" # Legacy
+    BELICA = CharacterData("/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica", 1.8)
+    PIA = CharacterData("/Game/MetaHumans/Pia/BP_Pia.BP_Pia", 1.56)
+    HANA = CharacterData("/Game/MetaHumans/Hana/BP_Hana.BP_Hana", 1.60) # Approx
+    QUINN_SIMPLE = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", 1.7)
+    QUINN_THIRD_PERSON = CharacterData("/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", 1.7)
+    YIN = CharacterData('/Game/ParagonYin/Characters/Heroes/Yin/Meshes/Yin.Yin', 1.65)
+    BELICA_OLD = CharacterData("/Game/Characters/Belica/Mesh/SK_Belica", 1.8) # Legacy
     
     # Generic Unreal Mannequins
-    MANNY = "/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"
-    QUINN = "/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn"
+    MANNY = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny", 1.8)
+    QUINN = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn", 1.7)
 
     @staticmethod
     def get_path(name: str):
         """Get character path by case-insensitive name."""
         name_upper = name.upper()
         if hasattr(Characters, name_upper):
-            return getattr(Characters, name_upper)
-        return name # Return original if not found (assumes full path)
+            obj = getattr(Characters, name_upper)
+            if isinstance(obj, CharacterData):
+                return obj.path
+            return obj
+        return name 
 
 class Shapes:
     CUBE = "/Engine/BasicShapes/Cube.Cube"

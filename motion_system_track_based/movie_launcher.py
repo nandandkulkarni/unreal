@@ -13,6 +13,7 @@ import threading
 import sys
 import datetime
 import re
+from motion_includes.assets import Characters
 
 # Constants
 CONFIG_FILE = "launcher_config.jsonx"
@@ -143,16 +144,25 @@ class MovieLauncherApp:
         h_frame = tk.Frame(util_frame, bg="#1e1e1e", pady=10)
         h_frame.pack(fill=tk.X)
         
+        
         tk.Label(h_frame, text="Measure Character Height:", bg="#1e1e1e", fg="#bbbbbb").pack(side=tk.LEFT, padx=10)
         
-        self.char_name_var = tk.StringVar(value="Belica")
-        self.char_entry = tk.Entry(h_frame, textvariable=self.char_name_var, width=15, bg="#2d2d2d", fg="white", insertbackground="white")
+        # Get character names from Assets
+        char_names = sorted([k for k in dir(Characters) if k.isupper() and not k.startswith("_")])
+        
+        self.char_name_var = tk.StringVar(value="BELICA")
+        self.char_entry = ttk.Combobox(h_frame, textvariable=self.char_name_var, values=char_names, width=20)
         self.char_entry.pack(side=tk.LEFT, padx=5)
         
         self.measure_btn = tk.Button(h_frame, text="MEASURE", font=("Segoe UI", 8, "bold"),
                                    bg="#8e44ad", fg="white", activebackground="#9b59b6", activeforeground="white",
                                    bd=0, padx=10, pady=2, command=self.run_measure_tool)
         self.measure_btn.pack(side=tk.LEFT, padx=10)
+        
+        self.update_asset_btn = tk.Button(h_frame, text="UPDATE ASSET", font=("Segoe UI", 8, "bold"),
+                                   bg="#2980b9", fg="white", activebackground="#3498db", activeforeground="white",
+                                   bd=0, padx=10, pady=2, state=tk.DISABLED, command=self.update_asset_file)
+        self.update_asset_btn.pack(side=tk.LEFT, padx=10)
 
 
         # Cleanup Button (Moved to bottom)
@@ -172,6 +182,98 @@ class MovieLauncherApp:
 
         # Ensure lock is released on close
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def update_asset_file(self):
+        """Updates the height in assets.py for the selected character"""
+        new_height_str = self.actual_height_val.get()
+        
+        if not char_name or not new_height_str:
+            return
+            
+        try:
+            new_height = float(new_height_str)
+        except ValueError:
+            messagebox.showerror("Error", "Invalid height value")
+            return
+
+        # Path to assets.py
+        assets_path = os.path.join("motion_includes", "assets.py")
+        if not os.path.exists(assets_path):
+             messagebox.showerror("Error", "assets.py not found")
+             return
+             
+        try:
+            with open(assets_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Regex to find: NAME = CharacterData("...", HEIGHT, ...)
+            # We want to match explicitly the NAME = part to be sure.
+            # Pattern: (NAME\s*=\s*CharacterData\s*\()(?:[^,]+,\s*)([\d.]+)(.*?\))
+            # Wait, arguments inside parenthesis: Path (string), Height (float), Yaw (float, optional)
+            
+            # More robust pattern:
+            # 1. Start with name: \s+NAME\s*=\s*CharacterData\(
+            # 2. Path arg: [^,]+,\s*
+            # 3. Height arg (capture group): ([\d.]+)
+            
+            pattern = rf"(\s+{re.escape(char_name)}\s*=\s*CharacterData\s*\(\s*[^,]+,\s*)([\d.]+)"
+            
+            match = re.search(pattern, content)
+            if match:
+                # check if change needed
+                current_val = float(match.group(2))
+                if abs(current_val - new_height) < 0.001:
+                    messagebox.showinfo("Info", f"Height for {char_name} is already {new_height}")
+                    return
+                
+                # Replace
+                new_content = re.sub(pattern, rf"\g<1>{new_height}", content, count=1)
+                
+                with open(assets_path, 'w', encoding='utf-8') as f:
+                    f.write(new_content)
+                    
+                self.log_to_console(f">>> UPDATED {char_name} HEIGHT: {current_val} -> {new_height}")
+                messagebox.showinfo("Success", f"Updated {char_name} height to {new_height} in assets.py")
+                self.update_asset_btn.config(state=tk.DISABLED)
+            else:
+                messagebox.showwarning("Not Found", f"Could not find definition for {char_name} in assets.py")
+                
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to update asset: {e}")
+
+    
+    def on_measure_complete(self, result, error=None):
+        self.measure_btn.config(state=tk.NORMAL, text="MEASURE")
+        if error:
+            # ... error handling ...
+            self.log_to_console(f">>> ERROR: {error}")
+            messagebox.showerror("Measurement Failed", error)
+        else:
+            self.log_to_console(f">>> RESULT: {result}")
+            if result and "Height:" in result:
+                # Try to parse the numeric value
+                try:
+                    # format: "Height: 180.00 cm (Source: Capsule)"
+                    parts = result.split() # ["Height:", "180.00", "cm", ...]
+                    val_cm = float(parts[1])
+                    val_m = val_cm / 100.0
+                    self.actual_height_val.set(f"{val_m:.2f}") # Auto-fill Actual Height field
+                    
+                    # Enable Update Button if it's a known character
+                    selected_name = self.char_name_var.get().strip()
+                    is_known = hasattr(Characters, selected_name)
+                    if is_known:
+                         self.log_to_console(f">>> ENABLED UPDATE for {selected_name}")
+                         self.update_asset_btn.config(state=tk.NORMAL)
+                    else:
+                         self.log_to_console(f">>> CANNOT UPDATE: {selected_name} not in Assets")
+                    
+                    messagebox.showinfo("Measurement Complete", f"{result}\n\nValue copied to Actual Height field.")
+                except Exception as e:
+                    print(e)
+                    messagebox.showinfo("Measurement Complete", result)
+            else:
+                 messagebox.showwarning("Measurement Inconclusive", "Could not find valid height in output.\nCheck console log.")
 
     def sync_val_to_entry(self):
         val = self.focal_val.get()

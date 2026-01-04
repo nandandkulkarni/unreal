@@ -30,7 +30,9 @@ def define_movie():
     r2_delay = 5.0         # seconds
     
     # NEW: Height Variables
-    char_height = 1.8      # meters
+    # Use Belica as reference
+    char_data = Characters.BELICA
+    char_height = char_data.height      # meters
     marker_height = char_height * 100    # cm
     
     # Calculate speeds for synchronized finish
@@ -44,7 +46,7 @@ def define_movie():
     # belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
     
     # Runner 1 - Lane 3 (Y=305cm from center)
-    movie.add_actor(RUNNER_1, location=(0, 0, 0), yaw_offset=-90, mesh_path=Characters.BELICA, height=char_height)
+    movie.add_actor(RUNNER_1, location=(0, 0, 0), yaw_offset=char_data.initial_yaw, mesh_path=char_data.path, height=char_height)
 
     with movie.for_actor(RUNNER_1) as r1:
         r1.face(Direction.NORTH)
@@ -54,7 +56,7 @@ def define_movie():
             .distance_at_speed((DistanceUnit.Meters, race_distance), (SpeedUnit.MetersPerSecond, r1_speed))
         r1.stay().till_end().anim("Idle")
         
-    movie.add_actor(RUNNER_2, location=(0, -50, 0), yaw_offset=-90, mesh_path=Characters.BELICA, height=char_height)
+    movie.add_actor(RUNNER_2, location=(0, -50, 0), yaw_offset=char_data.initial_yaw, mesh_path=char_data.path, height=char_height)
     
     with movie.for_actor(RUNNER_2) as r2:
         # Idle for delay
@@ -70,7 +72,8 @@ def define_movie():
         r2.stay().till_end().anim("Idle")
 
     # Runner 3 - Lane 1 (Y=50cm)
-    movie.add_actor(RUNNER_3, location=(0, 50, 0), yaw_offset=-90, mesh_path=Characters.PIA, height=char_height)
+    char_3_data = Characters.PIA
+    movie.add_actor(RUNNER_3, location=(0, 50, 0), yaw_offset=char_3_data.initial_yaw, mesh_path=char_3_data.path, height=char_3_data.height)
     
     with movie.for_actor(RUNNER_3) as r3:
         # Simple run, start immediately (slower jog?)

@@ -13,10 +13,10 @@ from motion_includes.assets import Characters, Shapes
 # Explorations Settings
 FOCAL_LENGTH = 1662.0  # [EDITABLE_FOCAL_LENGTH]
 SET_HEIGHT = 1.9  # [EDITABLE_SET_HEIGHT]
-CHARACTER_PATH = Characters.BELICA  # [EDITABLE_CHARACTER]
+CHARACTER_DATA = Characters.BELICA  # [EDITABLE_CHARACTER]
 
 
-def define_movie(character_path=CHARACTER_PATH):
+def define_movie(char_data=CHARACTER_DATA):
     """Define a simple camera exploration scene"""
     
     movie = MovieBuilder("Camera Settings Exploration", fps=60)
@@ -27,7 +27,10 @@ def define_movie(character_path=CHARACTER_PATH):
     REF_MARKER = "ReferenceMarker"
     
     # 1. Add Subject at Origin
-    movie.add_actor(PERSON, location=(0, 0, 0), mesh_path=character_path, height=SET_HEIGHT, yaw_offset=-90)
+    # Use object properties
+    # Note: SET_HEIGHT is used for scaling the marker, but for actor height we might want the data's height?
+    # However, exploration often wants to override/experiment. Let's keep SET_HEIGHT but allow char_data usage.
+    movie.add_actor(PERSON, location=(0, 0, 0), mesh_path=char_data.path, height=SET_HEIGHT, yaw_offset=char_data.initial_yaw)
     
     # 2. Add Reference Cylinder behind and to the side
     # Belica facing -90 yaw (Negative Y). Behind her is Positive Y.
@@ -61,5 +64,5 @@ def define_movie(character_path=CHARACTER_PATH):
     return movie
 
 if __name__ == "__main__":
-    movie = define_movie(CHARACTER_PATH)
+    movie = define_movie(CHARACTER_DATA)
     movie.save_to_tracks().run(to_unreal=True)
