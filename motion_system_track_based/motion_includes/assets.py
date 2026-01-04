@@ -15,10 +15,10 @@ class CharacterData:
 class Characters:
     BELICA = CharacterData("/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica", 1.8)
     PIA = CharacterData("/Game/MetaHumans/Pia/BP_Pia.BP_Pia", 1.56)
-    HANA = CharacterData("/Game/MetaHumans/Hana/BP_Hana.BP_Hana", 1.60) # Approx
-    QUINN_SIMPLE = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", 1.7)
+    HANA = CharacterData("/Game/MetaHumans/Hana/BP_Hana.BP_Hana", 1.63) # Approx
+    QUINN_SIMPLE = CharacterData("/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", 1.81)
     QUINN_THIRD_PERSON = CharacterData("/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple", 1.7)
-    YIN = CharacterData('/Game/ParagonYin/Characters/Heroes/Yin/Meshes/Yin.Yin', 1.65)
+    YIN = CharacterData('/Game/ParagonYin/Characters/Heroes/Yin/Meshes/Yin.Yin', 1.82)
     BELICA_OLD = CharacterData("/Game/Characters/Belica/Mesh/SK_Belica", 1.8) # Legacy
     
     # Generic Unreal Mannequins
