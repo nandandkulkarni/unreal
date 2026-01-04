@@ -50,7 +50,7 @@ def define_movie():
         r1.face(Direction.NORTH)
         r1.move_straight() \
             .direction(Direction.NORTH) \
-            .anim(Animations.PIA_JOG_FWD) \
+            .anim("Jog_Fwd") \
             .distance_at_speed((DistanceUnit.Meters, race_distance), (SpeedUnit.MetersPerSecond, r1_speed))
         r1.stay().till_end().anim("Idle")
         
@@ -64,7 +64,7 @@ def define_movie():
 
         # Start running (Sprint) to finish at same time
         r2.move_straight().direction(Direction.NORTH) \
-            .anim(Animations.PIA_JOG_FWD) \
+            .anim("Jog_Fwd") \
             .distance_in_time((DistanceUnit.Meters, race_distance), r2_run_duration)
             
         r2.stay().till_end().anim("Idle")

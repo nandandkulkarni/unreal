@@ -3,8 +3,7 @@ Centralized asset paths for the Motion System.
 """
 
 class Characters:
-    BELICAX = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
-    BELICA = "/Game/MetaHumans/Pia/BP_Pia.BP_Pia"
+    BELICA = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
     PIA = "/Game/MetaHumans/Pia/BP_Pia.BP_Pia"
     QUINN_SIMPLE = "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple"
     QUINN_THIRD_PERSON = "/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple"
