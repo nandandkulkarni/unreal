@@ -16,6 +16,7 @@ def log_header(title):
 Mannequin/character creation and configuration
 """
 import unreal
+from .assets import Characters, Shapes, Materials
 # import logger
 # from logger import log, log_header
 
@@ -30,22 +31,51 @@ def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=Non
         # Standard Unreal forward is X+ (Yaw=0)
         rotation = unreal.Rotator(pitch=0.0, yaw=0.0, roll=0.0)
 
-    # Load the desired skeletal mesh
+    # Detect if path is a Blueprint
+    is_blueprint = False
+    if mesh_path and ("BP_" in mesh_path or "_C" in mesh_path):
+        is_blueprint = True
+        
+    if is_blueprint:
+        # Load the Blueprint Class
+        # Append _C if not present for class loading
+        class_path = mesh_path
+        if not class_path.endswith("_C"):
+            class_path += "_C"
+            
+        actor_class = unreal.load_class(None, class_path)
+        if actor_class:
+            mannequin = unreal.EditorLevelLibrary.spawn_actor_from_class(
+                actor_class,
+                location,
+                rotation
+            )
+            if mannequin:
+                mannequin.set_actor_label(mannequin_name)
+                mannequin.tags.append("MotionSystemActor")
+                
+                log(f"✓ Blueprint Actor created: {mannequin_name}")
+                return mannequin
+        else:
+            log(f"✗ ERROR: Could not load Blueprint class: {class_path}")
+            raise Exception("Blueprint load failed")
+
+    # Regular Skeletal Mesh Logic
     skeletal_mesh = None
     if mesh_path:
         skeletal_mesh = unreal.load_object(None, mesh_path)
     
-    if not skeletal_mesh:
-        skeletal_mesh = unreal.load_object(None, "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica")
+    # if not skeletal_mesh:
+    #     skeletal_mesh = unreal.load_object(None, Characters.BELICA)
 
-    if not skeletal_mesh:
-        # Fallback to Quinn if Belica is missing
-        skeletal_mesh = unreal.load_object(None, "/Game/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple")
+    # if not skeletal_mesh:
+    #     # Fallback to Quinn if Belica is missing
+    #     skeletal_mesh = unreal.load_object(None, Characters.QUINN_SIMPLE)
 
-    if not skeletal_mesh:
-        # Secondary fallback
-        skeletal_mesh = unreal.load_object(
-            None, "/Game/ThirdPerson/Characters/Mannequins/Meshes/SKM_Quinn_Simple.SKM_Quinn_Simple")
+    # if not skeletal_mesh:
+    #     # Secondary fallback
+    #     skeletal_mesh = unreal.load_object(
+    #         None, Characters.QUINN_THIRD_PERSON)
 
     if skeletal_mesh:
         # Spawn a SkeletalMeshActor
@@ -85,7 +115,7 @@ def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=Non
 def spawn_thick_line(name, start, end, thickness_cm=50.0, color_name="Red"):
     """Draw a line between two points using a scaled Cube"""
     try:
-        cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
+        cube_mesh = unreal.load_object(None, Shapes.CUBE)
         if not cube_mesh:
             return None
 
@@ -115,7 +145,7 @@ def spawn_thick_line(name, start, end, thickness_cm=50.0, color_name="Red"):
             actor.set_actor_scale3d(scale)
             
             # 5. Apply Material
-            mat_path = f"/Game/MyMaterial/My{color_name}"
+            mat_path = Materials.get_color(color_name)
             mat = unreal.load_object(None, mat_path)
             if mat:
                 smc.set_material(0, mat)

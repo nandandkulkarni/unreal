@@ -8,6 +8,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from motion_builder import MovieBuilder, Direction, DistanceUnit, SpeedUnit, CHARACTER_HEIGHT
+from motion_includes.assets import Characters, Shapes
 
 # Explorations Settings
 FOCAL_LENGTH = 1662.0  # [EDITABLE_FOCAL_LENGTH]
@@ -25,8 +26,7 @@ def define_movie():
     REF_MARKER = "ReferenceMarker"
     
     # 1. Add Subject at Origin
-    belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
-    movie.add_actor(PERSON, location=(0, 0, 0), mesh_path=belica_path, height=SET_HEIGHT, yaw_offset=-90)
+    movie.add_actor(PERSON, location=(0, 0, 0), mesh_path=Characters.BELICA, height=SET_HEIGHT, yaw_offset=-90)
     
     # 2. Add Reference Cylinder behind and to the side
     # Belica facing -90 yaw (Negative Y). Behind her is Positive Y.

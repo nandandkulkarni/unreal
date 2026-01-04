@@ -105,13 +105,23 @@ def run_scene(movie_folder: str):
     
     import motion_planner
     from motion_builder import CHARACTER_HEIGHT
-    from motion_includes import cleanup, sequence_setup, camera_setup, mannequin_setup, keyframe_applier, light_setup, attach_setup
+    from motion_includes import cleanup
+    from motion_includes import camera_setup
+    from motion_includes import light_setup
+    from motion_includes import mannequin_setup
+    from motion_includes import sequence_setup
+    from motion_includes import level_setup
+    from motion_includes import keyframe_applier
+    from motion_includes import attach_setup
+    from motion_includes.assets import Shapes, Materials
     
     log(f"")
     log(f"{'='*60}")
     log(f"RUNNING TRACK-BASED SCENE: {os.path.basename(movie_folder)}")
     log(f"{'='*60}")
     
+    # Setup explicit log file
+    log_file_path = r"C:\Users\user\.gemini\antigravity\brain\ff952b7b-4239-4432-aaa1-ff80339214a1\execution.log"
     # 1. Load meta.json
     meta_path = os.path.join(movie_folder, "meta.json")
     if not os.path.exists(meta_path):
@@ -219,7 +229,7 @@ def run_scene(movie_folder: str):
              
         elif actor_type == "marker":
              log(f"  Creating marker: {actor_name}")
-             mesh_path = settings.get("mesh_path", "/Engine/BasicShapes/Cylinder.Cylinder")
+             mesh_path = settings.get("mesh_path", Shapes.CYLINDER)
              mesh_scale = settings.get("mesh_scale", (0.1, 0.1, 0.1))
              
              actor_obj = unreal.EditorLevelLibrary.spawn_actor_from_class(unreal.StaticMeshActor, location, rotation)
@@ -231,7 +241,7 @@ def run_scene(movie_folder: str):
                      actor_obj.static_mesh_component.set_static_mesh(mesh_asset)
                      actor_obj.set_actor_scale3d(unreal.Vector(*mesh_scale))
                      color_name = settings.get("color", "Blue")
-                     mat_path = f"/Game/MyMaterial/My{color_name}"
+                     mat_path = Materials.get_color(color_name)
                      mat = unreal.load_object(None, mat_path)
                      if mat:
                          actor_obj.static_mesh_component.set_material(0, mat)
@@ -239,7 +249,21 @@ def run_scene(movie_folder: str):
         else:
              # Default to mannequin for "actor" type or others
              log(f"  Creating actor: {actor_name}")
-             actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation)
+             
+             # Extract from properties if nested
+             props = settings.get("properties", {})
+             mesh_path = props.get("mesh_path") or settings.get("mesh_path")
+             
+             try:
+                 actor_obj = mannequin_setup.create_mannequin(actor_name, location, rotation, mesh_path=mesh_path)
+             except Exception as e:
+                 log(f"  ❌ Failed to create mannequin {actor_name}: {e}")
+                 import traceback
+                 try:
+                     with open(log_file_path, 'a') as f:
+                        traceback.print_exc(file=f)
+                 except:
+                    traceback.print_exc()
 
         if actor_obj:
             binding = sequence_setup.add_actor_to_sequence(sequence, actor_obj, actor_name)
@@ -364,6 +388,25 @@ def run_scene(movie_folder: str):
     # 6. Apply keyframes to each actor
     for actor_name, data in keyframe_data_all.get("actors", {}).items():
         if actor_name in actors_info:
+            actor_obj = actors_info[actor_name]["actor"]
+            anim_binding = None
+            if data.get("keyframes", {}).get("animations"):
+                # For non-SkeletalMeshActors (e.g. Blueprints), we need to bind the SkeletalMeshComponent directly
+                if actor_obj and not isinstance(actor_obj, unreal.SkeletalMeshActor):
+                    # Iterate components to find SkeletalMeshComponent
+                    comps = actor_obj.get_components_by_class(unreal.SkeletalMeshComponent)
+                    if comps and len(comps) > 0:
+                        skel_comp = comps[0]
+                        log(f"    Binding component {skel_comp.get_name()} for animation...")
+                        anim_binding = sequence.add_possessable(skel_comp)
+                        if anim_binding:
+                            # Parent it to the actor binding? Not strictly necessary for Possessables unless we want hierarchy
+                            # Sequencer UI handles possessables at root usually fine
+                            # But logical parenting helps organization
+                            anim_binding.set_parent(actors_info[actor_name]["binding"])
+                        else:
+                            log(f"    ⚠ Failed to bind component, falling back")
+
             log(f"  Applying keyframes to: {actor_name}")
             keyframe_applier.apply_keyframes_to_actor(
                 actor_name,
@@ -372,7 +415,8 @@ def run_scene(movie_folder: str):
                 data,
                 fps,
                 total_frames,
-                sequence=sequence
+                sequence=sequence,
+                anim_binding=anim_binding
             )
     
     # 7. Apply camera-specific keyframes (focal length, focus distance)

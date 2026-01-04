@@ -16,6 +16,7 @@ def log_header(title):
 Camera creation and configuration
 """
 import unreal
+from .assets import Materials
 # import logger
 # from logger import log, log_header
 
@@ -63,13 +64,13 @@ def create_camera_marker(location, color_name="red", owner_name="Camera"):
     # Material/Color
     # User requested to use existing materials (MyRed, MyBlue, etc.)
     color_map = {
-        "red": "/Game/MyMaterial/MyRed",
-        "blue": "/Game/MyMaterial/MyBlue",
-        "green": "/Game/MyMaterial/MyGreen",
-        "yellow": "/Game/MyMaterial/MyYellow"
+        "red": Materials.RED,
+        "blue": Materials.BLUE,
+        "green": Materials.GREEN,
+        "yellow": Materials.YELLOW
     }
     
-    mat_path = color_map.get(color_name.lower(), "/Game/MyMaterial/MyRed")
+    mat_path = color_map.get(color_name.lower(), Materials.RED)
     existing_mat = unreal.EditorAssetLibrary.load_asset(mat_path)
     
     if existing_mat:

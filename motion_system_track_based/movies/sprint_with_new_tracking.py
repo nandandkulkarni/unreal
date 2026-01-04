@@ -10,10 +10,12 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from motion_builder import MovieBuilder, Direction, DistanceUnit, SpeedUnit
+from motion_includes.assets import Characters, Animations
 
 # Character/Actor Name Constants
 RUNNER_1 = "Runner1"
 RUNNER_2 = "Runner2"
+RUNNER_3 = "Runner3"
 FOCUS_TARGET = "FocusTarget"
 FRONT_CAM = "FrontCam"
 
@@ -39,20 +41,20 @@ def define_movie():
         raise ValueError("Runner 2 cannot catch up! Delay is too long relative to target duration.")
 
     # Add runners with explicit mesh path
-    belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
+    # belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
     
     # Runner 1 - Lane 3 (Y=305cm from center)
-    movie.add_actor(RUNNER_1, location=(0, 0, 0), yaw_offset=-90, mesh_path=belica_path, height=char_height)
+    movie.add_actor(RUNNER_1, location=(0, 0, 0), yaw_offset=-90, mesh_path=Characters.BELICA, height=char_height)
 
     with movie.for_actor(RUNNER_1) as r1:
         r1.face(Direction.NORTH)
         r1.move_straight() \
             .direction(Direction.NORTH) \
-            .anim("Jog_Fwd") \
+            .anim(Animations.PIA_JOG_FWD) \
             .distance_at_speed((DistanceUnit.Meters, race_distance), (SpeedUnit.MetersPerSecond, r1_speed))
         r1.stay().till_end().anim("Idle")
         
-    movie.add_actor(RUNNER_2, location=(0, -50, 0), yaw_offset=-90, mesh_path=belica_path, height=char_height)
+    movie.add_actor(RUNNER_2, location=(0, -50, 0), yaw_offset=-90, mesh_path=Characters.BELICA, height=char_height)
     
     with movie.for_actor(RUNNER_2) as r2:
         # Idle for delay
@@ -62,22 +64,34 @@ def define_movie():
 
         # Start running (Sprint) to finish at same time
         r2.move_straight().direction(Direction.NORTH) \
-            .anim("Jog_Fwd") \
+            .anim(Animations.PIA_JOG_FWD) \
             .distance_in_time((DistanceUnit.Meters, race_distance), r2_run_duration)
             
         r2.stay().till_end().anim("Idle")
+
+    # Runner 3 - Lane 1 (Y=50cm)
+    movie.add_actor(RUNNER_3, location=(0, 50, 0), yaw_offset=-90, mesh_path=Characters.PIA, height=char_height)
+    
+    with movie.for_actor(RUNNER_3) as r3:
+        # Simple run, start immediately (slower jog?)
+        # Let's match Runner 1 timing for simplicity but with the new animation
+        r3.face(Direction.NORTH)
+        r3.move_straight().direction(Direction.NORTH) \
+            .anim(Animations.PIA_JOG_FWD) \
+            .distance_at_speed((DistanceUnit.Meters, race_distance), (SpeedUnit.MetersPerSecond, r1_speed))
+        r3.stay().till_end().anim("Idle")
     
     
     # Focus Target (Midpoint Tracker)
     # Using new GroupTarget API to automatically track midpoint of runners
-    movie.add_group_target(FOCUS_TARGET, members=[RUNNER_1, RUNNER_2], location=(0, -25, 0)) \
+    movie.add_group_target(FOCUS_TARGET, members=[RUNNER_1, RUNNER_2, RUNNER_3], location=(0, -25, 0)) \
          .color("Blue") \
          .shape("Cylinder") \
          .height(marker_height) \
          .radius(10) \
          .interval(500)
     
-    movie.add_camera(FRONT_CAM, location=(30000, -50, 200)) \
+    movie.add_camera(FRONT_CAM, location=(35000, -50, 200)) \
          .look_at_subject(RUNNER_1, height_pct=0.85) \
          .debug_visible(True) \
          .add()

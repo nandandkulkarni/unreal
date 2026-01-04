@@ -22,7 +22,7 @@ import unreal
 # from logger import log
 
 
-def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, duration_frames, sequence=None):
+def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, duration_frames, sequence=None, anim_binding=None):
     """
     Apply keyframe data to an actor in the sequence
     
@@ -332,7 +332,10 @@ def apply_keyframes_to_actor(actor_name, actor, binding, keyframe_data, fps, dur
     elif hasattr(actor, "get_component_by_class") and actor.get_component_by_class(unreal.SkeletalMeshComponent):
         is_skeletal = True
         
-    if is_skeletal:
+    if anim_binding:
+        file_log(f"  Using explicit component binding for animation on {actor_name}")
+        apply_animation_keyframes(anim_binding, keyframes, duration_frames, actor_name, file_log)
+    elif is_skeletal:
         file_log(f"  Detected Skeletal Mesh actor: {actor_name} (Type: {type(actor)})") # DEBUG
         apply_animation_keyframes(binding, keyframes, duration_frames, actor_name, file_log)
     else:
@@ -386,7 +389,10 @@ def apply_animation_keyframes(binding, keyframes, duration_frames, actor_name, l
                 continue
             
             # Load animation
-            anim_path = f"/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/{anim_name}.{anim_name}"
+            if anim_name.startswith("/Game/"):
+                anim_path = anim_name
+            else:
+                anim_path = f"/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/{anim_name}.{anim_name}"
             logger_func(f"  [DEBUG] Loading asset: {anim_path}")
             try:
                 anim = unreal.load_object(None, anim_path)

@@ -21,12 +21,14 @@ Output Structure:
         ├── transform.json
         └── settings.json   # [{frame, fov, focus_distance, look_at}, ...]
 """
-
-from typing import List, Dict, Any, Optional, Union, Tuple
+import copy
+from typing import Dict, List, Optional, Union, Tuple, Any
 from enum import Enum
 import math
 import os
 import json
+
+from motion_includes.assets import Shapes
 import motion_math
 
 
@@ -447,60 +449,64 @@ class ActorTrackSet:
         if self.animation:
             self.animation.save(actor_folder)
         
-        # For cameras, lights, and markers, write properties to settings.json
-        # This enables run_scene.py to detect actor type via "fov", "light_type", or "actor_type"
-        if self.actor_type in ["camera", "light", "marker"]:
-            if self.initial_state["properties"]:
-                settings_data = self.initial_state["properties"].copy()
-                
-                # Add camera timeline data if present
-                if self.actor_type == "camera" and self.camera_timelines:
-                    # Add look_at timeline if present
+        # SAVE PROPERTIES TO SETTINGS.JSON
+        # Check if we have properties to save (including actor/camera/light/marker types)
+        if self.initial_state.get("properties"):
+            settings_data = self.initial_state["properties"].copy()
+            
+            # Add camera timeline data if present (CAMERA SPECIFIC)
+            if self.actor_type == "camera" and self.camera_timelines:
+                # Add look_at timeline if present
+                if self.camera_timelines["look_at"]:
+                    settings_data["look_at_timeline"] = []
+                    for segment in self.camera_timelines["look_at"]:
+                        start_time, end_time, actor, height_pct, interp_speed = segment
+                        settings_data["look_at_timeline"].append({
+                            "start_time": start_time,
+                            "end_time": end_time,
+                            "actor": actor,
+                            "height_pct": height_pct,
+                            "interp_speed": interp_speed
+                        })
+                    # Also set initial values
                     if self.camera_timelines["look_at"]:
-                        settings_data["look_at_timeline"] = []
-                        for segment in self.camera_timelines["look_at"]:
-                            start_time, end_time, actor, height_pct, interp_speed = segment
-                            settings_data["look_at_timeline"].append({
-                                "start_time": start_time,
-                                "end_time": end_time,
-                                "actor": actor,
-                                "height_pct": height_pct,
-                                "interp_speed": interp_speed
-                            })
-                        # Also set initial values
-                        if self.camera_timelines["look_at"]:
-                            first_segment = self.camera_timelines["look_at"][0]
-                            settings_data["look_at_actor"] = first_segment[2]  # actor
-                            settings_data["look_at_height_pct"] = first_segment[3]  # height_pct
-                            settings_data["look_at_interp_speed"] = first_segment[4]  # interp_speed
-                    
-                    # Add focus_on timeline if present
-                    if self.camera_timelines["focus_on"]:
-                        settings_data["focus_on_timeline"] = []
-                        for segment in self.camera_timelines["focus_on"]:
-                            start_time, end_time, actor, height_pct = segment
-                            settings_data["focus_on_timeline"].append({
-                                "start_time": start_time,
-                                "end_time": end_time,
-                                "actor": actor,
-                                "height_pct": height_pct
-                            })
-                    
-                    # Add frame_subject timeline
-                    if self.camera_timelines["frame_subject"]:
-                        settings_data["frame_subject_timeline"] = []
-                        for segment in self.camera_timelines["frame_subject"]:
-                            start_time, end_time, actor, coverage = segment
-                            settings_data["frame_subject_timeline"].append({
-                                "start_time": start_time,
-                                "end_time": end_time,
-                                "actor": actor,
-                                "coverage": coverage
-                            })
+                        first_segment = self.camera_timelines["look_at"][0]
+                        settings_data["look_at_actor"] = first_segment[2]  # actor
+                        settings_data["look_at_height_pct"] = first_segment[3]  # height_pct
+                        settings_data["look_at_interp_speed"] = first_segment[4]  # interp_speed
                 
-                settings_path = os.path.join(actor_folder, "settings.json")
-                with open(settings_path, 'w', encoding='utf-8') as f:
-                    json.dump(settings_data, f, indent=2)
+                # Add focus_on timeline if present
+                if self.camera_timelines["focus_on"]:
+                    settings_data["focus_on_timeline"] = []
+                    for segment in self.camera_timelines["focus_on"]:
+                        start_time, end_time, actor, height_pct = segment
+                        settings_data["focus_on_timeline"].append({
+                            "start_time": start_time,
+                            "end_time": end_time,
+                            "actor": actor,
+                            "height_pct": height_pct
+                        })
+                
+                # Add frame_subject timeline
+                if self.camera_timelines["frame_subject"]:
+                    settings_data["frame_subject_timeline"] = []
+                    for segment in self.camera_timelines["frame_subject"]:
+                        start_time, end_time, actor, coverage = segment
+                        settings_data["frame_subject_timeline"].append({
+                            "start_time": start_time,
+                            "end_time": end_time,
+                            "actor": actor,
+                            "coverage": coverage
+                        })
+            
+            # Ensure actor_type is in settings
+            if "actor_type" not in settings_data:
+                settings_data["actor_type"] = self.actor_type
+
+            settings_path = os.path.join(actor_folder, "settings.json")
+            with open(settings_path, 'w', encoding='utf-8') as f:
+                json.dump(settings_data, f, indent=2)
+                
         elif self.settings:
             self.settings.save(actor_folder)
             
@@ -1926,10 +1932,13 @@ class GroupTargetBuilder:
         
         # Auto-map common shapes
         if shape_val.lower() == "cylinder":
-            self.actor.initial_state["properties"]["mesh_path"] = "/Engine/BasicShapes/Cylinder"
+            self.actor.initial_state["properties"]["mesh_path"] = Shapes.CYLINDER
             # Auto-scale to approx 10cm radius/width (Base is large)
             self.actor.initial_state["properties"]["mesh_scale"] = [0.1, 0.1, 1.0]  # Changed from "scale" to "mesh_scale"
-            
+        elif shape_val.lower() == "cube":
+            self.actor.initial_state["properties"]["mesh_path"] = Shapes.CUBE
+            # Default to 1m cube scale
+            self.actor.initial_state["properties"]["mesh_scale"] = [1.0, 1.0, 1.0]
         return self
 
     def interval(self, ms: float) -> 'GroupTargetBuilder':

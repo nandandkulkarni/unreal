@@ -16,6 +16,7 @@ def log_header(title):
 Visual aids - origin markers, axis indicators, debug cubes
 """
 import unreal
+from .assets import Shapes, Materials
 # import logger
 # from logger import log
 
@@ -23,7 +24,7 @@ import unreal
 def create_plus_sign_at_origin():
     """Draw a plus sign at origin using four thin cubes (1mm thick, 1m wide, 10m long each side)"""
     try:
-        cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
+        cube_mesh = unreal.load_object(None, Shapes.CUBE)
 
         if cube_mesh:
             # Each side is 10m long, offset by 0.5m from origin to avoid overlap
@@ -49,7 +50,7 @@ def create_plus_sign_at_origin():
                     pass
                 plus_x.set_actor_scale3d(unreal.Vector(9.5, .25, 0.01))
 
-                mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyRed")
+                mat = unreal.EditorAssetLibrary.load_asset(Materials.RED)
                 if mat:
                     smc.set_material(0, mat)
                     log("✓ +X axis (Red, 10m)")
@@ -74,7 +75,7 @@ def create_plus_sign_at_origin():
                     pass
                 minus_x.set_actor_scale3d(unreal.Vector(9.5, 1.0, 0.01))
 
-                mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyYellow")
+                mat = unreal.EditorAssetLibrary.load_asset(Materials.YELLOW)
                 if mat:
                     smc.set_material(0, mat)
                     log("✓ -X axis (Yellow, 10m)")
@@ -99,7 +100,7 @@ def create_plus_sign_at_origin():
                     pass
                 plus_y.set_actor_scale3d(unreal.Vector(1.0, 9.5, 0.01))
 
-                mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyGreen")
+                mat = unreal.EditorAssetLibrary.load_asset(Materials.GREEN)
                 if mat:
                     smc.set_material(0, mat)
                     log("✓ +Y axis (Green, 10m)")
@@ -124,7 +125,7 @@ def create_plus_sign_at_origin():
                     pass
                 minus_y.set_actor_scale3d(unreal.Vector(1.0, 9.5, 0.01))
 
-                mat = unreal.EditorAssetLibrary.load_asset("/Game/MyMaterial/MyBlue")
+                mat = unreal.EditorAssetLibrary.load_asset(Materials.BLUE)
                 if mat:
                     smc.set_material(0, mat)
                     log("✓ -Y axis (Purple/Blue, 10m)")
