@@ -1,0 +1,22 @@
+================================================================================
+MOTION MATCHING DIAGNOSTIC
+================================================================================
+
+Checking for PoseSearch classes...
+  ✓ unreal.PoseSearchDatabase - AVAILABLE
+  ✓ unreal.PoseSearchSchema - AVAILABLE
+  ✓ unreal.AnimNode_MotionMatching - AVAILABLE
+  ✓ unreal.PoseSearchFeatureChannel - AVAILABLE
+
+Available: 4/4
+
+================================================================================
+Checking for Manny assets...
+================================================================================
+
+  ✗ Not found: /Game/Characters/Mannequins/Rigs/SK_Mannequin
+  ✗ Not found: /Game/Characters/Mannequins/Meshes/SKM_Manny
+  ✗ Not found: /Game/ThirdPerson/Characters/Mannequins/Rigs/SK_Mannequin
+
+  Searching for Mannequin assets...
+  Found 12 Skeleton assets total
