@@ -514,6 +514,12 @@ class ActorTrackSet:
         if self.attach.sections:
             self.attach.save(actor_folder)
 
+        # Save focal length keyframes if present
+        if hasattr(self, "focal_length_keyframes") and self.focal_length_keyframes:
+            focal_path = os.path.join(actor_folder, "focal_length.json")
+            with open(focal_path, 'w', encoding='utf-8') as f:
+                json.dump(self.focal_length_keyframes, f, indent=2)
+
 
 class GroupTargetActor(ActorTrackSet):
     """
@@ -1827,7 +1833,23 @@ class CameraCommandBuilder:
         """
         self.look_at_subject(actor_name, height_pct=track_pct)
         self.auto_zoom_subject(actor_name, coverage=zoom_pct)
+        self.auto_zoom_subject(actor_name, coverage=zoom_pct)
         self.auto_focus_subject(actor_name, height_pct=focus_pct)
+        return self
+        
+    def set_focal_length(self, focal_length: float) -> 'CameraCommandBuilder':
+        """Set camera focal length."""
+        if self.camera_name in self.mb.actors:
+            track_set = self.mb.actors[self.camera_name]
+            if not hasattr(track_set, "focal_length_keyframes"):
+                track_set.focal_length_keyframes = []
+            
+            # Convert current time to frame
+            frame = int(self.start_time * self.mb.fps)
+            track_set.focal_length_keyframes.append({
+                "frame": frame,
+                "value": focal_length
+            })
         return self
     
     def wait(self, duration: float) -> 'CameraCommandBuilder':
@@ -1939,6 +1961,14 @@ class GroupTargetBuilder:
             self.actor.initial_state["properties"]["mesh_path"] = Shapes.CUBE
             # Default to 1m cube scale
             self.actor.initial_state["properties"]["mesh_scale"] = [1.0, 1.0, 1.0]
+        
+        return self
+
+    def mesh_scale(self, x: float, y: float, z: float) -> 'GroupTargetBuilder':
+        """Set explicit mesh scale."""
+        if "properties" not in self.actor.initial_state:
+            self.actor.initial_state["properties"] = {}
+        self.actor.initial_state["properties"]["mesh_scale"] = [x, y, z]
         return self
 
     def interval(self, ms: float) -> 'GroupTargetBuilder':

@@ -121,7 +121,7 @@ class MovieLauncherApp:
 
         # Button Frame
         btn_frame = tk.Frame(root, bg="#1e1e1e")
-        btn_frame.pack(pady=20)
+        btn_frame.pack(pady=10)
 
         # Run Button
         self.run_btn = tk.Button(btn_frame, text="RUN SEQUENCE", font=("Segoe UI", 12, "bold"), 
@@ -135,8 +135,28 @@ class MovieLauncherApp:
                                activeforeground="white", bd=0, padx=15, pady=10, state=tk.DISABLED, command=self.open_last_log)
         self.log_btn.pack(side=tk.LEFT, padx=10)
 
-        # Cleanup Button
-        self.clear_btn = tk.Button(root, text="CLEANUP WORKSPACE (Delete Tracks/Logs)", font=("Segoe UI", 9), 
+        # --- UTILITIES SECTION ---
+        util_frame = tk.LabelFrame(root, text="UTILITIES", bg="#1e1e1e", fg="#3498db", font=("Segoe UI", 10, "bold"), labelanchor="n")
+        util_frame.pack(fill=tk.X, padx=20, pady=15)
+
+        # Character Height Tool
+        h_frame = tk.Frame(util_frame, bg="#1e1e1e", pady=10)
+        h_frame.pack(fill=tk.X)
+        
+        tk.Label(h_frame, text="Measure Character Height:", bg="#1e1e1e", fg="#bbbbbb").pack(side=tk.LEFT, padx=10)
+        
+        self.char_name_var = tk.StringVar(value="Belica")
+        self.char_entry = tk.Entry(h_frame, textvariable=self.char_name_var, width=15, bg="#2d2d2d", fg="white", insertbackground="white")
+        self.char_entry.pack(side=tk.LEFT, padx=5)
+        
+        self.measure_btn = tk.Button(h_frame, text="MEASURE", font=("Segoe UI", 8, "bold"),
+                                   bg="#8e44ad", fg="white", activebackground="#9b59b6", activeforeground="white",
+                                   bd=0, padx=10, pady=2, command=self.run_measure_tool)
+        self.measure_btn.pack(side=tk.LEFT, padx=10)
+
+
+        # Cleanup Button (Moved to bottom)
+        self.clear_btn = tk.Button(root, text="CLEANUP WORKSPACE", font=("Segoe UI", 8), 
                                  bg="#c0392b", fg="white", activebackground="#e74c3c", 
                                  activeforeground="white", bd=0, padx=10, pady=5, command=self.cleanup_files)
         self.clear_btn.pack(pady=5)
@@ -406,6 +426,64 @@ class MovieLauncherApp:
             self.status_var.set(f"Execution Failed: {error_msg}")
             self.log_to_console(f">>> FAILED: {error_msg}")
             messagebox.showerror("Error", f"Movie execution failed:\n{error_msg}")
+
+    def run_measure_tool(self):
+        """Runs the measure_character.py script"""
+        char_name = self.char_name_var.get().strip()
+        if not char_name:
+            messagebox.showwarning("Input Required", "Please enter a character name or path.")
+            return
+
+        self.log_to_console(f">>> MEASURING CHARACTER: {char_name}")
+        self.measure_btn.config(state=tk.DISABLED, text="WAIT...")
+        
+        # Use subprocess to run the tool
+        script_path = "measure_character.py"
+        
+        def _run():
+            try:
+                process = subprocess.Popen(
+                    [sys.executable, script_path, char_name],
+                    cwd=os.getcwd(),
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True
+                )
+                output, _ = process.communicate()
+                
+                # Check output for "Height:" line
+                height_val = "Unknown"
+                for line in output.splitlines():
+                    self.log_to_console(line)
+                    if "Height:" in line:
+                        height_val = line.strip()
+                
+                self.root.after(0, lambda: self.on_measure_complete(height_val))
+                
+            except Exception as e:
+                self.root.after(0, lambda: self.on_measure_complete(None, str(e)))
+
+        threading.Thread(target=_run).start()
+
+    def on_measure_complete(self, result, error=None):
+        self.measure_btn.config(state=tk.NORMAL, text="MEASURE")
+        if error:
+            self.log_to_console(f">>> ERROR: {error}")
+            messagebox.showerror("Measurement Failed", error)
+        else:
+            self.log_to_console(f">>> RESULT: {result}")
+            if result and "Height:" in result:
+                # Try to parse the numeric value
+                try:
+                    # format: "Height: 180.00 cm (Source: Capsule)"
+                    parts = result.split() # ["Height:", "180.00", "cm", ...]
+                    val = parts[1]
+                    self.actual_height_val.set(val) # Auto-fill Actual Height field
+                    messagebox.showinfo("Measurement Complete", f"{result}\n\nValue copied to Actual Height field.")
+                except:
+                    messagebox.showinfo("Measurement Complete", result)
+            else:
+                 messagebox.showwarning("Measurement Inconclusive", "Could not find valid height in output.\nCheck console log.")
 
 def check_single_instance():
     """Independent check for single instance before launching UI"""
