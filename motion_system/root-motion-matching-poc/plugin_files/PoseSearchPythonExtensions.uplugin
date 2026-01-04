@@ -1,0 +1,38 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "1.0",
+    "FriendlyName": "PoseSearch Python Extensions",
+    "Description": "Exposes PoseSearch database functions to Python for automation",
+    "Category": "Scripting",
+    "CreatedBy": "Motion System Team",
+    "CreatedByURL": "",
+    "DocsURL": "",
+    "MarketplaceURL": "",
+    "SupportURL": "",
+    "EngineVersion": "5.7.0",
+    "CanContainContent": false,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "PoseSearchPythonExtensions",
+            "Type": "Editor",
+            "LoadingPhase": "Default",
+            "AdditionalDependencies": [
+                "Engine",
+                "UnrealEd",
+                "PoseSearch"
+            ]
+        }
+    ],
+    "Plugins": [
+        {
+            "Name": "PoseSearch",
+            "Enabled": true
+        },
+        {
+            "Name": "PythonScriptPlugin",
+            "Enabled": true
+        }
+    ]
+}
