@@ -9,6 +9,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from motion_builder import MovieBuilder, Direction, DistanceUnit, SpeedUnit, CHARACTER_HEIGHT
 
+# Explorations Settings
+FOCAL_LENGTH = 1662.0  # [EDITABLE_FOCAL_LENGTH]
+SET_HEIGHT = 1.9  # [EDITABLE_SET_HEIGHT]
+
+
 def define_movie():
     """Define a simple camera exploration scene"""
     
@@ -17,10 +22,20 @@ def define_movie():
     # Configuration
     PERSON = "Subject"
     CAM = "ExplorerCam"
+    REF_MARKER = "ReferenceMarker"
     
     # 1. Add Subject at Origin
     belica_path = "/Game/ParagonLtBelica/Characters/Heroes/Belica/Meshes/Belica.Belica"
-    movie.add_actor(PERSON, location=(0, 0, 0), mesh_path=belica_path, height=1.8, yaw_offset=-90)
+    movie.add_actor(PERSON, location=(0, 0, 0), mesh_path=belica_path, height=SET_HEIGHT, yaw_offset=-90)
+    
+    # 2. Add Reference Cylinder behind and to the side
+    # Belica facing -90 yaw (Negative Y). Behind her is Positive Y.
+    # Height in meters, so conversion to scale (Unreal basic cylinder is 1m)
+    cube_height_cm = SET_HEIGHT * 100
+    movie.add_group_target(REF_MARKER, location=(0, 100, 0)) \
+         .shape("Cylinder") \
+         .mesh_scale(1, 1, SET_HEIGHT) \
+         .color("Red")
     
     with movie.for_actor(PERSON) as p:
         p.stay().for_time(10.0).anim("Idle")
@@ -34,11 +49,9 @@ def define_movie():
     # 3. Dynamic Camera Commands
     with movie.for_camera(CAM) as cam:
         # Track at 90% height, Focus at 90% height
-        # Using focus_zoom_track for convenience
-        # focus_pct (Focus height) = 0.9
-        # track_pct (LookAt height) = 0.9
-        # zoom_pct (Coverage) = 0.8 (fill 80% of frame)
-        cam.focus_zoom_track(PERSON, focus_pct=0.9, zoom_pct=0.8, track_pct=0.9)
+        cam.look_at_subject(PERSON, height_pct=0.9)
+        cam.auto_focus_subject(PERSON, height_pct=0.9)
+        cam.set_focal_length(FOCAL_LENGTH)
         cam.wait(10.0)
     
     # Camera cuts

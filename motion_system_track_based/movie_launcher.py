@@ -1,6 +1,7 @@
 """
 Movie Launcher UI - Native Python (Tkinter)
 A utility to select and run movie scripts from the movies/ folder.
+Features single-instance enforcement and dynamic focal length controls for exploration.
 """
 
 import tkinter as tk
@@ -11,19 +12,30 @@ import subprocess
 import threading
 import sys
 import datetime
+import re
 
 # Constants
 CONFIG_FILE = "launcher_config.jsonx"
 MOVIES_DIR = "movies"
 LOGS_DIR = "launcher_logs"
+LOCK_FILE = "launcher.lock"
+EXPLORATION_SCRIPT = "camera_settings_exploration.py"
+FOCAL_LENGTH_TAG = "[EDITABLE_FOCAL_LENGTH]"
+SET_HEIGHT_TAG = "[EDITABLE_SET_HEIGHT]"
+ACTUAL_HEIGHT_TAG = "[EDITABLE_ACTUAL_HEIGHT]"
 
 class MovieLauncherApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Unreal Movie Launcher")
-        self.root.geometry("550x500")
+        self.root.geometry("600x650")
         self.root.configure(bg="#1e1e1e")  # Dark theme
         
+        # Single Instance Check
+        self.lock_file_handle = None
+        if not self.acquire_lock():
+            sys.exit(0)
+
         self.last_log_file = None
         
         # Ensure logs dir exists
@@ -50,9 +62,62 @@ class MovieLauncherApp:
         
         self.combo = ttk.Combobox(root, textvariable=self.selected_movie, values=self.movies, state="readonly", width=40)
         self.combo.pack(pady=5)
+        self.combo.bind("<<ComboboxSelected>>", self.on_movie_selected)
         
+        # --- Focal Length Controls (Conditional) ---
+        self.focal_frame = tk.Frame(root, bg="#2a2a2a", padx=15, pady=15, highlightbackground="#3d3d3d", highlightthickness=1)
+        
+        foc_lbl = tk.Label(self.focal_frame, text="EXPLORATION FOCAL LENGTH (mm):", bg="#2a2a2a", fg="#3498db", font=("Segoe UI", 9, "bold"))
+        foc_lbl.pack(anchor=tk.W)
+        
+        slider_frame = tk.Frame(self.focal_frame, bg="#2a2a2a")
+        slider_frame.pack(fill=tk.X, pady=5)
+        
+        self.focal_val = tk.DoubleVar(value=85.0)
+        self.focal_slider = tk.Scale(slider_frame, from_=5, to=5000, orient=tk.HORIZONTAL, 
+                                     variable=self.focal_val, bg="#2a2a2a", fg="white", 
+                                     highlightthickness=0, troughcolor="#3e3e3e", showvalue=0)
+        self.focal_slider.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 10))
+        
+        self.focal_entry = tk.Entry(slider_frame, width=6, bg="#1e1e1e", fg="white", borderwidth=0, font=("Consolas", 10), justify=tk.CENTER)
+        self.focal_entry.pack(side=tk.LEFT)
+        self.focal_entry.insert(0, "85.0")
+        
+        # --- Height Controls ---
+        height_frame = tk.Frame(self.focal_frame, bg="#2a2a2a")
+        height_frame.pack(fill=tk.X, pady=(10, 5))
+        
+        # Set Height (Intended)
+        set_h_frame = tk.Frame(height_frame, bg="#2a2a2a")
+        set_h_frame.pack(side=tk.LEFT, expand=True)
+        tk.Label(set_h_frame, text="SET HEIGHT (m):", bg="#2a2a2a", fg="#bbbbbb", font=("Segoe UI", 8, "bold")).pack()
+        self.set_height_val = tk.StringVar(value="1.8")
+        self.set_height_entry = tk.Entry(set_h_frame, width=8, bg="#1e1e1e", fg="white", borderwidth=0, font=("Consolas", 10), justify=tk.CENTER, textvariable=self.set_height_val)
+        self.set_height_entry.pack(pady=2)
+        
+        # Actual Height (Measured)
+        act_h_frame = tk.Frame(height_frame, bg="#2a2a2a")
+        act_h_frame.pack(side=tk.LEFT, expand=True)
+        tk.Label(act_h_frame, text="ACTUAL HEIGHT (m):", bg="#2a2a2a", fg="#bbbbbb", font=("Segoe UI", 8, "bold")).pack()
+        self.actual_height_val = tk.StringVar(value="1.8")
+        self.actual_height_entry = tk.Entry(act_h_frame, width=8, bg="#1e1e1e", fg="white", borderwidth=0, font=("Consolas", 10), justify=tk.CENTER, textvariable=self.actual_height_val)
+        self.actual_height_entry.pack(pady=2)
+        
+        self.update_script_btn = tk.Button(self.focal_frame, text="UPDATE EXPLORATION SCRIPT", 
+                                         bg="#d35400", fg="white", font=("Segoe UI", 9, "bold"), 
+                                         activebackground="#e67e22", activeforeground="white", 
+                                         bd=0, padx=15, pady=8, command=self.update_script_settings)
+        self.update_script_btn.pack(pady=(15, 0))
+
+        # Sync slider -> entry
+        self.focal_val.trace_add("write", lambda *args: self.sync_val_to_entry())
+        # Sync entry -> slider
+        self.focal_entry.bind("<Return>", lambda e: self.sync_entry_to_val())
+        self.focal_entry.bind("<FocusOut>", lambda e: self.sync_entry_to_val())
+
         # Load Last Selection
         self.load_config()
+        self.on_movie_selected() # Trigger visibility check
 
         # Button Frame
         btn_frame = tk.Frame(root, bg="#1e1e1e")
@@ -83,7 +148,124 @@ class MovieLauncherApp:
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
         self.console = tk.Text(root, height=12, bg="#121212", fg="#00ff00", font=("Consolas", 8), borderwidth=0)
-        self.console.pack(fill=tk.X, padx=20, pady=10)
+        self.console.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
+
+        # Ensure lock is released on close
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def sync_val_to_entry(self):
+        val = self.focal_val.get()
+        self.focal_entry.delete(0, tk.END)
+        self.focal_entry.insert(0, f"{val:.1f}")
+
+    def sync_entry_to_val(self):
+        try:
+            val = float(self.focal_entry.get())
+            self.focal_val.set(val)
+        except ValueError:
+            self.sync_val_to_entry()
+
+    def on_movie_selected(self, event=None):
+        movie = self.selected_movie.get()
+        if movie == EXPLORATION_SCRIPT:
+            self.focal_frame.pack(pady=10, fill=tk.X, padx=20)
+            self.read_settings_from_script()
+        else:
+            self.focal_frame.pack_forget()
+
+    def read_settings_from_script(self):
+        script_path = os.path.join(MOVIES_DIR, EXPLORATION_SCRIPT)
+        if os.path.exists(script_path):
+            try:
+                with open(script_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    
+                    # Focal Length
+                    foc_pattern = rf"FOCAL_LENGTH\s*=\s*([\d.]+)\s*#\s*{re.escape(FOCAL_LENGTH_TAG)}"
+                    foc_match = re.search(foc_pattern, content)
+                    if foc_match:
+                        self.focal_val.set(float(foc_match.group(1)))
+                    
+                    # Set Height
+                    set_h_pattern = rf"SET_HEIGHT\s*=\s*([\d.]+)\s*#\s*{re.escape(SET_HEIGHT_TAG)}"
+                    set_h_match = re.search(set_h_pattern, content)
+                    if set_h_match:
+                        self.set_height_val.set(set_h_match.group(1))
+                    
+                    # Actual Height
+                    act_h_pattern = rf"ACTUAL_HEIGHT\s*=\s*([\d.]+)\s*#\s*{re.escape(ACTUAL_HEIGHT_TAG)}"
+                    act_h_match = re.search(act_h_pattern, content)
+                    if act_h_match:
+                        self.actual_height_val.set(act_h_match.group(1))
+                        
+            except Exception as e:
+                print(f"Error reading script settings: {e}")
+
+    def update_script_settings(self):
+        script_path = os.path.join(MOVIES_DIR, EXPLORATION_SCRIPT)
+        
+        if not os.path.exists(script_path):
+            messagebox.showerror("Error", f"Script not found: {script_path}")
+            return
+
+        try:
+            with open(script_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            updates = [
+                (rf"FOCAL_LENGTH\s*=\s*([\d.]+)\s*#\s*{re.escape(FOCAL_LENGTH_TAG)}", 
+                 f"FOCAL_LENGTH = {self.focal_val.get():.1f}  # {FOCAL_LENGTH_TAG}"),
+                
+                (rf"SET_HEIGHT\s*=\s*([\d.]+)\s*#\s*{re.escape(SET_HEIGHT_TAG)}", 
+                 f"SET_HEIGHT = {self.set_height_val.get()}  # {SET_HEIGHT_TAG}"),
+                
+                (rf"ACTUAL_HEIGHT\s*=\s*([\d.]+)\s*#\s*{re.escape(ACTUAL_HEIGHT_TAG)}", 
+                 f"ACTUAL_HEIGHT = {self.actual_height_val.get()}  # {ACTUAL_HEIGHT_TAG}")
+            ]
+            
+            new_content = content
+            changed = False
+            for pattern, replacement in updates:
+                if re.search(pattern, new_content):
+                    new_content = re.sub(pattern, replacement, new_content)
+                    changed = True
+            
+            if changed:
+                with open(script_path, 'w', encoding='utf-8') as f:
+                    f.write(new_content)
+                self.status_var.set("Updated script settings")
+                self.log_to_console(f">>> UPDATED SCRIPT: {EXPLORATION_SCRIPT}")
+            else:
+                # Only show error if NO markers were found at all
+                pass 
+                
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to update script: {e}")
+
+    def acquire_lock(self):
+        """Tries to acquire an exclusive lock on the lock file"""
+        try:
+            if os.path.exists(LOCK_FILE):
+                try:
+                    os.remove(LOCK_FILE)
+                except OSError:
+                    return False
+            self.lock_file_handle = open(LOCK_FILE, 'w')
+            self.lock_file_handle.write(str(os.getpid()))
+            self.lock_file_handle.flush()
+            return True
+        except Exception:
+            return False
+
+    def on_closing(self):
+        """Cleanup before exiting"""
+        if self.lock_file_handle:
+            self.lock_file_handle.close()
+            try:
+                os.remove(LOCK_FILE)
+            except Exception:
+                pass
+        self.root.destroy()
 
     def get_movie_list(self):
         """Scans the movies/ folder for .py files"""
@@ -144,7 +326,6 @@ class MovieLauncherApp:
         script_path = os.path.join(MOVIES_DIR, movie_name)
         try:
             with open(log_file_path, 'w', encoding='utf-8') as log_file:
-                # Use same python interpreter as current process
                 process = subprocess.Popen(
                     [sys.executable, script_path],
                     cwd=os.getcwd(),
@@ -155,8 +336,7 @@ class MovieLauncherApp:
                 )
                 
                 for line in iter(process.stdout.readline, ""):
-                    stripped_line = line.strip()
-                    self.log_to_console(stripped_line)
+                    self.log_to_console(line.strip())
                     log_file.write(line)
                     log_file.flush()
                 
@@ -177,7 +357,6 @@ class MovieLauncherApp:
             if sys.platform == "win32":
                 os.startfile(self.last_log_file)
             else:
-                # Fallback for other OSes
                 opener = "open" if sys.platform == "darwin" else "xdg-open"
                 subprocess.call([opener, self.last_log_file])
 
@@ -189,12 +368,11 @@ class MovieLauncherApp:
         import shutil
         count = 0
         
-        # Cleanup dist/ (more thorough than just json)
+        # Cleanup dist/
         dist_dir = "dist"
         if os.path.exists(dist_dir):
             try:
-                # Count files first for logging
-                for root, dirs, files in os.walk(dist_dir):
+                for root_dir, dirs, files in os.walk(dist_dir):
                     count += len(files)
                 shutil.rmtree(dist_dir)
                 os.makedirs(dist_dir, exist_ok=True)
@@ -229,7 +407,24 @@ class MovieLauncherApp:
             self.log_to_console(f">>> FAILED: {error_msg}")
             messagebox.showerror("Error", f"Movie execution failed:\n{error_msg}")
 
+def check_single_instance():
+    """Independent check for single instance before launching UI"""
+    if os.path.exists(LOCK_FILE):
+        try:
+            os.remove(LOCK_FILE)
+            return True
+        except OSError:
+            return False
+    return True
+
 if __name__ == "__main__":
+    if not check_single_instance():
+        temp_root = tk.Tk()
+        temp_root.withdraw()
+        messagebox.showwarning("Launcher Running", "Another instance of the Movie Launcher is already running!")
+        temp_root.destroy()
+        sys.exit(0)
+
     root = tk.Tk()
     app = MovieLauncherApp(root)
     root.mainloop()
