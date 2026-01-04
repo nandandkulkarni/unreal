@@ -1,0 +1,81 @@
+Motion Matching Database Configuration V3
+Started: 2026-01-04 16:22:19
+================================================================================
+
+  Log file: C:\UnrealProjects\coding\unreal\motion_system\root-motion-matching-poc\configure_v3_20260104_162219.log
+
+================================================================================
+MOTION MATCHING DATABASE CONFIGURATION V3
+================================================================================
+  Final attempt using all discovered API methods
+
+================================================================================
+Loading Database
+================================================================================
+  ✓ Database loaded
+
+================================================================================
+Finding Core Animations
+================================================================================
+    Found: MM_Fall_Loop
+    Found: MM_Jump
+    Found: MM_Land
+    Found: MM_Idle
+    Found: MF_Unarmed_Jog_Fwd
+    Found: MF_Unarmed_Jog_Fwd_Left
+    Found: MF_Unarmed_Jog_Fwd_Right
+    Found: MF_Unarmed_Walk_Fwd
+    Found: MF_Unarmed_Walk_Fwd_Left
+    Found: MF_Unarmed_Walk_Fwd_Right
+    Found: MM_WallJump
+  
+✓ Found 11 core animations
+
+================================================================================
+Adding Animations V3 - InstancedStruct Approach
+================================================================================
+  Current animation count: 0
+  
+Attempting to add 11 animations...
+  
+--- Approach 1: call_method with tuple ---
+  
+  Adding MM_Fall_Loop...
+      Created and configured PoseSearchDatabaseSequence
+      ✗ call_method failed: PoseSearchDatabase: Failed to find function 'AddAnimationAsset' on 'PoseSearchDatabase'
+  
+  Adding MM_Jump...
+      Created and configured PoseSearchDatabaseSequence
+      ✗ call_method failed: PoseSearchDatabase: Failed to find function 'AddAnimationAsset' on 'PoseSearchDatabase'
+  
+  Adding MM_Land...
+      Created and configured PoseSearchDatabaseSequence
+      ✗ call_method failed: PoseSearchDatabase: Failed to find function 'AddAnimationAsset' on 'PoseSearchDatabase'
+  
+  Adding MM_Idle...
+      Created and configured PoseSearchDatabaseSequence
+      ✗ call_method failed: PoseSearchDatabase: Failed to find function 'AddAnimationAsset' on 'PoseSearchDatabase'
+  
+  Adding MF_Unarmed_Jog_Fwd...
+      Created and configured PoseSearchDatabaseSequence
+      ✗ call_method failed: PoseSearchDatabase: Failed to find function 'AddAnimationAsset' on 'PoseSearchDatabase'
+  
+--- Approach 2: InstancedStruct wrapper ---
+    Created InstancedStruct
+    Created PoseSearchDatabaseSequence
+    ✗ InstancedStruct approach failed: InstancedStruct: Failed to find property 'value' for attribute 'value' on 'InstancedStruct'
+  
+⚠ Could not add animations programmatically
+    Manual addition required (5 minutes)
+
+================================================================================
+CONFIGURATION COMPLETE
+================================================================================
+  Animations added: False
+  
+Log file: C:\UnrealProjects\coding\unreal\motion_system\root-motion-matching-poc\configure_v3_20260104_162219.log
+  
+⚠ Animation addition requires manual steps
+    See MANUAL_CONFIG_GUIDE.md
+  
+Final result: SUCCESS

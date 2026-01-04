@@ -1,0 +1,135 @@
+Motion Matching Database Configuration V2
+Started: 2026-01-04 16:18:00
+================================================================================
+
+  Log file: C:\UnrealProjects\coding\unreal\motion_system\root-motion-matching-poc\configure_v2_20260104_161800.log
+
+================================================================================
+MOTION MATCHING DATABASE CONFIGURATION V2
+================================================================================
+  Using API discovered through systematic exploration
+
+================================================================================
+Loading Schema
+================================================================================
+  ✓ Schema loaded
+
+================================================================================
+Loading Database
+================================================================================
+  ✓ Database loaded
+
+================================================================================
+Adding Trajectory Channel
+================================================================================
+  Current channels: 0
+  ✓ Created Trajectory channel instance
+    Set weight: 1.0
+    Appended to channels array
+    Set channels array back to schema
+  ✓ Trajectory channel added! New count: 1
+  ✓ Schema saved
+
+================================================================================
+Adding Pose Channel
+================================================================================
+  Current channels: 1
+  ✓ Created Pose channel instance
+    Set weight: 1.0
+    Appended to channels array
+    Set channels array back to schema
+  ✓ Pose channel added! New count: 2
+  ✓ Schema saved
+
+================================================================================
+Finding Core Animations
+================================================================================
+    Found: MM_Fall_Loop
+    Found: MM_Jump
+    Found: MM_Land
+    Found: MM_Idle
+    Found: MF_Unarmed_Jog_Fwd
+    Found: MF_Unarmed_Jog_Fwd_Left
+    Found: MF_Unarmed_Jog_Fwd_Right
+    Found: MF_Unarmed_Walk_Fwd
+    Found: MF_Unarmed_Walk_Fwd_Left
+    Found: MF_Unarmed_Walk_Fwd_Right
+    Found: MM_WallJump
+  
+✓ Found 11 core animations
+
+================================================================================
+Adding Animations to Database V2
+================================================================================
+  Current animation count: 0
+  
+Attempting to add 11 animations...
+  
+  Adding MM_Fall_Loop...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MM_Jump...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MM_Land...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MM_Idle...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MF_Unarmed_Jog_Fwd...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MF_Unarmed_Jog_Fwd_Left...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MF_Unarmed_Jog_Fwd_Right...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MF_Unarmed_Walk_Fwd...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MF_Unarmed_Walk_Fwd_Left...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+  Adding MF_Unarmed_Walk_Fwd_Right...
+      Created PoseSearchDatabaseSequence
+      Set sequence property
+      ✗ Could not add via animation_assets: PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+  
+⚠ Could not add animations programmatically
+    Manual addition still required
+
+================================================================================
+CONFIGURATION COMPLETE
+================================================================================
+  Trajectory channel added: True
+  Pose channel added: True
+  Animations added: False
+  
+Log file: C:\UnrealProjects\coding\unreal\motion_system\root-motion-matching-poc\configure_v2_20260104_161800.log
+  
+✓ Schema configuration successful!
+  
+⚠ Animation addition may require manual steps
+    Check the database in the editor
+  
+Final result: SUCCESS

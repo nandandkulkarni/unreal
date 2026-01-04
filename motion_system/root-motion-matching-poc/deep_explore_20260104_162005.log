@@ -1,0 +1,285 @@
+Deep API Exploration - Animation Addition
+Started: 2026-01-04 16:20:05
+================================================================================
+
+Log: C:\UnrealProjects\coding\unreal\motion_system\root-motion-matching-poc\deep_explore_20260104_162005.log
+
+================================================================================
+DEEP API EXPLORATION - ANIMATION ADDITION
+================================================================================
+
+================================================================================
+EXHAUSTIVE PROPERTY EXPLORATION: PoseSearchDatabase
+================================================================================
+
+--- Method 1: Common Property Names ---
+
+--- Method 2: Modification Methods ---
+
+--- Method 3: C++ Method Calls ---
+  Trying: AddAnimationAsset
+  Trying: AddSequence
+  Trying: AddAnimation
+  Trying: SetAnimationAssets
+  Trying: UpdateDatabase
+  Trying: RebuildDatabase
+
+--- Method 4: Static Class Properties ---
+  Static class: <Object '/Script/PoseSearch.PoseSearchDatabase' (0x000002189AFAAC80) Class 'Class'>
+
+================================================================================
+EXPLORING: PoseSearchDatabaseSequence
+================================================================================
+✓ Created PoseSearchDatabaseSequence instance
+
+All attributes (10):
+  METHOD: assign()
+  METHOD: cast()
+  METHOD: copy()
+  METHOD: export_text()
+  METHOD: get_editor_property()
+  METHOD: import_text()
+  METHOD: set_editor_properties()
+  METHOD: set_editor_property()
+  METHOD: static_struct()
+  METHOD: to_tuple()
+
+--- Testing Properties ---
+  ✓ sequence: NoneType = None
+
+================================================================================
+SEARCHING FOR EDITOR UTILITIES
+================================================================================
+
+--- PoseSearch Classes ---
+  ✓ unreal.AnimGraphNode_PoseSearchComponentSpaceHistoryCollector
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimGraphNode_PoseSearchHistoryCollector
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimGraphNode_PoseSearchHistoryCollector_Base
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNode_PoseSearchComponentSpaceHistoryCollector
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.AnimNode_PoseSearchHistoryCollector
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.AnimNode_PoseSearchHistoryCollector_Base
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.AnimNotifyState_PoseSearchBase
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchBlockTransition
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchBranchIn
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchExcludeFromDatabase
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchIKWindow
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchModifyCost
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchOverrideContinuingPoseCostBias
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchSamplingAttribute
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotifyState_PoseSearchSamplingEvent
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotify_PoseSearchBase
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.AnimNotify_PoseSearchEvent
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchAssetSamplerInput
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchAssetSamplerLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, draw, get_class
+  ✓ unreal.PoseSearchAssetSamplerPose
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchAssetSamplerSpace
+    Methods: cast, get_display_name, static_enum
+  ✓ unreal.PoseSearchBlueprintResult
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchBone
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchContinuingProperties
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDataPreprocessor
+    Methods: cast, get_display_name, static_enum
+  ✓ unreal.PoseSearchDatabase
+    Methods: acquire_editor_element_handle, call_method, cast, get_animation_asset, get_class
+  ✓ unreal.PoseSearchDatabaseAnimComposite
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseAnimMontage
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseAnimationAsset
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseAnimationAssetBase
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseBlendSpace
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseFactory
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchDatabaseMultiAnimAsset
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseSequence
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchEvent
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchEventLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_Curve
+    Methods: acquire_editor_element_handle, bp_get_curve_value, call_method, cast, get_class
+  ✓ unreal.PoseSearchFeatureChannel_Distance
+    Methods: acquire_editor_element_handle, bp_get_distance, call_method, cast, get_class
+  ✓ unreal.PoseSearchFeatureChannel_FilterCrashingLegs
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_Group
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_GroupBase
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_Heading
+    Methods: acquire_editor_element_handle, bp_get_world_rotation, call_method, cast, get_class
+  ✓ unreal.PoseSearchFeatureChannel_Padding
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_PermutationTime
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_Phase
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_Pose
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_Position
+    Methods: acquire_editor_element_handle, bp_get_world_position, call_method, cast, get_class
+  ✓ unreal.PoseSearchFeatureChannel_SamplingTime
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_TimeToEvent
+    Methods: acquire_editor_element_handle, bp_get_time_to_event, call_method, cast, get_class
+  ✓ unreal.PoseSearchFeatureChannel_Trajectory
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchFeatureChannel_Velocity
+    Methods: acquire_editor_element_handle, bp_get_world_velocity, call_method, cast, get_class
+  ✓ unreal.PoseSearchFutureProperties
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchHistoryCollectorAnimNodeLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, convert_to_pose_history_node, convert_to_pose_history_node_pure
+  ✓ unreal.PoseSearchHistoryCollectorAnimNodeReference
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchIKWindowConstraint
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchInteractionAsset
+    Methods: acquire_editor_element_handle, bp_get_animation_asset, bp_get_origin, call_method, cast
+  ✓ unreal.PoseSearchInteractionAssetFactory
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchInteractionAssetItem
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchInteractionAvailability
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchInteractionAvailabilityEx
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchInteractionLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchInterruptMode
+    Methods: cast, get_display_name, static_enum
+  ✓ unreal.PoseSearchLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_database_tags
+  ✓ unreal.PoseSearchMeshComponent
+    Methods: acquire_editor_element_handle, activate, add_angular_impulse_in_degrees, add_angular_impulse_in_radians, add_asset_user_data_of_class
+  ✓ unreal.PoseSearchMirrorOption
+    Methods: cast, get_display_name, static_enum
+  ✓ unreal.PoseSearchMode
+    Methods: cast, get_display_name, static_enum
+  ✓ unreal.PoseSearchNormalizationSet
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchNormalizationSetFactory
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchQueryTrajectory
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchQueryTrajectorySample
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchRoledSkeleton
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchSchema
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchSchemaFactory
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchTrajectoryData
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchTrajectoryLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, draw_trajectory, draw_transform_trajectory
+  ✓ unreal.PoseSearchTrajectoryPredictorInterface
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_current_state
+  ✓ unreal.PoseSearchTrajectorySample
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchTrajectory_WorldCollisionResults
+    Methods: assign, cast, copy, export_text, get_editor_property
+
+--- Database Classes ---
+  ✓ unreal.AnimNotifyState_PoseSearchExcludeFromDatabase
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchDatabase
+    Methods: acquire_editor_element_handle, call_method, cast, get_animation_asset, get_class
+  ✓ unreal.PoseSearchDatabaseAnimComposite
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseAnimMontage
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseAnimationAsset
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseAnimationAssetBase
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseBlendSpace
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseFactory
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchDatabaseMultiAnimAsset
+    Methods: assign, cast, copy, export_text, get_editor_property
+  ✓ unreal.PoseSearchDatabaseSequence
+    Methods: assign, cast, copy, export_text, get_editor_property
+
+--- Library Classes ---
+  ✓ unreal.PoseSearchAssetSamplerLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, draw, get_class
+  ✓ unreal.PoseSearchEventLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchHistoryCollectorAnimNodeLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, convert_to_pose_history_node, convert_to_pose_history_node_pure
+  ✓ unreal.PoseSearchInteractionLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_default_object
+  ✓ unreal.PoseSearchLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, get_class, get_database_tags
+  ✓ unreal.PoseSearchTrajectoryLibrary
+    Methods: acquire_editor_element_handle, call_method, cast, draw_trajectory, draw_transform_trajectory
+
+================================================================================
+TESTING DIRECT MODIFICATION
+================================================================================
+✓ Database loaded
+✓ Test animation loaded: MM_Idle
+
+--- Test 1: call_method Attempts ---
+  Trying: database.call_method('AddAnimationAsset', ...)
+    ✗ PoseSearchDatabase: 'args' (AnimSequence) must be 'tuple'
+  Trying: database.call_method('AddSequence', ...)
+    ✗ PoseSearchDatabase: 'args' (AnimSequence) must be 'tuple'
+  Trying: database.call_method('AddAnimation', ...)
+    ✗ PoseSearchDatabase: 'args' (AnimSequence) must be 'tuple'
+
+--- Test 2: modify() + set_editor_property ---
+  ✓ Called modify()
+  ✗ PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+
+--- Test 3: set_editor_properties (plural) ---
+  ✗ PoseSearchDatabase: Failed to find property 'animation_assets' for attribute 'animation_assets' on 'PoseSearchDatabase'
+
+================================================================================
+EXPLORING SUBSYSTEMS
+================================================================================
+✓ EditorAssetSubsystem: <Object '/Engine/Transient.UnrealEdEngine_0:EditorAssetSubsystem_0' (0x00000218DC737D90) Class 'EditorAssetSubsystem'>
+  Methods (66): acquire_editor_element_handle, add_on_extract_asset_from_file, call_method, cast, checkout_asset, checkout_directory, checkout_loaded_asset, checkout_loaded_assets, consolidate_assets, delete_asset
+✓ AssetEditorSubsystem: <Object '/Engine/Transient.UnrealEdEngine_0:AssetEditorSubsystem_0' (0x00000218C1F4EA00) Class 'AssetEditorSubsystem'>
+✓ UnrealEditorSubsystem: <Object '/Engine/Transient.UnrealEdEngine_0:UnrealEditorSubsystem_0' (0x00000218DC34E280) Class 'UnrealEditorSubsystem'>
+
+================================================================================
+EXPLORATION COMPLETE
+================================================================================
+
+Log file: C:\UnrealProjects\coding\unreal\motion_system\root-motion-matching-poc\deep_explore_20260104_162005.log
+
+Review log for any successful methods!
