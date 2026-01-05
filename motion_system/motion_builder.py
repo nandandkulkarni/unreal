@@ -205,11 +205,100 @@ class MovieBuilder:
         return self.add_command({
             "command": "add_floor", "actor": actor_name, "location": list(location), "scale": scale
         })
+    
+    def add_atmosphere(self, fog_density="medium", fog_height_falloff=0.2, fog_color="atmospheric",
+                      volumetric=True, volumetric_scattering=1.0, start_distance=0, fog_max_opacity=1.0):
+        """Add exponential height fog with atmospheric effects
         
-    def add_directional_light(self, actor_name: str, direction_from: str = "west", angle: str = "low", intensity: str = "bright", color: str = "golden", atmosphere_sun: bool = True):
+        Args:
+            fog_density: Density preset ("clear", "light", "medium", "heavy", "dense") or numeric value
+            fog_height_falloff: Height falloff coefficient (default: 0.2)
+            fog_color: Color preset or RGB array (default: "atmospheric")
+            volumetric: Enable volumetric fog (default: True)
+            volumetric_scattering: Scattering intensity 0-2 (default: 1.0)
+            start_distance: Distance where fog starts in cm (default: 0)
+            fog_max_opacity: Maximum fog opacity 0-1 (default: 1.0)
+        """
         return self.add_command({
-            "command": "add_directional_light", "actor": actor_name, "from": direction_from, "angle": angle, "intensity": intensity, "color": color, "atmosphere_sun": atmosphere_sun
+            "command": "add_atmosphere",
+            "fog_density": fog_density,
+            "fog_height_falloff": fog_height_falloff,
+            "fog_color": fog_color,
+            "volumetric": volumetric,
+            "volumetric_scattering": volumetric_scattering,
+            "start_distance": start_distance,
+            "fog_max_opacity": fog_max_opacity
         })
+    
+    def animate_fog(self, target_density=None, target_color=None, duration=5.0):
+        """Animate fog density and/or color
+        
+        Args:
+            target_density: Target density preset or numeric value
+            target_color: Target color preset or RGB array
+            duration: Animation duration in seconds
+        """
+        cmd = {
+            "command": "animate_fog",
+            "actor": "_AtmosphereFog",
+            "duration": duration
+        }
+        if target_density is not None:
+            cmd["target_density"] = target_density
+        if target_color is not None:
+            cmd["target_color"] = target_color
+        return self.add_command(cmd)
+    
+    def configure_light_shafts(self, light_actor, enable_light_shafts=True, bloom_scale="cinematic",
+                               bloom_threshold=8.0, occlusion_mask_darkness=0.5, cast_volumetric_shadow=True):
+        """Configure light shafts (god rays) on a directional light
+        
+        Args:
+            light_actor: Name of the directional light actor
+            enable_light_shafts: Enable light shaft bloom (default: True)
+            bloom_scale: Bloom intensity preset ("subtle", "cinematic", "dramatic") or numeric value
+            bloom_threshold: Brightness threshold for bloom (default: 8.0)
+            occlusion_mask_darkness: Shadow darkness 0-1 (default: 0.5)
+            cast_volumetric_shadow: Cast shadows in volumetric fog (default: True)
+        """
+        return self.add_command({
+            "command": "configure_light_shafts",
+            "actor": light_actor,
+            "enable_light_shafts": enable_light_shafts,
+            "bloom_scale": bloom_scale,
+            "bloom_threshold": bloom_threshold,
+            "occlusion_mask_darkness": occlusion_mask_darkness,
+            "cast_volumetric_shadow": cast_volumetric_shadow
+        })
+        
+    def add_directional_light(self, actor_name: str, direction_from: str = "west", angle: str = "low", 
+                             intensity: str = "bright", color: str = "golden", atmosphere_sun: bool = True,
+                             cast_volumetric_shadow: bool = True, light_shaft_bloom_scale=None):
+        """Add a directional light
+        
+        Args:
+            actor_name: Light actor name
+            direction_from: Cardinal direction light comes FROM
+            angle: Vertical angle preset
+            intensity: Intensity preset or numeric value
+            color: Color preset or RGB array
+            atmosphere_sun: Affect atmosphere
+            cast_volumetric_shadow: Cast shadows in volumetric fog
+            light_shaft_bloom_scale: Light shaft intensity preset or None to disable
+        """
+        cmd = {
+            "command": "add_directional_light",
+            "actor": actor_name,
+            "from": direction_from,
+            "angle": angle,
+            "intensity": intensity,
+            "color": color,
+            "atmosphere_sun": atmosphere_sun,
+            "cast_volumetric_shadow": cast_volumetric_shadow
+        }
+        if light_shaft_bloom_scale is not None:
+            cmd["light_shaft_bloom_scale"] = light_shaft_bloom_scale
+        return self.add_command(cmd)
 
     def add_rect_light(self, actor_name: str, location: Tuple[float, float, float], rotation: Tuple[float, float, float], width: float, height: float, intensity: str = "bright", cast_shadows: bool = False):
         return self.add_command({

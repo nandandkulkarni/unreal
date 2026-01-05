@@ -14,7 +14,7 @@ from motion_includes import mannequin_setup
 from motion_includes import camera_setup
 from motion_includes import sequence_setup
 from motion_includes import light_setup
-from motion_includes import light_setup
+from motion_includes import atmosphere_setup
 import motion_math
 import importlib
 importlib.reload(motion_math)
@@ -207,6 +207,12 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None, scene_name="movie"
         elif command_type == "add_floor":
             process_add_floor(cmd, actors_info)
             continue
+        elif command_type == "add_atmosphere":
+            process_add_atmosphere(cmd, actors_info, actor_states, fps)
+            continue
+        elif command_type == "configure_light_shafts":
+            process_configure_light_shafts(cmd, actors_info)
+            continue
         elif command_type == "delete_lights":
             process_delete_lights(cmd)
             continue
@@ -275,6 +281,8 @@ def plan_motion(motion_plan, actors_info, fps, sequence=None, scene_name="movie"
             process_add_actor(cmd, actors_info, actor_states, sequence, fps)
         elif command_type == "add_camera":
             process_add_camera(cmd, actors_info, actor_states, sequence, fps, pending_groups)
+        elif command_type == "animate_fog":
+            process_animate_fog(cmd, state, fps)
         else:
             log(f"  ⚠ Unknown command type: {command_type}")
     
@@ -1276,6 +1284,11 @@ def process_add_directional_light(cmd, actors_info):
     cast_shadows = cmd.get("cast_shadows", True)
     atmosphere_sun = cmd.get("atmosphere_sun", True)
     
+    # Volumetric and light shaft parameters
+    cast_volumetric_shadow = cmd.get("cast_volumetric_shadow", True)
+    light_shaft_occlusion = cmd.get("light_shaft_occlusion", False)
+    light_shaft_bloom_scale = cmd.get("light_shaft_bloom_scale")
+    
     # Create the light
     light_actor = light_setup.create_directional_light(
         name=light_name,
@@ -1286,7 +1299,10 @@ def process_add_directional_light(cmd, actors_info):
         intensity=intensity,
         color=color,
         cast_shadows=cast_shadows,
-        atmosphere_sun=atmosphere_sun
+        atmosphere_sun=atmosphere_sun,
+        cast_volumetric_shadow=cast_volumetric_shadow,
+        light_shaft_occlusion=light_shaft_occlusion,
+        light_shaft_bloom_scale=light_shaft_bloom_scale
     )
     
     if light_actor:
@@ -1831,4 +1847,159 @@ def create_dummy_actor(name, actors_info, actor_states, sequence):
     }
     
     init_actor_state(name, actors_info[name], actor_states)
+
+
+def process_add_atmosphere(cmd, actors_info, actor_states, fps):
+    """Add exponential height fog with atmospheric effects"""
+    log(f"  Creating atmospheric fog...")
+    
+    # Extract parameters with defaults
+    fog_density = cmd.get("fog_density", 0.02)
+    fog_height_falloff = cmd.get("fog_height_falloff", 0.2)
+    fog_color = cmd.get("fog_color", "atmospheric")
+    volumetric = cmd.get("volumetric", True)
+    volumetric_scattering = cmd.get("volumetric_scattering", 1.0)
+    start_distance = cmd.get("start_distance", 0)
+    fog_max_opacity = cmd.get("fog_max_opacity", 1.0)
+    
+    # Create the fog actor
+    fog_actor = atmosphere_setup.create_exponential_height_fog(
+        fog_density=fog_density,
+        fog_height_falloff=fog_height_falloff,
+        fog_color=fog_color,
+        volumetric=volumetric,
+        volumetric_scattering=volumetric_scattering,
+        start_distance=start_distance,
+        fog_max_opacity=fog_max_opacity
+    )
+    
+    if fog_actor:
+        # Store fog state for potential animation
+        fog_name = "_AtmosphereFog"
+        actors_info[fog_name] = {
+            "actor": fog_actor,
+            "location": fog_actor.get_actor_location(),
+            "rotation": fog_actor.get_actor_rotation()
+        }
+        
+        # Initialize state for fog animation
+        if fog_name not in actor_states:
+            actor_states[fog_name] = {
+                "current_time": 0.0,
+                "current_fog_density": atmosphere_setup.get_fog_density_value(fog_density),
+                "current_fog_color": atmosphere_setup.get_fog_color_value(fog_color),
+                "keyframes": {
+                    "fog_density": [],
+                    "fog_color": []
+                }
+            }
+        
+        log(f"  ✓ Atmosphere fog created and configured")
+    else:
+        log(f"  ✗ Failed to create atmosphere fog")
+
+
+def process_configure_light_shafts(cmd, actors_info):
+    """Configure light shafts (god rays) on a directional light"""
+    light_name = cmd.get("actor")
+    
+    if not light_name or light_name not in actors_info:
+        log(f"  ⚠ Light '{light_name}' not found for light shaft configuration")
+        return
+    
+    light_actor = actors_info[light_name].get("actor")
+    if not light_actor:
+        log(f"  ⚠ Light actor '{light_name}' not available")
+        return
+    
+    # Extract parameters
+    enable_light_shafts = cmd.get("enable_light_shafts", True)
+    bloom_scale = cmd.get("bloom_scale", 0.3)
+    bloom_threshold = cmd.get("bloom_threshold", 8.0)
+    occlusion_mask_darkness = cmd.get("occlusion_mask_darkness", 0.5)
+    
+    # Configure light shafts
+    success = atmosphere_setup.configure_light_shafts(
+        light_actor=light_actor,
+        enable_light_shafts=enable_light_shafts,
+        bloom_scale=bloom_scale,
+        bloom_threshold=bloom_threshold,
+        occlusion_mask_darkness=occlusion_mask_darkness
+    )
+    
+    if success:
+        log(f"  ✓ Light shafts configured for '{light_name}'")
+    
+    # Also configure volumetric shadow if available
+    cast_volumetric_shadow = cmd.get("cast_volumetric_shadow", True)
+    if cast_volumetric_shadow:
+        atmosphere_setup.enable_volumetric_light_scattering(light_actor, cast_volumetric_shadow)
+
+
+def process_animate_fog(cmd, state, fps):
+    """Animate fog density and/or color over time"""
+    # Note: This requires the fog state to have been initialized by process_add_atmosphere
+    
+    target_density = cmd.get("target_density")
+    target_color = cmd.get("target_color")
+    duration = cmd.get("duration", 1.0)
+    
+    start_frame = int(state["current_time"] * fps)
+    end_frame = int((state["current_time"] + duration) * fps)
+    
+    # Animate density if specified
+    if target_density is not None:
+        current_density = state.get("current_fog_density", 0.02)
+        target_density_value = atmosphere_setup.get_fog_density_value(target_density)
+        
+        # Add start keyframe
+        if "fog_density" not in state["keyframes"]:
+            state["keyframes"]["fog_density"] = []
+        
+        state["keyframes"]["fog_density"].append({
+            "frame": start_frame,
+            "value": current_density
+        })
+        
+        # Add end keyframe
+        state["keyframes"]["fog_density"].append({
+            "frame": end_frame,
+            "value": target_density_value
+        })
+        
+        state["current_fog_density"] = target_density_value
+        log(f"  ✓ Fog density animation: {current_density:.4f} → {target_density_value:.4f} over {duration}s")
+    
+    # Animate color if specified
+    if target_color is not None:
+        current_color = state.get("current_fog_color", atmosphere_setup.get_fog_color_value("atmospheric"))
+        target_color_value = atmosphere_setup.get_fog_color_value(target_color)
+        
+        # Add start keyframe
+        if "fog_color" not in state["keyframes"]:
+            state["keyframes"]["fog_color"] = []
+        
+        # Convert LinearColor to dict for JSON serialization
+        state["keyframes"]["fog_color"].append({
+            "frame": start_frame,
+            "r": current_color.r,
+            "g": current_color.g,
+            "b": current_color.b
+        })
+        
+        # Add end keyframe
+        state["keyframes"]["fog_color"].append({
+            "frame": end_frame,
+            "r": target_color_value.r,
+            "g": target_color_value.g,
+            "b": target_color_value.b
+        })
+        
+        state["current_fog_color"] = target_color_value
+        log(f"  ✓ Fog color animation over {duration}s")
+    
+    # Advance timeline
+    state["current_time"] += duration
+
+
 

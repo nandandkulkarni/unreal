@@ -112,7 +112,31 @@ The Motion System is a JSON-based procedural animation framework for Unreal Engi
 
 ---
 
-### 7. Timing & Sequencing
+### 7. Atmosphere & Volumetrics
+
+**Atmospheric Effects:**
+- Exponential height fog with volumetric rendering
+- God rays / light shafts
+- Atmospheric scattering
+- Animated fog properties
+
+**Commands:**
+- `add_atmosphere` - Create volumetric fog
+- `animate_fog` - Animate fog density/color
+- `configure_light_shafts` - Enable god rays on lights
+
+**Features:**
+- Density presets (clear → dense)
+- Color presets (atmospheric, mystical, warm haze, etc.)
+- Height falloff for ground fog effects
+- Volumetric shadow support
+- Light shaft bloom presets
+
+**Detailed Spec:** [atmosphere_volumetrics_spec.md](file:///C:/UnrealProjects/Coding/unreal/motion_system/atmosphere_volumetrics_spec.md)
+
+---
+
+### 8. Timing & Sequencing
 
 **Timing Commands:**
 - `wait` - Pause for specified duration
@@ -128,7 +152,7 @@ The Motion System is a JSON-based procedural animation framework for Unreal Engi
 
 ---
 
-### 8. Scene Management
+### 9. Scene Management
 
 **Level Setup:**
 - Optional new level creation
@@ -189,6 +213,7 @@ See [project_structure.md](file:///C:/UnrealProjects/Coding/unreal/motion_system
 
 ## Recent Additions
 
+- ✅ Atmosphere & volumetrics system (2026-01-05)
 - ✅ Directional lighting system (2025-12-25)
 - ✅ Camera LookAt tracking
 - ✅ Tandem character support
@@ -198,6 +223,8 @@ See [project_structure.md](file:///C:/UnrealProjects/Coding/unreal/motion_system
 
 **Production Ready:**
 - Character movement and rotation
+- Directional lighting
+- Atmosphere and volumetrics
 - Animation control
 - Camera system
 - Directional lighting
