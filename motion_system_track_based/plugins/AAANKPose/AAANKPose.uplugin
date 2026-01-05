@@ -1,0 +1,30 @@
+{
+	"FileVersion": 3,
+	"Version": 2,
+	"VersionName": "2.0.0",
+	"FriendlyName": "AAANKPose",
+	"Description": "PoseSearch database management plugin with complete animation asset handling capabilities",
+	"Category": "Animation",
+	"CreatedBy": "Nandan",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "AAANKPose",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "PoseSearch",
+			"Enabled": true
+		}
+	]
+}
