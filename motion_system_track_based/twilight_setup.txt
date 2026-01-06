@@ -1,0 +1,24 @@
+=== TWILIGHT SETUP ===
+
+Cleaning up old fog...
+  Deleted: 
+
+Setting up fog...
+  Created new fog: ExponentialHeightFog_3
+  ✓ Fog configured (DENSE reddish with silver highlights)
+    Density: 0.20000000298023224
+    Height Falloff: 0.05000000074505806
+
+Cleaning up old lights...
+  Deleted DirectionalLight: 
+
+Setting up twilight sun...
+  ✓ Sun created (light shafts: DirectionalLightComponent: Failed to find property 'light_shaft_bloom_scale' for attribute 'light_shaft_bloom_scale' on 'DirectionalLightComponent')
+
+=== VERIFICATION ===
+Fog Color: <Struct 'LinearColor' (0x000002C868763034) {r: 1.000000, g: 0.400000, b: 0.300000, a: 0.000000}>
+Sun Rotation: <Struct 'Rotator' (0x000002C70630F3A0) {pitch: -5.000000, yaw: 180.000000, roll: -0.000000}>
+Sun Color: <Struct 'LinearColor' (0x000002C7062F8220) {r: 1.000000, g: 0.701102, b: 0.401978, a: 0.000000}>
+Sun Intensity: 8.0
+
+✓ TWILIGHT SETUP COMPLETE

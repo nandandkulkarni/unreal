@@ -1,0 +1,11 @@
+=== CHECKING LIGHTS ===
+
+Found 1 directional light(s)
+
+Light: DirectionalLight_0
+  Label: DirectionalLight
+  Intensity: 6.0
+  Cast Volumetric Shadow: True
+  Light Shaft properties: (not accessible)
+  Atmosphere Sun Light: True
+

@@ -1,0 +1,11 @@
+=== SUNSET SCENE CHECK ===
+
+Fog actors: 1
+  Color: <Struct 'LinearColor' (0x000002C7BEC0C334) {r: 1.000000, g: 0.600000, b: 0.300000, a: 0.000000}>
+  Density: 0.019999999552965164
+  Scattering: 1.7999999523162842
+
+Directional lights: 1
+  DirectionalLight: Intensity=6.0, VolShadow=True, AtmoSun=True
+
+✓ Sunset atmosphere configured successfully

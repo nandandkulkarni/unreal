@@ -89,7 +89,8 @@ def get_color_value(color):
 
 def create_directional_light(name, from_direction, angle, direction_offset=0, angle_offset=0,
                             intensity="normal", color="white", cast_shadows=True, 
-                            atmosphere_sun=True, location=None):
+                            atmosphere_sun=True, location=None, cast_volumetric_shadow=True,
+                            light_shaft_occlusion=False, light_shaft_bloom_scale=None):
     """
     Create a directional light with specified properties
     
@@ -104,6 +105,9 @@ def create_directional_light(name, from_direction, angle, direction_offset=0, an
         cast_shadows: Whether to cast shadows
         atmosphere_sun: Whether to interact with atmosphere
         location: Optional location override
+        cast_volumetric_shadow: Cast shadows in volumetric fog (default: True)
+        light_shaft_occlusion: Enable light shaft occlusion (default: False)
+        light_shaft_bloom_scale: Light shaft bloom intensity, or None to disable (default: None)
         
     Returns:
         DirectionalLight actor
@@ -146,6 +150,18 @@ def create_directional_light(name, from_direction, angle, direction_offset=0, an
     light_component.set_editor_property("cast_shadows", cast_shadows)
     light_component.set_editor_property("atmosphere_sun_light", atmosphere_sun)
     light_component.set_mobility(unreal.ComponentMobility.MOVABLE)
+    
+    # Set volumetric shadow
+    light_component.set_editor_property("cast_volumetric_shadow", cast_volumetric_shadow)
+    
+    # Set light shaft properties if specified
+    if light_shaft_bloom_scale is not None:
+        from . import atmosphere_setup
+        bloom_value = atmosphere_setup.get_light_shaft_value(light_shaft_bloom_scale)
+        light_component.set_editor_property("enable_light_shaft_bloom", True)
+        light_component.set_editor_property("bloom_scale", bloom_value)
+        light_component.set_editor_property("light_shaft_occlusion", light_shaft_occlusion)
+        log(f"  Light shafts enabled (bloom: {bloom_value})")
     
     log(f"✓ Directional light '{name}' created")
     log(f"  Shadows: {cast_shadows}, Atmosphere: {atmosphere_sun}")

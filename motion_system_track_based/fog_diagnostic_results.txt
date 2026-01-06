@@ -1,0 +1,21 @@
+=== FOG DIAGNOSTIC RESULTS ===
+
+Found fog: ExponentialHeightFog_0
+
+=== Testing Atmosphere Properties ===
+  ✓ fog_density: 0.05000000074505806
+  ✓ fog_height_falloff: 0.5
+  ✓ fog_max_opacity: 1.0
+  ✓ start_distance: 0.0
+  ✗ fog_inscattering_color: ExponentialHeightFogComponent: Failed to find property 'fog_inscattering_color' for attribute 'fog_inscattering_color' on 'ExponentialHeightFogComponent'
+  ✓ inscattering_color_cubemap: None
+  ✓ fog_inscattering_luminance: <Struct 'LinearColor' (0x000002C7BEC0C334) {r: 0.500000, g: 1.000000, b: 0.700000, a: 1.000000}>
+  ✗ volumetric_fog: ExponentialHeightFogComponent: Failed to find property 'volumetric_fog' for attribute 'volumetric_fog' on 'ExponentialHeightFogComponent'
+  ✗ volumetric_fog_enable: ExponentialHeightFogComponent: Failed to find property 'volumetric_fog_enable' for attribute 'volumetric_fog_enable' on 'ExponentialHeightFogComponent'
+  ✓ volumetric_fog_scattering_distribution: 0.20000000298023224
+  ✓ volumetric_fog_albedo: <Struct 'Color' (0x000002C7BEC0C3BC) {b: 255, g: 255, r: 255, a: 255}>
+
+=== Setting Test ===
+  ✗ Setting failed: ExponentialHeightFogComponent: Failed to find property 'fog_inscattering_color' for attribute 'fog_inscattering_color' on 'ExponentialHeightFogComponent'
+
+=== Results written to: C:\UnrealProjects\coding\unreal\motion_system_track_based\fog_diagnostic_results.txt ===

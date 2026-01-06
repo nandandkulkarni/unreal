@@ -1,0 +1,9 @@
+=== CHECKING FOR FOG ===
+
+Found 1 fog actor(s)
+
+Fog: ExponentialHeightFog_0
+  Label: ExponentialHeightFog
+  Density: 0.05000000074505806
+  Color: <Struct 'LinearColor' (0x000002C7BEC0C334) {r: 0.600000, g: 0.700000, b: 1.000000, a: 0.000000}>
+

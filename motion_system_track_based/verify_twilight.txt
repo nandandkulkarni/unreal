@@ -1,0 +1,24 @@
+=== TWILIGHT ATMOSPHERE VERIFICATION ===
+
+FOG SETTINGS:
+  Density: 0.05000000074505806
+  Height Falloff: 0.25
+  Max Opacity: 0.8500000238418579
+  Start Distance: 0.0
+  Inscattering Color: <Struct 'LinearColor' (0x000002C7BEC0C334) {r: 0.600000, g: 0.700000, b: 1.000000, a: 0.000000}>
+  Volumetric Scattering: 1.5
+  Volumetric Albedo: <Struct 'Color' (0x000002C7BEC0C3BC) {b: 229, g: 229, r: 229, a: 0}>
+
+LIGHT SETTINGS:
+  Found 1 directional light(s)
+
+  Light: DirectionalLight
+    Rotation: Pitch=-49.52, Yaw=-10.31, Roll=112.36
+    Intensity: 6.0
+    Color: R=1.00, G=1.00, B=1.00
+    Cast Shadows: True
+    Atmosphere Sun: True
+    Cast Volumetric Shadow: True
+    Light Shaft Bloom Enabled: False
+
+=== VERIFICATION COMPLETE ===

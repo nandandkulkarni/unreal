@@ -1,0 +1,12 @@
+=== SUN LIGHT CHECK ===
+
+Found 1 directional light(s)
+
+Light: DirectionalLight
+  Rotation: Pitch=-49.51711035415601, Yaw=-10.308600787602971, Roll=112.36067200001975
+  Location: X=0.0, Y=0.0, Z=400.0
+  Intensity: 6.0
+  Atmosphere Sun: True
+  Cast Volumetric Shadow: True
+  Color: R=1.0, G=1.0, B=1.0
+

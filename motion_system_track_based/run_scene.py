@@ -74,6 +74,7 @@ def reload_modules():
         "motion_includes.mannequin_setup",
         "motion_includes.keyframe_applier",
         "motion_includes.light_setup",
+        "motion_includes.level_setup",
         "motion_includes.attach_setup",
     ]
     
@@ -155,18 +156,79 @@ def run_scene(movie_folder: str):
     except Exception as e:
         log(f"✗ Cleanup: delete_old_actors() failed: {e}")
     
-    # 3. Create level sequence
-    result = sequence_setup.create_sequence(fps=fps, duration_seconds=30, test_name=scene_name)
-    sequence = result[0]
+    # 3. Process scene commands (atmosphere, fog, etc.)
+    scene_commands_path = os.path.join(movie_folder, "scene.json")
+    if os.path.exists(scene_commands_path):
+        log("\n" + "="*60)
+        log("SCENE COMMANDS PHASE")
+        log("="*60)
+        try:
+            with open(scene_commands_path, 'r', encoding='utf-8') as f:
+                scene_commands = json.load(f)
+            
+            for cmd in scene_commands:
+                command_type = cmd.get("command")
+                
+                if command_type == "add_atmosphere":
+                    log(f"  Processing add_atmosphere command")
+                    try:
+                        level_setup.apply_atmosphere_settings(cmd)
+                        log(f"    [OK] Atmosphere settings applied")
+                    except Exception as atmo_error:
+                        log(f"    ✗ Atmosphere settings failed: {atmo_error}")
+                        import traceback
+                        traceback.print_exc()
+                    
+                elif command_type == "animate_fog":
+                    log(f"  Processing animate_fog command (deferred until sequence creation)")
+                    # Store for later processing after sequence is created
+                    if not hasattr(run_scene, '_deferred_fog_animations'):
+                        run_scene._deferred_fog_animations = []
+                    run_scene._deferred_fog_animations.append(cmd)
+                    
+                elif command_type == "configure_light_shafts":
+                    log(f"  Processing configure_light_shafts for {cmd.get('actor')}")
+                    # Will be applied when light is created
+                    
+                else:
+                    log(f"  [WARN] Unknown scene command: {command_type}")
+        except Exception as e:
+            log(f"  ✗ Failed to process scene commands: {e}")
+            import traceback
+            traceback.print_exc()
     
-    if not sequence:
-        log("✗ Failed to create sequence")
+    # 4. Create level sequence
+    log("\n" + "="*60)
+    log("SEQUENCE CREATION PHASE")
+    log("="*60)
+    try:
+        result = sequence_setup.create_sequence(fps=fps, duration_seconds=30, test_name=scene_name)
+        sequence = result[0]
+        
+        if not sequence:
+            log("✗ Failed to create sequence - returned None")
+            return False
+        log("✓ Sequence created successfully")
+    except Exception as seq_error:
+        log(f"✗ Sequence creation failed with error: {seq_error}")
+        import traceback
+        traceback.print_exc()
         return False
     
     unreal.LevelSequenceEditorBlueprintLibrary.open_level_sequence(sequence)
     
     # 4. Plan motion - process track files
-    keyframe_data_all = motion_planner.plan_motion(movie_folder)
+    log("\n" + "="*60)
+    log("MOTION PLANNING PHASE")
+    log("="*60)
+    try:
+        keyframe_data_all = motion_planner.plan_motion(movie_folder)
+        log("✓ Motion planning completed")
+    except Exception as plan_error:
+        log(f"✗ Motion planning failed: {plan_error}")
+        import traceback
+        traceback.print_exc()
+        return False
     
     # 5. Create actors and cameras, apply keyframes
     actors_info = {}

@@ -89,5 +89,32 @@ def create_light(name, location, rotation, properties):
             # Rect lights use SourceWidth/Height
             # We didn't expose these yet, assume defaults or use radius as width?
             pass
+        
+        # Volumetric settings (applicable to all light types)
+        cast_volumetric = properties.get("cast_volumetric_shadow", False)
+        if cast_volumetric:
+            comp.set_editor_property("cast_volumetric_shadow", True)
+            log(f"    Volumetric shadows enabled")
+        
+        # Light shafts (god rays) - applicable to Directional lights mainly
+        if light_type == "Directional":
+            use_as_sun = properties.get("use_as_atmospheric_sun", False)
+            if use_as_sun:
+                comp.set_editor_property("atmosphere_sun_light", True)
+                log(f"    Set as atmospheric sun light")
+            
+            # Light shaft settings
+            light_shaft_bloom = properties.get("light_shaft_bloom_scale", None)
+            light_shaft_occlusion = properties.get("enable_light_shaft_occlusion", None)
+            
+            if light_shaft_bloom is not None:
+                comp.set_editor_property("light_shaft_bloom_scale", light_shaft_bloom)
+                comp.set_editor_property("enable_light_shaft_bloom", True)
+                log(f"    Light shaft bloom scale: {light_shaft_bloom}")
+            
+            if light_shaft_occlusion is not None:
+                comp.set_editor_property("occlusion_mask_darkness", 0.5)
+                comp.set_editor_property("enable_light_shaft_occlusion", light_shaft_occlusion)
+                log(f"    Light shaft occlusion: {light_shaft_occlusion}")
             
     return actor
