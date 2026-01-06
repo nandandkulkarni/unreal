@@ -101,6 +101,191 @@ def cleanup_old_garden():
     if deleted > 0:
         print(f"✓ Cleaned up {deleted} old garden actors/lights")
 
+def apply_dynamic_color(actor, r, g, b, roughness=0.5, metallic=0.0):
+    """Create a dynamic material instance and set its color and properties"""
+    mesh_comp = actor.static_mesh_component
+    
+    # material index 0 is usually the main material
+    dmi = mesh_comp.create_dynamic_material_instance(0)
+    if dmi:
+        # Standard parameters for BasicShapeMaterial
+        dmi.set_vector_parameter_value("Color", unreal.LinearColor(r, g, b, 1.0))
+        dmi.set_scalar_parameter_value("Roughness", roughness)
+        dmi.set_scalar_parameter_value("Metallic", metallic)
+
+def create_floor():
+    """Create a large simple floor"""
+    print("\n0. Creating Floor...")
+    cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
+    
+    location = unreal.Vector(0, 0, -50) # Slightly below 0
+    actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.StaticMeshActor,
+        location
+    )
+    
+    actor.set_actor_label("Garden_Floor")
+    actor.set_folder_path(unreal.Name("Garden_System/Floor"))
+    actor.static_mesh_component.set_static_mesh(cube_mesh)
+    actor.set_actor_scale3d(unreal.Vector(200.0, 200.0, 0.5)) # 200m x 200m
+    
+    # Dark grey floor
+    apply_dynamic_color(actor, 0.05, 0.05, 0.05)
+    print("  ✓ Created large dark floor")
+
+def create_pool():
+    """Create a stylized rectangular pool"""
+    print("\n0.5. Creating Pool...")
+    cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
+    
+    # Position under the spiral (which is at 0,0)
+    # Raising slightly above floor (-50) to -40
+    location = unreal.Vector(0, 0, -40) 
+    actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.StaticMeshActor,
+        location
+    )
+    
+    actor.set_actor_label("Garden_Pool")
+    actor.set_folder_path(unreal.Name("Garden_System/Pool"))
+    actor.static_mesh_component.set_static_mesh(cube_mesh)
+    
+    # 60m x 60m pool area
+    actor.set_actor_scale3d(unreal.Vector(60.0, 60.0, 0.1)) 
+    
+    # Deep Blue, very shiny (Water-like)
+    # R=0, G=0.1, B=0.3
+    # Roughness = 0.05 (Wet)
+    # Metallic = 0.3 (Slightly stylized metallic look for better reflections)
+    apply_dynamic_color(actor, 0.0, 0.1, 0.3, roughness=0.05, metallic=0.3)
+    print("  ✓ Created reflective pool")
+
+def pseudo_noise(x, y):
+    """Simple pseudo-random noise function for height map"""
+    # Deterministic noise based on coordinates
+    n = math.sin(x * 12.9898 + y * 78.233) * 43758.5453
+    return n - math.floor(n)
+
+def create_terrain():
+    """Create a digital terrain using height map logic"""
+    print("\n0.6. Creating Terrain...")
+    cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
+    
+    # Grid settings
+    grid_size = 30
+    spacing = 150.0
+    offset_x = 4000.0  # Move away from center
+    offset_y = 0.0
+    max_height = 800.0
+    
+    actor_count = 0
+    
+    for x in range(grid_size):
+        for y in range(grid_size):
+            # Normalized coordinates for noise
+            nx = x * 0.1
+            ny = y * 0.1
+            
+            # Layer simple noise frequencies
+            h1 = pseudo_noise(nx, ny)
+            h2 = pseudo_noise(nx * 0.5 + 50, ny * 0.5 + 50) # Low freq
+            
+            # Combine
+            noise_val = (h1 * 0.3 + h2 * 0.7) 
+            
+            # Smooth it out (very rudimentary smoothing)
+            # Actually, standard pseudo-noise is white noise (static). 
+            # Let's use simple sine waves for "hills" instead to look nicer without external lib.
+            height_val = (math.sin(nx) + math.cos(ny)) * 0.5 + 0.5 # 0-1 range
+            # Add some detail
+            height_val += math.sin(nx * 3.0) * 0.1
+            
+            z = height_val * max_height
+            
+            # World Position
+            pos_x = offset_x + (x - grid_size/2) * spacing
+            pos_y = offset_y + (y - grid_size/2) * spacing
+            location = unreal.Vector(pos_x, pos_y, z/2) # z/2 because cube pivot is center
+            
+            actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+                unreal.StaticMeshActor,
+                location
+            )
+            
+            actor.set_actor_label(f"Terrain_Col_{x}_{y}")
+            actor.set_folder_path(unreal.Name("Garden_System/Terrain"))
+            actor.static_mesh_component.set_static_mesh(cube_mesh)
+            
+            # Scale to form a column
+            actor.set_actor_scale3d(unreal.Vector(1.4, 1.4, z / 100.0))
+            
+            # Biome coloring based on height
+            if height_val < 0.2:
+                # Digital Water/Low
+                apply_dynamic_color(actor, 0.0, 0.2, 0.8, roughness=0.1)
+            elif height_val < 0.5:
+                # Digital Grass/Mid
+                apply_dynamic_color(actor, 0.1, 0.6, 0.2, roughness=0.8)
+            else:
+                # Digital Snow/High
+                apply_dynamic_color(actor, 0.9, 0.9, 0.95, roughness=0.5)
+                
+            actor_count += 1
+            
+    print(f"  ✓ Created {actor_count} terrain columns")
+
+def create_pathway():
+    """Create a meandering path of stepping stones"""
+    print("\n0.7. Creating Pathway...")
+    cyl_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cylinder.Cylinder")
+    
+    # Path settings
+    start_pos = unreal.Vector(1200, 0, 20)      # Edge of pool
+    end_pos = unreal.Vector(3600, 0, 50)       # Edge of terrain
+    steps = 40
+    
+    # Calculate vector from start to end
+    path_vec = end_pos - start_pos
+    total_dist = path_vec.length()
+    step_size = total_dist / steps
+    direction = path_vec.normal()
+    
+    for i in range(steps):
+        # Progress (0.0 to 1.0)
+        alpha = i / float(steps)
+        
+        # Base position (Linear Interpolation)
+        base_loc = start_pos + (path_vec * alpha)
+        
+        # Meandering (Sine wave offset on Y axis)
+        # 1.5 full waves (3 * PI)
+        # Amplitude 300 units
+        meander_offset = math.sin(alpha * math.pi * 3.0) * 300.0
+        
+        # Final location
+        location = unreal.Vector(
+            base_loc.x, 
+            base_loc.y + meander_offset, 
+            base_loc.z
+        )
+        
+        actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
+            unreal.StaticMeshActor,
+            location
+        )
+        
+        actor.set_actor_label(f"Pathway_Step_{i}")
+        actor.set_folder_path(unreal.Name("Garden_System/Pathways"))
+        actor.static_mesh_component.set_static_mesh(cyl_mesh)
+        
+        # Flattened stone look
+        actor.set_actor_scale3d(unreal.Vector(1.6, 1.6, 0.1))
+        
+        # Stone material (Grey, Rough)
+        apply_dynamic_color(actor, 0.4, 0.4, 0.42, roughness=0.9, metallic=0.0)
+        
+    print(f"  ✓ Created {steps} stepping stones")
+
 def create_fibonacci_spiral():
     """Create spheres in a Fibonacci spiral pattern"""
     print("\n1. Creating Fibonacci Spiral (Spheres)...")
@@ -135,14 +320,20 @@ def create_fibonacci_spiral():
         )
         
         actor.set_actor_label(f"Garden_Sphere_{i}")
+        actor.set_folder_path(unreal.Name("Garden_System/Spiral"))
         actor.static_mesh_component.set_static_mesh(sphere_mesh)
         actor.set_actor_scale3d(unreal.Vector(scale, scale, scale))
         
-        # Color variation based on position
-        hue = (i / FIBONACCI_COUNT) * 360
-        # You could set custom material here with color
+        # Color variation (Blue -> Cyan -> White)
+        t = i / max(1, FIBONACCI_COUNT - 1)
+        # Gradient: Blue (0,0,1) -> Cyan (0,1,1)
+        r_val = 0.0
+        g_val = t * 0.8
+        b_val = 0.5 + t * 0.5
         
-    print(f"  ✓ Created {FIBONACCI_COUNT} spheres in Fibonacci spiral")
+        apply_dynamic_color(actor, r_val, g_val, b_val)
+        
+    print(f"  ✓ Created {FIBONACCI_COUNT} spheres in Fibonacci spiral (Blue-Cyan gradient)")
 
 def create_concentric_squares():
     """Create cubes in concentric square patterns"""
@@ -197,15 +388,24 @@ def create_concentric_squares():
             )
             
             actor.set_actor_label(f"Garden_Cube_Ring{ring}_{cube_count}")
+            actor.set_folder_path(unreal.Name("Garden_System/Squares"))
             actor.static_mesh_component.set_static_mesh(cube_mesh)
             
             # Scale based on ring (smaller for outer rings)
             scale = 1.5 - (ring / SQUARE_RINGS) * 0.8
             actor.set_actor_scale3d(unreal.Vector(scale, scale, scale))
             
+            # Alternating colors: Purple vs Gold
+            if ring % 2 == 0:
+                # Purple
+                apply_dynamic_color(actor, 0.6, 0.1, 0.9)
+            else:
+                # Gold
+                apply_dynamic_color(actor, 0.9, 0.7, 0.1)
+            
             cube_count += 1
     
-    print(f"  ✓ Created {cube_count} cubes in {SQUARE_RINGS} concentric squares")
+    print(f"  ✓ Created {cube_count} cubes in {SQUARE_RINGS} concentric squares (Purple/Gold)")
 
 def create_radial_pillars():
     """Create cylinders as pillars in a radial pattern"""
@@ -234,12 +434,20 @@ def create_radial_pillars():
         )
         
         actor.set_actor_label(f"Garden_Pillar_{i}")
+        actor.set_folder_path(unreal.Name("Garden_System/Pillars"))
         actor.static_mesh_component.set_static_mesh(cylinder_mesh)
         
         # Tall pillars with varying heights
         actor.set_actor_scale3d(unreal.Vector(0.8, 0.8, height))
         
-    print(f"  ✓ Created {PILLAR_COUNT} radial pillars")
+        # Color: Orange to Red
+        # Randomize slightly or use angle
+        r = 1.0
+        g = 0.5 - (0.3 * math.sin(math.radians(angle))) 
+        b = 0.1
+        apply_dynamic_color(actor, r, g, b)
+        
+    print(f"  ✓ Created {PILLAR_COUNT} radial pillars (Orange/Red)")
 
 def add_lighting():
     """Add dramatic multi-light setup"""
@@ -255,6 +463,7 @@ def add_lighting():
             unreal.Vector(0, 0, 1000)
         )
         key_light.set_actor_label("Garden_KeyLight")
+        key_light.set_folder_path(unreal.Name("Garden_System/Lighting"))
         key_light.set_actor_rotation(unreal.Rotator(pitch=-45, yaw=30, roll=0), teleport_physics=False)
         
         key_comp = key_light.light_component
@@ -271,6 +480,7 @@ def add_lighting():
             unreal.Vector(0, 0, 800)
         )
         spiral_light.set_actor_label("Garden_SpiralLight")
+        spiral_light.set_folder_path(unreal.Name("Garden_System/Lighting"))
         spiral_comp = spiral_light.light_component
         spiral_comp.set_intensity(5000.0)
         spiral_comp.set_light_color(unreal.LinearColor(0.3, 0.5, 1.0))  # Blue
@@ -284,6 +494,7 @@ def add_lighting():
             unreal.Vector(3000, 0, 800)
         )
         squares_light.set_actor_label("Garden_SquaresLight")
+        squares_light.set_folder_path(unreal.Name("Garden_System/Lighting"))
         squares_comp = squares_light.light_component
         squares_comp.set_intensity(5000.0)
         squares_comp.set_light_color(unreal.LinearColor(0.8, 0.3, 1.0))  # Purple
@@ -297,11 +508,37 @@ def add_lighting():
             unreal.Vector(-3000, 0, 800)
         )
         pillars_light.set_actor_label("Garden_PillarsLight")
+        pillars_light.set_folder_path(unreal.Name("Garden_System/Lighting"))
         pillars_comp = pillars_light.light_component
         pillars_comp.set_intensity(5000.0)
         pillars_comp.set_light_color(unreal.LinearColor(1.0, 0.5, 0.2))  # Orange
 
+        # Sky Light for ambient fill and reflections
+        print("  Creating Sky Light...")
+        skylight = unreal.EditorLevelLibrary.spawn_actor_from_class(
+            unreal.SkyLight,
+            unreal.Vector(0, 0, 2000)
+        )
+        skylight.set_actor_label("Garden_SkyLight")
+        skylight.set_folder_path(unreal.Name("Garden_System/Lighting"))
         
+        sky_comp = skylight.light_component
+        sky_comp.set_mobility(unreal.ComponentMobility.MOVABLE)
+        sky_comp.set_editor_property("real_time_capture", True)
+        sky_comp.set_intensity(1.0)
+        print(f"    ✓ Sky light: {skylight.get_actor_label()}")
+        
+        # Reflection Capture for the pool
+        print("  Creating Reflection Capture...")
+        ref_cap = unreal.EditorLevelLibrary.spawn_actor_from_class(
+            unreal.SphereReflectionCapture,
+            unreal.Vector(0, 0, 100)
+        )
+        ref_cap.set_actor_label("Garden_ReflectionCapture")
+        ref_cap.set_folder_path(unreal.Name("Garden_System/Lighting"))
+        ref_comp = ref_cap.capture_component
+        ref_comp.set_editor_property("influence_radius", 5000.0)
+        print(f"    ✓ Reflection capture: {ref_cap.get_actor_label()}")
         
     except Exception as e:
         print(f"  ✗ ERROR creating lights: {e}")
@@ -313,12 +550,23 @@ def add_atmosphere():
     print("\n5. Adding Atmosphere...")
     
     try:
+        # Create Sky Atmosphere (Required for SkyLight Real-time Capture)
+        print("  Creating Sky Atmosphere...")
+        sky_atm = unreal.EditorLevelLibrary.spawn_actor_from_class(
+            unreal.SkyAtmosphere,
+            unreal.Vector(0, 0, 0)
+        )
+        sky_atm.set_actor_label("Garden_SkyAtmosphere")
+        sky_atm.set_folder_path(unreal.Name("Garden_System/Lighting"))
+        print(f"    ✓ Sky Atmosphere: {sky_atm.get_actor_label()}")
+
         # Create artistic atmosphere (subtle purple/gold twilight)
         fog = unreal.EditorLevelLibrary.spawn_actor_from_class(
             unreal.ExponentialHeightFog,
             unreal.Vector(0, 0, 0)
         )
         fog.set_actor_label("Garden_Atmosphere")
+        fog.set_folder_path(unreal.Name("Garden_System/Lighting"))
         
         fog_comp = fog.component
         fog_comp.set_editor_property("fog_density", 0.03)
@@ -344,6 +592,7 @@ def create_camera():
         unreal.Vector(0, -4000, 2000)  # Behind and above
     )
     camera.set_actor_label("Garden_Camera")
+    camera.set_folder_path(unreal.Name("Garden_System"))
     camera.set_actor_rotation(unreal.Rotator(pitch=-20, yaw=0, roll=0), teleport_physics=False)
     
     print("  ✓ Camera created")
@@ -356,6 +605,10 @@ print("=" * 80)
 
 try:
     cleanup_old_garden()
+    create_floor()
+    create_pool()
+    create_terrain()
+    create_pathway()
     create_fibonacci_spiral()
     create_concentric_squares()
     create_radial_pillars()
