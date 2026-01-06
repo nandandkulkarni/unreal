@@ -114,6 +114,7 @@ def run_scene(movie_folder: str):
     from motion_includes import level_setup
     from motion_includes import keyframe_applier
     from motion_includes import attach_setup
+    from motion_includes import spline_setup
     from motion_includes.assets import Shapes, Materials
     
     log(f"")
@@ -308,6 +309,37 @@ def run_scene(movie_folder: str):
                      if mat:
                          actor_obj.static_mesh_component.set_material(0, mat)
                      log(f"    [OK] Marker created with {mesh_path}")
+                     if mat:
+                         actor_obj.static_mesh_component.set_material(0, mat)
+                     log(f"    [OK] Marker created with {mesh_path}")
+        
+        elif actor_type == "spline":
+             log(f"  Creating Spline: {actor_name}")
+             # Get properties
+             props = settings.get("properties", {})
+             points = props.get("points", [])
+             closed = props.get("closed", False)
+             color = props.get("color", "Green")
+             thickness = props.get("thickness", 5.0)
+             show_debug = props.get("show_debug", True)
+             
+             try:
+                 actor_obj = spline_setup.create_spline_actor(
+                     actor_name, 
+                     points=points, 
+                     closed=closed, 
+                     color=color, 
+                     thickness=thickness, 
+                     show_debug=show_debug
+                 )
+                 log(f"    [OK] Spline created with {len(points)} points")
+             except Exception as e:
+                 log(f"    ❌ Failed to create spline {actor_name}: {e}")
+                 import traceback
+                 log(traceback.format_exc())
+
+
+
         else:
              # Default to mannequin for "actor" type or others
              log(f"  Creating actor: {actor_name}")

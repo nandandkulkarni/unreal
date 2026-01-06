@@ -267,3 +267,114 @@ def generate_camera_keyframes(movie_folder: str, camera_name: str,
         "focal_length": focal_length_keyframes,
         "focus_distance": focus_distance_keyframes
     }
+
+def plan_motion(movie_folder: str) -> Dict[str, Any]:
+    """
+    Aggregate all track files into a single plan structure for run_scene.
+    
+    Args:
+        movie_folder: Path to the movie directory
+        
+    Returns:
+        {
+            "actors": {
+                "ActorName": {
+                    "keyframes": {
+                        "location": [],
+                        "rotation": [],
+                        "animations": [],
+                        ...
+                    }
+                }
+            },
+            "camera_cuts": []
+        }
+    """
+    plan = {
+        "actors": {},
+        "camera_cuts": []
+    }
+    
+    # Load meta.json
+    meta_path = os.path.join(movie_folder, "meta.json")
+    if not os.path.exists(meta_path):
+        print(f"Error: meta.json not found in {movie_folder}")
+        return plan
+        
+    with open(meta_path, 'r', encoding='utf-8') as f:
+        meta = json.load(f)
+        
+    actor_names = meta.get("actors", [])
+    
+    # Process each actor
+    for actor_name in actor_names:
+        actor_folder = os.path.join(movie_folder, actor_name)
+        if not os.path.exists(actor_folder):
+            continue
+            
+        keyframes = {
+            "location": [],
+            "rotation": [],
+            "animations": [],
+            "current_focal_length": [],
+            "current_focus_distance": []
+        }
+        
+        # Load Transform
+        transform_path = os.path.join(actor_folder, "transform.json")
+        if os.path.exists(transform_path):
+            with open(transform_path, 'r', encoding='utf-8') as f:
+                transforms = json.load(f)
+                for t in transforms:
+                    # Location
+                    if "x" in t and "y" in t and "z" in t:
+                        keyframes["location"].append({
+                            "frame": t["frame"],
+                            "x": t["x"],
+                            "y": t["y"],
+                            "z": t["z"]
+                        })
+                    
+                    # Rotation
+                    if "roll" in t and "pitch" in t and "yaw" in t:
+                        keyframes["rotation"].append({
+                            "frame": t["frame"],
+                            "roll": t["roll"],
+                            "pitch": t["pitch"],
+                            "yaw": t["yaw"]
+                        })
+
+        # Load Animation
+        anim_path = os.path.join(actor_folder, "animation.json")
+        if os.path.exists(anim_path):
+            with open(anim_path, 'r', encoding='utf-8') as f:
+                anims = json.load(f)
+                # Ensure speed_multiplier is present
+                for a in anims:
+                    if "speed" in a:
+                        a["speed_multiplier"] = a.pop("speed") # Rename for applier
+                keyframes["animations"] = anims
+                
+        # Load Focal Length
+        focal_path = os.path.join(actor_folder, "focal_length.json")
+        if os.path.exists(focal_path):
+            with open(focal_path, 'r', encoding='utf-8') as f:
+                keyframes["current_focal_length"] = json.load(f)
+                
+        # Load Focus Distance
+        focus_path = os.path.join(actor_folder, "focus_distance.json")
+        if os.path.exists(focus_path):
+            with open(focus_path, 'r', encoding='utf-8') as f:
+                keyframes["current_focus_distance"] = json.load(f)
+                
+        plan["actors"][actor_name] = {
+            "keyframes": keyframes
+        }
+        
+    # Load Camera Cuts
+    cuts_path = os.path.join(movie_folder, "camera_cuts.json")
+    if os.path.exists(cuts_path):
+        with open(cuts_path, 'r', encoding='utf-8') as f:
+            plan["camera_cuts"] = json.load(f)
+            
+    return plan
