@@ -1,0 +1,54 @@
+================================================================================
+DIAGNOSTIC: SEARCHING FOR BELICA ASSETS
+================================================================================
+
+--- Searching for Belica folders ---
+
+Checking: /Game/ParagonLtBelica
+  ✓ Directory exists!
+  Found 3 items:
+    - /Game/ParagonLtBelica/Audio/
+    - /Game/ParagonLtBelica/Characters/
+    - /Game/ParagonLtBelica/FX/
+
+Checking: /Game/Paragon
+  ✗ Directory not found
+
+Checking: /Game/Characters/Belica
+  ✗ Directory not found
+
+Checking: /Game/Heroes/Belica
+  ✗ Directory not found
+
+--- Searching for 'Belica' in asset names ---
+
+Found 1843 Belica-related assets
+
+First 20 Belica assets:
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Stun_Start
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Stun_Loop
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_TurnInPlace_Slow
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_TurnInPlace_180
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_TurnInPlace
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_Turn_toIdle
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Start_MSA
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Start
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_MSA
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Loop_MSA
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Loop
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Start_MSA
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Start
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Recall
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Start_MSA
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Start
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_MSA
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_Moving_MSA
+  [None                ] /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_Moving
+
+--- Potential Animation Folders ---
+  /Game/ParagonLtBelica/Characters/Heroes
+
+================================================================================
+DIAGNOSTIC COMPLETE
+================================================================================

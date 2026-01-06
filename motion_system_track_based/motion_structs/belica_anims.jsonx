@@ -1,0 +1,2649 @@
+{
+  "character": "Belica",
+  "base_path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations",
+  "scanned_at": "2026-01-06T11:59:02.999729",
+  "animations": [
+    {
+      "name": "Idle_AO_CC",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_CC.Idle_AO_CC"
+    },
+    {
+      "name": "Idle_AO_CD",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_CD.Idle_AO_CD"
+    },
+    {
+      "name": "Idle_AO_CU",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_CU.Idle_AO_CU"
+    },
+    {
+      "name": "Idle_AO_LBC",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LBC.Idle_AO_LBC"
+    },
+    {
+      "name": "Idle_AO_LBD",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LBD.Idle_AO_LBD"
+    },
+    {
+      "name": "Idle_AO_LBU",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LBU.Idle_AO_LBU"
+    },
+    {
+      "name": "Idle_AO_LC",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LC.Idle_AO_LC"
+    },
+    {
+      "name": "Idle_AO_LD",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LD.Idle_AO_LD"
+    },
+    {
+      "name": "Idle_AO_LU",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LU.Idle_AO_LU"
+    },
+    {
+      "name": "Idle_AO_RBC",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RBC.Idle_AO_RBC"
+    },
+    {
+      "name": "Idle_AO_RBD",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RBD.Idle_AO_RBD"
+    },
+    {
+      "name": "Idle_AO_RBU",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RBU.Idle_AO_RBU"
+    },
+    {
+      "name": "Idle_AO_RC",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RC.Idle_AO_RC"
+    },
+    {
+      "name": "Idle_AO_RD",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RD.Idle_AO_RD"
+    },
+    {
+      "name": "Idle_AO_RU",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RU.Idle_AO_RU"
+    },
+    {
+      "name": "RMB_AO_CC",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_CC.RMB_AO_CC"
+    },
+    {
+      "name": "RMB_AO_CD",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_CD.RMB_AO_CD"
+    },
+    {
+      "name": "RMB_AO_CU",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_CU.RMB_AO_CU"
+    },
+    {
+      "name": "RMB_AO_L45",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_L45.RMB_AO_L45"
+    },
+    {
+      "name": "RMB_AO_L45D",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_L45D.RMB_AO_L45D"
+    },
+    {
+      "name": "RMB_AO_L45U",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_L45U.RMB_AO_L45U"
+    },
+    {
+      "name": "RMB_AO_LBC",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LBC.RMB_AO_LBC"
+    },
+    {
+      "name": "RMB_AO_LBD",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LBD.RMB_AO_LBD"
+    },
+    {
+      "name": "RMB_AO_LBU",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LBU.RMB_AO_LBU"
+    },
+    {
+      "name": "RMB_AO_LC",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LC.RMB_AO_LC"
+    },
+    {
+      "name": "RMB_AO_LD",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LD.RMB_AO_LD"
+    },
+    {
+      "name": "RMB_AO_LU",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LU.RMB_AO_LU"
+    },
+    {
+      "name": "RMB_AO_R45",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_R45.RMB_AO_R45"
+    },
+    {
+      "name": "RMB_AO_R45D",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_R45D.RMB_AO_R45D"
+    },
+    {
+      "name": "RMB_AO_R45U",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_R45U.RMB_AO_R45U"
+    },
+    {
+      "name": "RMB_AO_RBC",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RBC.RMB_AO_RBC"
+    },
+    {
+      "name": "RMB_AO_RBD",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RBD.RMB_AO_RBD"
+    },
+    {
+      "name": "RMB_AO_RBU",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RBU.RMB_AO_RBU"
+    },
+    {
+      "name": "RMB_AO_RC",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RC.RMB_AO_RC"
+    },
+    {
+      "name": "RMB_AO_RD",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RD.RMB_AO_RD"
+    },
+    {
+      "name": "RMB_AO_RU",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RU.RMB_AO_RU"
+    },
+    {
+      "name": "Bound",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Bound.Bound"
+    },
+    {
+      "name": "Cast",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.9666666388511658,
+      "frames": 28,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Cast.Cast"
+    },
+    {
+      "name": "Cast_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.9666666388511658,
+      "frames": 28,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Cast_MSA.Cast_MSA"
+    },
+    {
+      "name": "Death_A",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.9333332777023315,
+      "frames": 57,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Death_A.Death_A"
+    },
+    {
+      "name": "Death_B",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.6666666269302368,
+      "frames": 49,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Death_B.Death_B"
+    },
+    {
+      "name": "E_Ability",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.399999976158142,
+      "frames": 41,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability.E_Ability"
+    },
+    {
+      "name": "E_Ability_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.399999976158142,
+      "frames": 41,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_MSA.E_Ability_MSA"
+    },
+    {
+      "name": "E_Ability_Start",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.100000023841858,
+      "frames": 33,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Start.E_Ability_Start"
+    },
+    {
+      "name": "E_Ability_Start_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.100000023841858,
+      "frames": 33,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Start_MSA.E_Ability_Start_MSA"
+    },
+    {
+      "name": "E_Ability_Targeting",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Targeting.E_Ability_Targeting"
+    },
+    {
+      "name": "E_Ability_Targeting_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Targeting_MSA.E_Ability_Targeting_MSA"
+    },
+    {
+      "name": "Emote_Browsing_M1",
+      "type": "other",
+      "direction": "forward",
+      "duration": 8.533333778381348,
+      "frames": 256,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_Browsing_M1.Emote_Browsing_M1"
+    },
+    {
+      "name": "Emote_Salute",
+      "type": "other",
+      "direction": "forward",
+      "duration": 5.666666507720947,
+      "frames": 169,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_Salute.Emote_Salute"
+    },
+    {
+      "name": "Emote_WhoopWhoop",
+      "type": "other",
+      "direction": "forward",
+      "duration": 5.300000190734863,
+      "frames": 159,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop.Emote_WhoopWhoop"
+    },
+    {
+      "name": "Emote_WhoopWhoop_Intro",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.5333333611488342,
+      "frames": 16,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop_Intro.Emote_WhoopWhoop_Intro"
+    },
+    {
+      "name": "Emote_WhoopWhoop_Loop",
+      "type": "other",
+      "direction": "forward",
+      "duration": 2.0999999046325684,
+      "frames": 62,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop_Loop.Emote_WhoopWhoop_Loop"
+    },
+    {
+      "name": "Emote_WhoopWhoop_Outro",
+      "type": "other",
+      "direction": "forward",
+      "duration": 2.6666667461395264,
+      "frames": 80,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop_Outro.Emote_WhoopWhoop_Outro"
+    },
+    {
+      "name": "FrontEndPose",
+      "type": "other",
+      "direction": "forward",
+      "duration": 12.0,
+      "frames": 360,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/FrontEndPose.FrontEndPose"
+    },
+    {
+      "name": "HeroSelect_Idle",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 10.333333015441895,
+      "frames": 309,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HeroSelect_Idle.HeroSelect_Idle"
+    },
+    {
+      "name": "HitReact_Back",
+      "type": "other",
+      "direction": "backward",
+      "duration": 0.8666666746139526,
+      "frames": 26,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Back.HitReact_Back"
+    },
+    {
+      "name": "HitReact_Front",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.8666666746139526,
+      "frames": 26,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Front.HitReact_Front"
+    },
+    {
+      "name": "HitReact_Left",
+      "type": "other",
+      "direction": "left",
+      "duration": 0.8666666746139526,
+      "frames": 26,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Left.HitReact_Left"
+    },
+    {
+      "name": "HitReact_Right",
+      "type": "other",
+      "direction": "right",
+      "duration": 1.0,
+      "frames": 30,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Right.HitReact_Right"
+    },
+    {
+      "name": "Idle",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 10.333333015441895,
+      "frames": 309,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle"
+    },
+    {
+      "name": "Idle_Relaxed",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 11.0,
+      "frames": 330,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Relaxed.Idle_Relaxed"
+    },
+    {
+      "name": "Idle_Relaxed_Additive",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 11.0,
+      "frames": 330,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Relaxed_Additive.Idle_Relaxed_Additive"
+    },
+    {
+      "name": "Idle_Turn_180_Left",
+      "type": "idle",
+      "direction": "left",
+      "duration": 4.333333492279053,
+      "frames": 130,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_180_Left.Idle_Turn_180_Left"
+    },
+    {
+      "name": "Idle_Turn_180_Right",
+      "type": "idle",
+      "direction": "right",
+      "duration": 2.6666667461395264,
+      "frames": 80,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_180_Right.Idle_Turn_180_Right"
+    },
+    {
+      "name": "Idle_Turn_90_Left",
+      "type": "idle",
+      "direction": "left",
+      "duration": 3.0,
+      "frames": 90,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_90_Left.Idle_Turn_90_Left"
+    },
+    {
+      "name": "Idle_Turn_90_Right",
+      "type": "idle",
+      "direction": "right",
+      "duration": 4.0,
+      "frames": 120,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_90_Right.Idle_Turn_90_Right"
+    },
+    {
+      "name": "Idle_Zero_Pose",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Zero_Pose.Idle_Zero_Pose"
+    },
+    {
+      "name": "Jog_Bwd",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.7666666507720947,
+      "frames": 52,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd.Jog_Bwd"
+    },
+    {
+      "name": "Jog_Bwd_Circle_Left",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 2.066666603088379,
+      "frames": 61,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Circle_Left.Jog_Bwd_Circle_Left"
+    },
+    {
+      "name": "Jog_Bwd_Circle_Right",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 2.066666603088379,
+      "frames": 61,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Circle_Right.Jog_Bwd_Circle_Right"
+    },
+    {
+      "name": "Jog_Bwd_Pivot180",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 4.699999809265137,
+      "frames": 140,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Pivot180.Jog_Bwd_Pivot180"
+    },
+    {
+      "name": "Jog_Bwd_Start",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 4.333333492279053,
+      "frames": 130,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Start.Jog_Bwd_Start"
+    },
+    {
+      "name": "Jog_Bwd_Stop",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 3.133333444595337,
+      "frames": 94,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Stop.Jog_Bwd_Stop"
+    },
+    {
+      "name": "Jog_BwdToFwd_SpinCCW",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 2.5,
+      "frames": 75,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_BwdToFwd_SpinCCW.Jog_BwdToFwd_SpinCCW"
+    },
+    {
+      "name": "Jog_BwdToFwd_SpinCW",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 2.633333444595337,
+      "frames": 79,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_BwdToFwd_SpinCW.Jog_BwdToFwd_SpinCW"
+    },
+    {
+      "name": "Jog_Fwd",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 1.3333333730697632,
+      "frames": 40,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd"
+    },
+    {
+      "name": "Jog_Fwd_Circle_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 1.399999976158142,
+      "frames": 41,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Circle_Left.Jog_Fwd_Circle_Left"
+    },
+    {
+      "name": "Jog_Fwd_Circle_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 1.399999976158142,
+      "frames": 41,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Circle_Right.Jog_Fwd_Circle_Right"
+    },
+    {
+      "name": "Jog_Fwd_Downhill",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 1.2000000476837158,
+      "frames": 36,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Downhill.Jog_Fwd_Downhill"
+    },
+    {
+      "name": "Jog_Fwd_Pivot180",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 5.800000190734863,
+      "frames": 174,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Pivot180.Jog_Fwd_Pivot180"
+    },
+    {
+      "name": "Jog_Fwd_Start",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 3.433333396911621,
+      "frames": 103,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Start.Jog_Fwd_Start"
+    },
+    {
+      "name": "Jog_Fwd_Stop",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 3.3333332538604736,
+      "frames": 99,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Stop.Jog_Fwd_Stop"
+    },
+    {
+      "name": "Jog_Fwd_Uphill",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 1.2000000476837158,
+      "frames": 36,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Uphill.Jog_Fwd_Uphill"
+    },
+    {
+      "name": "Jog_FwdToBwd_SpinCCW",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 2.5999999046325684,
+      "frames": 77,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_FwdToBwd_SpinCCW.Jog_FwdToBwd_SpinCCW"
+    },
+    {
+      "name": "Jog_FwdToBwd_SpinCW",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 2.366666555404663,
+      "frames": 70,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_FwdToBwd_SpinCW.Jog_FwdToBwd_SpinCW"
+    },
+    {
+      "name": "Jog_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 2.0,
+      "frames": 60,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left.Jog_Left"
+    },
+    {
+      "name": "Jog_Left_Circle_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 2.200000047683716,
+      "frames": 66,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Circle_Left.Jog_Left_Circle_Left"
+    },
+    {
+      "name": "Jog_Left_Circle_Right",
+      "type": "jog",
+      "direction": "left",
+      "duration": 2.200000047683716,
+      "frames": 66,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Circle_Right.Jog_Left_Circle_Right"
+    },
+    {
+      "name": "Jog_Left_Pivot180",
+      "type": "jog",
+      "direction": "left",
+      "duration": 4.400000095367432,
+      "frames": 132,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Pivot180.Jog_Left_Pivot180"
+    },
+    {
+      "name": "Jog_Left_Start",
+      "type": "jog",
+      "direction": "left",
+      "duration": 2.4666666984558105,
+      "frames": 74,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Start.Jog_Left_Start"
+    },
+    {
+      "name": "Jog_Left_Stop",
+      "type": "jog",
+      "direction": "left",
+      "duration": 3.0,
+      "frames": 90,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Stop.Jog_Left_Stop"
+    },
+    {
+      "name": "Jog_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 2.0,
+      "frames": 60,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right.Jog_Right"
+    },
+    {
+      "name": "Jog_Right_Circle_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 2.2666666507720947,
+      "frames": 67,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Circle_Left.Jog_Right_Circle_Left"
+    },
+    {
+      "name": "Jog_Right_Circle_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 2.2666666507720947,
+      "frames": 67,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Circle_Right.Jog_Right_Circle_Right"
+    },
+    {
+      "name": "Jog_Right_Pivot180",
+      "type": "jog",
+      "direction": "right",
+      "duration": 5.0333333015441895,
+      "frames": 150,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Pivot180.Jog_Right_Pivot180"
+    },
+    {
+      "name": "Jog_Right_Start",
+      "type": "jog",
+      "direction": "right",
+      "duration": 2.133333444595337,
+      "frames": 64,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Start.Jog_Right_Start"
+    },
+    {
+      "name": "Jog_Right_Stop",
+      "type": "jog",
+      "direction": "right",
+      "duration": 3.1666667461395264,
+      "frames": 95,
+      "estimated_speed_mps": 3.5,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Stop.Jog_Right_Stop"
+    },
+    {
+      "name": "Jump_Apex",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.2666666805744171,
+      "frames": 8,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Apex.Jump_Apex"
+    },
+    {
+      "name": "Jump_Pad",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 2.0,
+      "frames": 60,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Pad.Jump_Pad"
+    },
+    {
+      "name": "Jump_PreLand",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.1666666716337204,
+      "frames": 5,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_PreLand.Jump_PreLand"
+    },
+    {
+      "name": "Jump_Recovery",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 1.6333333253860474,
+      "frames": 48,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Recovery.Jump_Recovery"
+    },
+    {
+      "name": "Jump_Recovery_Additive",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 1.6333333253860474,
+      "frames": 48,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Recovery_Additive.Jump_Recovery_Additive"
+    },
+    {
+      "name": "Jump_Start",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.2666666805744171,
+      "frames": 8,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Start.Jump_Start"
+    },
+    {
+      "name": "KnockBack_Front",
+      "type": "other",
+      "direction": "backward",
+      "duration": 2.0,
+      "frames": 60,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/KnockBack_Front.KnockBack_Front"
+    },
+    {
+      "name": "KnockBack_Rear",
+      "type": "other",
+      "direction": "backward",
+      "duration": 2.0,
+      "frames": 60,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/KnockBack_Rear.KnockBack_Rear"
+    },
+    {
+      "name": "KnockUp",
+      "type": "other",
+      "direction": "forward",
+      "duration": 2.0,
+      "frames": 60,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/KnockUp.KnockUp"
+    },
+    {
+      "name": "LevelStart",
+      "type": "other",
+      "direction": "forward",
+      "duration": 5.0,
+      "frames": 150,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/LevelStart.LevelStart"
+    },
+    {
+      "name": "LevelStart_Montage",
+      "type": "other",
+      "direction": "forward",
+      "duration": 4.866666793823242,
+      "frames": 146,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/LevelStart_Montage.LevelStart_Montage"
+    },
+    {
+      "name": "Primary_Fire_Fast",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.6000000238418579,
+      "frames": 18,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Fast.Primary_Fire_Fast"
+    },
+    {
+      "name": "Primary_Fire_Fast_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.6000000238418579,
+      "frames": 18,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Fast_MSA.Primary_Fire_Fast_MSA"
+    },
+    {
+      "name": "Primary_Fire_Med",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Med.Primary_Fire_Med"
+    },
+    {
+      "name": "Primary_Fire_Med_Montage",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Med_Montage.Primary_Fire_Med_Montage"
+    },
+    {
+      "name": "Primary_Fire_Med_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Med_MSA.Primary_Fire_Med_MSA"
+    },
+    {
+      "name": "Primary_Fire_Slow",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.5,
+      "frames": 45,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Slow.Primary_Fire_Slow"
+    },
+    {
+      "name": "Primary_Fire_Slow_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.5,
+      "frames": 45,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Slow_MSA.Primary_Fire_Slow_MSA"
+    },
+    {
+      "name": "Q_Ability",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.600000023841858,
+      "frames": 48,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability.Q_Ability"
+    },
+    {
+      "name": "Q_Ability_Loop",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Loop.Q_Ability_Loop"
+    },
+    {
+      "name": "Q_Ability_Loop_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Loop_MSA.Q_Ability_Loop_MSA"
+    },
+    {
+      "name": "Q_Ability_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.600000023841858,
+      "frames": 48,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_MSA.Q_Ability_MSA"
+    },
+    {
+      "name": "Q_Ability_Start",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.2000000476837158,
+      "frames": 36,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Start.Q_Ability_Start"
+    },
+    {
+      "name": "Q_Ability_Start_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.2000000476837158,
+      "frames": 36,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Start_MSA.Q_Ability_Start_MSA"
+    },
+    {
+      "name": "R_Ability",
+      "type": "other",
+      "direction": "forward",
+      "duration": 3.4000000953674316,
+      "frames": 102,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Ability.R_Ability"
+    },
+    {
+      "name": "R_Ability_Montage",
+      "type": "other",
+      "direction": "forward",
+      "duration": 3.4000000953674316,
+      "frames": 102,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Ability_Montage.R_Ability_Montage"
+    },
+    {
+      "name": "R_Ability_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 3.4000000953674316,
+      "frames": 102,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Ability_MSA.R_Ability_MSA"
+    },
+    {
+      "name": "R_Intro_Loop",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop.R_Intro_Loop"
+    },
+    {
+      "name": "R_Intro_Loop_Moving",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_Moving.R_Intro_Loop_Moving"
+    },
+    {
+      "name": "R_Intro_Loop_Moving_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_Moving_MSA.R_Intro_Loop_Moving_MSA"
+    },
+    {
+      "name": "R_Intro_Loop_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_MSA.R_Intro_Loop_MSA"
+    },
+    {
+      "name": "R_Intro_Start",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.1333333253860474,
+      "frames": 33,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Start.R_Intro_Start"
+    },
+    {
+      "name": "R_Intro_Start_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.1333333253860474,
+      "frames": 33,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Start_MSA.R_Intro_Start_MSA"
+    },
+    {
+      "name": "Recall",
+      "type": "other",
+      "direction": "forward",
+      "duration": 10.0,
+      "frames": 300,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Recall.Recall"
+    },
+    {
+      "name": "RMB",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.3666666746139526,
+      "frames": 41,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB.RMB"
+    },
+    {
+      "name": "Rmb_Loop",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Loop.Rmb_Loop"
+    },
+    {
+      "name": "Rmb_Loop_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Loop_MSA.Rmb_Loop_MSA"
+    },
+    {
+      "name": "RMB_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.3666666746139526,
+      "frames": 41,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_MSA.RMB_MSA"
+    },
+    {
+      "name": "Rmb_Start",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Start.Rmb_Start"
+    },
+    {
+      "name": "Rmb_Start_MSA",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Start_MSA.Rmb_Start_MSA"
+    },
+    {
+      "name": "Rmb_Targeting_Turn_toIdle",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.5,
+      "frames": 15,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_Turn_toIdle.Rmb_Targeting_Turn_toIdle"
+    },
+    {
+      "name": "Rmb_Targeting_TurnInPlace",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.6000000238418579,
+      "frames": 18,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_TurnInPlace.Rmb_Targeting_TurnInPlace"
+    },
+    {
+      "name": "Rmb_Targeting_TurnInPlace_180",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.6000000238418579,
+      "frames": 18,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_TurnInPlace_180.Rmb_Targeting_TurnInPlace_180"
+    },
+    {
+      "name": "RMB_TurnInPlace_Fast",
+      "type": "other",
+      "direction": "forward",
+      "duration": 5.0,
+      "frames": 150,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_TurnInPlace_Fast.RMB_TurnInPlace_Fast"
+    },
+    {
+      "name": "RMB_TurnInPlace_Slow",
+      "type": "other",
+      "direction": "forward",
+      "duration": 5.0,
+      "frames": 150,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_TurnInPlace_Slow.RMB_TurnInPlace_Slow"
+    },
+    {
+      "name": "RMB_TurnInPlace_Zero",
+      "type": "other",
+      "direction": "forward",
+      "duration": 5.0,
+      "frames": 150,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_TurnInPlace_Zero.RMB_TurnInPlace_Zero"
+    },
+    {
+      "name": "RMB_Zero_Pose",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_Zero_Pose.RMB_Zero_Pose"
+    },
+    {
+      "name": "Stun_Loop",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.8333333134651184,
+      "frames": 24,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Stun_Loop.Stun_Loop"
+    },
+    {
+      "name": "Stun_Start",
+      "type": "other",
+      "direction": "forward",
+      "duration": 3.4000000953674316,
+      "frames": 102,
+      "estimated_speed_mps": 0.0,
+      "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Stun_Start.Stun_Start"
+    }
+  ],
+  "by_type": {
+    "idle": [
+      {
+        "name": "Idle_AO_CC",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_CC.Idle_AO_CC"
+      },
+      {
+        "name": "Idle_AO_CD",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_CD.Idle_AO_CD"
+      },
+      {
+        "name": "Idle_AO_CU",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_CU.Idle_AO_CU"
+      },
+      {
+        "name": "Idle_AO_LBC",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LBC.Idle_AO_LBC"
+      },
+      {
+        "name": "Idle_AO_LBD",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LBD.Idle_AO_LBD"
+      },
+      {
+        "name": "Idle_AO_LBU",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LBU.Idle_AO_LBU"
+      },
+      {
+        "name": "Idle_AO_LC",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LC.Idle_AO_LC"
+      },
+      {
+        "name": "Idle_AO_LD",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LD.Idle_AO_LD"
+      },
+      {
+        "name": "Idle_AO_LU",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_LU.Idle_AO_LU"
+      },
+      {
+        "name": "Idle_AO_RBC",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RBC.Idle_AO_RBC"
+      },
+      {
+        "name": "Idle_AO_RBD",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RBD.Idle_AO_RBD"
+      },
+      {
+        "name": "Idle_AO_RBU",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RBU.Idle_AO_RBU"
+      },
+      {
+        "name": "Idle_AO_RC",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RC.Idle_AO_RC"
+      },
+      {
+        "name": "Idle_AO_RD",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RD.Idle_AO_RD"
+      },
+      {
+        "name": "Idle_AO_RU",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/Idle_AO_RU.Idle_AO_RU"
+      },
+      {
+        "name": "HeroSelect_Idle",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 10.333333015441895,
+        "frames": 309,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HeroSelect_Idle.HeroSelect_Idle"
+      },
+      {
+        "name": "Idle",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 10.333333015441895,
+        "frames": 309,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle.Idle"
+      },
+      {
+        "name": "Idle_Relaxed",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 11.0,
+        "frames": 330,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Relaxed.Idle_Relaxed"
+      },
+      {
+        "name": "Idle_Relaxed_Additive",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 11.0,
+        "frames": 330,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Relaxed_Additive.Idle_Relaxed_Additive"
+      },
+      {
+        "name": "Idle_Turn_180_Left",
+        "type": "idle",
+        "direction": "left",
+        "duration": 4.333333492279053,
+        "frames": 130,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_180_Left.Idle_Turn_180_Left"
+      },
+      {
+        "name": "Idle_Turn_180_Right",
+        "type": "idle",
+        "direction": "right",
+        "duration": 2.6666667461395264,
+        "frames": 80,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_180_Right.Idle_Turn_180_Right"
+      },
+      {
+        "name": "Idle_Turn_90_Left",
+        "type": "idle",
+        "direction": "left",
+        "duration": 3.0,
+        "frames": 90,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_90_Left.Idle_Turn_90_Left"
+      },
+      {
+        "name": "Idle_Turn_90_Right",
+        "type": "idle",
+        "direction": "right",
+        "duration": 4.0,
+        "frames": 120,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Turn_90_Right.Idle_Turn_90_Right"
+      },
+      {
+        "name": "Idle_Zero_Pose",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Idle_Zero_Pose.Idle_Zero_Pose"
+      },
+      {
+        "name": "Rmb_Targeting_Turn_toIdle",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.5,
+        "frames": 15,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_Turn_toIdle.Rmb_Targeting_Turn_toIdle"
+      }
+    ],
+    "walk": [],
+    "jog": [
+      {
+        "name": "Jog_Bwd",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.7666666507720947,
+        "frames": 52,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd.Jog_Bwd"
+      },
+      {
+        "name": "Jog_Bwd_Circle_Left",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 2.066666603088379,
+        "frames": 61,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Circle_Left.Jog_Bwd_Circle_Left"
+      },
+      {
+        "name": "Jog_Bwd_Circle_Right",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 2.066666603088379,
+        "frames": 61,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Circle_Right.Jog_Bwd_Circle_Right"
+      },
+      {
+        "name": "Jog_Bwd_Pivot180",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 4.699999809265137,
+        "frames": 140,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Pivot180.Jog_Bwd_Pivot180"
+      },
+      {
+        "name": "Jog_Bwd_Start",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 4.333333492279053,
+        "frames": 130,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Start.Jog_Bwd_Start"
+      },
+      {
+        "name": "Jog_Bwd_Stop",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 3.133333444595337,
+        "frames": 94,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Bwd_Stop.Jog_Bwd_Stop"
+      },
+      {
+        "name": "Jog_BwdToFwd_SpinCCW",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 2.5,
+        "frames": 75,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_BwdToFwd_SpinCCW.Jog_BwdToFwd_SpinCCW"
+      },
+      {
+        "name": "Jog_BwdToFwd_SpinCW",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 2.633333444595337,
+        "frames": 79,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_BwdToFwd_SpinCW.Jog_BwdToFwd_SpinCW"
+      },
+      {
+        "name": "Jog_Fwd",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 1.3333333730697632,
+        "frames": 40,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd"
+      },
+      {
+        "name": "Jog_Fwd_Circle_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 1.399999976158142,
+        "frames": 41,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Circle_Left.Jog_Fwd_Circle_Left"
+      },
+      {
+        "name": "Jog_Fwd_Circle_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 1.399999976158142,
+        "frames": 41,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Circle_Right.Jog_Fwd_Circle_Right"
+      },
+      {
+        "name": "Jog_Fwd_Downhill",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 1.2000000476837158,
+        "frames": 36,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Downhill.Jog_Fwd_Downhill"
+      },
+      {
+        "name": "Jog_Fwd_Pivot180",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 5.800000190734863,
+        "frames": 174,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Pivot180.Jog_Fwd_Pivot180"
+      },
+      {
+        "name": "Jog_Fwd_Start",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 3.433333396911621,
+        "frames": 103,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Start.Jog_Fwd_Start"
+      },
+      {
+        "name": "Jog_Fwd_Stop",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 3.3333332538604736,
+        "frames": 99,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Stop.Jog_Fwd_Stop"
+      },
+      {
+        "name": "Jog_Fwd_Uphill",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 1.2000000476837158,
+        "frames": 36,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd_Uphill.Jog_Fwd_Uphill"
+      },
+      {
+        "name": "Jog_FwdToBwd_SpinCCW",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 2.5999999046325684,
+        "frames": 77,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_FwdToBwd_SpinCCW.Jog_FwdToBwd_SpinCCW"
+      },
+      {
+        "name": "Jog_FwdToBwd_SpinCW",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 2.366666555404663,
+        "frames": 70,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_FwdToBwd_SpinCW.Jog_FwdToBwd_SpinCW"
+      },
+      {
+        "name": "Jog_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 2.0,
+        "frames": 60,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left.Jog_Left"
+      },
+      {
+        "name": "Jog_Left_Circle_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 2.200000047683716,
+        "frames": 66,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Circle_Left.Jog_Left_Circle_Left"
+      },
+      {
+        "name": "Jog_Left_Circle_Right",
+        "type": "jog",
+        "direction": "left",
+        "duration": 2.200000047683716,
+        "frames": 66,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Circle_Right.Jog_Left_Circle_Right"
+      },
+      {
+        "name": "Jog_Left_Pivot180",
+        "type": "jog",
+        "direction": "left",
+        "duration": 4.400000095367432,
+        "frames": 132,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Pivot180.Jog_Left_Pivot180"
+      },
+      {
+        "name": "Jog_Left_Start",
+        "type": "jog",
+        "direction": "left",
+        "duration": 2.4666666984558105,
+        "frames": 74,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Start.Jog_Left_Start"
+      },
+      {
+        "name": "Jog_Left_Stop",
+        "type": "jog",
+        "direction": "left",
+        "duration": 3.0,
+        "frames": 90,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Left_Stop.Jog_Left_Stop"
+      },
+      {
+        "name": "Jog_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 2.0,
+        "frames": 60,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right.Jog_Right"
+      },
+      {
+        "name": "Jog_Right_Circle_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 2.2666666507720947,
+        "frames": 67,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Circle_Left.Jog_Right_Circle_Left"
+      },
+      {
+        "name": "Jog_Right_Circle_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 2.2666666507720947,
+        "frames": 67,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Circle_Right.Jog_Right_Circle_Right"
+      },
+      {
+        "name": "Jog_Right_Pivot180",
+        "type": "jog",
+        "direction": "right",
+        "duration": 5.0333333015441895,
+        "frames": 150,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Pivot180.Jog_Right_Pivot180"
+      },
+      {
+        "name": "Jog_Right_Start",
+        "type": "jog",
+        "direction": "right",
+        "duration": 2.133333444595337,
+        "frames": 64,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Start.Jog_Right_Start"
+      },
+      {
+        "name": "Jog_Right_Stop",
+        "type": "jog",
+        "direction": "right",
+        "duration": 3.1666667461395264,
+        "frames": 95,
+        "estimated_speed_mps": 3.5,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Right_Stop.Jog_Right_Stop"
+      }
+    ],
+    "run": [],
+    "crouch": [],
+    "jump": [
+      {
+        "name": "Jump_Apex",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.2666666805744171,
+        "frames": 8,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Apex.Jump_Apex"
+      },
+      {
+        "name": "Jump_Pad",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 2.0,
+        "frames": 60,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Pad.Jump_Pad"
+      },
+      {
+        "name": "Jump_PreLand",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.1666666716337204,
+        "frames": 5,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_PreLand.Jump_PreLand"
+      },
+      {
+        "name": "Jump_Recovery",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 1.6333333253860474,
+        "frames": 48,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Recovery.Jump_Recovery"
+      },
+      {
+        "name": "Jump_Recovery_Additive",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 1.6333333253860474,
+        "frames": 48,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Recovery_Additive.Jump_Recovery_Additive"
+      },
+      {
+        "name": "Jump_Start",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.2666666805744171,
+        "frames": 8,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jump_Start.Jump_Start"
+      }
+    ],
+    "rifle": [],
+    "other": [
+      {
+        "name": "RMB_AO_CC",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_CC.RMB_AO_CC"
+      },
+      {
+        "name": "RMB_AO_CD",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_CD.RMB_AO_CD"
+      },
+      {
+        "name": "RMB_AO_CU",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_CU.RMB_AO_CU"
+      },
+      {
+        "name": "RMB_AO_L45",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_L45.RMB_AO_L45"
+      },
+      {
+        "name": "RMB_AO_L45D",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_L45D.RMB_AO_L45D"
+      },
+      {
+        "name": "RMB_AO_L45U",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_L45U.RMB_AO_L45U"
+      },
+      {
+        "name": "RMB_AO_LBC",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LBC.RMB_AO_LBC"
+      },
+      {
+        "name": "RMB_AO_LBD",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LBD.RMB_AO_LBD"
+      },
+      {
+        "name": "RMB_AO_LBU",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LBU.RMB_AO_LBU"
+      },
+      {
+        "name": "RMB_AO_LC",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LC.RMB_AO_LC"
+      },
+      {
+        "name": "RMB_AO_LD",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LD.RMB_AO_LD"
+      },
+      {
+        "name": "RMB_AO_LU",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_LU.RMB_AO_LU"
+      },
+      {
+        "name": "RMB_AO_R45",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_R45.RMB_AO_R45"
+      },
+      {
+        "name": "RMB_AO_R45D",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_R45D.RMB_AO_R45D"
+      },
+      {
+        "name": "RMB_AO_R45U",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_R45U.RMB_AO_R45U"
+      },
+      {
+        "name": "RMB_AO_RBC",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RBC.RMB_AO_RBC"
+      },
+      {
+        "name": "RMB_AO_RBD",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RBD.RMB_AO_RBD"
+      },
+      {
+        "name": "RMB_AO_RBU",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RBU.RMB_AO_RBU"
+      },
+      {
+        "name": "RMB_AO_RC",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RC.RMB_AO_RC"
+      },
+      {
+        "name": "RMB_AO_RD",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RD.RMB_AO_RD"
+      },
+      {
+        "name": "RMB_AO_RU",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/AimOffsets/RMB_AO_RU.RMB_AO_RU"
+      },
+      {
+        "name": "Bound",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Bound.Bound"
+      },
+      {
+        "name": "Cast",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.9666666388511658,
+        "frames": 28,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Cast.Cast"
+      },
+      {
+        "name": "Cast_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.9666666388511658,
+        "frames": 28,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Cast_MSA.Cast_MSA"
+      },
+      {
+        "name": "Death_A",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.9333332777023315,
+        "frames": 57,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Death_A.Death_A"
+      },
+      {
+        "name": "Death_B",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.6666666269302368,
+        "frames": 49,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Death_B.Death_B"
+      },
+      {
+        "name": "E_Ability",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.399999976158142,
+        "frames": 41,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability.E_Ability"
+      },
+      {
+        "name": "E_Ability_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.399999976158142,
+        "frames": 41,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_MSA.E_Ability_MSA"
+      },
+      {
+        "name": "E_Ability_Start",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.100000023841858,
+        "frames": 33,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Start.E_Ability_Start"
+      },
+      {
+        "name": "E_Ability_Start_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.100000023841858,
+        "frames": 33,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Start_MSA.E_Ability_Start_MSA"
+      },
+      {
+        "name": "E_Ability_Targeting",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Targeting.E_Ability_Targeting"
+      },
+      {
+        "name": "E_Ability_Targeting_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/E_Ability_Targeting_MSA.E_Ability_Targeting_MSA"
+      },
+      {
+        "name": "Emote_Browsing_M1",
+        "type": "other",
+        "direction": "forward",
+        "duration": 8.533333778381348,
+        "frames": 256,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_Browsing_M1.Emote_Browsing_M1"
+      },
+      {
+        "name": "Emote_Salute",
+        "type": "other",
+        "direction": "forward",
+        "duration": 5.666666507720947,
+        "frames": 169,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_Salute.Emote_Salute"
+      },
+      {
+        "name": "Emote_WhoopWhoop",
+        "type": "other",
+        "direction": "forward",
+        "duration": 5.300000190734863,
+        "frames": 159,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop.Emote_WhoopWhoop"
+      },
+      {
+        "name": "Emote_WhoopWhoop_Intro",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.5333333611488342,
+        "frames": 16,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop_Intro.Emote_WhoopWhoop_Intro"
+      },
+      {
+        "name": "Emote_WhoopWhoop_Loop",
+        "type": "other",
+        "direction": "forward",
+        "duration": 2.0999999046325684,
+        "frames": 62,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop_Loop.Emote_WhoopWhoop_Loop"
+      },
+      {
+        "name": "Emote_WhoopWhoop_Outro",
+        "type": "other",
+        "direction": "forward",
+        "duration": 2.6666667461395264,
+        "frames": 80,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Emote_WhoopWhoop_Outro.Emote_WhoopWhoop_Outro"
+      },
+      {
+        "name": "FrontEndPose",
+        "type": "other",
+        "direction": "forward",
+        "duration": 12.0,
+        "frames": 360,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/FrontEndPose.FrontEndPose"
+      },
+      {
+        "name": "HitReact_Back",
+        "type": "other",
+        "direction": "backward",
+        "duration": 0.8666666746139526,
+        "frames": 26,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Back.HitReact_Back"
+      },
+      {
+        "name": "HitReact_Front",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.8666666746139526,
+        "frames": 26,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Front.HitReact_Front"
+      },
+      {
+        "name": "HitReact_Left",
+        "type": "other",
+        "direction": "left",
+        "duration": 0.8666666746139526,
+        "frames": 26,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Left.HitReact_Left"
+      },
+      {
+        "name": "HitReact_Right",
+        "type": "other",
+        "direction": "right",
+        "duration": 1.0,
+        "frames": 30,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/HitReact_Right.HitReact_Right"
+      },
+      {
+        "name": "KnockBack_Front",
+        "type": "other",
+        "direction": "backward",
+        "duration": 2.0,
+        "frames": 60,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/KnockBack_Front.KnockBack_Front"
+      },
+      {
+        "name": "KnockBack_Rear",
+        "type": "other",
+        "direction": "backward",
+        "duration": 2.0,
+        "frames": 60,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/KnockBack_Rear.KnockBack_Rear"
+      },
+      {
+        "name": "KnockUp",
+        "type": "other",
+        "direction": "forward",
+        "duration": 2.0,
+        "frames": 60,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/KnockUp.KnockUp"
+      },
+      {
+        "name": "LevelStart",
+        "type": "other",
+        "direction": "forward",
+        "duration": 5.0,
+        "frames": 150,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/LevelStart.LevelStart"
+      },
+      {
+        "name": "LevelStart_Montage",
+        "type": "other",
+        "direction": "forward",
+        "duration": 4.866666793823242,
+        "frames": 146,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/LevelStart_Montage.LevelStart_Montage"
+      },
+      {
+        "name": "Primary_Fire_Fast",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.6000000238418579,
+        "frames": 18,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Fast.Primary_Fire_Fast"
+      },
+      {
+        "name": "Primary_Fire_Fast_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.6000000238418579,
+        "frames": 18,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Fast_MSA.Primary_Fire_Fast_MSA"
+      },
+      {
+        "name": "Primary_Fire_Med",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Med.Primary_Fire_Med"
+      },
+      {
+        "name": "Primary_Fire_Med_Montage",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Med_Montage.Primary_Fire_Med_Montage"
+      },
+      {
+        "name": "Primary_Fire_Med_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Med_MSA.Primary_Fire_Med_MSA"
+      },
+      {
+        "name": "Primary_Fire_Slow",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.5,
+        "frames": 45,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Slow.Primary_Fire_Slow"
+      },
+      {
+        "name": "Primary_Fire_Slow_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.5,
+        "frames": 45,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Primary_Fire_Slow_MSA.Primary_Fire_Slow_MSA"
+      },
+      {
+        "name": "Q_Ability",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.600000023841858,
+        "frames": 48,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability.Q_Ability"
+      },
+      {
+        "name": "Q_Ability_Loop",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Loop.Q_Ability_Loop"
+      },
+      {
+        "name": "Q_Ability_Loop_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Loop_MSA.Q_Ability_Loop_MSA"
+      },
+      {
+        "name": "Q_Ability_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.600000023841858,
+        "frames": 48,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_MSA.Q_Ability_MSA"
+      },
+      {
+        "name": "Q_Ability_Start",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.2000000476837158,
+        "frames": 36,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Start.Q_Ability_Start"
+      },
+      {
+        "name": "Q_Ability_Start_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.2000000476837158,
+        "frames": 36,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Q_Ability_Start_MSA.Q_Ability_Start_MSA"
+      },
+      {
+        "name": "R_Ability",
+        "type": "other",
+        "direction": "forward",
+        "duration": 3.4000000953674316,
+        "frames": 102,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Ability.R_Ability"
+      },
+      {
+        "name": "R_Ability_Montage",
+        "type": "other",
+        "direction": "forward",
+        "duration": 3.4000000953674316,
+        "frames": 102,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Ability_Montage.R_Ability_Montage"
+      },
+      {
+        "name": "R_Ability_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 3.4000000953674316,
+        "frames": 102,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Ability_MSA.R_Ability_MSA"
+      },
+      {
+        "name": "R_Intro_Loop",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop.R_Intro_Loop"
+      },
+      {
+        "name": "R_Intro_Loop_Moving",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_Moving.R_Intro_Loop_Moving"
+      },
+      {
+        "name": "R_Intro_Loop_Moving_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_Moving_MSA.R_Intro_Loop_Moving_MSA"
+      },
+      {
+        "name": "R_Intro_Loop_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Loop_MSA.R_Intro_Loop_MSA"
+      },
+      {
+        "name": "R_Intro_Start",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.1333333253860474,
+        "frames": 33,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Start.R_Intro_Start"
+      },
+      {
+        "name": "R_Intro_Start_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.1333333253860474,
+        "frames": 33,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/R_Intro_Start_MSA.R_Intro_Start_MSA"
+      },
+      {
+        "name": "Recall",
+        "type": "other",
+        "direction": "forward",
+        "duration": 10.0,
+        "frames": 300,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Recall.Recall"
+      },
+      {
+        "name": "RMB",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.3666666746139526,
+        "frames": 41,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB.RMB"
+      },
+      {
+        "name": "Rmb_Loop",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Loop.Rmb_Loop"
+      },
+      {
+        "name": "Rmb_Loop_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Loop_MSA.Rmb_Loop_MSA"
+      },
+      {
+        "name": "RMB_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.3666666746139526,
+        "frames": 41,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_MSA.RMB_MSA"
+      },
+      {
+        "name": "Rmb_Start",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Start.Rmb_Start"
+      },
+      {
+        "name": "Rmb_Start_MSA",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Start_MSA.Rmb_Start_MSA"
+      },
+      {
+        "name": "Rmb_Targeting_TurnInPlace",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.6000000238418579,
+        "frames": 18,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_TurnInPlace.Rmb_Targeting_TurnInPlace"
+      },
+      {
+        "name": "Rmb_Targeting_TurnInPlace_180",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.6000000238418579,
+        "frames": 18,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Rmb_Targeting_TurnInPlace_180.Rmb_Targeting_TurnInPlace_180"
+      },
+      {
+        "name": "RMB_TurnInPlace_Fast",
+        "type": "other",
+        "direction": "forward",
+        "duration": 5.0,
+        "frames": 150,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_TurnInPlace_Fast.RMB_TurnInPlace_Fast"
+      },
+      {
+        "name": "RMB_TurnInPlace_Slow",
+        "type": "other",
+        "direction": "forward",
+        "duration": 5.0,
+        "frames": 150,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_TurnInPlace_Slow.RMB_TurnInPlace_Slow"
+      },
+      {
+        "name": "RMB_TurnInPlace_Zero",
+        "type": "other",
+        "direction": "forward",
+        "duration": 5.0,
+        "frames": 150,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_TurnInPlace_Zero.RMB_TurnInPlace_Zero"
+      },
+      {
+        "name": "RMB_Zero_Pose",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/RMB_Zero_Pose.RMB_Zero_Pose"
+      },
+      {
+        "name": "Stun_Loop",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.8333333134651184,
+        "frames": 24,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Stun_Loop.Stun_Loop"
+      },
+      {
+        "name": "Stun_Start",
+        "type": "other",
+        "direction": "forward",
+        "duration": 3.4000000953674316,
+        "frames": 102,
+        "estimated_speed_mps": 0.0,
+        "path": "/Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Stun_Start.Stun_Start"
+      }
+    ]
+  }
+}

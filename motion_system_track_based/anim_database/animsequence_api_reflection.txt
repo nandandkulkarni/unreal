@@ -1,0 +1,101 @@
+================================================================================
+ANIMSEQUENCE API REFLECTION
+================================================================================
+
+Loading sample animation: /Game/ParagonLtBelica/Characters/Heroes/Belica/Animations/Jog_Fwd.Jog_Fwd
+✓ Loaded: Jog_Fwd
+  Type: <class 'AnimSequence'>
+  Class: AnimSequence
+
+================================================================================
+ALL ATTRIBUTES (dir)
+================================================================================
+
+Found 39 methods and 4 properties
+
+================================================================================
+METHODS (39)
+================================================================================
+  acquire_editor_element_handle()
+  add_animation_modifier_of_class()
+  add_asset_user_data_of_class()
+  add_transform_attribute()
+  call_method()
+  cast()
+  clear_retarget_source_asset()
+  create_attribute_identifier()
+  find_meta_data_by_class()
+  get_anim_pose_at_frame()
+  get_anim_pose_at_time()
+  get_asset_user_data_of_class()
+  get_class()
+  get_default_object()
+  get_editor_property()
+  get_fname()
+  get_full_name()
+  get_name()
+  get_outer()
+  get_outermost()
+  get_package()
+  get_path_name()
+  get_play_length()
+  get_retarget_source_asset()
+  get_skeleton()
+  get_typed_outer()
+  get_world()
+  has_asset_user_data_of_class()
+  is_editor_property_overridden()
+  is_package_external()
+  modify()
+  rename()
+  reset_editor_property()
+  set_editor_properties()
+  set_editor_property()
+  set_preview_skeletal_mesh()
+  set_retarget_source_asset()
+  static_class()
+  update_retarget_source_asset_data()
+
+================================================================================
+PROPERTIES (4)
+================================================================================
+  controller: AnimationDataController
+  data_model: NoneType
+  data_model_interface: AnimationDataModel
+  sequence_length: float
+
+================================================================================
+TESTING SPECIFIC METHODS
+================================================================================
+  ✗ get_number_of_frames - NOT FOUND
+  ✗ get_number_of_keys - NOT FOUND
+  ✗ get_frame_count - NOT FOUND
+  ✗ get_total_frames - NOT FOUND
+  ✗ get_length - NOT FOUND
+  ✓ get_play_length() = 1.3333333730697632
+  ✗ get_duration - NOT FOUND
+
+================================================================================
+TESTING EDITOR PROPERTIES
+================================================================================
+  ✓ sequence_length = 1.3333333730697632 (float)
+  ✗ number_of_frames - AnimSequence: Failed to find property 'number_of_frames' for attribute 'number_of_frames' on 'AnimSequence'
+  ✗ frame_count - AnimSequence: Failed to find property 'frame_count' for attribute 'frame_count' on 'AnimSequence'
+  ✗ num_frames - AnimSequence: Failed to find property 'num_frames' for attribute 'num_frames' on 'AnimSequence'
+  ✗ total_frames - AnimSequence: Failed to find property 'total_frames' for attribute 'total_frames' on 'AnimSequence'
+  ✗ duration - AnimSequence: Failed to find property 'duration' for attribute 'duration' on 'AnimSequence'
+  ✗ play_length - AnimSequence: Failed to find property 'play_length' for attribute 'play_length' on 'AnimSequence'
+  ✓ rate_scale = 1.0 (float)
+  ✗ target_frame_rate - AnimSequence: Failed to find property 'target_frame_rate' for attribute 'target_frame_rate' on 'AnimSequence'
+  ✗ import_file_framerate - AnimSequence: Failed to find property 'import_file_framerate' for attribute 'import_file_framerate' on 'AnimSequence'
+
+================================================================================
+CLASS PROPERTIES (via static_class)
+================================================================================
+Static class: <Object '/Script/Engine.AnimSequence' (0x00007FF4335A7378) Class 'Class'>
+
+================================================================================
+REFLECTION COMPLETE
+================================================================================
+
+Output saved to: C:\UnrealProjects\coding\unreal\motion_system_track_based\anim_database\animsequence_api_reflection.txt

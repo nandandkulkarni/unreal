@@ -1,0 +1,30 @@
+================================================================================
+CHECKING FOLDER: /Game/Characters/Mannequins/Anims
+================================================================================
+
+✓ Folder exists!
+
+Found 102 assets:
+  [AnimSequence] MM_Death_Back_01
+  [AnimSequence] MM_Death_Front_01
+  [AnimSequence] MM_Death_Front_02
+  [AnimSequence] MM_Death_Front_03
+  [AnimSequence] MM_Death_Left_01
+  [AnimSequence] MM_Death_Right_01
+  [AnimSequence] MF_Pistol_Idle_ADS1
+  [AnimSequence] MF_Pistol_Idle_ADS_AO_CD
+  [AnimSequence] MF_Pistol_Idle_ADS_AO_CU
+  [AnimSequence] MF_Pistol_Jog_Bwd
+  [AnimSequence] MF_Pistol_Jog_Bwd_Left
+  [AnimSequence] MF_Pistol_Jog_Bwd_Right
+  [AnimSequence] MF_Pistol_Jog_Fwd
+  [AnimSequence] MF_Pistol_Jog_Fwd_Left
+  [AnimSequence] MF_Pistol_Jog_Fwd_Right
+  [AnimSequence] MF_Pistol_Jog_Left
+  [AnimSequence] MF_Pistol_Jog_Right
+  [AnimSequence] MM_Pistol_Jump_Fall_Loop
+  [AnimSequence] MM_Pistol_Jump_RecoveryAdditive
+
+✓ Found 19 AnimSequence assets
+
+================================================================================

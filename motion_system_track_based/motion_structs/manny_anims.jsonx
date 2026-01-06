@@ -1,0 +1,1767 @@
+{
+  "character": "Manny",
+  "base_path": "/Game/Characters/Mannequins/Anims",
+  "scanned_at": "2026-01-06T13:57:26.575137",
+  "animations": [
+    {
+      "name": "MM_Death_Back_01",
+      "type": "other",
+      "direction": "backward",
+      "duration": 1.100000023841858,
+      "frames": 33,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Back_01.MM_Death_Back_01"
+    },
+    {
+      "name": "MM_Death_Front_01",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.100000023841858,
+      "frames": 33,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Front_01.MM_Death_Front_01"
+    },
+    {
+      "name": "MM_Death_Front_02",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.1333333253860474,
+      "frames": 33,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Front_02.MM_Death_Front_02"
+    },
+    {
+      "name": "MM_Death_Front_03",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.9333333373069763,
+      "frames": 28,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Front_03.MM_Death_Front_03"
+    },
+    {
+      "name": "MM_Death_Left_01",
+      "type": "other",
+      "direction": "left",
+      "duration": 0.9666666388511658,
+      "frames": 28,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Left_01.MM_Death_Left_01"
+    },
+    {
+      "name": "MM_Death_Right_01",
+      "type": "other",
+      "direction": "right",
+      "duration": 1.100000023841858,
+      "frames": 33,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Right_01.MM_Death_Right_01"
+    },
+    {
+      "name": "MF_Pistol_Idle_ADS1",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 9.033333778381348,
+      "frames": 271,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Aim/MF_Pistol_Idle_ADS1.MF_Pistol_Idle_ADS1"
+    },
+    {
+      "name": "MF_Pistol_Idle_ADS_AO_CD",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.06666667014360428,
+      "frames": 2,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Aim/MF_Pistol_Idle_ADS_AO_CD.MF_Pistol_Idle_ADS_AO_CD"
+    },
+    {
+      "name": "MF_Pistol_Idle_ADS_AO_CU",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.06666667014360428,
+      "frames": 2,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Aim/MF_Pistol_Idle_ADS_AO_CU.MF_Pistol_Idle_ADS_AO_CU"
+    },
+    {
+      "name": "MF_Pistol_Jog_Bwd",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.0333333015441895,
+      "frames": 30,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Bwd.MF_Pistol_Jog_Bwd"
+    },
+    {
+      "name": "MF_Pistol_Jog_Bwd_Left",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 0.9666666388511658,
+      "frames": 28,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Bwd_Left.MF_Pistol_Jog_Bwd_Left"
+    },
+    {
+      "name": "MF_Pistol_Jog_Bwd_Right",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 0.9666666388511658,
+      "frames": 28,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Bwd_Right.MF_Pistol_Jog_Bwd_Right"
+    },
+    {
+      "name": "MF_Pistol_Jog_Fwd",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 1.0666667222976685,
+      "frames": 32,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd.MF_Pistol_Jog_Fwd"
+    },
+    {
+      "name": "MF_Pistol_Jog_Fwd_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 1.0,
+      "frames": 30,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd_Left.MF_Pistol_Jog_Fwd_Left"
+    },
+    {
+      "name": "MF_Pistol_Jog_Fwd_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 1.0,
+      "frames": 30,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd_Right.MF_Pistol_Jog_Fwd_Right"
+    },
+    {
+      "name": "MF_Pistol_Jog_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 1.0333333015441895,
+      "frames": 30,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Left.MF_Pistol_Jog_Left"
+    },
+    {
+      "name": "MF_Pistol_Jog_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 1.0,
+      "frames": 30,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Right.MF_Pistol_Jog_Right"
+    },
+    {
+      "name": "MM_Pistol_Jump_Fall_Loop",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 2.0,
+      "frames": 60,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jump/MM_Pistol_Jump_Fall_Loop.MM_Pistol_Jump_Fall_Loop"
+    },
+    {
+      "name": "MM_Pistol_Jump_RecoveryAdditive",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.699999988079071,
+      "frames": 20,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jump/MM_Pistol_Jump_RecoveryAdditive.MM_Pistol_Jump_RecoveryAdditive"
+    },
+    {
+      "name": "MM_Pistol_Jump_Start",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.20000000298023224,
+      "frames": 6,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Jump/MM_Pistol_Jump_Start.MM_Pistol_Jump_Start"
+    },
+    {
+      "name": "MF_Pistol_Idle_ADS",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 9.033333778381348,
+      "frames": 271,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/MF_Pistol_Idle_ADS.MF_Pistol_Idle_ADS"
+    },
+    {
+      "name": "MM_Pistol_DryFire",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.800000011920929,
+      "frames": 24,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_DryFire.MM_Pistol_DryFire"
+    },
+    {
+      "name": "MM_Pistol_Equip",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.399999976158142,
+      "frames": 41,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_Equip.MM_Pistol_Equip"
+    },
+    {
+      "name": "MM_Pistol_Fire",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.6666666865348816,
+      "frames": 20,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_Fire.MM_Pistol_Fire"
+    },
+    {
+      "name": "MM_Pistol_Reload",
+      "type": "other",
+      "direction": "forward",
+      "duration": 2.0,
+      "frames": 60,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_Reload.MM_Pistol_Reload"
+    },
+    {
+      "name": "MF_Pistol_Walk_Bwd",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 1.7666666507720947,
+      "frames": 52,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Bwd.MF_Pistol_Walk_Bwd"
+    },
+    {
+      "name": "MF_Pistol_Walk_Bwd_Left",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 1.7666666507720947,
+      "frames": 52,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Bwd_Left.MF_Pistol_Walk_Bwd_Left"
+    },
+    {
+      "name": "MF_Pistol_Walk_Bwd_Right",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 1.7666666507720947,
+      "frames": 52,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Bwd_Right.MF_Pistol_Walk_Bwd_Right"
+    },
+    {
+      "name": "MF_Pistol_Walk_Fwd",
+      "type": "walk",
+      "direction": "forward",
+      "duration": 1.4333332777023315,
+      "frames": 42,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd.MF_Pistol_Walk_Fwd"
+    },
+    {
+      "name": "MF_Pistol_Walk_Fwd_Left",
+      "type": "walk",
+      "direction": "left",
+      "duration": 1.4333332777023315,
+      "frames": 42,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd_Left.MF_Pistol_Walk_Fwd_Left"
+    },
+    {
+      "name": "MF_Pistol_Walk_Fwd_Right",
+      "type": "walk",
+      "direction": "right",
+      "duration": 1.4333332777023315,
+      "frames": 42,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd_Right.MF_Pistol_Walk_Fwd_Right"
+    },
+    {
+      "name": "MF_Pistol_Walk_Left",
+      "type": "walk",
+      "direction": "left",
+      "duration": 1.7999999523162842,
+      "frames": 53,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Left.MF_Pistol_Walk_Left"
+    },
+    {
+      "name": "MF_Pistol_Walk_Right",
+      "type": "walk",
+      "direction": "right",
+      "duration": 1.8666666746139526,
+      "frames": 56,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Right.MF_Pistol_Walk_Right"
+    },
+    {
+      "name": "MM_Rifle_Idle_ADS_AO_CC",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/AIM/MM_Rifle_Idle_ADS_AO_CC.MM_Rifle_Idle_ADS_AO_CC"
+    },
+    {
+      "name": "MM_Rifle_Idle_ADS_AO_CD",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/AIM/MM_Rifle_Idle_ADS_AO_CD.MM_Rifle_Idle_ADS_AO_CD"
+    },
+    {
+      "name": "MM_Rifle_Idle_ADS_AO_CU",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 0.03333333507180214,
+      "frames": 1,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/AIM/MM_Rifle_Idle_ADS_AO_CU.MM_Rifle_Idle_ADS_AO_CU"
+    },
+    {
+      "name": "MM_HitReact_Back_Med_01",
+      "type": "other",
+      "direction": "backward",
+      "duration": 0.8666666746139526,
+      "frames": 26,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Back_Med_01.MM_HitReact_Back_Med_01"
+    },
+    {
+      "name": "MM_HitReact_Front_Hvy_01",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.800000011920929,
+      "frames": 24,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Hvy_01.MM_HitReact_Front_Hvy_01"
+    },
+    {
+      "name": "MM_HitReact_Front_Lgt_01",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.699999988079071,
+      "frames": 20,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_01.MM_HitReact_Front_Lgt_01"
+    },
+    {
+      "name": "MM_HitReact_Front_Lgt_02",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.800000011920929,
+      "frames": 24,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_02.MM_HitReact_Front_Lgt_02"
+    },
+    {
+      "name": "MM_HitReact_Front_Lgt_03",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_03.MM_HitReact_Front_Lgt_03"
+    },
+    {
+      "name": "MM_HitReact_Front_Lgt_04",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.2333333492279053,
+      "frames": 37,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_04.MM_HitReact_Front_Lgt_04"
+    },
+    {
+      "name": "MM_HitReact_Front_Med_01",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.7666666507720947,
+      "frames": 22,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Med_01.MM_HitReact_Front_Med_01"
+    },
+    {
+      "name": "MM_HitReact_Front_Med_02",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.800000011920929,
+      "frames": 24,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Med_02.MM_HitReact_Front_Med_02"
+    },
+    {
+      "name": "MF_Rifle_Jog_Bwd",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.7999999523162842,
+      "frames": 53,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Bwd.MF_Rifle_Jog_Bwd"
+    },
+    {
+      "name": "MF_Rifle_Jog_Bwd_Left",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.7999999523162842,
+      "frames": 53,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Bwd_Left.MF_Rifle_Jog_Bwd_Left"
+    },
+    {
+      "name": "MF_Rifle_Jog_Bwd_Right",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.7999999523162842,
+      "frames": 53,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Bwd_Right.MF_Rifle_Jog_Bwd_Right"
+    },
+    {
+      "name": "MF_Rifle_Jog_Fwd",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Fwd.MF_Rifle_Jog_Fwd"
+    },
+    {
+      "name": "MF_Rifle_Jog_Fwd_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Fwd_Left.MF_Rifle_Jog_Fwd_Left"
+    },
+    {
+      "name": "MF_Rifle_Jog_Fwd_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Fwd_Right.MF_Rifle_Jog_Fwd_Right"
+    },
+    {
+      "name": "MF_Rifle_Jog_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 0.46666666865348816,
+      "frames": 14,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Left.MF_Rifle_Jog_Left"
+    },
+    {
+      "name": "MF_Rifle_Jog_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 1.0666667222976685,
+      "frames": 32,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Right.MF_Rifle_Jog_Right"
+    },
+    {
+      "name": "MM_Rifle_Jump_Apex",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.6666666865348816,
+      "frames": 20,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Apex.MM_Rifle_Jump_Apex"
+    },
+    {
+      "name": "MM_Rifle_Jump_Fall_Land",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.4000000059604645,
+      "frames": 12,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Fall_Land.MM_Rifle_Jump_Fall_Land"
+    },
+    {
+      "name": "MM_Rifle_Jump_Fall_Loop",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 3.0,
+      "frames": 90,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Fall_Loop.MM_Rifle_Jump_Fall_Loop"
+    },
+    {
+      "name": "MM_Rifle_Jump_RecoveryAdditive",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.9333333373069763,
+      "frames": 28,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_RecoveryAdditive.MM_Rifle_Jump_RecoveryAdditive"
+    },
+    {
+      "name": "MM_Rifle_Jump_Start",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.23333333432674408,
+      "frames": 7,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Start.MM_Rifle_Jump_Start"
+    },
+    {
+      "name": "MM_Rifle_Jump_Start_Loop",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 2.0,
+      "frames": 60,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Start_Loop.MM_Rifle_Jump_Start_Loop"
+    },
+    {
+      "name": "MF_Rifle_Idle_ADS",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 8.0,
+      "frames": 240,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/MF_Rifle_Idle_ADS.MF_Rifle_Idle_ADS"
+    },
+    {
+      "name": "MM_Rifle_DryFire",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.800000011920929,
+      "frames": 24,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_DryFire.MM_Rifle_DryFire"
+    },
+    {
+      "name": "MM_Rifle_Equip",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.6666666269302368,
+      "frames": 49,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_Equip.MM_Rifle_Equip"
+    },
+    {
+      "name": "MM_Rifle_Fire",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.5333333611488342,
+      "frames": 16,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_Fire.MM_Rifle_Fire"
+    },
+    {
+      "name": "MM_Rifle_Reload",
+      "type": "other",
+      "direction": "forward",
+      "duration": 2.200000047683716,
+      "frames": 66,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_Reload.MM_Rifle_Reload"
+    },
+    {
+      "name": "MF_Rifle_Walk_Bwd",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 1.2000000476837158,
+      "frames": 36,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Bwd.MF_Rifle_Walk_Bwd"
+    },
+    {
+      "name": "MF_Rifle_Walk_Bwd_Left",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 1.1333333253860474,
+      "frames": 33,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Bwd_Left.MF_Rifle_Walk_Bwd_Left"
+    },
+    {
+      "name": "MF_Rifle_Walk_Bwd_Right",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 1.1333333253860474,
+      "frames": 33,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Bwd_Right.MF_Rifle_Walk_Bwd_Right"
+    },
+    {
+      "name": "MF_Rifle_Walk_Fwd",
+      "type": "walk",
+      "direction": "forward",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Fwd.MF_Rifle_Walk_Fwd"
+    },
+    {
+      "name": "MF_Rifle_Walk_Fwd_Left",
+      "type": "walk",
+      "direction": "left",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Fwd_Left.MF_Rifle_Walk_Fwd_Left"
+    },
+    {
+      "name": "MF_Rifle_Walk_Fwd_Right",
+      "type": "walk",
+      "direction": "right",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Fwd_Right.MF_Rifle_Walk_Fwd_Right"
+    },
+    {
+      "name": "MF_Rifle_Walk_Left",
+      "type": "walk",
+      "direction": "left",
+      "duration": 1.2333333492279053,
+      "frames": 37,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Left.MF_Rifle_Walk_Left"
+    },
+    {
+      "name": "MF_Rifle_Walk_Right",
+      "type": "walk",
+      "direction": "right",
+      "duration": 1.5,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Right.MF_Rifle_Walk_Right"
+    },
+    {
+      "name": "MM_Attack_01",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_Attack_01.MM_Attack_01"
+    },
+    {
+      "name": "MM_Attack_02",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.0,
+      "frames": 30,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_Attack_02.MM_Attack_02"
+    },
+    {
+      "name": "MM_Attack_03",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.6666666269302368,
+      "frames": 49,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_Attack_03.MM_Attack_03"
+    },
+    {
+      "name": "MM_ChargedAttack",
+      "type": "other",
+      "direction": "forward",
+      "duration": 1.8333333730697632,
+      "frames": 55,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_ChargedAttack.MM_ChargedAttack"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Bwd",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.5,
+      "frames": 45,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Bwd.MF_Unarmed_Jog_Bwd"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Bwd_Left",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.5,
+      "frames": 45,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Bwd_Left.MF_Unarmed_Jog_Bwd_Left"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Bwd_Right",
+      "type": "jog",
+      "direction": "backward",
+      "duration": 1.5,
+      "frames": 45,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Bwd_Right.MF_Unarmed_Jog_Bwd_Right"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Fwd",
+      "type": "jog",
+      "direction": "forward",
+      "duration": 1.7666666507720947,
+      "frames": 52,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Fwd.MF_Unarmed_Jog_Fwd"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Fwd_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 1.7666666507720947,
+      "frames": 52,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Fwd_Left.MF_Unarmed_Jog_Fwd_Left"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Fwd_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 1.7666666507720947,
+      "frames": 52,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Fwd_Right.MF_Unarmed_Jog_Fwd_Right"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Left",
+      "type": "jog",
+      "direction": "left",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Left.MF_Unarmed_Jog_Left"
+    },
+    {
+      "name": "MF_Unarmed_Jog_Right",
+      "type": "jog",
+      "direction": "right",
+      "duration": 1.7333333492279053,
+      "frames": 52,
+      "natural_speed_mps": 3.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Right.MF_Unarmed_Jog_Right"
+    },
+    {
+      "name": "MM_Dash",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.9666666388511658,
+      "frames": 28,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Dash.MM_Dash"
+    },
+    {
+      "name": "MM_Fall_Loop",
+      "type": "other",
+      "direction": "forward",
+      "duration": 3.0,
+      "frames": 90,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Fall_Loop.MM_Fall_Loop"
+    },
+    {
+      "name": "MM_Jump",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.8666666746139526,
+      "frames": 26,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Jump.MM_Jump"
+    },
+    {
+      "name": "MM_Land",
+      "type": "other",
+      "direction": "forward",
+      "duration": 0.8666666746139526,
+      "frames": 26,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Land.MM_Land"
+    },
+    {
+      "name": "MM_WallJump",
+      "type": "jump",
+      "direction": "forward",
+      "duration": 0.46666666865348816,
+      "frames": 14,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_WallJump.MM_WallJump"
+    },
+    {
+      "name": "MM_Idle",
+      "type": "idle",
+      "direction": "forward",
+      "duration": 7.566666603088379,
+      "frames": 226,
+      "natural_speed_mps": 0.0,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/MM_Idle.MM_Idle"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Bwd",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 2.133333444595337,
+      "frames": 64,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Bwd.MF_Unarmed_Walk_Bwd"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Bwd_Left",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 2.133333444595337,
+      "frames": 64,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Bwd_Left.MF_Unarmed_Walk_Bwd_Left"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Bwd_Right",
+      "type": "walk",
+      "direction": "backward",
+      "duration": 2.133333444595337,
+      "frames": 64,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Bwd_Right.MF_Unarmed_Walk_Bwd_Right"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Fwd",
+      "type": "walk",
+      "direction": "forward",
+      "duration": 1.5,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd.MF_Unarmed_Walk_Fwd"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Fwd_Left",
+      "type": "walk",
+      "direction": "left",
+      "duration": 1.5,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd_Left.MF_Unarmed_Walk_Fwd_Left"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Fwd_Right",
+      "type": "walk",
+      "direction": "right",
+      "duration": 1.5,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd_Right.MF_Unarmed_Walk_Fwd_Right"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Left",
+      "type": "walk",
+      "direction": "left",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Left.MF_Unarmed_Walk_Left"
+    },
+    {
+      "name": "MF_Unarmed_Walk_Right",
+      "type": "walk",
+      "direction": "right",
+      "duration": 1.5333333015441895,
+      "frames": 45,
+      "natural_speed_mps": 1.5,
+      "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Right.MF_Unarmed_Walk_Right"
+    }
+  ],
+  "by_type": {
+    "idle": [
+      {
+        "name": "MF_Pistol_Idle_ADS1",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 9.033333778381348,
+        "frames": 271,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Aim/MF_Pistol_Idle_ADS1.MF_Pistol_Idle_ADS1"
+      },
+      {
+        "name": "MF_Pistol_Idle_ADS_AO_CD",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.06666667014360428,
+        "frames": 2,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Aim/MF_Pistol_Idle_ADS_AO_CD.MF_Pistol_Idle_ADS_AO_CD"
+      },
+      {
+        "name": "MF_Pistol_Idle_ADS_AO_CU",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.06666667014360428,
+        "frames": 2,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Aim/MF_Pistol_Idle_ADS_AO_CU.MF_Pistol_Idle_ADS_AO_CU"
+      },
+      {
+        "name": "MF_Pistol_Idle_ADS",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 9.033333778381348,
+        "frames": 271,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/MF_Pistol_Idle_ADS.MF_Pistol_Idle_ADS"
+      },
+      {
+        "name": "MM_Rifle_Idle_ADS_AO_CC",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/AIM/MM_Rifle_Idle_ADS_AO_CC.MM_Rifle_Idle_ADS_AO_CC"
+      },
+      {
+        "name": "MM_Rifle_Idle_ADS_AO_CD",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/AIM/MM_Rifle_Idle_ADS_AO_CD.MM_Rifle_Idle_ADS_AO_CD"
+      },
+      {
+        "name": "MM_Rifle_Idle_ADS_AO_CU",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 0.03333333507180214,
+        "frames": 1,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/AIM/MM_Rifle_Idle_ADS_AO_CU.MM_Rifle_Idle_ADS_AO_CU"
+      },
+      {
+        "name": "MF_Rifle_Idle_ADS",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 8.0,
+        "frames": 240,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/MF_Rifle_Idle_ADS.MF_Rifle_Idle_ADS"
+      },
+      {
+        "name": "MM_Idle",
+        "type": "idle",
+        "direction": "forward",
+        "duration": 7.566666603088379,
+        "frames": 226,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/MM_Idle.MM_Idle"
+      }
+    ],
+    "walk": [
+      {
+        "name": "MF_Pistol_Walk_Bwd",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 1.7666666507720947,
+        "frames": 52,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Bwd.MF_Pistol_Walk_Bwd"
+      },
+      {
+        "name": "MF_Pistol_Walk_Bwd_Left",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 1.7666666507720947,
+        "frames": 52,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Bwd_Left.MF_Pistol_Walk_Bwd_Left"
+      },
+      {
+        "name": "MF_Pistol_Walk_Bwd_Right",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 1.7666666507720947,
+        "frames": 52,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Bwd_Right.MF_Pistol_Walk_Bwd_Right"
+      },
+      {
+        "name": "MF_Pistol_Walk_Fwd",
+        "type": "walk",
+        "direction": "forward",
+        "duration": 1.4333332777023315,
+        "frames": 42,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd.MF_Pistol_Walk_Fwd"
+      },
+      {
+        "name": "MF_Pistol_Walk_Fwd_Left",
+        "type": "walk",
+        "direction": "left",
+        "duration": 1.4333332777023315,
+        "frames": 42,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd_Left.MF_Pistol_Walk_Fwd_Left"
+      },
+      {
+        "name": "MF_Pistol_Walk_Fwd_Right",
+        "type": "walk",
+        "direction": "right",
+        "duration": 1.4333332777023315,
+        "frames": 42,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd_Right.MF_Pistol_Walk_Fwd_Right"
+      },
+      {
+        "name": "MF_Pistol_Walk_Left",
+        "type": "walk",
+        "direction": "left",
+        "duration": 1.7999999523162842,
+        "frames": 53,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Left.MF_Pistol_Walk_Left"
+      },
+      {
+        "name": "MF_Pistol_Walk_Right",
+        "type": "walk",
+        "direction": "right",
+        "duration": 1.8666666746139526,
+        "frames": 56,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Right.MF_Pistol_Walk_Right"
+      },
+      {
+        "name": "MF_Rifle_Walk_Bwd",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 1.2000000476837158,
+        "frames": 36,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Bwd.MF_Rifle_Walk_Bwd"
+      },
+      {
+        "name": "MF_Rifle_Walk_Bwd_Left",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 1.1333333253860474,
+        "frames": 33,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Bwd_Left.MF_Rifle_Walk_Bwd_Left"
+      },
+      {
+        "name": "MF_Rifle_Walk_Bwd_Right",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 1.1333333253860474,
+        "frames": 33,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Bwd_Right.MF_Rifle_Walk_Bwd_Right"
+      },
+      {
+        "name": "MF_Rifle_Walk_Fwd",
+        "type": "walk",
+        "direction": "forward",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Fwd.MF_Rifle_Walk_Fwd"
+      },
+      {
+        "name": "MF_Rifle_Walk_Fwd_Left",
+        "type": "walk",
+        "direction": "left",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Fwd_Left.MF_Rifle_Walk_Fwd_Left"
+      },
+      {
+        "name": "MF_Rifle_Walk_Fwd_Right",
+        "type": "walk",
+        "direction": "right",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Fwd_Right.MF_Rifle_Walk_Fwd_Right"
+      },
+      {
+        "name": "MF_Rifle_Walk_Left",
+        "type": "walk",
+        "direction": "left",
+        "duration": 1.2333333492279053,
+        "frames": 37,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Left.MF_Rifle_Walk_Left"
+      },
+      {
+        "name": "MF_Rifle_Walk_Right",
+        "type": "walk",
+        "direction": "right",
+        "duration": 1.5,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Walk/MF_Rifle_Walk_Right.MF_Rifle_Walk_Right"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Bwd",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 2.133333444595337,
+        "frames": 64,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Bwd.MF_Unarmed_Walk_Bwd"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Bwd_Left",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 2.133333444595337,
+        "frames": 64,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Bwd_Left.MF_Unarmed_Walk_Bwd_Left"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Bwd_Right",
+        "type": "walk",
+        "direction": "backward",
+        "duration": 2.133333444595337,
+        "frames": 64,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Bwd_Right.MF_Unarmed_Walk_Bwd_Right"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Fwd",
+        "type": "walk",
+        "direction": "forward",
+        "duration": 1.5,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd.MF_Unarmed_Walk_Fwd"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Fwd_Left",
+        "type": "walk",
+        "direction": "left",
+        "duration": 1.5,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd_Left.MF_Unarmed_Walk_Fwd_Left"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Fwd_Right",
+        "type": "walk",
+        "direction": "right",
+        "duration": 1.5,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Fwd_Right.MF_Unarmed_Walk_Fwd_Right"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Left",
+        "type": "walk",
+        "direction": "left",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Left.MF_Unarmed_Walk_Left"
+      },
+      {
+        "name": "MF_Unarmed_Walk_Right",
+        "type": "walk",
+        "direction": "right",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 1.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Walk/MF_Unarmed_Walk_Right.MF_Unarmed_Walk_Right"
+      }
+    ],
+    "jog": [
+      {
+        "name": "MF_Pistol_Jog_Bwd",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.0333333015441895,
+        "frames": 30,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Bwd.MF_Pistol_Jog_Bwd"
+      },
+      {
+        "name": "MF_Pistol_Jog_Bwd_Left",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 0.9666666388511658,
+        "frames": 28,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Bwd_Left.MF_Pistol_Jog_Bwd_Left"
+      },
+      {
+        "name": "MF_Pistol_Jog_Bwd_Right",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 0.9666666388511658,
+        "frames": 28,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Bwd_Right.MF_Pistol_Jog_Bwd_Right"
+      },
+      {
+        "name": "MF_Pistol_Jog_Fwd",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 1.0666667222976685,
+        "frames": 32,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd.MF_Pistol_Jog_Fwd"
+      },
+      {
+        "name": "MF_Pistol_Jog_Fwd_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 1.0,
+        "frames": 30,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd_Left.MF_Pistol_Jog_Fwd_Left"
+      },
+      {
+        "name": "MF_Pistol_Jog_Fwd_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 1.0,
+        "frames": 30,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd_Right.MF_Pistol_Jog_Fwd_Right"
+      },
+      {
+        "name": "MF_Pistol_Jog_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 1.0333333015441895,
+        "frames": 30,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Left.MF_Pistol_Jog_Left"
+      },
+      {
+        "name": "MF_Pistol_Jog_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 1.0,
+        "frames": 30,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Right.MF_Pistol_Jog_Right"
+      },
+      {
+        "name": "MF_Rifle_Jog_Bwd",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.7999999523162842,
+        "frames": 53,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Bwd.MF_Rifle_Jog_Bwd"
+      },
+      {
+        "name": "MF_Rifle_Jog_Bwd_Left",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.7999999523162842,
+        "frames": 53,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Bwd_Left.MF_Rifle_Jog_Bwd_Left"
+      },
+      {
+        "name": "MF_Rifle_Jog_Bwd_Right",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.7999999523162842,
+        "frames": 53,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Bwd_Right.MF_Rifle_Jog_Bwd_Right"
+      },
+      {
+        "name": "MF_Rifle_Jog_Fwd",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Fwd.MF_Rifle_Jog_Fwd"
+      },
+      {
+        "name": "MF_Rifle_Jog_Fwd_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Fwd_Left.MF_Rifle_Jog_Fwd_Left"
+      },
+      {
+        "name": "MF_Rifle_Jog_Fwd_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Fwd_Right.MF_Rifle_Jog_Fwd_Right"
+      },
+      {
+        "name": "MF_Rifle_Jog_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 0.46666666865348816,
+        "frames": 14,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Left.MF_Rifle_Jog_Left"
+      },
+      {
+        "name": "MF_Rifle_Jog_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 1.0666667222976685,
+        "frames": 32,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jog/MF_Rifle_Jog_Right.MF_Rifle_Jog_Right"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Bwd",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.5,
+        "frames": 45,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Bwd.MF_Unarmed_Jog_Bwd"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Bwd_Left",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.5,
+        "frames": 45,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Bwd_Left.MF_Unarmed_Jog_Bwd_Left"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Bwd_Right",
+        "type": "jog",
+        "direction": "backward",
+        "duration": 1.5,
+        "frames": 45,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Bwd_Right.MF_Unarmed_Jog_Bwd_Right"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Fwd",
+        "type": "jog",
+        "direction": "forward",
+        "duration": 1.7666666507720947,
+        "frames": 52,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Fwd.MF_Unarmed_Jog_Fwd"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Fwd_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 1.7666666507720947,
+        "frames": 52,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Fwd_Left.MF_Unarmed_Jog_Fwd_Left"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Fwd_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 1.7666666507720947,
+        "frames": 52,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Fwd_Right.MF_Unarmed_Jog_Fwd_Right"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Left",
+        "type": "jog",
+        "direction": "left",
+        "duration": 1.5333333015441895,
+        "frames": 45,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Left.MF_Unarmed_Jog_Left"
+      },
+      {
+        "name": "MF_Unarmed_Jog_Right",
+        "type": "jog",
+        "direction": "right",
+        "duration": 1.7333333492279053,
+        "frames": 52,
+        "natural_speed_mps": 3.5,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jog/MF_Unarmed_Jog_Right.MF_Unarmed_Jog_Right"
+      }
+    ],
+    "run": [],
+    "crouch": [],
+    "jump": [
+      {
+        "name": "MM_Pistol_Jump_Fall_Loop",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 2.0,
+        "frames": 60,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jump/MM_Pistol_Jump_Fall_Loop.MM_Pistol_Jump_Fall_Loop"
+      },
+      {
+        "name": "MM_Pistol_Jump_RecoveryAdditive",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.699999988079071,
+        "frames": 20,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jump/MM_Pistol_Jump_RecoveryAdditive.MM_Pistol_Jump_RecoveryAdditive"
+      },
+      {
+        "name": "MM_Pistol_Jump_Start",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.20000000298023224,
+        "frames": 6,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/Jump/MM_Pistol_Jump_Start.MM_Pistol_Jump_Start"
+      },
+      {
+        "name": "MM_Rifle_Jump_Apex",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.6666666865348816,
+        "frames": 20,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Apex.MM_Rifle_Jump_Apex"
+      },
+      {
+        "name": "MM_Rifle_Jump_Fall_Land",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.4000000059604645,
+        "frames": 12,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Fall_Land.MM_Rifle_Jump_Fall_Land"
+      },
+      {
+        "name": "MM_Rifle_Jump_Fall_Loop",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 3.0,
+        "frames": 90,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Fall_Loop.MM_Rifle_Jump_Fall_Loop"
+      },
+      {
+        "name": "MM_Rifle_Jump_RecoveryAdditive",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.9333333373069763,
+        "frames": 28,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_RecoveryAdditive.MM_Rifle_Jump_RecoveryAdditive"
+      },
+      {
+        "name": "MM_Rifle_Jump_Start",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.23333333432674408,
+        "frames": 7,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Start.MM_Rifle_Jump_Start"
+      },
+      {
+        "name": "MM_Rifle_Jump_Start_Loop",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 2.0,
+        "frames": 60,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/Jump/MM_Rifle_Jump_Start_Loop.MM_Rifle_Jump_Start_Loop"
+      },
+      {
+        "name": "MM_Jump",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.8666666746139526,
+        "frames": 26,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Jump.MM_Jump"
+      },
+      {
+        "name": "MM_WallJump",
+        "type": "jump",
+        "direction": "forward",
+        "duration": 0.46666666865348816,
+        "frames": 14,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_WallJump.MM_WallJump"
+      }
+    ],
+    "other": [
+      {
+        "name": "MM_Death_Back_01",
+        "type": "other",
+        "direction": "backward",
+        "duration": 1.100000023841858,
+        "frames": 33,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Back_01.MM_Death_Back_01"
+      },
+      {
+        "name": "MM_Death_Front_01",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.100000023841858,
+        "frames": 33,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Front_01.MM_Death_Front_01"
+      },
+      {
+        "name": "MM_Death_Front_02",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.1333333253860474,
+        "frames": 33,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Front_02.MM_Death_Front_02"
+      },
+      {
+        "name": "MM_Death_Front_03",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.9333333373069763,
+        "frames": 28,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Front_03.MM_Death_Front_03"
+      },
+      {
+        "name": "MM_Death_Left_01",
+        "type": "other",
+        "direction": "left",
+        "duration": 0.9666666388511658,
+        "frames": 28,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Left_01.MM_Death_Left_01"
+      },
+      {
+        "name": "MM_Death_Right_01",
+        "type": "other",
+        "direction": "right",
+        "duration": 1.100000023841858,
+        "frames": 33,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Death/MM_Death_Right_01.MM_Death_Right_01"
+      },
+      {
+        "name": "MM_Pistol_DryFire",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.800000011920929,
+        "frames": 24,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_DryFire.MM_Pistol_DryFire"
+      },
+      {
+        "name": "MM_Pistol_Equip",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.399999976158142,
+        "frames": 41,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_Equip.MM_Pistol_Equip"
+      },
+      {
+        "name": "MM_Pistol_Fire",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.6666666865348816,
+        "frames": 20,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_Fire.MM_Pistol_Fire"
+      },
+      {
+        "name": "MM_Pistol_Reload",
+        "type": "other",
+        "direction": "forward",
+        "duration": 2.0,
+        "frames": 60,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Pistol/MM_Pistol_Reload.MM_Pistol_Reload"
+      },
+      {
+        "name": "MM_HitReact_Back_Med_01",
+        "type": "other",
+        "direction": "backward",
+        "duration": 0.8666666746139526,
+        "frames": 26,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Back_Med_01.MM_HitReact_Back_Med_01"
+      },
+      {
+        "name": "MM_HitReact_Front_Hvy_01",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.800000011920929,
+        "frames": 24,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Hvy_01.MM_HitReact_Front_Hvy_01"
+      },
+      {
+        "name": "MM_HitReact_Front_Lgt_01",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.699999988079071,
+        "frames": 20,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_01.MM_HitReact_Front_Lgt_01"
+      },
+      {
+        "name": "MM_HitReact_Front_Lgt_02",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.800000011920929,
+        "frames": 24,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_02.MM_HitReact_Front_Lgt_02"
+      },
+      {
+        "name": "MM_HitReact_Front_Lgt_03",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_03.MM_HitReact_Front_Lgt_03"
+      },
+      {
+        "name": "MM_HitReact_Front_Lgt_04",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.2333333492279053,
+        "frames": 37,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Lgt_04.MM_HitReact_Front_Lgt_04"
+      },
+      {
+        "name": "MM_HitReact_Front_Med_01",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.7666666507720947,
+        "frames": 22,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Med_01.MM_HitReact_Front_Med_01"
+      },
+      {
+        "name": "MM_HitReact_Front_Med_02",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.800000011920929,
+        "frames": 24,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/HitReact/MM_HitReact_Front_Med_02.MM_HitReact_Front_Med_02"
+      },
+      {
+        "name": "MM_Rifle_DryFire",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.800000011920929,
+        "frames": 24,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_DryFire.MM_Rifle_DryFire"
+      },
+      {
+        "name": "MM_Rifle_Equip",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.6666666269302368,
+        "frames": 49,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_Equip.MM_Rifle_Equip"
+      },
+      {
+        "name": "MM_Rifle_Fire",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.5333333611488342,
+        "frames": 16,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_Fire.MM_Rifle_Fire"
+      },
+      {
+        "name": "MM_Rifle_Reload",
+        "type": "other",
+        "direction": "forward",
+        "duration": 2.200000047683716,
+        "frames": 66,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Rifle/MM_Rifle_Reload.MM_Rifle_Reload"
+      },
+      {
+        "name": "MM_Attack_01",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_Attack_01.MM_Attack_01"
+      },
+      {
+        "name": "MM_Attack_02",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.0,
+        "frames": 30,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_Attack_02.MM_Attack_02"
+      },
+      {
+        "name": "MM_Attack_03",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.6666666269302368,
+        "frames": 49,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_Attack_03.MM_Attack_03"
+      },
+      {
+        "name": "MM_ChargedAttack",
+        "type": "other",
+        "direction": "forward",
+        "duration": 1.8333333730697632,
+        "frames": 55,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Attack/MM_ChargedAttack.MM_ChargedAttack"
+      },
+      {
+        "name": "MM_Dash",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.9666666388511658,
+        "frames": 28,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Dash.MM_Dash"
+      },
+      {
+        "name": "MM_Fall_Loop",
+        "type": "other",
+        "direction": "forward",
+        "duration": 3.0,
+        "frames": 90,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Fall_Loop.MM_Fall_Loop"
+      },
+      {
+        "name": "MM_Land",
+        "type": "other",
+        "direction": "forward",
+        "duration": 0.8666666746139526,
+        "frames": 26,
+        "natural_speed_mps": 0.0,
+        "path": "/Game/Characters/Mannequins/Anims/Unarmed/Jump/MM_Land.MM_Land"
+      }
+    ]
+  }
+}

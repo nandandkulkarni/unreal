@@ -47,6 +47,7 @@ class SplineMotionCommandBuilder:
         self._anim_name = None
         self._anim_speed = 1.0
         self._use_motion_matching = False
+        self._anim_db = "belica"  # Default animation database
         
     def speed(self, mps: float) -> 'SplineMotionCommandBuilder':
         """Set movement speed in meters per second."""
@@ -71,9 +72,14 @@ class SplineMotionCommandBuilder:
         self._use_motion_matching = False
         return self
 
-    def use_motion_match(self) -> 'SplineMotionCommandBuilder':
-        """Use Motion Matching to select animations based on slope/speed."""
+    def use_motion_match(self, anim_db: str = "belica") -> 'SplineMotionCommandBuilder':
+        """Use Motion Matching to select animations based on speed.
+        
+        Args:
+            anim_db: Animation database to use ("belica" or "manny")
+        """
         self._use_motion_matching = True
+        self._anim_db = anim_db
         return self # Terminal call is done separately? No this is builder.
         
     def run(self) -> 'ActorBuilder':
@@ -155,46 +161,57 @@ class SplineMotionCommandBuilder:
                 pass 
         
         # Add single animation segment for the whole move
+        start_frame = int(start_time * fps)
         end_frame = int((start_time + duration) * fps)
         
         if self._use_motion_matching:
-            # HERE IS THE MAGIC
-            # We need to chunk the path into segments based on slope/properties
-            # For now, placeholder logic:
-            # Scan samples, detect slope changes, break into chunks.
+            # HYBRID MOTION MATCHING APPROACH
+            # - Transform controls position (precise spline following)
+            # - Animation speed matches movement speed (no foot sliding)
+            # - Motion matching selects appropriate animation based on SPEED
             
-            # Mock Logic for Phase 1:
-            # Just use "Run_Fwd" for now, but split it into chunks to prove we can?
-            # Or assume run_scene.py does the heavy lifting?
-            # User said "move along spione with mpotion match for anims".
-            # The builder calculates the trajectory blocks.
+            # Load animation database
+            from motion_structs.anim_loader import find_animation_by_type
             
-            # Implementation:
-            # Since we don't have the database here, we will emit a generic loop
-            # BUT we will mark the segment as "MotionMatch:Auto".
-            # Or if we want to determine "Climb" vs "Walk" based on slope:
-            curr_slope_type = "Flat"
-            seg_start_frame = int(start_time * fps)
+            # Select animation type based on movement speed
+            # Walk: < 2.0 m/s
+            # Jog: 2.0 - 4.5 m/s
+            # Run: > 4.5 m/s
+            if self._speed_val < 2.0:
+                anim_type = "walk"
+            elif self._speed_val < 4.5:
+                anim_type = "jog"
+            else:
+                anim_type = "run"
             
-            for i, sample in enumerate(route_samples):
-                slope = sample.get("slope", 0.0)
-                slope_type = "Flat"
-                if slope > 15: slope_type = "Climb"
-                elif slope < -15: slope_type = "Descend"
-                
-                if slope_type != curr_slope_type:
-                    # Slope changed, close segment
-                    curr_frame = int((start_time + ((sample["distance"]-start_cm)/100.0)/self._speed_val) * fps)
-                    anim_name = "MF_Run_Fwd" if curr_slope_type == "Flat" else ("MF_Climb" if curr_slope_type == "Climb" else "MF_Descend")
-                    
-                    self.ab.track_set.animation.add_segment(seg_start_frame, curr_frame, anim_name)
-                    
-                    seg_start_frame = curr_frame
-                    curr_slope_type = slope_type
+            # Get animation from database
+            anim_data = find_animation_by_type(anim_type, "forward", character=self._anim_db)
             
-            # Final segment
-            anim_name = "MF_Run_Fwd" if curr_slope_type == "Flat" else ("MF_Climb" if curr_slope_type == "Climb" else "MF_Descend")
-            self.ab.track_set.animation.add_segment(seg_start_frame, end_frame, anim_name)
+            # Smart Fallback: If RUN mapping fails (e.g. Manny has no run), try JOG
+            if not anim_data and anim_type == "run":
+                anim_data = find_animation_by_type("jog", "forward", character=self._anim_db)
+            
+            if anim_data:
+                # Use full path if available (preferred), otherwise short name
+                anim_name = anim_data.get("path", anim_data["name"])
+                natural_speed = anim_data.get("natural_speed_mps", 3.5)
+            else:
+                # Ultimate Fallback if database totally fails
+                print(f"Warning: No {anim_type} (or fallback) animation found in {self._anim_db} database.")
+                # Try to guess a reasonable default for the character
+                if self._anim_db == "manny":
+                     # Use full path for fallback too
+                     anim_name = "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd.MF_Pistol_Jog_Fwd"
+                else:
+                     anim_name = "Jog_Fwd"
+                natural_speed = 3.5
+            
+            # HYBRID: Calculate speed multiplier to match movement speed
+            # speed_multiplier = actual_speed / natural_animation_speed
+            speed_multiplier = self._speed_val / natural_speed if natural_speed > 0 else 1.0
+            
+            # Apply single animation for entire path
+            self.ab.track_set.animation.add_segment(start_frame, end_frame, anim_name, speed_multiplier)
             
         elif self._anim_name:
             start_frame = int(start_time * fps)

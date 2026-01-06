@@ -70,7 +70,7 @@ class MovieBuilder:
         current_time: Global timeline cursor
     """
     
-    def __init__(self, name: str, fps: int = 60, create_new_level: bool = True):
+    def __init__(self, name: str, fps: int = 60, create_new_level: bool = True, character: str = "belica"):
         """
         Initialize a new movie builder.
         
@@ -78,10 +78,12 @@ class MovieBuilder:
             name: Movie name (also output folder name)
             fps: Frame rate for keyframe calculations
             create_new_level: Whether to create new Unreal level
+            character: Character type for motion matching ("belica" or "manny")
         """
         self.name = name
         self.fps = fps
         self.create_new_level = create_new_level
+        self.character = character.lower()  # Store character for motion matching
         self.actors: Dict[str, ActorTrackSet] = {}
         self.current_time = 0.0
         self._output_folder = None
@@ -571,6 +573,7 @@ class MovieBuilder:
             "name": self.name,
             "fps": self.fps,
             "create_new_level": self.create_new_level,
+            "character": self.character,  # For motion matching
             "duration": self.current_time,
             "actors": list(self.actors.keys())
         }

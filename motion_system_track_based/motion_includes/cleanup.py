@@ -74,10 +74,19 @@ def delete_old_actors():
         is_motion_actor = "MotionSystemActor" in actor.tags
         is_debug_actor = "MotionSystemDebug" in actor.tags
         
+        # Check if actor has a SplineComponent (indicates it's a spline actor)
+        has_spline = False
+        try:
+            spline_comps = actor.get_components_by_class(unreal.SplineComponent)
+            has_spline = len(spline_comps) > 0
+        except:
+            pass
+        
         # SIMPLIFIED: Delete ALL MotionSystemActor tagged actors (this includes Runner1, Runner2, FocusTarget, FrontCam)
         # Also delete test-prefixed actors and debug actors
         if (is_motion_actor or 
             is_debug_actor or
+            has_spline or  # DELETE SPLINES
             label_lower.startswith("test") or 
             label_lower.startswith("spawned") or
             label_lower.startswith("marker_") or

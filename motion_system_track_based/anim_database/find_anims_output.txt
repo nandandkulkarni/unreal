@@ -1,0 +1,12 @@
+================================================================================
+SEARCHING FOR ANIMATION FOLDERS IN PROJECT
+================================================================================
+
+Searching /Game...
+
+Found 0 animation assets in 0 folders
+
+Animation Folders:
+
+================================================================================
+Output saved to: C:\UnrealProjects\coding\unreal\motion_system_track_based\anim_database\find_anims_output.txt

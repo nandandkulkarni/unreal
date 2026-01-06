@@ -1,0 +1,14 @@
+================================================================================
+VERIFYING ANIMATION ASSETS
+================================================================================
+
+Checking Walker animations (1):
+  Name: MF_Pistol_Walk_Fwd
+    ✓ Found at: /Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd.MF_Pistol_Walk_Fwd
+      Loaded: <Object '/Game/Characters/Mannequins/Anims/Pistol/Walk/MF_Pistol_Walk_Fwd.MF_Pistol_Walk_Fwd' (0x000002C7E2D47700) Class 'AnimSequence'>
+
+Checking Jogger animations (1):
+  Name: MF_Pistol_Jog_Fwd
+    ✓ Found at: /Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd.MF_Pistol_Jog_Fwd
+
+================================================================================
