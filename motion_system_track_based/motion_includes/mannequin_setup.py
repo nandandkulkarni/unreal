@@ -65,17 +65,17 @@ def create_mannequin(mannequin_name, location=None, rotation=None, mesh_path=Non
     if mesh_path:
         skeletal_mesh = unreal.load_object(None, mesh_path)
     
-    # if not skeletal_mesh:
-    #     skeletal_mesh = unreal.load_object(None, Characters.BELICA)
+    if not skeletal_mesh:
+        skeletal_mesh = unreal.load_object(None, Characters.BELICA.path)
 
-    # if not skeletal_mesh:
-    #     # Fallback to Quinn if Belica is missing
-    #     skeletal_mesh = unreal.load_object(None, Characters.QUINN_SIMPLE)
+    if not skeletal_mesh:
+        # Fallback to Quinn if Belica is missing
+        skeletal_mesh = unreal.load_object(None, Characters.QUINN_SIMPLE.path)
 
-    # if not skeletal_mesh:
-    #     # Secondary fallback
-    #     skeletal_mesh = unreal.load_object(
-    #         None, Characters.QUINN_THIRD_PERSON)
+    if not skeletal_mesh:
+        # Secondary fallback
+        skeletal_mesh = unreal.load_object(
+            None, Characters.QUINN_THIRD_PERSON.path)
 
     if skeletal_mesh:
         # Spawn a SkeletalMeshActor

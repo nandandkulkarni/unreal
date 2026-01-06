@@ -42,7 +42,8 @@ def create_spline_actor(name, points, closed=False, color="Green", thickness=5.0
     # Simple way: Just make a blueprint or use existing patterns.
     # Or:
     actor.set_editor_property("root_component", spline_comp)
-    spline_comp.register_component() # Important!
+    # spline_comp.register_component() # Not needed or invalid in this context
+
     
     # Clear default points
     spline_comp.clear_spline_points()

@@ -75,6 +75,7 @@ def reload_modules():
         "motion_includes.keyframe_applier",
         "motion_includes.light_setup",
         "motion_includes.level_setup",
+        "motion_includes.spline_setup",
         "motion_includes.attach_setup",
     ]
     
@@ -316,12 +317,13 @@ def run_scene(movie_folder: str):
         elif actor_type == "spline":
              log(f"  Creating Spline: {actor_name}")
              # Get properties
+             # Get properties (handle top-level or nested)
              props = settings.get("properties", {})
-             points = props.get("points", [])
-             closed = props.get("closed", False)
-             color = props.get("color", "Green")
-             thickness = props.get("thickness", 5.0)
-             show_debug = props.get("show_debug", True)
+             points = settings.get("points") or props.get("points", [])
+             closed = settings.get("closed") if "closed" in settings else props.get("closed", False)
+             color = settings.get("color") or props.get("color", "Green")
+             thickness = settings.get("thickness") or props.get("thickness", 5.0)
+             show_debug = settings.get("show_debug") if "show_debug" in settings else props.get("show_debug", True)
              
              try:
                  actor_obj = spline_setup.create_spline_actor(
