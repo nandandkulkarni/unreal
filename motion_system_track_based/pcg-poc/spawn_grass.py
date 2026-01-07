@@ -134,7 +134,9 @@ print(f"Spawning instances on {len(target_actors)} actors...")
 
 total_instances = 0
 
-for actor in target_actors:
+for idx, actor in enumerate(target_actors):
+    print(f"  Processing Actor {idx+1}/{len(target_actors)}: {actor.get_actor_label()}...")
+    
     # Get Bounds
     origin, extent = actor.get_actor_bounds(False)
     # Extent is half-size
@@ -166,6 +168,8 @@ for actor in target_actors:
     is_cylinder = "Ground_Right" in actor.get_actor_label() or "Ground_Left" in actor.get_actor_label()
     
     num_to_spawn = 5000 # Cap
+    
+    print(f"    Spawning {num_to_spawn} instances...")
     
     for i in range(num_to_spawn):
         # Random Point in Box
