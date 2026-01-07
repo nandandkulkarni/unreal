@@ -1,0 +1,18 @@
+================================================================================
+CURRENT LEVEL INFORMATION
+================================================================================
+
+World: Lv_Mountain_Tops_Elevation_IceLand
+
+Total Actors in Level: 55
+
+SEARCHING FOR LANDSCAPES:
+--------------------------------------------------------------------------------
+
+No landscape actors found!
+
+All actor types in level:
+  DirectionalLight: 1
+  SkyAtmosphere: 1
+  SkyLight: 1
+  StaticMeshActor: 47

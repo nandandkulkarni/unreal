@@ -1,0 +1,220 @@
+================================================================================
+TRACK DIMENSIONS CHECK
+================================================================================
+
+Found 50 track segments
+Found 12 lane line dashes
+Found start/finish line: Yes
+
+================================================================================
+TRACK DIMENSIONS
+================================================================================
+Individual Segment:
+  Length: 200cm = 2.0m
+  Width: 400cm = 4.0m
+  Height: 10.0cm
+
+Total Track:
+  Length: 10000cm = 100m
+  Width: 400cm = 4.0m
+  Segments: 50
+
+================================================================================
+LANE LINE DIMENSIONS
+================================================================================
+Dashed Center Line:
+  Dash length: 400cm = 4.0m
+  Line width: 15cm = 0.15m
+  Number of dashes: 12
+
+================================================================================
+START/FINISH LINE DIMENSIONS
+================================================================================
+Start/Finish Line:
+  Thickness: 400cm = 4.0m
+  Width: 400cm = 4.0m
+
+================================================================================
+SUMMARY
+================================================================================
+✓ Track: 100m long × 4.0m wide
+✓ Lane lines: 4.00m wide, 4.0m dashes
+✓ Start line: 4.0m thick × 4.0m wide
+================================================================================
+100 METER STRAIGHT TRACK - ASPHALT
+================================================================================
+✓ Deleted 50 old track actor(s)
+
+Creating 100m straight track...
+✓ Loaded asphalt material: /Game/Fab/Megascans/Surfaces/Asphalt_Fresh_sfrofg0a/High/sfrofg0a_tier_1/Materials/MI_sfrofg0a.MI_sfrofg0a
+
+Creating 50 road segments...
+
+================================================================================
+✓ TRACK CREATED!
+================================================================================
+Length: 100 meters
+Width: 4.0 meters
+Segments: 50
+Material: Megascans Asphalt
+Location: Centered at origin, Z=0.5m
+Folder: SimpleTrack
+
+✓ Log saved to: C:\UnrealProjects\coding\unreal\motion_system_track_based\pcg-poc\simple_track.log
+================================================================================
+GENERATING STANDARD 100M SPRINT TRACK
+================================================================================
+
+Cleaning up old track actors...
+✓ Removed 63 old actors
+
+Building Asphalt Track (4 lanes, 4.88m wide)...
+✓ Created 50 mesh segments
+
+Adding Solid Lane Lines...
+✓ Created 5 solid lane lines
+
+Adding Start/Finish Lines...
+✓ Created Start/Finish markings
+
+================================================================================
+✓ 100M TRACK COMPLETE
+================================================================================
+Lanes: 4 (1.22m each)
+Total Width: 4.88m
+Features: Solid white lines, Asphalt surface
+Log: C:\UnrealProjects\coding\unreal\motion_system_track_based\pcg-poc\combined_track.log
+================================================================================
+GENERATING STANDARD 100M SPRINT TRACK
+================================================================================
+
+Cleaning up old track actors...
+✓ Removed 55 old actors
+
+Building Asphalt Track (6 lanes, 7.32m wide)...
+✓ Created 50 mesh segments
+
+Adding Solid Lane Lines...
+✓ Created 7 solid lane lines
+
+Adding Start/Finish Lines...
+✓ Created Start/Finish markings
+
+================================================================================
+✓ 100M TRACK COMPLETE
+================================================================================
+Lanes: 6 (1.22m each)
+Total Width: 7.32m
+Features: Solid white lines, Asphalt surface
+Log: C:\UnrealProjects\coding\unreal\motion_system_track_based\pcg-poc\combined_track.log
+================================================================================
+REBUILDING TRACK (V2) - FIXING DECALS
+================================================================================
+
+1. Cleaning up scene...
+✓ Removed 61 old actors
+
+2. Checking Decal Material...
+Creating new decal material: /Game/Materials/M_WhiteLaneDecal
+✗ Error: Material: Property 'MaterialDomain' for attribute 'material_domain' on 'Material' is read-only and cannot be set
+================================================================================
+FIXING TRACK GENERATION (X-AXIS ALIGNMENT)
+================================================================================
+
+Cleaning up old track & decals...
+✓ Removed 0 old actors
+
+Building 6-Lane Track (7.32m wide)...
+✓ Created track mesh
+
+Adding Lane Dividers (X-Axis aligned)...
+✓ Created 7 dividers
+
+Adding Start/Finish Lines (Y-Axis aligned)...
+✓ Created markings
+
+✓ COMPLETE
+================================================================================
+FIXING TRACK GENERATION (X-AXIS ALIGNMENT)
+================================================================================
+
+Cleaning up old track & decals...
+✓ Removed 59 old actors
+
+Building 6-Lane Track (7.32m wide)...
+✓ Created track mesh
+
+Adding Lane Dividers (X-Axis aligned)...
+✓ Created 7 dividers
+
+Adding Start/Finish Lines (Y-Axis aligned)...
+✓ Created markings
+
+✓ COMPLETE
+=======================================
+GENERATING STANDARD 100M SPRINT TRACK
+================================================================================
+
+Cleaning up old track actors...
+✓ Removed 55 old actors
+
+Building Asphalt Track (6 lanes, 7.32m wide)...
+✓ Created 50 mesh segments
+
+Adding Solid Lane Lines...
+✓ Created 7 solid lane lines
+
+Adding Start/Finish Lines...
+✓ Created Start/Finish markings
+
+================================================================================
+✓ 100M TRACK COMPLETE
+================================================================================
+Lanes: 6 (1.22m each)
+Total Width: 7.32m
+Features: Solid white lines, Asphalt surface
+Log: C:\UnrealProjects\coding\unreal\motion_system_track_based\pcg-poc\combined_track.log
+================================================================================
+REBUILDING TRACK (V2) - FIXING DECALS
+================================================================================
+
+1. Cleaning up scene...
+✓ Removed 61 old actors
+
+2. Checking Decal Material...
+Creating new decal material: /Game/Materials/M_WhiteLaneDecal
+✗ Error: Material: Property 'MaterialDomain' for attribute 'material_domain' on 'Material' is read-only and cannot be set
+================================================================================
+FIXING TRACK GENERATION (X-AXIS ALIGNMENT)
+================================================================================
+
+Cleaning up old track & decals...
+✓ Removed 0 old actors
+
+Building 6-Lane Track (7.32m wide)...
+✓ Created track mesh
+
+Adding Lane Dividers (X-Axis aligned)...
+✓ Created 7 dividers
+
+Adding Start/Finish Lines (Y-Axis aligned)...
+✓ Created markings
+
+✓ COMPLETE
+================================================================================
+FIXING TRACK GENERATION (X-AXIS ALIGNMENT)
+================================================================================
+
+Cleaning up old track & decals...
+✓ Removed 59 old actors
+
+Building 6-Lane Track (7.32m wide)...
+✓ Created track mesh
+
+Adding Lane Dividers (X-Axis aligned)...
+✓ Created 7 dividers
+
+Adding Start/Finish Lines (Y-Axis aligned)...
+✓ Created markings
+
+✓ COMPLETE

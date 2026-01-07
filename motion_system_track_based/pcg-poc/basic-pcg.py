@@ -167,72 +167,71 @@ def pseudo_noise(x, y):
     return n - math.floor(n)
 
 def create_terrain():
-    """Create a digital terrain using height map logic"""
-    print("\n0.6. Creating Terrain...")
+    """Create a high-density digital terrain using individual static mesh actors"""
+    print("\n0.6. Creating High-Res Terrain...")
     cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
     
-    # Grid settings
-    grid_size = 30
-    spacing = 150.0
-    offset_x = 4000.0  # Move away from center
-    offset_y = 0.0
-    max_height = 800.0
+    # Reduced grid for performance (still creates nice terrain)
+    grid_size = 40        # 1600 actors
+    spacing = 120.0       # Spacing between cubes
+    max_height = 1200.0
+    base_offset = unreal.Vector(4000, 0, 0)  # Position offset
     
-    actor_count = 0
+    print(f"  Generating {grid_size*grid_size} terrain columns...")
+    
+    count = 0
     
     for x in range(grid_size):
         for y in range(grid_size):
-            # Normalized coordinates for noise
-            nx = x * 0.1
-            ny = y * 0.1
+            # Normalized coords centered
+            nx = (x - grid_size/2) * 0.1
+            ny = (y - grid_size/2) * 0.1
             
-            # Layer simple noise frequencies
-            h1 = pseudo_noise(nx, ny)
-            h2 = pseudo_noise(nx * 0.5 + 50, ny * 0.5 + 50) # Low freq
+            # 1. Base Low Freq Hills
+            h1 = math.sin(nx * 0.5) * math.cos(ny * 0.5)
             
-            # Combine
-            noise_val = (h1 * 0.3 + h2 * 0.7) 
+            # 2. High Freq Detail (Ridge)
+            h2 = math.cos(nx * 1.5 + ny) * 0.5
             
-            # Smooth it out (very rudimentary smoothing)
-            # Actually, standard pseudo-noise is white noise (static). 
-            # Let's use simple sine waves for "hills" instead to look nicer without external lib.
-            height_val = (math.sin(nx) + math.cos(ny)) * 0.5 + 0.5 # 0-1 range
-            # Add some detail
-            height_val += math.sin(nx * 3.0) * 0.1
+            # 3. Erosion-style ABS (Ridge creation)
+            noise_val = h1 + (1.0 - abs(h2)) * 0.3
             
-            z = height_val * max_height
+            # Normalize approx -1 to 1 range > 0 to 1
+            height_val = (noise_val * 0.5) + 0.5
+            height_val = max(0.0, min(1.0, height_val))  # Clamp
             
-            # World Position
-            pos_x = offset_x + (x - grid_size/2) * spacing
-            pos_y = offset_y + (y - grid_size/2) * spacing
-            location = unreal.Vector(pos_x, pos_y, z/2) # z/2 because cube pivot is center
+            z_scale = height_val * (max_height / 100.0)
+            z_pos = (z_scale * 100.0) / 2.0
             
+            # World position
+            world_x = base_offset.x + (x - grid_size/2) * spacing
+            world_y = base_offset.y + (y - grid_size/2) * spacing
+            
+            location = unreal.Vector(world_x, world_y, z_pos)
             actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
                 unreal.StaticMeshActor,
                 location
             )
             
-            actor.set_actor_label(f"Terrain_Col_{x}_{y}")
+            actor.set_actor_label(f"Terrain_Column_{x}_{y}")
             actor.set_folder_path(unreal.Name("Garden_System/Terrain"))
             actor.static_mesh_component.set_static_mesh(cube_mesh)
+            actor.set_actor_scale3d(unreal.Vector(1.1, 1.1, z_scale))
             
-            # Scale to form a column
-            actor.set_actor_scale3d(unreal.Vector(1.4, 1.4, z / 100.0))
-            
-            # Biome coloring based on height
-            if height_val < 0.2:
-                # Digital Water/Low
-                apply_dynamic_color(actor, 0.0, 0.2, 0.8, roughness=0.1)
-            elif height_val < 0.5:
-                # Digital Grass/Mid
-                apply_dynamic_color(actor, 0.1, 0.6, 0.2, roughness=0.8)
+            # Biome coloring
+            if height_val < 0.25:
+                # Water - Deep Blue, Shiny
+                apply_dynamic_color(actor, 0.0, 0.2, 0.8, roughness=0.1, metallic=0.0)
+            elif height_val < 0.65:
+                # Grass - Teal/Green, Matte
+                apply_dynamic_color(actor, 0.1, 0.6, 0.4, roughness=0.8, metallic=0.0)
             else:
-                # Digital Snow/High
-                apply_dynamic_color(actor, 0.9, 0.9, 0.95, roughness=0.5)
-                
-            actor_count += 1
+                # Snow - White, Semi-Rough
+                apply_dynamic_color(actor, 0.9, 0.95, 1.0, roughness=0.5, metallic=0.0)
             
-    print(f"  ✓ Created {actor_count} terrain columns")
+            count += 1
+            
+    print(f"  ✓ Created {count} high-res terrain columns")
 
 def create_pathway():
     """Create a meandering path of stepping stones"""
@@ -598,6 +597,22 @@ def create_camera():
     print("  ✓ Camera created")
     print("    (Select 'Garden_Camera' in outliner and press Pilot to view)")
 
+    # SECOND CAMERA: Terrain Focus
+    print("  Creating Terrain Camera...")
+    terrain_cam_loc = unreal.Vector(0, -4000, 1500)
+    terrain_cam = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.CameraActor,
+        terrain_cam_loc
+    )
+    terrain_cam.set_actor_label("Garden_Terrain_Camera")
+    terrain_cam.set_folder_path(unreal.Name("Garden_System"))
+    
+    # Look at terrain center (4000, 0, 200)
+    # Manual approximation: Delta=(4000, 4000, -1300) -> Yaw=45, Pitch=-13
+    rotation = unreal.Rotator(-15, 45, 0) 
+    terrain_cam.set_actor_rotation(rotation, teleport_physics=False)
+    print("  ✓ Terrain Camera created (Garden_Terrain_Camera)")
+
 # Main execution
 print("\n" + "=" * 80)
 print("GENERATING GARDEN...")
@@ -605,24 +620,24 @@ print("=" * 80)
 
 try:
     cleanup_old_garden()
-    create_floor()
-    create_pool()
+    # create_floor()
+    # create_pool()
     create_terrain()
-    create_pathway()
-    create_fibonacci_spiral()
-    create_concentric_squares()
-    create_radial_pillars()
+    # create_pathway()
+    # create_fibonacci_spiral()
+    # create_concentric_squares()
+    # create_radial_pillars()
     add_lighting()
-    add_atmosphere()
+    # add_atmosphere()
     create_camera()
     
     print("\n" + "=" * 80)
     print("✓ GEOMETRIC ABSTRACT GARDEN COMPLETE!")
     print("=" * 80)
     print("\nView the garden:")
-    print("  1. Select 'Garden_Camera' in World Outliner")
-    print("  2. Right-click → Pilot 'Garden_Camera'")
-    print("  3. Or use Perspective viewport to fly around")
+    print("  1. Select 'Garden_Camera' in World Outliner for Main View")
+    print("  2. Select 'Garden_Terrain_Camera' to see the High-Res Terrain Hills")
+    print("  3. Right-click → Pilot to fly around")
     print("\nPatterns created:")
     print(f"  • Fibonacci Spiral: {FIBONACCI_COUNT} spheres (blue accent) - center")
     print(f"  • Concentric Squares: {SQUARE_RINGS} rings of cubes (purple accent) - right")

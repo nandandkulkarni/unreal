@@ -1,0 +1,44 @@
+================================================================================
+REBUILDING TRACK (V2) - FIXING DECALS
+================================================================================
+
+1. Cleaning up scene...
+✓ Removed 61 old actors
+
+2. Checking Decal Material...
+Creating new decal material: /Game/Materials/M_WhiteLaneDecal
+✗ Error: Material: Property 'MaterialDomain' for attribute 'material_domain' on 'Material' is read-only and cannot be set
+================================================================================
+FIXING TRACK GENERATION (X-AXIS ALIGNMENT)
+================================================================================
+
+Cleaning up old track & decals...
+✓ Removed 0 old actors
+
+Building 6-Lane Track (7.32m wide)...
+✓ Created track mesh
+
+Adding Lane Dividers (X-Axis aligned)...
+✓ Created 7 dividers
+
+Adding Start/Finish Lines (Y-Axis aligned)...
+✓ Created markings
+
+✓ COMPLETE
+================================================================================
+FIXING TRACK GENERATION (X-AXIS ALIGNMENT)
+================================================================================
+
+Cleaning up old track & decals...
+✓ Removed 59 old actors
+
+Building 6-Lane Track (7.32m wide)...
+✓ Created track mesh
+
+Adding Lane Dividers (X-Axis aligned)...
+✓ Created 7 dividers
+
+Adding Start/Finish Lines (Y-Axis aligned)...
+✓ Created markings
+
+✓ COMPLETE

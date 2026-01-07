@@ -33,15 +33,35 @@ def check_garden_state():
         print("✗ No Garden actors found!")
         return
         
-    print("\nSample Actors:")
-    for i, actor in enumerate(garden_actors[:5]):
-        print(f"  [{i}] {actor.get_actor_label()}")
-        print(f"      Location: {actor.get_actor_location()}")
-        print(f"      Hidden: {actor.is_hidden_ed()}")
-        if isinstance(actor, unreal.StaticMeshActor):
-            mesh = actor.static_mesh_component.static_mesh
-            print(f"      Mesh: {mesh.get_name() if mesh else 'None'}")
-            print(f"      Scale: {actor.get_actor_scale3d()}")
+    print("\nDetailed Inspection:")
+    terrain_found = False
+    
+    for i, actor in enumerate(garden_actors):
+        label = actor.get_actor_label()
+        
+        # Detailed check for Terrain
+        if "Garden_Terrain_Manager" in label:
+            terrain_found = True
+            print(f"\n  [INSPECTING TERRAIN MANAGER: {label}]")
+            print(f"      Location: {actor.get_actor_location()}")
+            print(f"      Hidden (Editor): {actor.is_hidden_ed()}")
+            
+            # Check ISMs
+            comps = actor.get_components_by_class(unreal.InstancedStaticMeshComponent)
+            print(f"      Found {len(comps)} ISM Components:")
+            for c in comps:
+                # Need to cast or access properties carefully
+                count = c.get_instance_count()
+                mesh = c.static_mesh
+                mesh_name = mesh.get_name() if mesh else "None"
+                print(f"        - {c.get_name()} | Mesh: {mesh_name} | Instances: {count} | Visible: {c.is_visible()}")
+        
+        # Simple list for others (limit log spam)
+        elif i < 5:
+            print(f"  [{i}] {label}")
+
+    if not terrain_found:
+        print("\n    [WARNING] Terrain_Manager_ISM actor NOT FOUND in the scene!")
 
     # Force Viewport Update
     unreal.EditorLevelLibrary.editor_invalidate_viewports()
