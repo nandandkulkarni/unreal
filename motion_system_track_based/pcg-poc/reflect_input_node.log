@@ -1,0 +1,646 @@
+================================================================================
+INSPECTING INPUT NODE IN GRAPH
+================================================================================
+Graph Loaded: PCG_StadiumGrass_9925
+Found Input Node: PCGDataFromActorSettings
+
+--- SETTINGS PROPERTIES ---
+  acquire_editor_element_handle: <built-in method acquire_editor_element_handle of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  actor_selector:
+    - actor_filter: <PCGActorFilter.ALL_WORLD_ACTORS: 3>
+    - actor_reference_selector: <Struct 'PCGAttributePropertyInputSelector' (0x0000029064C60930) {}>
+    - actor_selection: <PCGActorSelection.BY_TAG: 0>
+    - actor_selection_class: None
+    - actor_selection_tag: PCG_Ground
+    - assign: <built-in method assign of PCGActorSelectorSettings object at 0x0000028F362E3930>
+    - cast: <built-in method cast of type object at 0x0000028FB8A0F348>
+    - copy: <built-in method copy of PCGActorSelectorSettings object at 0x0000028F362E3930>
+    - disable_filter: False
+    - export_text: <built-in method export_text of PCGActorSelectorSettings object at 0x0000028F362E3930>
+    - get_editor_property: <built-in method get_editor_property of PCGActorSelectorSettings object at 0x0000028F362E3930>
+    - ignore_self_and_children: False
+    - import_text: <built-in method import_text of PCGActorSelectorSettings object at 0x0000028F362E3930>
+    - include_children: False
+    - must_overlap_self: False
+    - select_multiple: False
+    - set_editor_properties: <built-in method set_editor_properties of PCGActorSelectorSettings object at 0x0000028F362E3930>
+    - set_editor_property: <built-in method set_editor_property of PCGActorSelectorSettings object at 0x0000028F362E3930>
+    - static_struct: <built-in method static_struct of type object at 0x0000028FB8A0F348>
+    - to_tuple: <built-in method to_tuple of PCGActorSelectorSettings object at 0x0000028F362E3930>
+  allowed_grids: 0
+  also_output_single_point_data: False
+  always_requery_actors: False
+  bp_get_type_union_of_incident_edges: <built-in method bp_get_type_union_of_incident_edges of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  break_debugger: False
+  call_method: <built-in method call_method of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  cast: <built-in method cast of type object at 0x0000028F2249D5C8>
+  category: 
+  component_selector: <Struct 'PCGComponentSelectorSettings' (0x0000029064C60998) {component_selection: ByTag, component_selection_tag: "", component_selection_class: None}>
+  components_must_overlap_self: True
+  const_metadata: <built-in method const_metadata of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  debug: False
+  debug_settings: <Struct 'PCGDebugVisualizationSettings' (0x0000029064C60778) {point_scale: 1.000000, scale_method: Extents, point_mesh: "/PCG/DebugObjects/PCG_Cube.PCG_Cube", material_override: None}>
+  description: 
+  determinism_settings: <Struct 'PCGDeterminismSettings' (0x0000029064C60850) {native_tests: True, use_blueprint_determinism_test: False, determinism_test_blueprint: None}>
+  duplicate_data: <built-in method duplicate_data of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  duplicate_data_with_context: <built-in method duplicate_data_with_context of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  enabled: True
+  execution_dependency_required: False
+  expected_pins: []
+  expose_to_library: True
+  get_class: <built-in method get_class of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_data_on_all_grids: True
+  get_default_object: <built-in method get_default_object of type object at 0x0000028F2249D5C8>
+  get_editor_property: <built-in method get_editor_property of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_fname: <built-in method get_fname of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_full_name: <built-in method get_full_name of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_name: <built-in method get_name of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_outer: <built-in method get_outer of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_outermost: <built-in method get_outermost of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_package: <built-in method get_package of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_path_name: <built-in method get_path_name of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_type_union_id_of_incident_edges: <built-in method get_type_union_id_of_incident_edges of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_typed_outer: <built-in method get_typed_outer of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  get_world: <built-in method get_world of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  ignore_pcg_generated_components: True
+  is_editor_property_overridden: <built-in method is_editor_property_overridden of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  is_package_external: <built-in method is_package_external of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  merge_single_point_data: False
+  mode: <PCGGetDataFromActorMode.PARSE_ACTOR_COMPONENTS: 0>
+  modify: <built-in method modify of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  mutable_metadata: <built-in method mutable_metadata of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  property_name: None
+  rename: <built-in method rename of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  reset_editor_property: <built-in method reset_editor_property of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  seed: -1994026704
+  set_editor_properties: <built-in method set_editor_properties of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  set_editor_property: <built-in method set_editor_property of PCGDataFromActorSettings object at 0x0000028FE07C3550>
+  silence_reserved_attribute_name_warnings: False
+  silence_sanitized_attribute_name_warnings: False
+  static_class: <built-in method static_class of type object at 0x0000028F2249D5C8>
+  track_actors_only_within_bounds: True
+  use_seed: <error: PCGDataFromActorSettings: Property 'bUseSeed' for attribute 'use_seed' on 'PCGDataFromActorSettings' is protected and cannot be read>
+================================================================================
+CREATE 10m x 10m PCG GRASS TEST PATCH
+================================================================================
+
+1. Loading PCG Graph...
+   Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Loaded: PCG_StadiumGrass_9925
+
+2. Cleaning up old test actors...
+   ✓ Removed 2 old test actors
+
+3. Setting Surface Sampler density to 25.0 points/m²...
+   Current density: 25.0 points/m²
+   ✓ Set to 25.0 points/m²
+   ✓ Set to unbounded mode (generates points everywhere in volume)
+   ✓ Saved graph
+
+4. Creating test ground plane (20m x 20m)...
+   ✓ Created ground plane at (0, 0, -5)
+   ✓ Size: 20m x 20m (covers test area)
+   ✓ Added tag: 'PCG_Ground'
+
+5. Rebuilding PCG Graph...
+   Clearing 3 existing nodes...
+   Adding Static Mesh Spawner...
+   Re-configuring Mesh...
+   ✓ Loaded mesh: SM_tbdpec3r_VarA
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Configured Spawner with mesh entry (weight=1)
+   Adding Surface Sampler...
+   ✓ Configured Sampler: 25.0 pts/m², Unbounded
+   Adding Input Node...
+     Setting actor_filter to ALL_WORLD_ACTORS (2)...
+     ✓ Set via attribute assignment (Enum)
+   ✓ Configured Input: Tag 'PCG_Ground', Filter=AllWorldActors
+   Connecting Nodes...
+     InputNode Pins -> In: [Name("Execution Dependency"), Name("Overrides"), Name("ActorFilter"), Name("bMustOverlapSelf"), Name("bIncludeChildren"), Name("ActorSelection"), Name("ActorSelectionTag"), Name("ActorSelectionClass"), Name("ActorReferenceSelector"), Name("bSelectMultiple"), Name("bIgnoreSelfAndChildren"), Name("bShowActorFilter"), Name("bShowIncludeChildren"), Name("bShowActorSelection"), Name("bShowActorSelectionClass"), Name("bShowSelectMultiple"), Name("bShowIgnoreSelfAndChildren"), Name("ComponentSelection"), Name("ComponentSelectionTag"), Name("ComponentSelectionClass"), Name("bShowComponentSelection"), Name("bShowComponentSelectionClass")], Out: [Name("Out")]
+     SamplerNode Pins -> In: [Name("Surface"), Name("Bounding Shape"), Name("Execution Dependency"), Name("Overrides"), Name("PointsPerSquaredMeter"), Name("PointExtents"), Name("Looseness"), Name("bUnbounded"), Name("bApplyDensityToPoints"), Name("PointSteepness"), Name("bKeepZeroDensityPoints"), Name("Seed")], Out: [Name("Out")]
+     SpawnerNode Pins -> In: [Name("In"), Name("Execution Dependency"), Name("Overrides"), Name("TargetActor"), Name("bAllowMergeDifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_DEMAND: 1>
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_DEMAND: 1>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028F362D7E90) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028F362D6BD0) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x000002933B8C3100) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F362D7AD0) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F362D7AD0) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_16.PCG Component.PCGGraphInstance' (0x000002948FA23B80) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_DEMAND: 1>
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✗ NO INSTANCED MESH COMPONENTS FOUND!
+         This explains why no grass is visible.
+         'Generated: True' means the graph ran, but it produced 0 artifacts.
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F362BE6D0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F362BE6D0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
+================================================================================
+CREATE 10m x 10m PCG GRASS TEST PATCH
+================================================================================
+
+1. Loading PCG Graph...
+   Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Loaded: PCG_StadiumGrass_9925
+
+2. Cleaning up old test actors...
+   ✓ Removed 2 old test actors
+
+3. Setting Surface Sampler density to 25.0 points/m²...
+   Current density: 25.0 points/m²
+   ✓ Set to 25.0 points/m²
+   ✓ Set to unbounded mode (generates points everywhere in volume)
+   ✓ Saved graph
+
+4. Creating test ground plane (20m x 20m)...
+   ✓ Created ground plane at (0, 0, -5)
+   ✓ Size: 20m x 20m (covers test area)
+   ✓ Added tag: 'PCG_Ground'
+
+5. Rebuilding PCG Graph...
+   Clearing 3 existing nodes...
+   Adding Static Mesh Spawner...
+   Re-configuring Mesh...
+   ✓ Loaded mesh: SM_tbdpec3r_VarA
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Configured Spawner with mesh entry (weight=1)
+   Adding Surface Sampler...
+   ✓ Configured Sampler: 25.0 pts/m², Unbounded
+   Adding Input Node...
+     Setting actor_filter to ALL_WORLD_ACTORS (2)...
+     ✓ Set via attribute assignment (Enum)
+   ✓ Configured Input: Tag 'PCG_Ground', Filter=AllWorldActors
+   Connecting Nodes...
+     InputNode Pins -> In: [Name("Execution Dependency"), Name("Overrides"), Name("ActorFilter"), Name("bMustOverlapSelf"), Name("bIncludeChildren"), Name("ActorSelection"), Name("ActorSelectionTag"), Name("ActorSelectionClass"), Name("ActorReferenceSelector"), Name("bSelectMultiple"), Name("bIgnoreSelfAndChildren"), Name("bShowActorFilter"), Name("bShowIncludeChildren"), Name("bShowActorSelection"), Name("bShowActorSelectionClass"), Name("bShowSelectMultiple"), Name("bShowIgnoreSelfAndChildren"), Name("ComponentSelection"), Name("ComponentSelectionTag"), Name("ComponentSelectionClass"), Name("bShowComponentSelection"), Name("bShowComponentSelectionClass")], Out: [Name("Out")]
+     SamplerNode Pins -> In: [Name("Surface"), Name("Bounding Shape"), Name("Execution Dependency"), Name("Overrides"), Name("PointsPerSquaredMeter"), Name("PointExtents"), Name("Looseness"), Name("bUnbounded"), Name("bApplyDensityToPoints"), Name("PointSteepness"), Name("bKeepZeroDensityPoints"), Name("Seed")], Out: [Name("Out")]
+     SpawnerNode Pins -> In: [Name("In"), Name("Execution Dependency"), Name("Overrides"), Name("TargetActor"), Name("bAllowMergeDifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_DEMAND: 1>
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_DEMAND: 1>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AE400) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AD7D0) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+CREATE 10m x 10m PCG GRASS TEST PATCH
+================================================================================
+
+1. Loading PCG Graph...
+   Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Loaded: PCG_StadiumGrass_9925
+
+2. Cleaning up old test actors...
+   ✓ Removed 2 old test actors
+
+3. Setting Surface Sampler density to 25.0 points/m²...
+   Current density: 25.0 points/m²
+   ✓ Set to 25.0 points/m²
+   ✓ Set to unbounded mode (generates points everywhere in volume)
+   ✓ Saved graph
+
+4. Creating test ground plane (20m x 20m)...
+   ✓ Created ground plane at (0, 0, -5)
+   ✓ Size: 20m x 20m (covers test area)
+   ✓ Added tag: 'PCG_Ground'
+
+5. Rebuilding PCG Graph...
+   Clearing 3 existing nodes...
+   Adding Static Mesh Spawner...
+   Re-configuring Mesh...
+   ✓ Loaded mesh: SM_tbdpec3r_VarA
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Configured Spawner with mesh entry (weight=1)
+   Adding Surface Sampler...
+   ✓ Configured Sampler: 25.0 pts/m², Unbounded
+   Adding Input Node...
+     Setting actor_filter to ALL_WORLD_ACTORS (2)...
+     ✓ Set via attribute assignment (Enum)
+   ✓ Configured Input: Tag 'PCG_Ground', Filter=AllWorldActors
+   Connecting Nodes...
+     InputNode Pins -> In: [Name("Execution Dependency"), Name("Overrides"), Name("ActorFilter"), Name("bMustOverlapSelf"), Name("bIncludeChildren"), Name("ActorSelection"), Name("ActorSelectionTag"), Name("ActorSelectionClass"), Name("ActorReferenceSelector"), Name("bSelectMultiple"), Name("bIgnoreSelfAndChildren"), Name("bShowActorFilter"), Name("bShowIncludeChildren"), Name("bShowActorSelection"), Name("bShowActorSelectionClass"), Name("bShowSelectMultiple"), Name("bShowIgnoreSelfAndChildren"), Name("ComponentSelection"), Name("ComponentSelectionTag"), Name("ComponentSelectionClass"), Name("bShowComponentSelection"), Name("bShowComponentSelectionClass")], Out: [Name("Out")]
+     SamplerNode Pins -> In: [Name("Surface"), Name("Bounding Shape"), Name("Execution Dependency"), Name("Overrides"), Name("PointsPerSquaredMeter"), Name("PointExtents"), Name("Looseness"), Name("bUnbounded"), Name("bApplyDensityToPoints"), Name("PointSteepness"), Name("bKeepZeroDensityPoints"), Name("Seed")], Out: [Name("Out")]
+     SpawnerNode Pins -> In: [Name("In"), Name("Execution Dependency"), Name("Overrides"), Name("TargetActor"), Name("bAllowMergeDifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_DEMAND: 1>
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_DEMAND: 1>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FD1FA8AB0) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028F36217F30) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+CREATE 10m x 10m PCG GRASS TEST PATCH
+================================================================================
+
+1. Loading PCG Graph...
+   Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Loaded: PCG_StadiumGrass_9925
+
+2. Cleaning up old test actors...
+   ✓ Removed 2 old test actors
+
+3. Setting Surface Sampler density to 25.0 points/m²...
+   Current density: 25.0 points/m²
+   ✓ Set to 25.0 points/m²
+   ✓ Set to unbounded mode (generates points everywhere in volume)
+   ✓ Saved graph
+
+4. Creating test ground plane (20m x 20m)...
+   ✓ Created ground plane at (0, 0, -5)
+   ✓ Size: 20m x 20m (covers test area)
+   ✓ Added tag: 'PCG_Ground'
+
+5. Rebuilding PCG Graph...
+   Clearing 3 existing nodes...
+   Adding Static Mesh Spawner...
+   Re-configuring Mesh...
+   ✓ Loaded mesh: SM_tbdpec3r_VarA
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Configured Spawner with mesh entry (weight=1)
+   Adding Surface Sampler...
+   ✓ Configured Sampler: 25.0 pts/m², Unbounded
+   Adding Input Node...
+     Setting actor_filter to ALL_WORLD_ACTORS (2)...
+     ✓ Set via attribute assignment (Enum)
+   ✓ Configured Input: Tag 'PCG_Ground', Filter=AllWorldActors
+   Connecting Nodes...
+     InputNode Pins -> In: [Name("Execution Dependency"), Name("Overrides"), Name("ActorFilter"), Name("bMustOverlapSelf"), Name("bIncludeChildren"), Name("ActorSelection"), Name("ActorSelectionTag"), Name("ActorSelectionClass"), Name("ActorReferenceSelector"), Name("bSelectMultiple"), Name("bIgnoreSelfAndChildren"), Name("bShowActorFilter"), Name("bShowIncludeChildren"), Name("bShowActorSelection"), Name("bShowActorSelectionClass"), Name("bShowSelectMultiple"), Name("bShowIgnoreSelfAndChildren"), Name("ComponentSelection"), Name("ComponentSelectionTag"), Name("ComponentSelectionClass"), Name("bShowComponentSelection"), Name("bShowComponentSelectionClass")], Out: [Name("Out")]
+     SamplerNode Pins -> In: [Name("Surface"), Name("Bounding Shape"), Name("Execution Dependency"), Name("Overrides"), Name("PointsPerSquaredMeter"), Name("PointExtents"), Name("Looseness"), Name("bUnbounded"), Name("bApplyDensityToPoints"), Name("PointSteepness"), Name("bKeepZeroDensityPoints"), Name("Seed")], Out: [Name("Out")]
+     SpawnerNode Pins -> In: [Name("In"), Name("Execution Dependency"), Name("Overrides"), Name("TargetActor"), Name("bAllowMergeDifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD1E0) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07ACF10) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+CREATE 10m x 10m PCG GRASS TEST PATCH
+================================================================================
+
+1. Loading PCG Graph...
+   Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Loaded: PCG_StadiumGrass_9925
+
+2. Cleaning up old test actors...
+   ✓ Removed 2 old test actors
+
+3. Setting Surface Sampler density to 25.0 points/m²...
+   Current density: 25.0 points/m²
+   ✓ Set to 25.0 points/m²
+   ✓ Set to unbounded mode (generates points everywhere in volume)
+   ✓ Saved graph
+
+4. Creating test ground plane (20m x 20m)...
+   ✓ Created ground plane at (0, 0, -5)
+   ✓ Size: 20m x 20m (covers test area)
+   ✓ Added tag: 'PCG_Ground'
+
+5. Rebuilding PCG Graph...
+   Clearing 3 existing nodes...
+   Adding Static Mesh Spawner...
+   Re-configuring Mesh...
+   ✓ Loaded mesh: SM_tbdpec3r_VarA
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Configured Spawner with mesh entry (weight=1)
+   Adding Surface Sampler...
+   ✓ Configured Sampler: 25.0 pts/m², Unbounded
+   Adding Input Node...
+     Setting actor_filter to ALL_WORLD_ACTORS (2)...
+     ✓ Set via attribute assignment (Enum)
+   ✓ Configured Input: Tag 'PCG_Ground', Filter=AllWorldActors
+   ✓ Disabled 'Track Actors Only Within Bounds'
+   ✓ Enabled 'Debug' on Input Node (Look for wireframes!)
+   Connecting Nodes...
+     InputNode Pins -> In: [Name("Execution Dependency"), Name("Overrides"), Name("ActorFilter"), Name("bMustOverlapSelf"), Name("bIncludeChildren"), Name("ActorSelection"), Name("ActorSelectionTag"), Name("ActorSelectionClass"), Name("ActorReferenceSelector"), Name("bSelectMultiple"), Name("bIgnoreSelfAndChildren"), Name("bShowActorFilter"), Name("bShowIncludeChildren"), Name("bShowActorSelection"), Name("bShowActorSelectionClass"), Name("bShowSelectMultiple"), Name("bShowIgnoreSelfAndChildren"), Name("ComponentSelection"), Name("ComponentSelectionTag"), Name("ComponentSelectionClass"), Name("bShowComponentSelection"), Name("bShowComponentSelectionClass")], Out: [Name("Out")]
+     SamplerNode Pins -> In: [Name("Surface"), Name("Bounding Shape"), Name("Execution Dependency"), Name("Overrides"), Name("PointsPerSquaredMeter"), Name("PointExtents"), Name("Looseness"), Name("bUnbounded"), Name("bApplyDensityToPoints"), Name("PointSteepness"), Name("bKeepZeroDensityPoints"), Name("Seed")], Out: [Name("Out")]

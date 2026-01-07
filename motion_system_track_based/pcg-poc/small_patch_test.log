@@ -1,0 +1,1095 @@
+================================================================================
+CREATE 10m x 10m PCG GRASS TEST PATCH
+================================================================================
+
+1. Loading PCG Graph...
+   Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Loaded: PCG_StadiumGrass_9925
+
+2. Cleaning up old test actors...
+   ✓ Removed 2 old test actors
+
+3. Setting Surface Sampler density to 25.0 points/m²...
+   Current density: 25.0 points/m²
+   ✓ Set to 25.0 points/m²
+   ✓ Set to unbounded mode (generates points everywhere in volume)
+   ✓ Saved graph
+
+4. Creating test ground plane (20m x 20m)...
+   ✓ Created ground plane at (0, 0, -5)
+   ✓ Size: 20m x 20m (covers test area)
+   ✓ Added Actor tag: 'PCG_Ground'
+   ✓ Added Component tag: 'PCG_Ground_Comp'
+
+5. Rebuilding PCG Graph...
+   Clearing 3 existing nodes...
+   Adding Static Mesh Spawner...
+   Re-configuring Mesh...
+   ✓ Loaded mesh: SM_tbdpec3r_VarA
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Configured Spawner with mesh entry (weight=1), DEBUG=True
+   Adding Surface Sampler...
+   ✓ Configured Sampler: 25.0 pts/m², Unbounded, DEBUG=True
+   Adding Input Node...
+     Setting actor_filter to ALL_WORLD_ACTORS (2)...
+     ✓ Set via attribute assignment (Enum)
+   ✓ Configured Component Selector: Tag 'PCG_Ground_Comp'
+   ✓ Configured Input: ActorTag='PCG_Ground', Filter=AllWorldActors
+   ✓ Disabled 'Track Actors Only Within Bounds'
+   ✓ Disabled 'Track Actors Only Within Bounds'
+   ✓ Enabled 'Debug' on Input Node (Look for wireframes!)
+   Connecting Nodes...
+     InputNode Pins -> In: [Name("Execution Dependency"), Name("Overrides"), Name("ActorFilter"), Name("bMustOverlapSelf"), Name("bIncludeChildren"), Name("ActorSelection"), Name("ActorSelectionTag"), Name("ActorSelectionClass"), Name("ActorReferenceSelector"), Name("bSelectMultiple"), Name("bIgnoreSelfAndChildren"), Name("bShowActorFilter"), Name("bShowIncludeChildren"), Name("bShowActorSelection"), Name("bShowActorSelectionClass"), Name("bShowSelectMultiple"), Name("bShowIgnoreSelfAndChildren"), Name("ComponentSelection"), Name("ComponentSelectionTag"), Name("ComponentSelectionClass"), Name("bShowComponentSelection"), Name("bShowComponentSelectionClass")], Out: [Name("Out")]
+     SamplerNode Pins -> In: [Name("Surface"), Name("Bounding Shape"), Name("Execution Dependency"), Name("Overrides"), Name("PointsPerSquaredMeter"), Name("PointExtents"), Name("Looseness"), Name("bUnbounded"), Name("bApplyDensityToPoints"), Name("PointSteepness"), Name("bKeepZeroDensityPoints"), Name("Seed")], Out: [Name("Out")]
+     SpawnerNode Pins -> In: [Name("In"), Name("Execution Dependency"), Name("Overrides"), Name("TargetActor"), Name("bAllowMergeDifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD690) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AE810) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x00000294DBFB4D00) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F791D5870) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F791D5870) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_22.PCG Component.PCGGraphInstance' (0x00000292877F9F40) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+       ⚠ WARNING: Trigger not set to GENERATE_ON_DEMAND!
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✓ Found 1 mesh components
+         Component 0: InstancedStaticMeshComponent
+           Mesh: PCG_Cube
+           Instance Count: 217148
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F36217DA0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F36217DA0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
+tor"), Name("bAllowMergeDifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD690) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AE810) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x00000294DBFB4D00) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F791D5870) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F791D5870) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_22.PCG Component.PCGGraphInstance' (0x00000292877F9F40) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+       ⚠ WARNING: Trigger not set to GENERATE_ON_DEMAND!
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✓ Found 1 mesh components
+         Component 0: InstancedStaticMeshComponent
+           Mesh: PCG_Cube
+           Instance Count: 217148
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F36217DA0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F36217DA0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
+DifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD690) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AE810) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x00000294DBFB4D00) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F791D5870) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F791D5870) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_22.PCG Component.PCGGraphInstance' (0x00000292877F9F40) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+       ⚠ WARNING: Trigger not set to GENERATE_ON_DEMAND!
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✓ Found 1 mesh components
+         Component 0: InstancedStaticMeshComponent
+           Mesh: PCG_Cube
+           Instance Count: 217148
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F36217DA0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F36217DA0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
+(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD690) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AE810) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x00000294DBFB4D00) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F791D5870) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F791D5870) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_22.PCG Component.PCGGraphInstance' (0x00000292877F9F40) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+       ⚠ WARNING: Trigger not set to GENERATE_ON_DEMAND!
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✓ Found 1 mesh components
+         Component 0: InstancedStaticMeshComponent
+           Mesh: PCG_Cube
+           Instance Count: 217148
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F36217DA0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F36217DA0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
+  Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD690) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AE810) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x00000294DBFB4D00) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F791D5870) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F791D5870) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_22.PCG Component.PCGGraphInstance' (0x00000292877F9F40) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+       ⚠ WARNING: Trigger not set to GENERATE_ON_DEMAND!
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✓ Found 1 mesh components
+         Component 0: InstancedStaticMeshComponent
+           Mesh: PCG_Cube
+           Instance Count: 217148
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F36217DA0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F36217DA0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
+  Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD690) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AE810) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x00000294DBFB4D00) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F791D5870) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F791D5870) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_22.PCG Component.PCGGraphInstance' (0x00000292877F9F40) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+       ⚠ WARNING: Trigger not set to GENERATE_ON_DEMAND!
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✓ Found 1 mesh components
+         Component 0: InstancedStaticMeshComponent
+           Mesh: PCG_Cube
+           Instance Count: 217148
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F36217DA0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F36217DA0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
+ old test actors...
+   ✓ Removed 2 old test actors
+
+3. Setting Surface Sampler density to 25.0 points/m²...
+   Current density: 25.0 points/m²
+   ✓ Set to 25.0 points/m²
+   ✓ Set to unbounded mode (generates points everywhere in volume)
+   ✓ Saved graph
+
+4. Creating test ground plane (20m x 20m)...
+   ✓ Created ground plane at (0, 0, -5)
+   ✓ Size: 20m x 20m (covers test area)
+   ✓ Added Actor tag: 'PCG_Ground'
+   ✓ Added Component tag: 'PCG_Ground_Comp'
+
+5. Rebuilding PCG Graph...
+   Clearing 3 existing nodes...
+   Adding Static Mesh Spawner...
+   Re-configuring Mesh...
+   ✓ Loaded mesh: SM_tbdpec3r_VarA
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Configured Spawner with mesh entry (weight=1), DEBUG=True
+   Adding Surface Sampler...
+   ✓ Configured Sampler: 25.0 pts/m², Unbounded, DEBUG=True
+   Adding Input Node...
+     Setting actor_filter to ALL_WORLD_ACTORS (2)...
+     ✓ Set via attribute assignment (Enum)
+   ✓ Configured Component Selector: Tag 'PCG_Ground_Comp'
+   ✓ Configured Input: ActorTag='PCG_Ground', Filter=AllWorldActors
+   ✓ Disabled 'Track Actors Only Within Bounds'
+   ✓ Disabled 'Track Actors Only Within Bounds'
+   ✓ Enabled 'Debug' on Input Node (Look for wireframes!)
+   Connecting Nodes...
+     InputNode Pins -> In: [Name("Execution Dependency"), Name("Overrides"), Name("ActorFilter"), Name("bMustOverlapSelf"), Name("bIncludeChildren"), Name("ActorSelection"), Name("ActorSelectionTag"), Name("ActorSelectionClass"), Name("ActorReferenceSelector"), Name("bSelectMultiple"), Name("bIgnoreSelfAndChildren"), Name("bShowActorFilter"), Name("bShowIncludeChildren"), Name("bShowActorSelection"), Name("bShowActorSelectionClass"), Name("bShowSelectMultiple"), Name("bShowIgnoreSelfAndChildren"), Name("ComponentSelection"), Name("ComponentSelectionTag"), Name("ComponentSelectionClass"), Name("bShowComponentSelection"), Name("bShowComponentSelectionClass")], Out: [Name("Out")]
+     SamplerNode Pins -> In: [Name("Surface"), Name("Bounding Shape"), Name("Execution Dependency"), Name("Overrides"), Name("PointsPerSquaredMeter"), Name("PointExtents"), Name("Looseness"), Name("bUnbounded"), Name("bApplyDensityToPoints"), Name("PointSteepness"), Name("bKeepZeroDensityPoints"), Name("Seed")], Out: [Name("Out")]
+     SpawnerNode Pins -> In: [Name("In"), Name("Execution Dependency"), Name("Overrides"), Name("TargetActor"), Name("bAllowMergeDifferentDataInSameInstancedComponents"), Name("Seed")], Out: [Name("Out")]
+   Connecting Input(Out) -> Sampler(Surface)
+   Connecting Sampler(Out) -> Spawner(In)
+   ✓ Saved graph after rebuild
+
+6. Creating 10.0m x 10.0m test volume...
+   ✓ Created volume at (0, 0, 0)
+   ✓ Size: 10.0m x 10.0m x 5m
+
+7. Assigning graph and generating...
+   ✓ Assigned graph
+
+   Setting generation trigger...
+   ✓ Set to: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0> (Auto-generate)
+
+   Cleaning up previous generation...
+   ✓ Cleaned up
+
+   Generating PCG...
+   ✓ generate_local(True) called
+   ✓ generate(force=True) called
+
+   Expected grass instances: ~2,500
+   (Area: 100.0m² × Density: 25.0 points/m²)
+
+   Checking PCG execution status...
+     Generated (immediate): False
+
+   Checking generation trigger setting...
+     Current trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+     ⚠ Generation not complete - may still be processing
+     Check viewport in a few seconds
+
+   Checking for generated output...
+     Component class: PCGComponent
+     Available get methods: 18
+
+8. Debugging - checking configuration...
+
+   Checking for stadium ground actors...
+     ✗ NO STADIUM GROUND ACTORS FOUND!
+     This is the problem - PCG needs ground to sample!
+
+   Volume position check:
+     Volume location: (0.0, 0.0, 0.0)
+     Volume bounds: Origin <Struct 'Vector' (0x0000028FE07AD690) {x: 0.000000, y: 0.000000, z: 0.000000}>, Extent <Struct 'Vector' (0x0000028FE07AE810) {x: 1000.000000, y: 1000.000000, z: 500.000000}>
+
+   Checking mesh spawner configuration...
+     Mesh entries count: 1
+     ✓ Mesh configured: SM_tbdpec3r_VarA
+
+   Checking Surface Sampler settings...
+     Surface Sampler found
+       points_per_squared_meter: 25.0
+       unbounded: True
+       point_extent_min: (cannot read)
+       point_extent_max: (cannot read)
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Test patch created at stadium center (0, 0, 0)
+🌱 Check your viewport for grass!
+
+Expected: ~2,500 grass instances in a 10.0m x 10.0m area
+
+If you see grass:
+  - Success! PCG is working
+  - Adjust density if needed (currently 25.0 points/m²)
+  - Scale up to full stadium by increasing volume size
+
+If no grass:
+  - Check debug output above for issues
+  - Most likely: Volume doesn't overlap stadium ground
+  - Or: Mesh not configured in spawner
+================================================================================
+VERIFY PCG CONFIGURATION
+================================================================================
+
+1. Verifying PCG Graph...
+   Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+   ✓ Graph loaded: PCG_StadiumGrass_9925
+   Graph type: <class 'PCGGraph'>
+   Graph class: PCGGraph
+
+2. Verifying PCG Nodes...
+   Total nodes: 3
+
+   Node: PCGStaticMeshSpawnerSettings
+     ✓ Mesh Spawner found
+
+   Node: PCGSurfaceSamplerSettings
+     ✓ Surface Sampler found
+
+   Node: PCGDataFromActorSettings
+
+3. Verifying Surface Sampler Configuration...
+   Density: 25.0 points/m²
+   Unbounded: True
+
+4. Verifying Mesh Spawner Configuration...
+   Mesh selector type: PCGMeshSelectorWeighted
+   Mesh entries count: 1
+
+   Entry 0:
+     Type: <class 'PCGMeshSelectorWeightedEntry'>
+     Descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x00000294DBFB4D00) {}>
+     ✓ Mesh: SM_tbdpec3r_VarA
+     ✓ Mesh path: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+     ✓ CORRECT GRASS MESH!
+
+5. Verifying PCG Volume and Component...
+
+   Volume: PCG_Test_Patch_10x10
+     Location: <Struct 'Vector' (0x0000028F791D5870) {x: 0.000000, y: 0.000000, z: 0.000000}>
+     Scale: <Struct 'Vector' (0x0000028F791D5870) {x: 10.000000, y: 10.000000, z: 5.000000}>
+
+     PCG Component found:
+       Graph instance: <Object '/Temp/Untitled_7.Untitled_7:PersistentLevel.PCGVolume_22.PCG Component.PCGGraphInstance' (0x00000292877F9F40) Class 'PCGGraphInstance'>
+       Generation trigger: <PCGComponentGenerationTrigger.GENERATE_ON_LOAD: 0>
+       ⚠ WARNING: Trigger not set to GENERATE_ON_DEMAND!
+       Generated: True
+
+     Checking for generated Geometry (ISMs/HISMs)...
+       ✓ Found 1 mesh components
+         Component 0: InstancedStaticMeshComponent
+           Mesh: PCG_Cube
+           Instance Count: 217148
+
+6. Verifying Ground Plane...
+   ✓ Ground: PCG_Test_Ground
+     Location: <Struct 'Vector' (0x0000028F36217DA0) {x: 0.000000, y: 0.000000, z: -5.000000}>
+     Scale: <Struct 'Vector' (0x0000028F36217DA0) {x: 20.000000, y: 20.000000, z: 0.100000}>
+     ✓ Has mesh: Cube
+
+================================================================================
+VERIFICATION COMPLETE
+================================================================================
+
+Summary:
+  PCG Graph: ✓
+  Surface Sampler: ✓
+  Mesh Spawner: ✓
+  PCG Volumes: 1
+  Ground Plane: ✓
