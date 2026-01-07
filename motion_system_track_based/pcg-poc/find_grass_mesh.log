@@ -279,3 +279,246 @@ METHODS (69):
   toggle_active(...)
 
 PROPERTIES (31):
+  activated
+  auto_activate
+  component_tags
+  dirty_generated
+  generate_on_drop_when_trigger_on_demand
+  generated
+  generation_radii
+  generation_trigger
+  graph_instance
+  ignore_landscape_tracking
+  input_type
+  is_component_partitioned
+  is_editor_only
+  on_component_activated
+  on_component_deactivated
+  on_pcg_graph_cancelled_external
+  on_pcg_graph_cleaned_external
+  on_pcg_graph_generated_external
+  on_pcg_graph_start_generating_external
+  only_track_itself
+  override_generation_radii
+  parse_actor_components
+  post_generate_function_names
+  regenerate_in_editor
+  replicate_using_registered_sub_object_list
+  replicates
+  scheduling_policy
+  scheduling_policy_class
+  seed
+  tool_data_container
+  tracking_priority
+
+================================================================================
+CLASS: PCGSurfaceSamplerSettings
+================================================================================
+
+METHODS (24):
+  acquire_editor_element_handle(...)
+  call_method(...)
+  cast(...)
+  get_class(...)
+  get_class_path_name(...)
+  get_default_object(...)
+  get_editor_property(...)
+  get_fname(...)
+  get_full_name(...)
+  get_name(...)
+  get_outer(...)
+  get_outermost(...)
+  get_package(...)
+  get_path_name(...)
+  get_typed_outer(...)
+  get_world(...)
+  is_editor_property_overridden(...)
+  is_package_external(...)
+  modify(...)
+  rename(...)
+  reset_editor_property(...)
+  set_editor_properties(...)
+  set_editor_property(...)
+  static_class(...)
+
+PROPERTIES (0):
+
+================================================================================
+CLASS: PCGStaticMeshSpawnerSettings
+================================================================================
+
+METHODS (24):
+  acquire_editor_element_handle(...)
+  call_method(...)
+  cast(...)
+  get_class(...)
+  get_class_path_name(...)
+  get_default_object(...)
+  get_editor_property(...)
+  get_fname(...)
+  get_full_name(...)
+  get_name(...)
+  get_outer(...)
+  get_outermost(...)
+  get_package(...)
+  get_path_name(...)
+  get_typed_outer(...)
+  get_world(...)
+  is_editor_property_overridden(...)
+  is_package_external(...)
+  modify(...)
+  rename(...)
+  reset_editor_property(...)
+  set_editor_properties(...)
+  set_editor_property(...)
+  static_class(...)
+
+PROPERTIES (0):
+
+================================================================================
+TESTING SPECIFIC METHODS
+================================================================================
+
+Loading PCG_StadiumGrass...
+✓ Loaded: <class 'PCGGraph'>
+
+Trying to access nodes...
+  ✗ No get_nodes() method
+  ✓ Has 'nodes' property
+    Type: <class 'Array'>
+    Length: 2
+
+Checking edge methods...
+  ✓ Has add_edge()
+
+================================================================================
+REFLECTION COMPLETE
+================================================================================
+================================================================================
+CONFIGURING PCG GRAPH
+================================================================================
+
+1. Loading PCG Graph...
+✓ Loaded graph: <class 'PCGGraph'>
+
+2. Inspecting nodes...
+Total nodes: 2
+Input node: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:DefaultInputNode' (0x00000292B5E70200) Class 'PCGNode'>
+Output node: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:DefaultOutputNode' (0x00000292B5E72D00) Class 'PCGNode'>
+
+Node 0:
+  Type: PCGSurfaceSamplerSettings
+  Title: None
+  Input Pins: 12
+================================================================================
+CONFIGURING PCG GRAPH
+================================================================================
+
+1. Loading PCG Graph...
+✓ Loaded graph: <class 'PCGGraph'>
+
+2. Inspecting nodes...
+Total nodes: 2
+Input node: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:DefaultInputNode' (0x00000292B5E70200) Class 'PCGNode'>
+Output node: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:DefaultOutputNode' (0x00000292B5E72D00) Class 'PCGNode'>
+
+Node 0:
+  Type: PCGSurfaceSamplerSettings
+  Title: None
+  Input Pins: 12
+    - Pin_0
+    - Pin_1
+    - Pin_2
+    - Pin_3
+    - Pin_4
+    - Pin_5
+    - Pin_6
+    - Pin_7
+    - Pin_8
+    - Pin_9
+    - Pin_10
+    - Pin_11
+  Output Pins: 1
+    - Pin_0
+  → Identified as Surface Sampler
+
+Node 1:
+  Type: PCGStaticMeshSpawnerSettings
+  Title: None
+  Input Pins: 6
+    - Pin_0
+    - Pin_1
+    - Pin_2
+    - Pin_3
+    - Pin_4
+    - Pin_5
+  Output Pins: 1
+    - Pin_0
+  → Identified as Static Mesh Spawner
+
+3. Connecting nodes...
+Connecting: Surface Sampler.Out → Mesh Spawner.In
+✗ Error connecting nodes: 'PCGPin' object has no attribute 'label'
+
+4. Configuring Static Mesh Spawner...
+Spawner settings type: <class 'PCGStaticMeshSpawnerSettings'>
+✓ Loaded grass mesh: SM_tbdpec3r_VarA
+  ✗ Property 'mesh' failed: PCGStaticMeshSpawnerSettings: Failed to find property 'mesh' for attribute 'mesh' on 'PCGStaticMeshSpawnerSettings'
+  ✗ Property 'static_mesh' failed: PCGStaticMeshSpawnerSettings: Failed to find property 'static_mesh' for attribute 'static_mesh' on 'PCGStaticMeshSpawnerSettings'
+  ✗ Property 'meshes' failed: PCGStaticMeshSpawnerSettings: Failed to find property 'meshes' for attribute 'meshes' on 'PCGStaticMeshSpawnerSettings'
+
+5. Saving graph...
+✓ Saved: /Game/PCG/PCG_StadiumGrass
+
+6. Finding PCG Volume...
+✗ No PCG Volume found in scene
+  You may need to run create_stadium_ground.py first
+
+================================================================================
+CONFIGURATION COMPLETE
+================================================================================
+
+Check the viewport for generated grass!
+If nothing appears, open the PCG Graph in the editor to debug.
+================================================================================
+DEEP PCG PROPERTY REFLECTION
+================================================================================
+
+Loading graph...
+
+================================================================================
+PIN OBJECT ANALYSIS
+================================================================================
+
+Pin Type: <class 'PCGPin'>
+Pin Class: PCGPin
+
+Trying common pin properties:
+  ✗ label: PCGPin: Property 'Label' for attribute 'label' on 'PCGPin' is protected and cannot be read
+  ✗ name: PCGPin: Failed to find property 'name' for attribute 'name' on 'PCGPin'
+  ✗ pin_name: PCGPin: Failed to find property 'pin_name' for attribute 'pin_name' on 'PCGPin'
+  ✓ properties = <Struct 'PCGPinProperties' (0x00000291707EC718) {label: "In", usage: Normal, allowed_types: {ids: ((Struct="/Script/CoreUObject.ScriptStruct'/Script/PCG.PCGDataTypeInfoPoint'")), custom_subtype: -1}, allow_multiple_data: True, pin_status: Required, invisible_pin: False, allow_multiple_connections: True}>
+  ✗ pin_id: PCGPin: Failed to find property 'pin_id' for attribute 'pin_id' on 'PCGPin'
+  ✗ tooltip: PCGPin: Failed to find property 'tooltip' for attribute 'tooltip' on 'PCGPin'
+
+================================================================================
+SPAWNER SETTINGS ANALYSIS
+================================================================================
+
+Settings Type: <class 'PCGStaticMeshSpawnerSettings'>
+Settings Class: PCGStaticMeshSpawnerSettings
+
+Trying mesh properties:
+
+================================================================================
+ALTERNATIVE APPROACHES
+================================================================================
+
+1. Checking parent classes...
+
+2. Checking settings_interface...
+Settings interface: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:StaticMeshSpawner_0.PCGStaticMeshSpawnerSettings_0' (0x000002901B6A6300) Class 'PCGStaticMeshSpawnerSettings'>
+Type: <class 'PCGStaticMeshSpawnerSettings'>
+
+3. Attempting property enumeration...
+Class: <Object '/Script/PCG.PCGStaticMeshSpawnerSettings' (0x0000028F564E8C00) Class 'Class'>
