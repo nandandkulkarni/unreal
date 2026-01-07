@@ -1,0 +1,171 @@
+================================================================================
+SCENE DIAGNOSTIC
+================================================================================
+
+Total actors in scene: 13
+
+PCG-related actors (2):
+  - PCGWorldActor0 (PCGWorldActor)
+  - Stadium_Grass_PCG_Volume_9708 (PCGVolume)
+
+Stadium actors (4):
+  - Stadium_Ground_Rect_9708 (StaticMeshActor)
+  - Stadium_Ground_Right_9708 (StaticMeshActor)
+  - Stadium_Ground_Left_9708 (StaticMeshActor)
+  - Stadium_Grass_PCG_Volume_9708 (PCGVolume)
+
+Checking PCG assets...
+  /Game/PCG directory doesn't exist
+================================================================================
+COMPLETE PCG STADIUM GENERATOR
+================================================================================
+
+Run ID: 9893
+
+================================================================================
+STEP 1: CLEANUP
+================================================================================
+✓ Removed 4 old actors
+✓ Deleted old PCG Graph
+
+================================================================================
+STEP 2: CREATE STADIUM GROUND
+================================================================================
+✓ Created Stadium Ground (3 actors, no material - PCG will add grass)
+
+================================================================================
+STEP 3: CREATE PCG GRAPH
+================================================================================
+Creating /Game/PCG directory...
+✓ Created /Game/PCG directory
+✓ Got asset tools: <Object '/Script/AssetTools.Default__AssetToolsImpl' (0x0000028F25756900) Class 'AssetToolsImpl'>
+✓ Created factory: <Object '/Engine/Transient.PCGGraphFactory_7' (0x00000294E8ABAA40) Class 'PCGGraphFactory'>
+✓ Created PCG Graph: <Object '/Game/PCG/PCG_StadiumGrass_9893.PCG_StadiumGrass_9893' (0x000002906B837200) Class 'PCGGraph'>
+✓ Added Surface Sampler node: <Object '/Game/PCG/PCG_StadiumGrass_9893.PCG_StadiumGrass_9893:SurfaceSampler_0' (0x0000029064BC9500) Class 'PCGNode'>
+✓ Added Static Mesh Spawner node: <Object '/Game/PCG/PCG_StadiumGrass_9893.PCG_StadiumGrass_9893:StaticMeshSpawner_0' (0x0000029064BCE800) Class 'PCGNode'>
+
+================================================================================
+STEP 4: CONNECT NODES
+================================================================================
+Pin labels: In, Surface, Out, In, Out, Out
+✓ Input → Surface Sampler
+✓ Surface Sampler → Mesh Spawner
+✓ Mesh Spawner → Output
+
+================================================================================
+STEP 5: CONFIGURE MESH SPAWNER
+================================================================================
+✓ Loaded grass mesh: SM_tbdpec3r_VarA
+
+Saving PCG Graph to /Game/PCG/PCG_StadiumGrass_9893...
+✓ Saved PCG Graph
+  ✓ Verified: Graph exists at /Game/PCG/PCG_StadiumGrass_9893
+
+================================================================================
+STEP 6: CREATE PCG VOLUME
+================================================================================
+✓ Loaded PCGVolume class: <Object '/Script/PCG.PCGVolume' (0x0000028F564F5F00) Class 'Class'>
+✓ Created PCG Volume: Stadium_Grass_PCG_Volume_9893
+  Location: <Struct 'Vector' (0x0000028FE07DC9C0) {x: 0.000000, y: 0.000000, z: 100.000000}>
+  Scale: <Struct 'Vector' (0x0000028FE07DC9C0) {x: 200.000000, y: 100.000000, z: 10.000000}>
+  ✓ Found PCG Component: <Object '/Temp/Untitled_5.Untitled_5:PersistentLevel.PCGVolume_2.PCG Component' (0x0000028F35EFF000) Class 'PCGComponent'>
+  ✓ Assigned graph to component
+
+================================================================================
+STEP 7: TRIGGER GENERATION
+================================================================================
+  ✓ PCG generation triggered!
+
+================================================================================
+COMPLETE!
+================================================================================
+
+✅ Stadium ground created
+✅ PCG Graph created and configured
+✅ Nodes connected
+✅ PCG Volume created
+✅ Generation triggered
+
+🎉 Check your viewport for the PCG-generated grass!
+
+If grass doesn't appear:
+1. Open /Game/PCG/PCG_StadiumGrass
+2. Manually set the mesh in Static Mesh Spawner node
+3. Regenerate the PCG Volume
+================================================================================
+COMPLETE PCG STADIUM GENERATOR
+================================================================================
+
+Run ID: 9925
+
+================================================================================
+STEP 1: CLEANUP
+================================================================================
+✓ Removed 4 old actors
+✓ Deleted old PCG Graph
+
+================================================================================
+STEP 2: CREATE STADIUM GROUND
+================================================================================
+✓ Created Stadium Ground (3 actors, no material - PCG will add grass)
+
+================================================================================
+STEP 3: CREATE PCG GRAPH
+================================================================================
+Creating /Game/PCG directory...
+✓ Created /Game/PCG directory
+✓ Got asset tools: <Object '/Script/AssetTools.Default__AssetToolsImpl' (0x0000028F25756900) Class 'AssetToolsImpl'>
+✓ Created factory: <Object '/Engine/Transient.PCGGraphFactory_8' (0x000002905188E100) Class 'PCGGraphFactory'>
+✓ Created PCG Graph: <Object '/Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925' (0x0000029050199000) Class 'PCGGraph'>
+✓ Added Surface Sampler node: <Object '/Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925:SurfaceSampler_0' (0x00000294D8B00200) Class 'PCGNode'>
+✓ Added Static Mesh Spawner node: <Object '/Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925:StaticMeshSpawner_0' (0x00000294D8B04200) Class 'PCGNode'>
+
+================================================================================
+STEP 4: CONNECT NODES
+================================================================================
+Pin labels: In, Surface, Out, In, Out, Out
+✓ Input → Surface Sampler
+✓ Surface Sampler → Mesh Spawner
+✓ Mesh Spawner → Output
+
+================================================================================
+STEP 5: CONFIGURE MESH SPAWNER
+================================================================================
+✓ Loaded grass mesh: SM_tbdpec3r_VarA
+
+Saving PCG Graph...
+  Graph path: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+✓ Saved PCG Graph
+  ✓ Verified: Graph exists at /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+
+================================================================================
+STEP 6: CREATE PCG VOLUME
+================================================================================
+✓ Loaded PCGVolume class: <Object '/Script/PCG.PCGVolume' (0x0000028F564F5F00) Class 'Class'>
+✓ Created PCG Volume: Stadium_Grass_PCG_Volume_9925
+  Location: <Struct 'Vector' (0x0000028F791D7FD0) {x: 0.000000, y: 0.000000, z: 100.000000}>
+  Scale: <Struct 'Vector' (0x0000028F791D7FD0) {x: 200.000000, y: 100.000000, z: 10.000000}>
+  ✓ Found PCG Component: <Object '/Temp/Untitled_5.Untitled_5:PersistentLevel.PCGVolume_3.PCG Component' (0x0000028FE3FEAA00) Class 'PCGComponent'>
+  ✓ Assigned graph to component
+
+================================================================================
+STEP 7: TRIGGER GENERATION
+================================================================================
+  ✓ PCG generation triggered!
+
+================================================================================
+COMPLETE!
+================================================================================
+
+✅ Stadium ground created
+✅ PCG Graph created and configured
+✅ Nodes connected
+✅ PCG Volume created
+✅ Generation triggered
+
+🎉 Check your viewport for the PCG-generated grass!
+
+If grass doesn't appear:
+1. Open /Game/PCG/PCG_StadiumGrass
+2. Manually set the mesh in Static Mesh Spawner node
+3. Regenerate the PCG Volume

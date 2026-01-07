@@ -95,9 +95,8 @@ print("=" * 80)
 
 cube_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cube.Cube")
 cyl_mesh = unreal.load_object(None, "/Engine/BasicShapes/Cylinder.Cylinder")
-grass_mat = unreal.load_object(None, GRASS_MATERIAL)
 
-# Central Rectangle
+# Central Rectangle (no material - PCG will add grass)
 rect_actor = unreal.EditorLevelLibrary.spawn_actor_from_class(
     unreal.StaticMeshActor,
     unreal.Vector(0, 0, -5)
@@ -111,12 +110,7 @@ rect_actor.set_actor_scale3d(unreal.Vector(
     0.1
 ))
 
-if grass_mat:
-    dmi = rect_actor.static_mesh_component.create_dynamic_material_instance(0, grass_mat)
-    dmi.set_scalar_parameter_value("Tiling", 30.0)
-    dmi.set_scalar_parameter_value("Main Tiling", 30.0)
-
-# End Caps
+# End Caps (no material - PCG will add grass)
 scale_xy = STADIUM_RADIUS / 50.0
 positions = [
     (f"Stadium_Ground_Right_{SUFFIX}", unreal.Vector(STRAIGHT_LEN / 2.0, 0, -5)),
@@ -132,12 +126,8 @@ for name, loc in positions:
     cap_actor.set_folder_path(unreal.Name("OvalTrack/Stadium"))
     cap_actor.static_mesh_component.set_static_mesh(cyl_mesh)
     cap_actor.set_actor_scale3d(unreal.Vector(scale_xy, scale_xy, 0.1))
-    
-    if grass_mat:
-        cap_dmi = cap_actor.static_mesh_component.create_dynamic_material_instance(0, grass_mat)
-        cap_dmi.set_scalar_parameter_value("Tiling", 30.0)
 
-print("✓ Created Stadium Ground (3 actors)")
+print("✓ Created Stadium Ground (3 actors, no material - PCG will add grass)")
 
 # ==============================================================================
 # STEP 3: CREATE PCG GRAPH
@@ -145,6 +135,12 @@ print("✓ Created Stadium Ground (3 actors)")
 print("\n" + "=" * 80)
 print("STEP 3: CREATE PCG GRAPH")
 print("=" * 80)
+
+# Ensure /Game/PCG directory exists
+if not unreal.EditorAssetLibrary.does_asset_exist("/Game/PCG"):
+    print("Creating /Game/PCG directory...")
+    unreal.EditorAssetLibrary.make_directory("/Game/PCG")
+    print("✓ Created /Game/PCG directory")
 
 try:
     asset_tools = unreal.AssetToolsHelpers.get_asset_tools()
@@ -268,9 +264,21 @@ if grass_mesh:
 else:
     print("✗ Failed to load grass mesh")
 
-# Save graph
-unreal.EditorAssetLibrary.save_asset(PCG_GRAPH_PATH)
-print("✓ Saved PCG Graph")
+# Save graph using its actual path
+print(f"\nSaving PCG Graph...")
+graph_path = pcg_graph.get_path_name()
+print(f"  Graph path: {graph_path}")
+
+saved = unreal.EditorAssetLibrary.save_loaded_asset(pcg_graph)
+if saved:
+    print(f"✓ Saved PCG Graph")
+    # Verify it exists
+    if unreal.EditorAssetLibrary.does_asset_exist(graph_path):
+        print(f"  ✓ Verified: Graph exists at {graph_path}")
+    else:
+        print(f"  ✗ Warning: Graph save reported success but asset doesn't exist at {graph_path}")
+else:
+    print(f"✗ Failed to save PCG Graph")
 
 # ==============================================================================
 # STEP 6: CREATE PCG VOLUME
@@ -280,35 +288,53 @@ print("STEP 6: CREATE PCG VOLUME")
 print("=" * 80)
 
 pcg_vol_cls = unreal.load_class(None, "/Script/PCG.PCGVolume")
-pcg_volume = unreal.EditorLevelLibrary.spawn_actor_from_class(
-    pcg_vol_cls,
-    unreal.Vector(0, 0, 100)
-)
-pcg_volume.set_actor_label(f"Stadium_Grass_PCG_Volume_{SUFFIX}")
-pcg_volume.set_folder_path(unreal.Name("OvalTrack/PCG"))
-pcg_volume.set_actor_scale3d(unreal.Vector(200.0, 100.0, 10.0))
-
-print(f"✓ Created PCG Volume")
-
-# Get PCG Component and assign graph
-pcg_comp = None
-for comp in pcg_volume.get_components_by_class(unreal.PCGComponent):
-    pcg_comp = comp
-    break
-
-if pcg_comp:
-    pcg_comp.set_graph(pcg_graph)
-    print("✓ Assigned graph to component")
-    
-    # Trigger generation
-    print("\n" + "=" * 80)
-    print("STEP 7: TRIGGER GENERATION")
-    print("=" * 80)
-    
-    pcg_comp.generate_local(True)
-    print("✓ PCG generation triggered!")
+if not pcg_vol_cls:
+    print("✗ Could not load PCGVolume class - PCG plugin may not be enabled")
 else:
-    print("✗ No PCG Component found")
+    print(f"✓ Loaded PCGVolume class: {pcg_vol_cls}")
+    
+    pcg_volume = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        pcg_vol_cls,
+        unreal.Vector(0, 0, 100)
+    )
+    
+    if pcg_volume:
+        pcg_volume.set_actor_label(f"Stadium_Grass_PCG_Volume_{SUFFIX}")
+        pcg_volume.set_folder_path(unreal.Name("OvalTrack/PCG"))
+        
+        # Scale to cover stadium area
+        pcg_volume.set_actor_scale3d(unreal.Vector(200.0, 100.0, 10.0))
+        
+        # Make sure it's visible
+        pcg_volume.set_actor_hidden_in_game(False)
+        
+        print(f"✓ Created PCG Volume: {pcg_volume.get_actor_label()}")
+        print(f"  Location: {pcg_volume.get_actor_location()}")
+        print(f"  Scale: {pcg_volume.get_actor_scale3d()}")
+
+        # Get PCG Component and assign graph
+        pcg_comp = None
+        for comp in pcg_volume.get_components_by_class(unreal.PCGComponent):
+            pcg_comp = comp
+            break
+        
+        if pcg_comp:
+            print(f"  ✓ Found PCG Component: {pcg_comp}")
+            pcg_comp.set_graph(pcg_graph)
+            print("  ✓ Assigned graph to component")
+            
+            # Trigger generation
+            print("\n" + "=" * 80)
+            print("STEP 7: TRIGGER GENERATION")
+            print("=" * 80)
+            
+            pcg_comp.generate_local(True)
+            print("  ✓ PCG generation triggered!")
+        else:
+            print("  ✗ No PCG Component found on volume")
+            print("  The volume was created but has no PCG component")
+    else:
+        print("✗ Failed to spawn PCG Volume actor")
 
 # ==============================================================================
 # SUMMARY
