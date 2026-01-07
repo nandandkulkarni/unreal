@@ -88,14 +88,47 @@ def run_script(script_name):
         print(f"Response: {result}")
         return False
 
+def tail_log(log_path, lines=20):
+    """Print the last N lines of a log file"""
+    if not os.path.exists(log_path):
+        print(f"⚠ Log file not found: {log_path}")
+        return
+
+    print("\n" + "-"*80)
+    print(f"Log Output ({log_path}):")
+    print("-"*80)
+    
+    try:
+        with open(log_path, 'r', encoding='utf-8') as f:
+            content = f.readlines()
+            # If file is small, print all of it
+            start_idx = max(0, len(content) - lines)
+            for line in content[start_idx:]:
+                print(line.rstrip())
+    except Exception as e:
+        print(f"⚠ Could not read log file: {e}")
+    print("-"*80 + "\n")
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python run_remote.py <script_name.py>")
+        print("Usage: python run_remote.py <script_name.py> [--log <log_file_path>]")
         sys.exit(1)
     
-    script_name = sys.argv[1]
-    if not script_name.endswith('.py'):
-        script_name += '.py'
+    script_path_arg = sys.argv[1]
+    log_file = None
     
-    success = run_script(script_name)
+    # Simple arg parsing
+    if len(sys.argv) >= 4 and sys.argv[2] == "--log":
+        log_file = sys.argv[3]
+    
+    if not script_path_arg.endswith('.py'):
+        script_path_arg += '.py'
+    
+    success = run_script(script_path_arg)
+    
+    if success and log_file:
+        # Wait a brief moment for file system to sync/flush
+        time.sleep(0.5)
+        tail_log(log_file, lines=50) # Show last 50 lines
+        
     sys.exit(0 if success else 1)

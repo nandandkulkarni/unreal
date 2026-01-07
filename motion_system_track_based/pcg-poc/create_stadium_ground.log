@@ -1,0 +1,12 @@
+================================================================================
+GENERATING FULL STADIUM GROUND
+================================================================================
+
+Cleaning up old stadium ground...
+✓ Removed 3 old actors
+
+Building Full Stadium Ground...
+✓ Created PCG Volume (Empty)
+✓ Created Full Stadium Ground
+
+✓ Log saved to: C:\UnrealProjects\coding\unreal\motion_system_track_based\pcg-poc\create_stadium_ground.log

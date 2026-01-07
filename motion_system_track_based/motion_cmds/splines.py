@@ -173,43 +173,87 @@ class SplineMotionCommandBuilder:
             # Load animation database
             from motion_structs.anim_loader import find_animation_by_type
             
-            # Select animation type based on movement speed
-            # Walk: < 2.0 m/s
-            # Jog: 2.0 - 4.5 m/s
-            # Run: > 4.5 m/s
-            if self._speed_val < 2.0:
-                anim_type = "walk"
-            elif self._speed_val < 4.5:
-                anim_type = "jog"
-            else:
-                anim_type = "run"
+            # --- POS SEARCH INTEGRATION [NEW] ---
+            # Try to ask Unreal's Motion Matching system for the best animation
+            # based on our exact speed and context.
+            anim_name = None
+            natural_speed = 3.5
+            start_offset = 0.0
             
-            # Get animation from database
-            anim_data = find_animation_by_type(anim_type, "forward", character=self._anim_db)
+            try:
+                from motion_cmds.pose_search_selector import PoseSearchSelector
+                # Use the database specified in command
+                db_name = "/Game/MotionMatching/MannyMotionDatabase"
+                # If specific db requested, try to map it
+                if self._anim_db == "manny_unarmed":
+                     # Does unarmed db exist in Unreal? Assuming yes or using MannyMotionDatabase
+                     pass
+                
+                selector = PoseSearchSelector(db_name)
+                
+                # Convert speed to units/s (Unreal units) if needed. 
+                # self._speed_val is in Meters/Second.
+                # 1 m/s = 100 unreal units/s
+                speed_uu = self._speed_val * 100.0
+                
+                # Calculate simple direction (forward)
+                direction = (1, 0, 0)
+                
+                # Context hint: "run" if fast, to help it filter?
+                context_hint = None
+                if self._speed_val > 4.5:
+                     context_hint = "/Game/Characters/Mannequins/Anims/Unarmed/Run/MF_Unarmed_Run_Fwd"
+                
+                found_anim, found_time = selector.select(speed_uu, direction, context_hint=context_hint)
+                
+                if found_anim:
+                    # Success!
+                    anim_name = found_anim.get_path_name()
+                    start_offset = found_time
+                    # Estimate natural speed from asset name if possible, or assume it matches requested
+                    # Ideally we read curve data, but for now:
+                    if "walk" in anim_name.lower(): natural_speed = 1.6
+                    elif "jog" in anim_name.lower(): natural_speed = 3.5
+                    elif "run" in anim_name.lower(): natural_speed = 5.0
+                    else: natural_speed = self._speed_val # Assume perfect match
+                    
+                    selector.cleanup()
+            except Exception as e:
+                print(f"PoseSearch failed, falling back: {e}")
             
-            # Smart Fallback: If RUN mapping fails (e.g. Manny has no run), try JOG
-            if not anim_data and anim_type == "run":
-                anim_data = find_animation_by_type("jog", "forward", character=self._anim_db)
-            
-            if anim_data:
-                # Use full path if available (preferred), otherwise short name
-                anim_name = anim_data.get("path", anim_data["name"])
-                natural_speed = anim_data.get("natural_speed_mps", 3.5)
-            else:
-                # Ultimate Fallback if database totally fails
-                print(f"Warning: No {anim_type} (or fallback) animation found in {self._anim_db} database.")
-                # Try to guess a reasonable default for the character
-                if self._anim_db == "manny":
-                     # Use full path for fallback too
-                     anim_name = "/Game/Characters/Mannequins/Anims/Pistol/Jog/MF_Pistol_Jog_Fwd.MF_Pistol_Jog_Fwd"
+            # --- FALLBACK TO PYTHON DATABASE ---
+            if not anim_name:
+                # Select animation type based on movement speed
+                # Walk: < 2.0 m/s
+                # Jog: 2.0 - 4.5 m/s
+                # Run: > 4.5 m/s
+                if self._speed_val < 2.0:
+                    anim_type = "walk"
+                elif self._speed_val < 4.5:
+                    anim_type = "jog"
                 else:
-                     anim_name = "Jog_Fwd"
-                natural_speed = 3.5
+                    anim_type = "run"
+                
+                # Get animation from database
+                anim_data = find_animation_by_type(anim_type, "forward", character=self._anim_db)
+                
+                # NOTE: Fallbacks removed per user request
+                # If exact type not found, we fail or check next source.
+                
+                if anim_data:
+                    # Use full path if available (preferred), otherwise short name
+                    anim_name = anim_data.get("path", anim_data["name"])
+                    natural_speed = anim_data.get("natural_speed_mps", 3.5)
+                else:
+                    # NO FALLBACK allowed
+                    raise RuntimeError(f"FATAL: No '{anim_type}' animation found for database '{self._anim_db}'. Fallbacks are disabled.")
             
             # HYBRID: Calculate speed multiplier to match movement speed
             # speed_multiplier = actual_speed / natural_animation_speed
             speed_multiplier = self._speed_val / natural_speed if natural_speed > 0 else 1.0
             
+            print(f"DEBUG_SPLINE: Adding Anim Segment: {anim_name} | Frames: {start_frame}-{end_frame} | SpeedMult: {speed_multiplier}")
+
             # Apply single animation for entire path
             self.ab.track_set.animation.add_segment(start_frame, end_frame, anim_name, speed_multiplier)
             

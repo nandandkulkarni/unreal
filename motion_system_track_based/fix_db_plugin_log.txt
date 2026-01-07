@@ -1,0 +1,14 @@
+Starting DB Fix (Plugin Mode)...
+--- Fixing MannyMotionDatabase with AAANKPosePlugin ---
+AAANKPoseBlueprintLibrary found.
+Database loaded: MannyMotionDatabase
+Found asset: MF_Unarmed_Walk_Fwd
+Found asset: MF_Unarmed_Jog_Fwd
+Asset not found at: /Game/Characters/Mannequins/Anims/Unarmed/Run/MF_Unarmed_Run_Fwd
+Asset not found at: /Game/Characters/Mannequins/Anims/Manny/Run/MF_Manny_Run_Fwd
+Searching for any Run animation...
+Successfully added: MF_Unarmed_Walk_Fwd
+Successfully added: MF_Unarmed_Jog_Fwd
+Total Added: 2
+Database build triggered.
+Final Count via Plugin: 100
