@@ -1067,3 +1067,246 @@ If grass doesn't appear:
 1. Open /Game/PCG/PCG_StadiumGrass
 2. Manually set the mesh in Static Mesh Spawner node
 3. Regenerate the PCG Volume
+================================================================================
+PCG CONFIGURATION DIAGNOSTIC & FIX
+================================================================================
+
+1. Finding latest PCG Graph...
+✓ Found graph: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+✓ Loaded graph: PCG_StadiumGrass_9925
+
+2. Checking Static Mesh Spawner configuration...
+✓ Found Static Mesh Spawner node
+  Settings type: <class 'PCGStaticMeshSpawnerSettings'>
+
+  Inspecting spawner properties...
+  Mesh-related properties found: ['apply_mesh_bounds_to_points', 'mesh_selector_instance', 'mesh_selector_parameters', 'mesh_selector_type', 'set_mesh_selector_type', 'static_mesh_component_property_overrides']
+    apply_mesh_bounds_to_points = True (type: <class 'bool'>)
+    mesh_selector_instance = <Object '/Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925:StaticMeshSpawner_0.PCGStaticMeshSpawnerSettings_6.DefaultSelectorInstance' (0x00000292869DC5A0) Class 'PCGMeshSelectorWeighted'> (type: <class 'PCGMeshSelectorWeighted'>)
+    mesh_selector_parameters = <Object '/Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925:StaticMeshSpawner_0.PCGStaticMeshSpawnerSettings_6.DefaultSelectorInstance' (0x00000292869DC5A0) Class 'PCGMeshSelectorWeighted'> (type: <class 'PCGMeshSelectorWeighted'>)
+    mesh_selector_type = <Object '/Script/PCG.PCGMeshSelectorWeighted' (0x0000028F564EFC80) Class 'Class'> (type: <class 'Class'>)
+    set_mesh_selector_type = <built-in method set_mesh_selector_type of PCGStaticMeshSpawnerSettings object at 0x0000028FE07C2AB0> (type: <class 'builtin_function_or_method_with_closure'>)
+    static_mesh_component_property_overrides = [] (type: <class 'Array'>)
+
+  ✓ Loaded grass mesh: SM_tbdpec3r_VarA
+
+  Attempting to configure mesh...
+    ✗ 'mesh_selector': 'PCGStaticMeshSpawnerSettings' object has no attribute 'mesh_selector'
+    ✗ 'meshes': 'PCGStaticMeshSpawnerSettings' object has no attribute 'meshes'
+    ✗ 'mesh': 'PCGStaticMeshSpawnerSettings' object has no attribute 'mesh'
+    ✗ 'static_mesh_list': 'PCGStaticMeshSpawnerSettings' object has no attribute 'static_mesh_list'
+    ⚠ Could not set mesh via standard properties
+    This may require manual configuration in the editor
+
+3. Checking Surface Sampler configuration...
+✓ Found Surface Sampler node
+
+  Inspecting sampler properties...
+  Relevant properties: ['unbounded']
+    unbounded = False
+
+4. Saving graph changes...
+✓ Graph saved
+
+5. Finding PCG Volume...
+✓ Found PCG Volume: Stadium_Grass_PCG_Volume_9925
+  ✓ Found PCG Component
+  Current graph: <Object '/Temp/Untitled_5.Untitled_5:PersistentLevel.PCGVolume_3.PCG Component.PCGGraphInstance' (0x00000294D9881180) Class 'PCGGraphInstance'>
+  ✓ Assigned graph: PCG_StadiumGrass_9925
+
+  Cleaning up old PCG data...
+  ✓ Cleaned up
+
+  Triggering PCG generation...
+  ✓ Generation triggered!
+
+================================================================================
+DIAGNOSTIC COMPLETE
+================================================================================
+
+Next steps if grass still doesn't appear:
+1. Open the PCG Graph in editor: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+2. Double-click the Static Mesh Spawner node
+3. Manually set the 'Meshes' or 'Mesh Selector' property
+4. In the PCG Volume, click 'Generate' to regenerate
+================================================================================
+CONFIGURE PCG MESH SELECTOR
+================================================================================
+
+1. Loading graph: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+✓ Found mesh spawner
+
+2. Mesh Selector: PCGMeshSelectorWeighted
+
+3. Inspecting mesh selector properties...
+   Mesh-related properties: ['mesh_entries']
+   mesh_entries = [] (type: Array)
+
+4. Loaded grass mesh: SM_tbdpec3r_VarA
+
+5. Configuring mesh selector...
+   Found property 'mesh_entries': []
+   ✗ 'mesh_entries': PCGMeshSelectorWeighted: Failed to convert type 'list' to property 'MeshEntries' (ArrayProperty) for attribute 'mesh_entries' on 'PCGMeshSelectorWeighted'
+  TypeError: NativizeProperty: Cannot nativize 'list' as 'MeshEntries' (ArrayProperty)
+    TypeError: NativizeProperty: Cannot nativize 'StaticMesh' as 'TransientPythonProperty' (StructProperty)
+      TypeError: NativizeStructInstance: Cannot nativize 'StaticMesh' as 'PCGMeshSelectorWeightedEntry'
+   ✗ 'weighted_meshes': 'PCGMeshSelectorWeighted' object has no attribute 'weighted_meshes'
+   ✗ 'meshes': 'PCGMeshSelectorWeighted' object has no attribute 'meshes'
+   ✗ 'mesh_list': 'PCGMeshSelectorWeighted' object has no attribute 'mesh_list'
+
+   Trying via set_editor_property...
+   ✗ 'mesh_entries': PCGMeshSelectorWeighted: Failed to convert type 'list' to property 'MeshEntries' (ArrayProperty) for attribute 'mesh_entries' on 'PCGMeshSelectorWeighted'
+  TypeError: NativizeProperty: Cannot nativize 'list' as 'MeshEntries' (ArrayProperty)
+    TypeError: NativizeProperty: Cannot nativize 'StaticMesh' as 'TransientPythonProperty' (StructProperty)
+      TypeError: NativizeStructInstance: Cannot nativize 'StaticMesh' as 'PCGMeshSelectorWeightedEntry'
+   ✗ 'weighted_meshes': PCGMeshSelectorWeighted: Failed to find property 'weighted_meshes' for attribute 'weighted_meshes' on 'PCGMeshSelectorWeighted'
+   ✗ 'meshes': PCGMeshSelectorWeighted: Failed to find property 'meshes' for attribute 'meshes' on 'PCGMeshSelectorWeighted'
+
+6. Saving graph...
+✓ Graph save: True
+
+7. Regenerating PCG...
+✓ Regenerated PCG on Stadium_Grass_PCG_Volume_9925
+
+================================================================================
+COMPLETE
+================================================================================
+
+⚠ Could not configure mesh automatically
+Manual steps required:
+1. Open /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+2. Double-click Static Mesh Spawner node
+3. In 'Mesh Selector', add the grass mesh manually
+================================================================================
+DEEP REFLECTION: PCGMeshSelectorWeighted
+================================================================================
+
+1. Mesh Selector Type: <class 'PCGMeshSelectorWeighted'>
+   Object: <Object '/Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925:StaticMeshSpawner_0.PCGStaticMeshSpawnerSettings_6.DefaultSelectorInstance' (0x00000292869DC5A0) Class 'PCGMeshSelectorWeighted'>
+
+2. Current mesh_entries:
+   Type: <class 'Array'>
+   Length: 0
+   Value: []
+
+3. No existing entries - trying to create one
+
+4. Searching for PCGMeshSelectorWeightedEntry struct...
+   ✓ unreal.PCGMeshSelectorWeightedEntry = <class 'PCGMeshSelectorWeightedEntry'>
+   ✓ unreal.load_class(None, '/Script/PCG.PCGMeshSelectorWeightedEntry') = None
+   ✓ unreal.load_object(None, '/Script/PCG.PCGMeshSelectorWeightedEntry') = <Object '/Script/PCG.PCGMeshSelectorWeightedEntry' (0x0000028F565F7540) Class 'ScriptStruct'>
+
+5. Inspecting mesh_entries property via get_editor_property:
+   Value: []
+   Type: <class 'Array'>
+
+6. Trying to create empty entry and add to array:
+   Checking unreal module for struct types...
+   Found types: ['PCGMatchAndSetWeightedByCategoryEntryList', 'PCGMatchAndSetWeightedEntry', 'PCGMeshSelectorWeightedEntry', 'PCGWeightedByCategoryEntryList']
+   PCG Entry types: ['PCGMatchAndSetByAttributeEntry', 'PCGMatchAndSetWeightedByCategoryEntryList', 'PCGMatchAndSetWeightedEntry', 'PCGMeshSelectorWeightedEntry', 'PCGWeightedByCategoryEntryList']
+
+7. Checking spawner_settings for alternative methods:
+   Methods: ['apply_mesh_bounds_to_points', 'mesh_selector_instance', 'mesh_selector_parameters', 'mesh_selector_type', 'set_mesh_selector_type', 'static_mesh_component_property_overrides']
+
+   Method: set_mesh_selector_type
+   Type: <class 'builtin_function_or_method_with_closure'>
+   (Cannot get signature)
+
+================================================================================
+REFLECTION COMPLETE
+================================================================================
+================================================================================
+FINAL PCG MESH CONFIGURATION
+================================================================================
+
+1. Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+✓ Found mesh selector
+
+2. Loaded grass mesh: SM_tbdpec3r_VarA
+
+3. Creating PCGMeshSelectorWeightedEntry...
+   ✓ Created entry: <Struct 'PCGMeshSelectorWeightedEntry' (0x00000292378F3800) {weight: 1}>
+   Entry properties: ['assign', 'cast', 'copy', 'export_text', 'get_editor_property', 'import_text', 'set_editor_properties', 'set_editor_property', 'static_struct', 'to_tuple', 'weight']
+     assign = <built-in method assign of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     cast = <built-in method cast of type object at 0x0000028FB8A72148> (type: builtin_function_or_method)
+     copy = <built-in method copy of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     export_text = <built-in method export_text of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     get_editor_property = <built-in method get_editor_property of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     import_text = <built-in method import_text of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     set_editor_properties = <built-in method set_editor_properties of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     set_editor_property = <built-in method set_editor_property of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     static_struct = <built-in method static_struct of type object at 0x0000028FB8A72148> (type: builtin_function_or_method)
+     to_tuple = <built-in method to_tuple of PCGMeshSelectorWeightedEntry object at 0x0000028FD1F97240> (type: builtin_function_or_method)
+     weight = 1 (type: int)
+
+4. Setting mesh on entry...
+   ✗ 'mesh': 'PCGMeshSelectorWeightedEntry' object has no attribute 'mesh'
+   ✗ 'static_mesh': 'PCGMeshSelectorWeightedEntry' object has no attribute 'static_mesh'
+   ✗ 'descriptor': 'PCGMeshSelectorWeightedEntry' object has no attribute 'descriptor'
+   ✗ 'mesh_entry': 'PCGMeshSelectorWeightedEntry' object has no attribute 'mesh_entry'
+
+⚠ Could not set mesh on entry
+================================================================================
+SET MESH VIA set_editor_property
+================================================================================
+
+1. Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+
+2. Loaded grass mesh: SM_tbdpec3r_VarA
+
+3. Creating PCGMeshSelectorWeightedEntry...
+   ✓ Created entry
+
+4. Setting mesh via set_editor_property...
+   ✗ 'mesh': PCGMeshSelectorWeightedEntry: Property 'Mesh' for attribute 'mesh' on 'PCGMeshSelectorWeightedEntry' is protected and cannot be set
+   ✗ 'static_mesh': PCGMeshSelectorWeightedEntry: Failed to find property 'static_mesh' for attribute 'static_mesh' on 'PCGMeshSelectorWeightedEntry'
+   ✗ 'descriptor': PCGMeshSelectorWeightedEntry: Failed to convert type 'StaticMesh' to property 'Descriptor' (StructProperty) for attribute 'descriptor' on 'PCGMeshSelectorWeightedEntry'
+  TypeError: NativizeProperty: Cannot nativize 'StaticMesh' as 'Descriptor' (StructProperty)
+    TypeError: NativizeStructInstance: Cannot nativize 'StaticMesh' as 'PCGSoftISMComponentDescriptor'
+   ✗ 'mesh_entry': PCGMeshSelectorWeightedEntry: Failed to find property 'mesh_entry' for attribute 'mesh_entry' on 'PCGMeshSelectorWeightedEntry'
+   ✗ 'soft_static_mesh': PCGMeshSelectorWeightedEntry: Failed to find property 'soft_static_mesh' for attribute 'soft_static_mesh' on 'PCGMeshSelectorWeightedEntry'
+
+================================================================================
+COMPLETE
+================================================================================
+================================================================================
+CONFIGURE PCG USING DESCRIPTOR STRUCT
+================================================================================
+
+1. Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+
+2. Loaded grass mesh: SM_tbdpec3r_VarA
+
+3. Creating PCGSoftISMComponentDescriptor...
+   ✓ Created descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x0000028F8FEEB100) {}>
+   Descriptor properties: ['assign', 'cast', 'copy', 'export_text', 'get_editor_property', 'import_text', 'set_editor_properties', 'set_editor_property', 'static_struct', 'to_tuple']
+
+4. Setting mesh on descriptor...
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Verified: <Object '/Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA' (0x000002925F5A0000) Class 'StaticMesh'>
+
+5. Creating PCGMeshSelectorWeightedEntry...
+
+6. Setting descriptor on entry...
+   ✓ Set descriptor on entry
+   ✓ Verified: <Struct 'PCGSoftISMComponentDescriptor' (0x00000292378FBD00) {}>
+
+7. Adding entry to mesh_entries...
+   ✓ Added (total: 1)
+
+8. Saving graph...
+   ✓ Saved
+
+9. Regenerating PCG...
+   ✓ Regenerated on Stadium_Grass_PCG_Volume_9925
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Grass mesh configured successfully!
+🌱 Check your viewport for PCG-generated grass!
+
+================================================================================
+COMPLETE
+================================================================================

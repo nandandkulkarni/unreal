@@ -1,0 +1,64 @@
+================================================================================
+SET MESH VIA set_editor_property
+================================================================================
+
+1. Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+
+2. Loaded grass mesh: SM_tbdpec3r_VarA
+
+3. Creating PCGMeshSelectorWeightedEntry...
+   ✓ Created entry
+
+4. Setting mesh via set_editor_property...
+   ✗ 'mesh': PCGMeshSelectorWeightedEntry: Property 'Mesh' for attribute 'mesh' on 'PCGMeshSelectorWeightedEntry' is protected and cannot be set
+   ✗ 'static_mesh': PCGMeshSelectorWeightedEntry: Failed to find property 'static_mesh' for attribute 'static_mesh' on 'PCGMeshSelectorWeightedEntry'
+   ✗ 'descriptor': PCGMeshSelectorWeightedEntry: Failed to convert type 'StaticMesh' to property 'Descriptor' (StructProperty) for attribute 'descriptor' on 'PCGMeshSelectorWeightedEntry'
+  TypeError: NativizeProperty: Cannot nativize 'StaticMesh' as 'Descriptor' (StructProperty)
+    TypeError: NativizeStructInstance: Cannot nativize 'StaticMesh' as 'PCGSoftISMComponentDescriptor'
+   ✗ 'mesh_entry': PCGMeshSelectorWeightedEntry: Failed to find property 'mesh_entry' for attribute 'mesh_entry' on 'PCGMeshSelectorWeightedEntry'
+   ✗ 'soft_static_mesh': PCGMeshSelectorWeightedEntry: Failed to find property 'soft_static_mesh' for attribute 'soft_static_mesh' on 'PCGMeshSelectorWeightedEntry'
+
+================================================================================
+COMPLETE
+================================================================================
+================================================================================
+CONFIGURE PCG USING DESCRIPTOR STRUCT
+================================================================================
+
+1. Loading: /Game/PCG/PCG_StadiumGrass_9925.PCG_StadiumGrass_9925
+
+2. Loaded grass mesh: SM_tbdpec3r_VarA
+
+3. Creating PCGSoftISMComponentDescriptor...
+   ✓ Created descriptor: <Struct 'PCGSoftISMComponentDescriptor' (0x0000028F8FEEB100) {}>
+   Descriptor properties: ['assign', 'cast', 'copy', 'export_text', 'get_editor_property', 'import_text', 'set_editor_properties', 'set_editor_property', 'static_struct', 'to_tuple']
+
+4. Setting mesh on descriptor...
+   ✓ Set 'static_mesh' on descriptor
+   ✓ Verified: <Object '/Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA' (0x000002925F5A0000) Class 'StaticMesh'>
+
+5. Creating PCGMeshSelectorWeightedEntry...
+
+6. Setting descriptor on entry...
+   ✓ Set descriptor on entry
+   ✓ Verified: <Struct 'PCGSoftISMComponentDescriptor' (0x00000292378FBD00) {}>
+
+7. Adding entry to mesh_entries...
+   ✓ Added (total: 1)
+
+8. Saving graph...
+   ✓ Saved
+
+9. Regenerating PCG...
+   ✓ Regenerated on Stadium_Grass_PCG_Volume_9925
+
+================================================================================
+SUCCESS!
+================================================================================
+
+✅ Grass mesh configured successfully!
+🌱 Check your viewport for PCG-generated grass!
+
+================================================================================
+COMPLETE
+================================================================================
