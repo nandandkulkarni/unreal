@@ -1,10 +1,4 @@
 ================================================================================
-SPAWNING 3D GRASS (ISM)
-================================================================================
-Searching for StaticMesh in: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r...
-Found Mesh: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
-✗ Stadium_Ground_Rect not found! Run create_stadium_ground.py first.
-================================================================================
 CREATING PCG GRAPH VIA PYTHON (EXPERIMENTAL)
 ================================================================================
 
@@ -628,16 +622,6 @@ FINAL PCG GRASS CONFIGURATION
   ✓ Generation triggered!
 
 🎉 PCG grass generation initiated - check viewport!
-
-================================================================================
-CONFIGURATION COMPLETE
-================================================================================
-
-Next steps if grass doesn't appear:
-1. Open /Game/PCG/PCG_StadiumGrass in editor
-2. Manually configure Static Mesh Spawner mesh property
-3. Check PCG Volume bounds cover the stadium ground
- PCG grass generation initiated - check viewport!
 
 ================================================================================
 CONFIGURATION COMPLETE

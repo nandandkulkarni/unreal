@@ -1,0 +1,281 @@
+Searching in: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r
+================================================================================
+SPAWNING 3D GRASS (ISM)
+================================================================================
+Searching for StaticMesh in: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r...
+Found Mesh: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+Attaching to: Stadium_Ground_Rect
+================================================================================
+SPAWNING 3D GRASS (ISM)
+================================================================================
+Searching for StaticMesh in: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r...
+Found Mesh: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
+✗ Stadium_Ground_Rect not found! Run create_stadium_ground.py first.
+================================================================================
+CREATING PCG GRAPH VIA PYTHON (EXPERIMENTAL)
+================================================================================
+
+1. Creating PCG Graph Asset...
+✓ Created PCG Graph: /Game/PCG/PCG_StadiumGrass
+
+2. Exploring available PCG node types...
+  ✓ Found: PCGSurfaceSamplerSettings
+  ✓ Found: PCGStaticMeshSpawnerSettings
+  ✓ Found: PCGDensityFilterSettings
+  ✓ Found: PCGSpawnActorSettings
+
+3. Adding nodes to PCG Graph...
+  Attempting to add Surface Sampler node...
+  ✓ Added Surface Sampler node
+  Attempting to add Static Mesh Spawner node...
+  ✓ Added Static Mesh Spawner node
+
+4. Inspecting created graph...
+  Error inspecting graph: 'PCGGraph' object has no attribute 'get_nodes'
+
+5. Saving PCG Graph asset...
+✓ Saved: /Game/PCG/PCG_StadiumGrass
+
+================================================================================
+SUMMARY
+================================================================================
+PCG Graph Asset: /Game/PCG/PCG_StadiumGrass
+
+NEXT STEPS:
+1. Open the PCG Graph in the editor
+2. Manually add/configure nodes if Python API is limited
+3. Assign the graph to the PCGVolume in the scene
+4. Trigger generation
+
+This script demonstrates the current limitations of PCG Python API.
+Full node configuration may require Blueprint or manual editor work.
+================================================================================
+PCG PYTHON API REFLECTION
+================================================================================
+
+================================================================================
+CLASS: unreal.PCGGraph
+================================================================================
+
+METHODS (35):
+  acquire_editor_element_handle(...)
+  add_edge(...)
+  add_node_copy(...)
+  add_node_instance(...)
+  add_node_of_type(...)
+  call_method(...)
+  cast(...)
+  force_notification_for_editor(...)
+  get_class(...)
+  get_const_pcg_graph(...)
+  get_default_object(...)
+  get_editor_property(...)
+  get_fname(...)
+  get_full_name(...)
+  get_input_node(...)
+  get_mutable_pcg_graph(...)
+  get_name(...)
+  get_outer(...)
+  get_outermost(...)
+  get_output_node(...)
+  get_package(...)
+  get_path_name(...)
+  get_typed_outer(...)
+  get_world(...)
+  is_editor_property_overridden(...)
+  is_package_external(...)
+  modify(...)
+  remove_edge(...)
+  remove_node(...)
+  remove_nodes(...)
+  rename(...)
+  reset_editor_property(...)
+  set_editor_properties(...)
+  set_editor_property(...)
+  static_class(...)
+
+PROPERTIES (17):
+  category
+  color
+  description
+  expose_to_library
+  generation_radii
+  has_default_constructed_inputs
+  ignore_landscape_tracking
+  input_node
+  is_editor_only
+  is_standalone_graph
+  is_template
+  nodes
+  output_node
+  override_color
+  override_title
+  title
+  tool_data
+
+================================================================================
+CLASS: unreal.PCGNode
+================================================================================
+
+METHODS (29):
+  acquire_editor_element_handle(...)
+  add_edge_to(...)
+  call_method(...)
+  cast(...)
+  get_class(...)
+  get_default_object(...)
+  get_editor_property(...)
+  get_fname(...)
+  get_full_name(...)
+  get_graph(...)
+  get_name(...)
+  get_node_position(...)
+  get_outer(...)
+  get_outermost(...)
+  get_package(...)
+  get_path_name(...)
+  get_settings(...)
+  get_typed_outer(...)
+  get_world(...)
+  is_editor_property_overridden(...)
+  is_package_external(...)
+  modify(...)
+  remove_edge_to(...)
+  rename(...)
+  reset_editor_property(...)
+  set_editor_properties(...)
+  set_editor_property(...)
+  set_node_position(...)
+  static_class(...)
+
+PROPERTIES (5):
+  input_pins
+  node_title
+  node_title_color
+  output_pins
+  settings_interface
+
+================================================================================
+CLASS: unreal.PCGSettings
+================================================================================
+
+METHODS (29):
+  acquire_editor_element_handle(...)
+  bp_get_type_union_of_incident_edges(...)
+  call_method(...)
+  cast(...)
+  const_metadata(...)
+  duplicate_data(...)
+  duplicate_data_with_context(...)
+  get_class(...)
+  get_default_object(...)
+  get_editor_property(...)
+  get_fname(...)
+  get_full_name(...)
+  get_name(...)
+  get_outer(...)
+  get_outermost(...)
+  get_package(...)
+  get_path_name(...)
+  get_type_union_id_of_incident_edges(...)
+  get_typed_outer(...)
+  get_world(...)
+  is_editor_property_overridden(...)
+  is_package_external(...)
+  modify(...)
+  mutable_metadata(...)
+  rename(...)
+  reset_editor_property(...)
+  set_editor_properties(...)
+  set_editor_property(...)
+  static_class(...)
+
+PROPERTIES (11):
+  break_debugger
+  category
+  debug
+  debug_settings
+  description
+  determinism_settings
+  enabled
+  execution_dependency_required
+  expose_to_library
+  seed
+  use_seed
+
+================================================================================
+CLASS: unreal.PCGComponent
+================================================================================
+
+METHODS (69):
+  acquire_editor_element_handle(...)
+  activate(...)
+  add_actors_to_managed_resources(...)
+  add_asset_user_data_of_class(...)
+  add_components_to_managed_resources(...)
+  add_tick_prerequisite_actor(...)
+  add_tick_prerequisite_component(...)
+  add_to_managed_resources(...)
+  call_method(...)
+  cast(...)
+  cleanup(...)
+  cleanup_local(...)
+  clear_pcg_link(...)
+  component_has_tag(...)
+  deactivate(...)
+  destroy_component(...)
+  generate(...)
+  generate_local(...)
+  get_asset_user_data_of_class(...)
+  get_class(...)
+  get_component_tick_interval(...)
+  get_default_object(...)
+  get_editing_mode(...)
+  get_editor_property(...)
+  get_fname(...)
+  get_full_name(...)
+  get_generated_graph_output(...)
+  get_name(...)
+  get_outer(...)
+  get_outermost(...)
+  get_owner(...)
+  get_package(...)
+  get_path_name(...)
+  get_serialized_editing_mode(...)
+  get_typed_outer(...)
+  get_world(...)
+  has_asset_user_data_of_class(...)
+  is_active(...)
+  is_being_destroyed(...)
+  is_component_tick_enabled(...)
+  is_editor_property_overridden(...)
+  is_package_external(...)
+  modify(...)
+  notify_properties_changed_from_blueprint(...)
+  receive_async_physics_tick(...)
+  receive_begin_play(...)
+  receive_end_play(...)
+  receive_initialize_component(...)
+  receive_tick(...)
+  receive_uninitialize_component(...)
+  refresh_pcg_runtime_component(...)
+  remove_tick_prerequisite_actor(...)
+  remove_tick_prerequisite_component(...)
+  rename(...)
+  reset_editor_property(...)
+  set_active(...)
+  set_auto_activate(...)
+  set_component_tick_enabled(...)
+  set_component_tick_interval(...)
+  set_component_tick_interval_and_cooldown(...)
+  set_editing_mode(...)
+  set_editor_properties(...)
+  set_editor_property(...)
+  set_graph(...)
+  set_is_replicated(...)
+  set_tick_group(...)
+  set_tickable_when_paused(...)
+  static_class(...)
+  toggle_active(...)
+
+PROPERTIES (31):

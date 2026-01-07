@@ -1,0 +1,111 @@
+================================================================================
+ADD_EDGE_TO METHOD REFLECTION
+================================================================================
+
+Surface Sampler: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:SurfaceSampler_0' (0x00000292B5E7E200) Class 'PCGNode'>
+Mesh Spawner: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:StaticMeshSpawner_0' (0x00000292B5E71600) Class 'PCGNode'>
+
+================================================================================
+METHOD SIGNATURE INSPECTION
+================================================================================
+
+Method: <built-in method add_edge_to of PCGNode object at 0x0000028FD1F5FC70>
+Type: <class 'builtin_function_or_method_with_closure'>
+
+Couldn't get signature via inspect: no signature found for builtin <built-in method add_edge_to of PCGNode object at 0x0000028FD1F5FC70>
+
+--------------------------------------------------------------------------------
+HELP OUTPUT:
+--------------------------------------------------------------------------------
+Help on built-in function add_edge_to:
+
+add_edge_to(...) method of builtins.PCGNode instance
+    x.add_edge_to(from_pin_label, to, to_pin_label) -> PCGNode
+    Adds an edge in the owning graph to the given "To" node.
+    
+    Args:
+        from_pin_label (Name): 
+        to (PCGNode): 
+        to_pin_label (Name): 
+    
+    Returns:
+        PCGNode:
+
+
+================================================================================
+TESTING PARAMETER COMBINATIONS
+================================================================================
+
+Sampler output pin label: 'Out'
+Spawner input pin label: 'In'
+
+1. Testing: add_edge_to(to_node)
+   ✗ Error: add_edge_to() required argument 'to' (pos 2) not found
+
+2. Testing: add_edge_to(to_node, from_label)
+   ✗ Error: add_edge_to() required argument 'to_pin_label' (pos 3) not found
+
+3. Testing: add_edge_to(to_node, from_label, to_label)
+   ✗ Error: PCGNode: Failed to convert parameter 'from_pin_label' when calling function 'PCGNode.AddEdgeTo' on 'SurfaceSampler_0'
+  TypeError: NativizeProperty: Cannot nativize 'PCGNode' as 'FromPinLabel' (NameProperty)
+    TypeError: Nativize: Cannot nativize 'PCGNode' as 'Name'
+
+4. Testing: add_edge_to(to=to_node, from_pin_label=..., to_pin_label=...)
+   ✓ Success! Result: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:StaticMeshSpawner_0' (0x00000292B5E71600) Class 'PCGNode'>
+
+5. Testing: add_edge_to(to=to_node)
+   ✗ Error: add_edge_to() required argument 'from_pin_label' (pos 1) not found
+
+================================================================================
+TESTING PCGGraph.add_edge
+================================================================================
+
+Testing: pcg_graph.add_edge(from_node, from_label, to_node, to_label)
+   ✓ Success! Result: <Object '/Game/PCG/PCG_StadiumGrass.PCG_StadiumGrass:StaticMeshSpawner_0' (0x00000292B5E71600) Class 'PCGNode'>
+
+================================================================================
+REFLECTION COMPLETE
+================================================================================
+================================================================================
+FINAL PCG GRASS CONFIGURATION
+================================================================================
+
+1. Loading PCG Graph...
+✓ Loaded graph
+
+2. Identifying nodes...
+✓ Surface Sampler: SurfaceSampler_0
+✓ Mesh Spawner: StaticMeshSpawner_0
+
+3. Connecting nodes...
+  Pin labels: Input.In → Sampler.Surface → Sampler.Out → Spawner.In → Spawner.Out → Output.Out
+  ✓ Input → Surface Sampler
+  ✓ Surface Sampler → Mesh Spawner
+  ✓ Mesh Spawner → Output
+
+4. Configuring Mesh Spawner...
+✓ Loaded grass mesh: SM_tbdpec3r_VarA
+  ⚠ Could not find mesh property - may need manual configuration
+
+5. Saving graph...
+✓ Saved
+
+6. Setting up PCG Volume...
+  Creating new PCG Volume...
+  ✓ Created PCG Volume
+✓ PCG Volume: Stadium_Grass_PCG_Volume
+  ✓ Assigned graph to component
+
+7. Triggering PCG generation...
+  ✓ Generation triggered!
+
+🎉 PCG grass generation initiated - check viewport!
+
+================================================================================
+CONFIGURATION COMPLETE
+================================================================================
+
+Next steps if grass doesn't appear:
+1. Open /Game/PCG/PCG_StadiumGrass in editor
+2. Manually configure Static Mesh Spawner mesh property
+3. Check PCG Volume bounds cover the stadium ground

@@ -1,48 +1,4 @@
 ================================================================================
-SPAWNING 3D GRASS (ISM)
-================================================================================
-Searching for StaticMesh in: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r...
-Found Mesh: /Game/Fab/Megascans/Plants/Ribbon_Grass_tbdpec3r/High/tbdpec3r_tier_1/StaticMeshes/SM_tbdpec3r_VarA.SM_tbdpec3r_VarA
-✗ Stadium_Ground_Rect not found! Run create_stadium_ground.py first.
-================================================================================
-CREATING PCG GRAPH VIA PYTHON (EXPERIMENTAL)
-================================================================================
-
-1. Creating PCG Graph Asset...
-✓ Created PCG Graph: /Game/PCG/PCG_StadiumGrass
-
-2. Exploring available PCG node types...
-  ✓ Found: PCGSurfaceSamplerSettings
-  ✓ Found: PCGStaticMeshSpawnerSettings
-  ✓ Found: PCGDensityFilterSettings
-  ✓ Found: PCGSpawnActorSettings
-
-3. Adding nodes to PCG Graph...
-  Attempting to add Surface Sampler node...
-  ✓ Added Surface Sampler node
-  Attempting to add Static Mesh Spawner node...
-  ✓ Added Static Mesh Spawner node
-
-4. Inspecting created graph...
-  Error inspecting graph: 'PCGGraph' object has no attribute 'get_nodes'
-
-5. Saving PCG Graph asset...
-✓ Saved: /Game/PCG/PCG_StadiumGrass
-
-================================================================================
-SUMMARY
-================================================================================
-PCG Graph Asset: /Game/PCG/PCG_StadiumGrass
-
-NEXT STEPS:
-1. Open the PCG Graph in the editor
-2. Manually add/configure nodes if Python API is limited
-3. Assign the graph to the PCGVolume in the scene
-4. Trigger generation
-
-This script demonstrates the current limitations of PCG Python API.
-Full node configuration may require Blueprint or manual editor work.
-================================================================================
 PCG PYTHON API REFLECTION
 ================================================================================
 
@@ -628,16 +584,6 @@ FINAL PCG GRASS CONFIGURATION
   ✓ Generation triggered!
 
 🎉 PCG grass generation initiated - check viewport!
-
-================================================================================
-CONFIGURATION COMPLETE
-================================================================================
-
-Next steps if grass doesn't appear:
-1. Open /Game/PCG/PCG_StadiumGrass in editor
-2. Manually configure Static Mesh Spawner mesh property
-3. Check PCG Volume bounds cover the stadium ground
- PCG grass generation initiated - check viewport!
 
 ================================================================================
 CONFIGURATION COMPLETE
